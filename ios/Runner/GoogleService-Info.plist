@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>411754724192-mp0pj3nkj2ncuina7aeqstn1l33lcrv0.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.411754724192-mp0pj3nkj2ncuina7aeqstn1l33lcrv0</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>411754724192-v0bmvh35snikeu57ppsufsfj4q84pibc.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDjp3RQbOG6hPDJa8j48PWEXMhr5EktKYc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>411754724192</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.bahiaDelivery</string>
+	<key>PROJECT_ID</key>
+	<string>bahia-delivery-app-cp</string>
+	<key>STORAGE_BUCKET</key>
+	<string>bahia-delivery-app-cp.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:411754724192:ios:85f097ff50b6022ff5fc05</string>
+	<key>DATABASE_URL</key>
+	<string>https://bahia-delivery-app-cp.firebaseio.com</string>
+</dict>
+</plist>

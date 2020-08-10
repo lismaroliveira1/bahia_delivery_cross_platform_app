@@ -15,10 +15,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           body: Column(
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  RaisedButton(child: Icon(Icons.location_on), onPressed: () {})
-                ],
+              SizedBox(
+                height: 8.0,
               )
             ],
           )),
