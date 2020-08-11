@@ -1,3 +1,4 @@
+import 'package:bahia_delivery/tabs/home_tab.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -6,20 +7,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final _pageController = PageController();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-          ),
-          body: Column(
-            children: <Widget>[
-              SizedBox(
-                height: 8.0,
-              )
-            ],
-          )),
+    return PageView(
+      controller: _pageController,
+      physics: NeverScrollableScrollPhysics(),
+      children: <Widget>[HomeTab()],
     );
   }
 }

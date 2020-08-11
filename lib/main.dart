@@ -1,4 +1,5 @@
 import 'package:bahia_delivery/screens/home_screen.dart';
+import 'package:bahia_delivery/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,9 +12,13 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'Bahia Delivery',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        home: HomeScreen());
+            primarySwatch: Colors.blue,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+            primaryColor: Color.fromARGB(255, 216, 216, 216)),
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          body: HomeScreen(),
+          drawer: CustomDrawer(),
+        ));
   }
 }
