@@ -35,7 +35,7 @@ class CustomDrawer extends StatelessWidget {
               DrawerTile(Icons.list, "Pedidos"),
               DrawerTile(Icons.favorite, "Favoritos"),
               DrawerTile(Icons.settings, "Configurações"),
-              DrawerTile(Icons.album, "sobre")
+              DrawerTile(Icons.album, "Sobre")
             ],
           )
         ],
