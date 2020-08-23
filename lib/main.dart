@@ -1,3 +1,4 @@
+import 'package:bahia_delivery/screens/home_screen.dart';
 import 'package:bahia_delivery/screens/register_screen.dart';
 import 'package:bahia_delivery/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +18,8 @@ class MyApp extends StatelessWidget {
             primaryColor: Color.fromARGB(255, 216, 216, 216)),
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          body: RegisterScreen(),
-          //Sdrawer: CustomDrawer(),
+          body: HomeScreen(),
+          drawer: CustomDrawer(),
         ));
   }
 }

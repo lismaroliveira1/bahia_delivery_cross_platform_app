@@ -58,6 +58,34 @@ class HomeTab extends StatelessWidget {
                 ),
               ],
             ),
+            SliverList(
+              delegate: SliverChildListDelegate([
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      RaisedButton(
+                          onPressed: () {},
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Row(
+                            children: [
+                              Text("Rua apolinário de Santana nº 12"),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Icon(
+                                Icons.location_on,
+                                size: 20,
+                              )
+                            ],
+                          ))
+                    ],
+                  ),
+                ),
+              ]),
+            )
           ],
         )
       ],
