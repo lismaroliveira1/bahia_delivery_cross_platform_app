@@ -1,4 +1,7 @@
 import 'package:bahia_delivery/themes/theme.dart';
+import 'package:bahia_delivery/tiles/category_tile.dart';
+import 'package:bahia_delivery/tiles/stores_tile.dart';
+
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -84,8 +87,21 @@ class HomeTab extends StatelessWidget {
                     ],
                   ),
                 ),
+                Padding(
+                  padding: EdgeInsets.only(right: 12, left: 12),
+                  child: Text(
+                    "Categorias",
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey[800],
+                        fontStyle: FontStyle.italic,
+                        fontSize: 14),
+                  ),
+                ),
+                ListCategory(),
               ]),
-            )
+            ),
+            ListStories(),
           ],
         )
       ],
