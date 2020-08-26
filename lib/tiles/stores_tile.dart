@@ -1,11 +1,10 @@
-import 'package:bahia_delivery/screens/store_screcreen.dart';
+import 'package:bahia_delivery/screens/store_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class ListStories extends StatelessWidget {
-  @override
   Widget build(BuildContext context) {
     return FutureBuilder<QuerySnapshot>(
         future: Firestore.instance.collection("stores").getDocuments(),
@@ -33,7 +32,7 @@ class ListStories extends StatelessWidget {
                     padding: EdgeInsets.all(0),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => StoreScreen()));
+                          builder: (context) => StoreScreen(doc)));
                     },
                     child: Card(
                       child: Container(
@@ -44,14 +43,14 @@ class ListStories extends StatelessWidget {
                             Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12)),
-                                height: 100,
-                                width: 100,
+                                height: 80,
+                                width: 80,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
                                   child: FadeInImage.memoryNetwork(
                                     placeholder: kTransparentImage,
                                     image: doc.data["image"],
-                                    fit: BoxFit.fill,
+                                    fit: BoxFit.cover,
                                   ),
                                 )),
                             Padding(

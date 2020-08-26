@@ -1,12 +1,13 @@
+import 'package:bahia_delivery/tabs/about_tab.dart';
 import 'package:bahia_delivery/tabs/cart_tab.dart';
 import 'package:bahia_delivery/tabs/favorite_tab.dart';
 import 'package:bahia_delivery/tabs/home_tab.dart';
 import 'package:bahia_delivery/tabs/order_tab.dart';
 import 'package:bahia_delivery/tabs/profile_tab.dart';
+import 'package:bahia_delivery/tabs/setup_tab.dart';
 import 'package:bahia_delivery/widgets/custom_drawer.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
-
 import '../tabs/home_tab.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,6 +21,9 @@ class _HomeScreenState extends State<HomeScreen> {
   final ProfileTab _profileTab = ProfileTab();
   final HomeTab _homeTab = HomeTab();
   final FavoriteTab _favoriteTab = FavoriteTab();
+  final OrderTab _orderTab = OrderTab();
+  final SetupTab _setupTab = SetupTab();
+  final AboutTab _aboutTab = AboutTab();
   Widget _showPage = new HomeTab();
 
   Widget _pageChooser(int page) {
@@ -37,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return _profileTab;
         break;
       default:
-        return Text("");
+        return _homeTab;
         break;
     }
   }
@@ -50,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
       physics: NeverScrollableScrollPhysics(),
       children: <Widget>[
         Scaffold(
-          drawer: CustomDrawer(),
+          drawer: CustomDrawer(_pageController),
           body: _showPage,
           bottomNavigationBar: CurvedNavigationBar(
             height: 60,
@@ -87,6 +91,18 @@ class _HomeScreenState extends State<HomeScreen> {
               });
             },
           ),
+        ),
+        Scaffold(
+          drawer: CustomDrawer(_pageController),
+          body: _orderTab,
+        ),
+        Scaffold(
+          drawer: CustomDrawer(_pageController),
+          body: _setupTab,
+        ),
+        Scaffold(
+          drawer: CustomDrawer(_pageController),
+          body: _aboutTab,
         )
       ],
     );

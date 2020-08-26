@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class HomeTab extends StatelessWidget {
-  bool isSearching = false;
   @override
   Widget build(BuildContext context) {
     return Stack(

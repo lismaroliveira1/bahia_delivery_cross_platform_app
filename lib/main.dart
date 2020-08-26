@@ -1,5 +1,4 @@
 import 'package:bahia_delivery/screens/home_screen.dart';
-import 'package:bahia_delivery/widgets/custom_drawer.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -18,7 +17,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: HomeScreen(),
-          drawer: CustomDrawer(),
         ));
   }
 }
