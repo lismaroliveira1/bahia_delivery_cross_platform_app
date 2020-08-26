@@ -2,6 +2,8 @@ import 'package:bahia_delivery/tabs/cart_tab.dart';
 import 'package:bahia_delivery/tabs/favorite_tab.dart';
 import 'package:bahia_delivery/tabs/home_tab.dart';
 import 'package:bahia_delivery/tabs/order_tab.dart';
+import 'package:bahia_delivery/tabs/profile_tab.dart';
+import 'package:bahia_delivery/widgets/custom_drawer.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _pageController = PageController();
   final CartTab _cartTab = CartTab();
-  final OrderTab _orderTab = OrderTab();
+  final ProfileTab _profileTab = ProfileTab();
   final HomeTab _homeTab = HomeTab();
   final FavoriteTab _favoriteTab = FavoriteTab();
   Widget _showPage = new HomeTab();
@@ -26,13 +28,13 @@ class _HomeScreenState extends State<HomeScreen> {
         return _homeTab;
         break;
       case 1:
-        return _orderTab;
-        break;
-      case 2:
         return _favoriteTab;
         break;
-      case 3:
+      case 2:
         return _cartTab;
+        break;
+      case 3:
+        return _profileTab;
         break;
       default:
         return Text("");
@@ -42,11 +44,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double sizeColor = 25.0;
     return PageView(
       controller: _pageController,
       physics: NeverScrollableScrollPhysics(),
       children: <Widget>[
         Scaffold(
+          drawer: CustomDrawer(),
           body: _showPage,
           bottomNavigationBar: CurvedNavigationBar(
             height: 60,
@@ -56,22 +60,22 @@ class _HomeScreenState extends State<HomeScreen> {
             items: [
               Icon(
                 Icons.home,
-                size: 20,
-                color: Colors.white,
-              ),
-              Icon(
-                Icons.list,
-                size: 20,
+                size: sizeColor,
                 color: Colors.white,
               ),
               Icon(
                 Icons.favorite,
-                size: 20,
+                size: sizeColor,
                 color: Colors.white,
               ),
               Icon(
                 Icons.add_shopping_cart,
-                size: 20,
+                size: sizeColor,
+                color: Colors.white,
+              ),
+              Icon(
+                Icons.person_pin,
+                size: sizeColor,
                 color: Colors.white,
               ),
             ],
