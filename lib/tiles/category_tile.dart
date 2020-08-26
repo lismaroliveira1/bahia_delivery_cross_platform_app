@@ -9,15 +9,7 @@ class ListCategory extends StatelessWidget {
         future: Firestore.instance.collection("categories").getDocuments(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return SliverToBoxAdapter(
-              child: Container(
-                alignment: Alignment.center,
-                height: 200,
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
-                ),
-              ),
-            );
+            return Container();
           } else
             return Container(
                 margin: EdgeInsets.symmetric(vertical: 20.0),
