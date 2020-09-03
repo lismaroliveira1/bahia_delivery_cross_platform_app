@@ -1,110 +1,248 @@
-import 'package:bahia_delivery/widgets/imput_field.dart';
+import 'package:bahia_delivery/blocs/login_bloc.dart';
+import 'package:bahia_delivery/models/user.dart';
+import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
+  @override
+  _RegisterScreenState createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final _loginBlock = LoginBloc();
+
+  final User user = User();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.red,
-      body: Stack(
-        alignment: Alignment.center,
-        children: <Widget>[
-          Container(),
-          SingleChildScrollView(
-            child: Container(
-              margin: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+        key: scaffoldKey,
+        backgroundColor: Colors.red,
+        body:
+            ScopedModelDescendant<UserModel>(builder: (context, child, model) {
+          if (model.isLoading)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          return Form(
+              key: formKey,
+              child: Stack(
+                alignment: Alignment.center,
                 children: <Widget>[
-                  SizedBox(
-                    height: 200,
-                    width: 200,
-                    child: Image.asset('images/logo_full.png'),
-                  ),
-                  InputField(
-                      icon: Icons.person_outline,
-                      hint: "Login",
-                      obscure: false),
-                  InputField(
-                    icon: Icons.lock_outline,
-                    hint: 'Senha',
-                    obscure: true,
-                  ),
-                  InputField(
-                    icon: Icons.lock_outline,
-                    hint: 'Confirmar Senha',
-                    obscure: true,
-                  ),
-                  SizedBox(
-                    height: 40,
-                  ),
-                  SizedBox(
-                    height: 50,
-                    width: 145,
-                    child: RaisedButton(
-                      color: Colors.white,
-                      child: Text(
-                        "Registrar",
-                        style: TextStyle(fontSize: 18),
+                  Container(),
+                  SingleChildScrollView(
+                    child: Container(
+                      margin: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            height: 200,
+                            width: 200,
+                            child: Image.asset('images/logo_full.png'),
+                          ),
+                          StreamBuilder<String>(
+                            stream: _loginBlock.outName,
+                            builder: (context, snapshot) {
+                              return TextFormField(
+                                decoration: InputDecoration(
+                                    hintText: "Nome Completo",
+                                    errorText: snapshot.hasError
+                                        ? snapshot.error
+                                        : null,
+                                    icon: Icon(Icons.person_pin)),
+                                keyboardType: TextInputType.text,
+                                onSaved: (name) => user.name = name,
+                                onChanged: _loginBlock.changeName,
+                              );
+                            },
+                          ),
+                          StreamBuilder<String>(
+                            stream: _loginBlock.outEmail,
+                            builder: (context, snapshot) {
+                              return TextFormField(
+                                decoration: InputDecoration(
+                                    errorText: snapshot.hasError
+                                        ? snapshot.error
+                                        : null,
+                                    hintText: "Login",
+                                    icon: Icon(Icons.person_pin)),
+                                keyboardType: TextInputType.emailAddress,
+                                onSaved: (email) => user.email = email,
+                                onChanged: _loginBlock.changeEmail,
+                              );
+                            },
+                          ),
+                          StreamBuilder<String>(
+                            stream: _loginBlock.outPassword,
+                            builder: (context, snapshot) {
+                              return TextFormField(
+                                decoration: InputDecoration(
+                                    errorText: snapshot.hasError
+                                        ? snapshot.error
+                                        : null,
+                                    hintText: "Senha",
+                                    icon: Icon(Icons.lock_outline)),
+                                keyboardType: TextInputType.visiblePassword,
+                                obscureText: true,
+                                onChanged: _loginBlock.changePassword,
+                                onSaved: (password) => user.password = password,
+                              );
+                            },
+                          ),
+                          StreamBuilder<String>(
+                            stream: _loginBlock.outConfirmedPassword,
+                            builder: (context, snapshot) {
+                              return TextFormField(
+                                decoration: InputDecoration(
+                                    errorText: snapshot.hasError
+                                        ? snapshot.error
+                                        : null,
+                                    hintText: "Confirmar Senha",
+                                    icon: Icon(Icons.lock_outline)),
+                                keyboardType: TextInputType.visiblePassword,
+                                obscureText: true,
+                                onChanged: _loginBlock.changeConfirmedPassoword,
+                                onSaved: (confirmPassword) =>
+                                    user.confirmPassword = confirmPassword,
+                              );
+                            },
+                          ),
+                          SizedBox(
+                            height: 40,
+                          ),
+                          StreamBuilder<bool>(
+                            stream: _loginBlock.outSubmitValidRegister,
+                            builder: (context, snapshot) {
+                              return ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: SizedBox(
+                                  height: 50,
+                                  width: 145,
+                                  child: RaisedButton(
+                                    color: Colors.white,
+                                    child: Text(
+                                      "Registrar",
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    textColor: Colors.red,
+                                    disabledColor: Colors.grey,
+                                    disabledTextColor: Colors.black,
+                                    onPressed: snapshot.hasData
+                                        ? () {
+                                            print(user.password);
+                                            print(user.confirmPassword);
+                                            if (formKey.currentState
+                                                .validate()) {
+                                              formKey.currentState.save();
+                                              if (user.password !=
+                                                  user.confirmPassword) {
+                                                scaffoldKey.currentState
+                                                    .showSnackBar(SnackBar(
+                                                  content: const Text(
+                                                      'Senhas não coincidem!'),
+                                                  backgroundColor: Colors.red,
+                                                ));
+                                              } else {
+                                                model.signUp(
+                                                    user: user,
+                                                    onSuccess: _onSuccess,
+                                                    onFail: _onFail);
+                                              }
+                                            }
+                                          }
+                                        : null,
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          SizedBox(
+                            height: 60,
+                          ),
+                          Text(
+                            "Ou registre-se com:",
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: 40,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(right: 16, left: 16),
+                            child: Row(
+                              children: <Widget>[
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: RaisedButton(
+                                    onPressed: () {},
+                                    shape: StadiumBorder(),
+                                    padding: EdgeInsets.zero,
+                                    child: Container(
+                                      child: Image.asset(
+                                        'images/google_signs_in.png',
+                                        height: 50,
+                                        width: 145,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Spacer(),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(12),
+                                  child: RaisedButton(
+                                    shape: new RoundedRectangleBorder(
+                                        borderRadius:
+                                            new BorderRadius.circular(15)),
+                                    onPressed: () {},
+                                    padding: EdgeInsets.zero,
+                                    child: Container(
+                                      child: Image.asset(
+                                        'images/facebook_sign_in.png',
+                                        height: 50,
+                                        width: 145,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 24,
+                          ),
+                        ],
                       ),
-                      textColor: Colors.red,
-                      onPressed: () {},
                     ),
-                  ),
-                  SizedBox(
-                    height: 60,
-                  ),
-                  Text(
-                    "Ou Registre-se com:",
-                    style: TextStyle(fontSize: 20, color: Colors.white),
-                  ),
-                  SizedBox(
-                    height: 40,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 16, left: 16),
-                    child: Row(
-                      children: <Widget>[
-                        RaisedButton(
-                          onPressed: () {},
-                          shape: StadiumBorder(),
-                          padding: EdgeInsets.zero,
-                          child: Container(
-                            child: Image.asset(
-                              'images/google_signs_in.png',
-                              height: 50,
-                              width: 145,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
-                        Spacer(),
-                        RaisedButton(
-                          shape: new RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(15)),
-                          onPressed: () {},
-                          padding: EdgeInsets.zero,
-                          child: Container(
-                            child: Image.asset(
-                              'images/facebook_sign_in.png',
-                              height: 50,
-                              width: 145,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 24,
-                  ),
+                  )
                 ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );
+              ));
+        }));
+  }
+
+  void _onSuccess() {
+    scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text("Usuário criado com sucesso"),
+      backgroundColor: Colors.red,
+      duration: Duration(seconds: 2),
+    ));
+    Future.delayed(Duration(seconds: 2)).then((_) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => HomeScreen(),
+      ));
+    });
+  }
+
+  void _onFail() {
+    scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text("Falha ao criar o usuário"),
+      backgroundColor: Colors.red,
+      duration: Duration(seconds: 2),
+    ));
   }
 }

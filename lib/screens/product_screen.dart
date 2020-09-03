@@ -1,3 +1,4 @@
+import 'package:bahia_delivery/tabs/product_tab.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -13,11 +14,8 @@ class _ProductScreenState extends State<ProductScreen> {
   _ProductScreenState(this.snapshot);
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      child: Center(
-        child: Text("ProductScreen"),
-      ),
+    return Scaffold(
+      body: ProductTab(snapshot),
     );
   }
 }

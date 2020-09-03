@@ -1,5 +1,8 @@
+import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/login_screen.dart';
 import 'package:bahia_delivery/tiles/drawer_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class CustomDrawer extends StatelessWidget {
   final PageController pageController;
@@ -24,26 +27,47 @@ class CustomDrawer extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               _buildDrawerBack(),
-              ListView(
-                padding: EdgeInsets.only(left: 32.0, top: 32.0),
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(bottom: 8.0),
-                    padding: EdgeInsets.fromLTRB(0.0, 16.0, 16.0, 8.0),
-                    height: 170.0,
-                    child: Image.asset("images/logo.png"),
-                  ),
-                  Text("Olá",
-                      style: TextStyle(
-                          fontSize: 18.0, fontWeight: FontWeight.bold)),
-                  Divider(),
-                  DrawerTile("Início", Icons.home, pageController, 0),
-                  DrawerTile("Pedidos", Icons.list, pageController, 1),
-                  DrawerTile(
-                      "Configurações", Icons.settings, pageController, 2),
-                  DrawerTile("Sobre", Icons.album, pageController, 3)
-                ],
-              )
+              ScopedModelDescendant<UserModel>(
+                  builder: (context, child, model) {
+                print(model.isLoggedIn());
+                return ListView(
+                  padding: EdgeInsets.only(left: 32.0, top: 32.0),
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(bottom: 8.0),
+                      padding: EdgeInsets.fromLTRB(0.0, 16.0, 16.0, 8.0),
+                      height: 170.0,
+                      child: Image.asset("images/logo.png"),
+                    ),
+                    Text(
+                        "Olá, ${!model.isLoggedIn() ? "" : model.userData["name"]}",
+                        style: TextStyle(
+                            fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    FlatButton(
+                      child: Text(
+                        "Entre ou Cadastra-se >",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      onPressed: () {
+                        if (!model.isLoggedIn())
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => LoginScreen()));
+                        else
+                          model.signOut();
+                      },
+                    ),
+                    Divider(),
+                    DrawerTile("Início", Icons.home, pageController, 0),
+                    DrawerTile("Pedidos", Icons.list, pageController, 1),
+                    DrawerTile(
+                        "Configurações", Icons.settings, pageController, 2),
+                    DrawerTile("Sobre", Icons.album, pageController, 3)
+                  ],
+                );
+              })
             ],
           ),
         ));
