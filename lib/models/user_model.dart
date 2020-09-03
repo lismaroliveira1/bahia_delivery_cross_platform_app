@@ -10,6 +10,8 @@ class UserModel extends Model {
   FirebaseUser firebaseUser;
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = false;
+  static UserModel of(BuildContext context) =>
+      ScopedModel.of<UserModel>(context);
   @override
   void addListener(VoidCallback listener) {
     super.addListener(listener);

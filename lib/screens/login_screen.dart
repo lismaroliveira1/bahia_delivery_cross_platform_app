@@ -97,6 +97,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     height: 50,
                                     width: 145,
                                     child: RaisedButton(
+                                      padding: EdgeInsets.zero,
                                       color: Colors.white,
                                       child: Text(
                                         "Entrar",

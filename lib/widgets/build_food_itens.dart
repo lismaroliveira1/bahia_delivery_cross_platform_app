@@ -1,3 +1,6 @@
+import 'package:bahia_delivery/data/cart_product.dart';
+import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class FoodItem extends StatelessWidget {
@@ -76,10 +79,17 @@ class FoodItem extends StatelessWidget {
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.add),
-                  color: Colors.black,
-                  onPressed: () {},
-                )
+                    icon: Icon(Icons.add),
+                    color: Colors.black,
+                    onPressed: () {
+                      if (UserModel.of(context).isLoggedIn()) {
+                        CartProduct cartProduct = CartProduct();
+                        cartProduct.quantify = 1;
+                      } else {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => LoginScreen()));
+                      }
+                    })
               ],
             ),
           ),
