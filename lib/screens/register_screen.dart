@@ -51,6 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return TextFormField(
                                 decoration: InputDecoration(
                                     hintText: "Nome Completo",
+                                    errorStyle: TextStyle(color: Colors.white),
                                     errorText: snapshot.hasError
                                         ? snapshot.error
                                         : null,
@@ -69,6 +70,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     errorText: snapshot.hasError
                                         ? snapshot.error
                                         : null,
+                                    errorStyle: TextStyle(color: Colors.white),
                                     hintText: "Login",
                                     icon: Icon(Icons.person_pin)),
                                 keyboardType: TextInputType.emailAddress,
@@ -85,6 +87,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     errorText: snapshot.hasError
                                         ? snapshot.error
                                         : null,
+                                    errorStyle: TextStyle(color: Colors.white),
                                     hintText: "Senha",
                                     icon: Icon(Icons.lock_outline)),
                                 keyboardType: TextInputType.visiblePassword,
@@ -102,6 +105,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     errorText: snapshot.hasError
                                         ? snapshot.error
                                         : null,
+                                    errorStyle: TextStyle(color: Colors.white),
                                     hintText: "Confirmar Senha",
                                     icon: Icon(Icons.lock_outline)),
                                 keyboardType: TextInputType.visiblePassword,
@@ -134,8 +138,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     disabledTextColor: Colors.black,
                                     onPressed: snapshot.hasData
                                         ? () {
-                                            print(user.password);
-                                            print(user.confirmPassword);
                                             if (formKey.currentState
                                                 .validate()) {
                                               formKey.currentState.save();

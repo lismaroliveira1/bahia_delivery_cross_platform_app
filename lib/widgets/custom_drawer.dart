@@ -29,7 +29,6 @@ class CustomDrawer extends StatelessWidget {
               _buildDrawerBack(),
               ScopedModelDescendant<UserModel>(
                   builder: (context, child, model) {
-                print(model.isLoggedIn());
                 return ListView(
                   padding: EdgeInsets.only(left: 32.0, top: 32.0),
                   children: <Widget>[
@@ -43,21 +42,27 @@ class CustomDrawer extends StatelessWidget {
                         "Olá, ${!model.isLoggedIn() ? "" : model.userData["name"]}",
                         style: TextStyle(
                             fontSize: 18.0, fontWeight: FontWeight.bold)),
-                    FlatButton(
-                      child: Text(
-                        "Entre ou Cadastra-se >",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      onPressed: () {
-                        if (!model.isLoggedIn())
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => LoginScreen()));
-                        else
-                          model.signOut();
-                      },
+                    Row(
+                      children: [
+                        FlatButton(
+                          child: Text(
+                            !model.isLoggedIn()
+                                ? "Entre ou Cadastra-se >"
+                                : "Sair",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          onPressed: () {
+                            if (!model.isLoggedIn())
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => LoginScreen()));
+                            else
+                              model.signOut();
+                          },
+                        ),
+                      ],
                     ),
                     Divider(),
                     DrawerTile("Início", Icons.home, pageController, 0),

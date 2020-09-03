@@ -1,4 +1,3 @@
-import 'package:bahia_delivery/helpers/firebase_errors.dart';
 import 'package:bahia_delivery/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,15 +10,31 @@ class UserModel extends Model {
   FirebaseUser firebaseUser;
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = false;
+  @override
+  void addListener(VoidCallback listener) {
+    super.addListener(listener);
+    _loadCurrentUser();
+  }
 
-  Future<void> signIn({User user, Function onFail, Function onSuccess}) async {
+  Future<void> signIn(
+      {@required String email,
+      @required String pass,
+      @required Function onFail,
+      @required Function onSuccess}) async {
+    isLoading = true;
+    notifyListeners();
     try {
-      final AuthResult result = await _auth.signInWithEmailAndPassword(
-          email: user.email, password: user.password);
+      final AuthResult result =
+          await _auth.signInWithEmailAndPassword(email: email, password: pass);
       this.firebaseUser = result.user;
+      await _loadCurrentUser();
       onSuccess();
-    } on PlatformException catch (e) {
-      onFail(getErrorString(e.code));
+      isLoading = false;
+      notifyListeners();
+    } on PlatformException catch (_) {
+      onFail();
+      isLoading = false;
+      notifyListeners();
     }
   }
 
@@ -37,7 +52,7 @@ class UserModel extends Model {
       onSuccess();
       isLoading = false;
       notifyListeners();
-    } on PlatformException catch (e) {
+    } on PlatformException catch (_) {
       onFail();
       isLoading = false;
       notifyListeners();
@@ -62,5 +77,19 @@ class UserModel extends Model {
 
   bool isLoggedIn() {
     return firebaseUser != null;
+  }
+
+  Future<Null> _loadCurrentUser() async {
+    if (firebaseUser == null) firebaseUser = await _auth.currentUser();
+    if (firebaseUser != null) {
+      if (userData["name"] == null) {
+        DocumentSnapshot docUser = await Firestore.instance
+            .collection("users")
+            .document(firebaseUser.uid)
+            .get();
+        userData = docUser.data;
+      }
+    }
+    notifyListeners();
   }
 }
