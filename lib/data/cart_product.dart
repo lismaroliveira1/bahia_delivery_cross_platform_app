@@ -23,7 +23,7 @@ class CartProduct {
       "category": category,
       "pid": pId,
       "quantity": quantify,
-      //"product": productData.toResumedMap(),
+      "product": productData.toResumedMap(),
     };
   }
 }

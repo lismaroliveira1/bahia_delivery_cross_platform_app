@@ -1,5 +1,6 @@
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/login_screen.dart';
+import 'package:bahia_delivery/tiles/order_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +20,11 @@ class OrderTab extends StatelessWidget {
             return Center(child: CircularProgressIndicator());
           } else {
             return ListView(
-                children: snapshot.data.documents.map((e) {}).toList());
+                reverse: false,
+                scrollDirection: Axis.vertical,
+                children: snapshot.data.documents
+                    .map((e) => OrderTile(e.documentID))
+                    .toList());
           }
         },
       );

@@ -34,18 +34,26 @@ class DiscountCard extends StatelessWidget {
                     Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text(
                         "Desconto de ${docSnap.data["percent"]}% aplicado!",
-                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
                       ),
-                      backgroundColor: Colors.red,
+                      backgroundColor: Colors.transparent,
                     ));
                   } else {
                     CartModel.of(context).setCoupon(null, 0);
                     Scaffold.of(context).showSnackBar(SnackBar(
                       content: Text(
                         "Cupon não encontrado!",
-                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: Colors.red,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold),
                       ),
-                      backgroundColor: Colors.red,
+                      backgroundColor: Colors.transparent,
                     ));
                   }
                 });

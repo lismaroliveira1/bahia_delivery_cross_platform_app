@@ -1,4 +1,5 @@
 import 'package:bahia_delivery/data/cart_product.dart';
+import 'package:bahia_delivery/data/product_data.dart';
 import 'package:bahia_delivery/models/cart_model.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/login_screen.dart';
@@ -98,6 +99,8 @@ class FoodItem extends StatelessWidget {
                         cartProduct.pId = snapshot.documentID;
                         cartProduct.category = snapshot.data["category"];
                         cartProduct.storeId = snapshot.data["storeID"];
+                        cartProduct.productData =
+                            ProductData.fromDocument(snapshot);
                         CartModel.of(context).addCartItem(cartProduct);
                       } else {
                         Navigator.of(context).push(MaterialPageRoute(
