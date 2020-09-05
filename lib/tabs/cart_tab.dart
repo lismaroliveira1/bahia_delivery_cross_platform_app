@@ -69,6 +69,14 @@ class _CartTabState extends State<CartTab> {
             ],
           ),
         );
+      } else if (model.products == null || model.products.length == 0) {
+        return Center(
+          child: Text(
+            "Nenhum produto no carrinho",
+            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center,
+          ),
+        );
       } else {
         return FutureBuilder<QuerySnapshot>(
           future: Firestore.instance
@@ -95,9 +103,9 @@ class _CartTabState extends State<CartTab> {
                   CartPrice(() async {
                     String orderId = await model.finishOrder();
                     if (orderId != null) {
-                      print("ok");
+                      //TODO implementar um widget para mostrar o resumo do pedido
                     }
-                  })
+                  }),
                 ],
               );
             }
@@ -107,116 +115,3 @@ class _CartTabState extends State<CartTab> {
     });
   }
 }
-
-/*ListView(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      children: snapshot.data.documents.map((doc) {
-                        return Card(
-                          child: FutureBuilder<DocumentSnapshot>(
-                            future: Firestore.instance
-                                .collection("stores")
-                                .document(doc.data["storeId"])
-                                .collection("products")
-                                .document(doc.data["pid"])
-                                .get(),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return Center(
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              } else {
-                                return Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: <Widget>[
-                                    Container(
-                                      padding: EdgeInsets.all(8),
-                                      height: 120,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: <Widget>[
-                                          Container(
-                                            child: SizedBox(
-                                              height: 100,
-                                              width: 100,
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                child:
-                                                    FadeInImage.memoryNetwork(
-                                                  placeholder:
-                                                      kTransparentImage,
-                                                  image: snapshot.data["image"],
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Expanded(
-                                            child: Container(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: <Widget>[
-                                                  Text(
-                                                    snapshot.data["title"],
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontSize: 17.0),
-                                                  ),
-                                                  Text(
-                                                    "R\$ ${snapshot.data["price"]}",
-                                                    style: TextStyle(
-                                                        color: Colors.black54,
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
-                                                    children: <Widget>[
-                                                      IconButton(
-                                                        icon:
-                                                            Icon(Icons.remove),
-                                                        onPressed: () {},
-                                                      ),
-                                                      Text(cartProduct.quantify
-                                                          .toString()),
-                                                      IconButton(
-                                                        onPressed: () {},
-                                                        icon: Icon(Icons.add),
-                                                      ),
-                                                      FlatButton(
-                                                        child: Text("Remover"),
-                                                        textColor:
-                                                            Colors.grey[500],
-                                                        onPressed: () {},
-                                                      )
-                                                    ],
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                );
-                              }
-                            },
-                          ),
-                        );
-                      }).toList(),
-                    ),*/
