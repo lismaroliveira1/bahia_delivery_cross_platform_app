@@ -106,8 +106,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                       textColor: Colors.red,
                                       onPressed: snapshot.hasData
                                           ? () {
-                                              print(emailController.text);
-                                              print(passwordController.text);
                                               model.signIn(
                                                   email: emailController.text,
                                                   pass: passwordController.text,

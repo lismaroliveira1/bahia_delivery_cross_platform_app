@@ -1,14 +1,24 @@
 import 'package:bahia_delivery/data/cart_product.dart';
+import 'package:bahia_delivery/models/cart_model.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/login_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class FoodItem extends StatelessWidget {
   final String imgPath;
   final String foodName;
-  final String price;
+  final double price;
   final String description;
-  FoodItem(this.imgPath, this.foodName, this.price, this.description);
+  final DocumentSnapshot snapshot;
+  final String storeId;
+  FoodItem(
+      {@required this.storeId,
+      @required this.imgPath,
+      @required this.foodName,
+      @required this.price,
+      @required this.description,
+      @required this.snapshot});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -55,7 +65,7 @@ class FoodItem extends StatelessWidget {
                             height: 15,
                           ),
                           Text(
-                            price,
+                            'R' + '\$' + price.toString(),
                             style: TextStyle(
                               fontFamily: 'MontSerrat',
                               fontSize: 15.0,
@@ -85,6 +95,10 @@ class FoodItem extends StatelessWidget {
                       if (UserModel.of(context).isLoggedIn()) {
                         CartProduct cartProduct = CartProduct();
                         cartProduct.quantify = 1;
+                        cartProduct.pId = snapshot.documentID;
+                        cartProduct.category = snapshot.data["category"];
+                        cartProduct.storeId = snapshot.data["storeID"];
+                        CartModel.of(context).addCartItem(cartProduct);
                       } else {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => LoginScreen()));

@@ -6,10 +6,12 @@ class CartProduct {
   String category;
   String pId;
   int quantify;
+  String storeId;
 
   ProductData productData;
   CartProduct();
   CartProduct.fromDocument(DocumentSnapshot document) {
+    storeId = document.data["storeId"];
     cId = document.documentID;
     category = document.data["category"];
     pId = document.data["pid"];
@@ -17,10 +19,11 @@ class CartProduct {
   }
   Map<String, dynamic> toMap() {
     return {
+      "storeId": storeId,
       "category": category,
       "pid": pId,
       "quantity": quantify,
-      "product": productData.toResumedMap(),
+      //"product": productData.toResumedMap(),
     };
   }
 }
