@@ -42,9 +42,13 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 
+	<key>NSLocationControlWhenInUsageDescrription</key>
+	<string>Libera aíiii</string>
 
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
+
+	
 
 
 	<!-- Put me in the [my_project]/ios/Runner/Info.plist file -->

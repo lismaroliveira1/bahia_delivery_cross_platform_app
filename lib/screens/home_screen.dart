@@ -17,7 +17,6 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _pageController = PageController();
-
   final HomeTab _homeTab = HomeTab();
   final FavoriteScreen _favoriteScreen = FavoriteScreen();
   final ProfileScreen _profileScreen = ProfileScreen();
@@ -26,6 +25,11 @@ class _HomeScreenState extends State<HomeScreen> {
   final AboutTab _aboutTab = AboutTab();
   final CartScreen _cartScreen = CartScreen();
   Widget _showPage = new HomeTab();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   Widget _pageChooser(int page) {
     switch (page) {
