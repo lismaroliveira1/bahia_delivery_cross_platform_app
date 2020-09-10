@@ -74,7 +74,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     hintText: "Login",
                                     icon: Icon(Icons.person_pin)),
                                 keyboardType: TextInputType.emailAddress,
-                                onSaved: (email) => user.email = email,
+                                onSaved: (email) {
+                                  user.email = email;
+                                  user.isPartner = false;
+                                },
                                 onChanged: _loginBlock.changeEmail,
                               );
                             },

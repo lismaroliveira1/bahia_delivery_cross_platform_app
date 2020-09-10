@@ -10,6 +10,8 @@ class UserModel extends Model {
   FirebaseUser firebaseUser;
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = false;
+  bool isPartner = false;
+  int favoriteStoryQuantity = 0;
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
   @override
@@ -71,6 +73,7 @@ class UserModel extends Model {
   Future<Null> _saveUserData(User user) async {
     userData["name"] = user.name;
     userData["email"] = user.email;
+    userData["isPartner"] = user.isPartner;
     await Firestore.instance
         .collection("users")
         .document(firebaseUser.uid)
@@ -79,6 +82,10 @@ class UserModel extends Model {
 
   bool isLoggedIn() {
     return firebaseUser != null;
+  }
+
+  bool updateUser() {
+    return isPartner;
   }
 
   Future<Null> _loadCurrentUser() async {
@@ -90,6 +97,7 @@ class UserModel extends Model {
             .document(firebaseUser.uid)
             .get();
         userData = docUser.data;
+        isPartner = userData["isPartner"];
       }
     }
     notifyListeners();

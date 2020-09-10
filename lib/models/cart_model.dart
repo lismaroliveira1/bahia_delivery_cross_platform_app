@@ -10,14 +10,16 @@ class CartModel extends Model {
   String couponCode;
   int discountPercentage = 0;
   bool isLoading = false;
+  bool itemExist = false;
   CartModel(this.user) {
     if (user.isLoggedIn()) _loadCartItems();
   }
   static CartModel of(BuildContext context) =>
       ScopedModel.of<CartModel>(context);
 
-  void addCartItem(CartProduct cartProduct) {
+  void addCartItem(CartProduct cartProduct) async {
     products.add(cartProduct);
+
     Firestore.instance
         .collection("users")
         .document(user.firebaseUser.uid)
@@ -26,6 +28,18 @@ class CartModel extends Model {
         .then((doc) {
       cartProduct.cId = doc.documentID;
     });
+    notifyListeners();
+  }
+
+  void verifyItemCart(CartProduct cartProduct) async {
+    for (CartProduct product in products) {
+      if (product.pId == cartProduct.pId) {
+        itemExist = true;
+        break;
+      } else {
+        itemExist = false;
+      }
+    }
     notifyListeners();
   }
 

@@ -11,6 +11,7 @@ class CartProduct {
   ProductData productData;
   CartProduct();
   CartProduct.fromDocument(DocumentSnapshot document) {
+    //Colocar um laço para verficar de já existe o produto no carrinho
     storeId = document.data["storeId"];
     cId = document.documentID;
     category = document.data["category"];

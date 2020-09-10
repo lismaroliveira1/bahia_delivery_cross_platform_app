@@ -43,6 +43,7 @@ dependencies:
   curved_navigation_bar: ^0.3.3 #latest version
   bloc_pattern: ^2.5.1
   rxdart: ^0.24.1
+  cpfcnpj: ^1.0.3
 
 dev_dependencies:
   flutter_test:

@@ -1,10 +1,9 @@
 import 'package:bahia_delivery/screens/cart_screen.dart';
+import 'package:bahia_delivery/screens/favorite_screen.dart';
+import 'package:bahia_delivery/screens/profile_screen.dart';
 import 'package:bahia_delivery/tabs/about_tab.dart';
-
-import 'package:bahia_delivery/tabs/favorite_tab.dart';
 import 'package:bahia_delivery/tabs/home_tab.dart';
 import 'package:bahia_delivery/tabs/order_tab.dart';
-import 'package:bahia_delivery/tabs/profile_tab.dart';
 import 'package:bahia_delivery/tabs/setup_tab.dart';
 import 'package:bahia_delivery/widgets/custom_drawer.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
@@ -19,9 +18,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _pageController = PageController();
 
-  final ProfileTab _profileTab = ProfileTab();
   final HomeTab _homeTab = HomeTab();
-  final FavoriteTab _favoriteTab = FavoriteTab();
+  final FavoriteScreen _favoriteScreen = FavoriteScreen();
+  final ProfileScreen _profileScreen = ProfileScreen();
   final OrderTab _orderTab = OrderTab();
   final SetupTab _setupTab = SetupTab();
   final AboutTab _aboutTab = AboutTab();
@@ -34,13 +33,13 @@ class _HomeScreenState extends State<HomeScreen> {
         return _homeTab;
         break;
       case 1:
-        return _favoriteTab;
+        return _favoriteScreen;
         break;
       case 2:
         return _cartScreen;
         break;
       case 3:
-        return _profileTab;
+        return _profileScreen;
         break;
       default:
         return _homeTab;

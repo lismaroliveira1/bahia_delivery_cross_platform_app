@@ -104,7 +104,7 @@ class _CartTabState extends State<CartTab> {
                     String orderId = await model.finishOrder();
                     if (orderId != null) {
                       //TODO implementar um widget para mostrar o resumo do pedido
-                    }
+                    } else {}
                   }),
                 ],
               );
