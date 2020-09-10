@@ -1,3 +1,4 @@
+import 'package:bahia_delivery/screens/location_screen.dart';
 import 'package:bahia_delivery/themes/theme.dart';
 import 'package:bahia_delivery/tiles/category_tile.dart';
 import 'package:bahia_delivery/tiles/stores_tile.dart';
@@ -66,7 +67,11 @@ class HomeTab extends StatelessWidget {
                     child: Row(
                       children: [
                         RaisedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => LocationScreen(),
+                              ));
+                            },
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)),

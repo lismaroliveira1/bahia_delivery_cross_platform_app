@@ -44,6 +44,12 @@ dependencies:
   bloc_pattern: ^2.5.1
   rxdart: ^0.24.1
   cpfcnpj: ^1.0.3
+  provider: ^4.3.2
+  google_maps_flutter: ^0.5.32
+  geolocator: ^6.0.0+4
+  http: ^0.12.2
+  flutter_rating_bar: ^3.0.1+1
+  
 
 dev_dependencies:
   flutter_test:
