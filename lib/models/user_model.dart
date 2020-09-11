@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class UserModel extends Model {
@@ -11,6 +12,8 @@ class UserModel extends Model {
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = false;
   bool isPartner = false;
+  double longittude;
+  double latitude;
   int favoriteStoryQuantity = 0;
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -18,6 +21,7 @@ class UserModel extends Model {
   void addListener(VoidCallback listener) {
     super.addListener(listener);
     _loadCurrentUser();
+    _getCurrentLocation();
   }
 
   Future<void> signIn(
@@ -86,6 +90,13 @@ class UserModel extends Model {
 
   bool updateUser() {
     return isPartner;
+  }
+
+  void _getCurrentLocation() async {
+    final postition =
+        await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    longittude = postition.longitude;
+    latitude = postition.latitude;
   }
 
   Future<Null> _loadCurrentUser() async {

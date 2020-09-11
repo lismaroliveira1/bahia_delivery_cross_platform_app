@@ -1,12 +1,25 @@
+import 'dart:async';
+
 import 'package:bahia_delivery/screens/location_screen.dart';
 import 'package:bahia_delivery/themes/theme.dart';
 import 'package:bahia_delivery/tiles/category_tile.dart';
 import 'package:bahia_delivery/tiles/stores_tile.dart';
 
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-// ignore: must_be_immutable
-class HomeTab extends StatelessWidget {
+class HomeTab extends StatefulWidget {
+  @override
+  _HomeTabState createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  @override
+  void initState() {
+    super.initState();
+    Permission.locationWhenInUse.serviceStatus.isEnabled.then(_updateStatus);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -67,10 +80,23 @@ class HomeTab extends StatelessWidget {
                     child: Row(
                       children: [
                         RaisedButton(
-                            onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => LocationScreen(),
-                              ));
+                            onPressed: () async {
+                              var status =
+                                  await Permission.locationWhenInUse.status;
+                              if (status.isDenied) {
+                                //TODO Inplement GO to the settings function
+                              } else if (status.isGranted) {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => LocationScreen(),
+                                ));
+                              } else if (status.isRestricted) {
+                                print(status.isRestricted);
+                              } else if (status.isUndetermined) {
+                                await Permission.locationWhenInUse.request();
+                                //TODO Implementar a função que verifica a resposta de Permission.locationWhenInUse.request() e toma a decisão
+                              } else if (status.isPermanentlyDenied) {
+                                //Implementar para o mesmo abrir o settings
+                              }
                             },
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
@@ -110,5 +136,11 @@ class HomeTab extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  FutureOr _updateStatus(bool value) {
+    if (value == null) {
+      print("desconhecido");
+    }
   }
 }
