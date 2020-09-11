@@ -97,6 +97,7 @@ class UserModel extends Model {
         await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     longittude = postition.longitude;
     latitude = postition.latitude;
+    notifyListeners();
   }
 
   Future<Null> _loadCurrentUser() async {
