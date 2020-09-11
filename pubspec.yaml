@@ -51,11 +51,14 @@ dependencies:
   flutter_rating_bar: ^3.0.1+1
   permission_handler: ^5.0.1
   app_settings: ^4.0.3
+  place_plugin:
+    path: plugins/place_plugin
   
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
