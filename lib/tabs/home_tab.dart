@@ -83,6 +83,7 @@ class _HomeTabState extends State<HomeTab> {
                             onPressed: () async {
                               var status =
                                   await Permission.locationWhenInUse.status;
+
                               if (status.isDenied) {
                                 //TODO Inplement GO to the settings function
                               } else if (status.isGranted) {
