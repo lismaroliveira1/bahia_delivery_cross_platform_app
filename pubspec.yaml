@@ -23,6 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  place_plugin:
+    path: lib/plugins/place_plugin
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -51,8 +53,9 @@ dependencies:
   flutter_rating_bar: ^3.0.1+1
   permission_handler: ^5.0.1
   app_settings: ^4.0.3
-  place_plugin:
-    path: plugins/place_plugin
+  flutter_google_places: ^0.2.6
+  google_maps_webservice: ^0.0.18
+ 
   
 
 dev_dependencies:

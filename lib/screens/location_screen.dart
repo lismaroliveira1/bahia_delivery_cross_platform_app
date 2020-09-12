@@ -1,8 +1,12 @@
+import 'package:bahia_delivery/blocs/search_bloc.dart';
 import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/widgets/search_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+const kGoogleApiKey = "AIzaSyBavlFX_n6MlAxfIPohHqu9n4F7zCvNpvg";
 
 class LocationScreen extends StatefulWidget {
   @override
@@ -11,7 +15,9 @@ class LocationScreen extends StatefulWidget {
 
 class _LocationScreenState extends State<LocationScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-
+  final homeScaffoldKey = GlobalKey<ScaffoldState>();
+  Mode _mode = Mode.overlay;
+  var searchBloc = SearchBloc();
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
@@ -28,6 +34,7 @@ class _LocationScreenState extends State<LocationScreen> {
         );
       } else {
         return Scaffold(
+          key: homeScaffoldKey,
           body: Form(
             key: formKey,
             child: Stack(
@@ -51,7 +58,39 @@ class _LocationScreenState extends State<LocationScreen> {
                         width: MediaQuery.of(context).size.width,
                         child: Align(
                           alignment: Alignment(0.0, 0.0),
-                          child: Search(),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: 80,
+                              width: MediaQuery.of(context).size.width / 1.3,
+                              child: TextField(
+                                onTap: () async {
+                                  Prediction p = await PlacesAutocomplete.show(
+                                    context: context,
+                                    apiKey: kGoogleApiKey,
+                                    onError: onError,
+                                    mode: _mode,
+                                    language: "pt-Br",
+                                    components: [
+                                      Component(Component.country, "pt-Br")
+                                    ],
+                                  );
+                                },
+                                decoration: InputDecoration(
+                                    hintText: "Search",
+                                    hintStyle: TextStyle(color: Colors.grey),
+                                    prefixIcon: Icon(Icons.search),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    contentPadding:
+                                        EdgeInsets.symmetric(vertical: 4)),
+                              ),
+                            ),
+                          ),
                         )),
                   ),
                 ),
@@ -61,5 +100,11 @@ class _LocationScreenState extends State<LocationScreen> {
         );
       }
     });
+  }
+
+  void onError(PlacesAutocompleteResponse response) {
+    homeScaffoldKey.currentState.showSnackBar(
+      SnackBar(content: Text(response.errorMessage)),
+    );
   }
 }

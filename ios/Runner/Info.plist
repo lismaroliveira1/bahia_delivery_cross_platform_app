@@ -42,7 +42,7 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 
-	<key>NSLocationControlWhenInUsageDescrription</key>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Libera aíiii</string>
 
 	<key>io.flutter.embedded_views_preview</key>

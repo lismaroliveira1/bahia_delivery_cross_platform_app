@@ -10,19 +10,18 @@ import 'place.dart';
 class PlacePlugin {
   static const MethodChannel _channel = const MethodChannel('place_plugin');
 
-  static void initialize(String apiKey) async {
-    await _channel
-        .invokeListMethod("initialize", <String, dynamic>{'apiKey': apiKey});
+  static void initailize(String apiKey) async {
+    //await _channel
+    //   .invokeListMethod("initialize", <String, dynamic>{'apiKey': apiKey});
+  }
 
-    Future<List<Place>> search(String keyword) async {
-      var result = await _channel
-          .invokeMethod("Search", <String, dynamic>{"keyword": keyword});
-      if (result != null) {
-        return Place.fromNative(result);
-      } else {
-        return [];
-      }
+  static Future<List<Place>> search(String keyword) async {
+    var result = await _channel
+        .invokeMethod("Search", <String, dynamic>{"keyword": keyword});
+    if (result != null) {
+      return Place.fromNative(result);
     }
+    return [];
   }
 
   static Future<Place> getPlace(Place place) async {
