@@ -1,6 +1,7 @@
 import 'package:bahia_delivery/tabs/favorite_tab.dart';
 import 'package:flutter/material.dart';
 
+
 class FavoriteScreen extends StatefulWidget {
   @override
   _FavoriteScreenState createState() => _FavoriteScreenState();

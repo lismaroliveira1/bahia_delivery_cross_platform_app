@@ -2,6 +2,7 @@ import 'package:bahia_delivery/screens/register_partner_screen.dart';
 import 'package:bahia_delivery/screens/register_delivery_man.dart';
 import 'package:flutter/material.dart';
 
+
 class BeAParterScreen extends StatefulWidget {
   @override
   _BeAParterScreenState createState() => _BeAParterScreenState();

@@ -1,5 +1,8 @@
 import 'package:bahia_delivery/blocs/search_bloc.dart';
 import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/services/location_service.dart';
+import 'package:bahia_delivery/widgets/address_card.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -32,22 +35,6 @@ class _LocationScreenState extends State<LocationScreen> {
         );
       } else {
         return Scaffold(
-          appBar: AppBar(
-            title: TextField(
-              onChanged: (value) async {},
-              decoration: InputDecoration(
-                  hintText: "Search",
-                  hintStyle: TextStyle(color: Colors.grey),
-                  prefixIcon: Icon(Icons.search),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  contentPadding: EdgeInsets.symmetric(vertical: 4)),
-            ),
-          ),
           key: homeScaffoldKey,
           body: Form(
             key: formKey,
@@ -63,6 +50,37 @@ class _LocationScreenState extends State<LocationScreen> {
                     zoomGesturesEnabled: true,
                     myLocationEnabled: true,
                   ),
+                ),
+                AlertDialog(
+                  title: Container(
+                    height: 80,
+                    width: 80,
+                    child: Image.asset('images/logo.png'),
+                  ),
+                  content: Text(
+                    "Gostaria utilizar a sua\n posição atual?",
+                    textAlign: TextAlign.center,
+                  ),
+                  actions: [
+                    FlatButton(
+                        onPressed: () {},
+                        child: Text(
+                          "Buscar pelo CEP",
+                          textAlign: TextAlign.center,
+                        )),
+                    FlatButton(
+                        onPressed: () async {
+                          final SearchAdress searchAdress = SearchAdress();
+                          await searchAdress.getAddressFromLatLng(
+                              lat: model.latitude, lng: model.longittude);
+                          return showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Dialog(child: AddressCard());
+                              });
+                        },
+                        child: Text("Ok"))
+                  ],
                 ),
                 Positioned(
                   top: MediaQuery.of(context).size.height / 5,

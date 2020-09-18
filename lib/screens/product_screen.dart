@@ -2,6 +2,7 @@ import 'package:bahia_delivery/tabs/product_tab.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+
 class ProductScreen extends StatefulWidget {
   final DocumentSnapshot snapshot;
   ProductScreen(this.snapshot);

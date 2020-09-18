@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+
 class UserModel extends Model {
   Map<String, dynamic> userData = Map();
   FirebaseUser firebaseUser;
@@ -93,10 +94,13 @@ class UserModel extends Model {
   }
 
   void _getCurrentLocation() async {
+    isLoading = true;
+    notifyListeners();
     final postition =
         await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     longittude = postition.longitude;
     latitude = postition.latitude;
+    isLoading = false;
     notifyListeners();
   }
 
