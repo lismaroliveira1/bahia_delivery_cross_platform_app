@@ -27,7 +27,7 @@ class AddressData {
     complement = address.complement;
   }
   AddressData.fromDocument(DocumentSnapshot documentSnapshot) {
-    aid = documentSnapshot.documentID;
+    aid = documentSnapshot.documentID ?? "";
     name = documentSnapshot.data["name"];
     zipCode = documentSnapshot.data["zipCode"];
     latitude = documentSnapshot.data["latitude"];

@@ -28,6 +28,8 @@ class UserModel extends Model {
   String zipCode;
   String district;
   String city;
+  AddressData currentUserAddress;
+  String currentUserId;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -49,7 +51,7 @@ class UserModel extends Model {
       final AuthResult result =
           await _auth.signInWithEmailAndPassword(email: email, password: pass);
       this.firebaseUser = result.user;
-      await _loadCurrentUser();
+      _loadCurrentUser();
       onSuccess();
       isLoading = false;
       notifyListeners();
@@ -111,13 +113,20 @@ class UserModel extends Model {
     notifyListeners();
     final postition =
         await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    longittude = postition.longitude;
+    if (postition.latitude != null) {
+      latitude = postition.latitude;
+    }
+    if (postition.longitude != null) {
+      longittude = postition.longitude;
+    }
     latitude = postition.latitude;
     isLoading = false;
     notifyListeners();
   }
 
-  Future<Null> _loadCurrentUser() async {
+  void _loadCurrentUser() async {
+    isLoading = true;
+    notifyListeners();
     if (firebaseUser == null) firebaseUser = await _auth.currentUser();
     if (firebaseUser != null) {
       if (userData["name"] == null) {
@@ -127,8 +136,32 @@ class UserModel extends Model {
             .get();
         userData = docUser.data;
         isPartner = userData["isPartner"];
+        if (userData["currentAddress"] != null) {
+          currentUserId = userData["currentAddress"];
+          try {
+            await Firestore.instance
+                .collection("users")
+                .document(firebaseUser.uid)
+                .collection("address")
+                .document(currentUserId)
+                .get()
+                .then((doc) {
+              if (doc.exists) {
+                final userAddress = AddressData.fromDocument(doc);
+                currentUserAddress = userAddress;
+              } else {
+                currentUserAddress.aid = "";
+                currentUserAddress.city = "";
+                currentUserAddress.street = "";
+              }
+            });
+          } catch (e) {
+            print(e.toString());
+          }
+        }
       }
     }
+    isLoading = false;
     notifyListeners();
   }
 
@@ -157,7 +190,7 @@ class UserModel extends Model {
         }
       } catch (e) {}
     } on DioError catch (e) {
-      return Future.error("Erro ao buscar CEP" + e.toString());
+      //return Future.error("Erro ao buscar CEP" + e.toString());
     }
     isLoading = false;
     notifyListeners();
@@ -193,7 +226,6 @@ class UserModel extends Model {
 
   void addAddress(Address address) async {
     final addressData = AddressData.fromAdress(address);
-    addresses.add(addressData);
     await Firestore.instance
         .collection("users")
         .document(firebaseUser.uid)
@@ -209,7 +241,16 @@ class UserModel extends Model {
       "state": address.state,
       "latitude": address.latitude,
       "longitude": address.longitude
+    }).then((doc) {
+      if (doc.documentID != null) {
+        address.aid = doc.documentID;
+        addressData.aid = doc.documentID;
+      } else {
+        address.aid = '';
+        addressData.aid = '';
+      }
     });
+    addresses.add(addressData);
     isLoading = false;
     notifyListeners();
   }
@@ -224,6 +265,19 @@ class UserModel extends Model {
       addresses =
           query.documents.map((doc) => AddressData.fromDocument(doc)).toList();
     } catch (e) {}
+    notifyListeners();
+  }
+
+  void setUserAddress(AddressData address) async {
+    isLoading = true;
+    notifyListeners();
+    userData["currentAddress"] = address.aid;
+    await Firestore.instance
+        .collection("users")
+        .document(firebaseUser.uid)
+        .updateData(userData);
+    currentUserAddress = address;
+    isLoading = false;
     notifyListeners();
   }
 }

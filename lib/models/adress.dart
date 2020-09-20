@@ -1,4 +1,5 @@
 class Address {
+  String aid;
   String name;
   String zipCode;
   double latitude;
