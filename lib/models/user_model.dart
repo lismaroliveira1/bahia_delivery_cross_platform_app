@@ -30,6 +30,7 @@ class UserModel extends Model {
   String city;
   AddressData currentUserAddress;
   String currentUserId;
+  bool addressSeted = false;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -149,10 +150,12 @@ class UserModel extends Model {
               if (doc.exists) {
                 final userAddress = AddressData.fromDocument(doc);
                 currentUserAddress = userAddress;
+                addressSeted = true;
               } else {
                 currentUserAddress.aid = "";
                 currentUserAddress.city = "";
                 currentUserAddress.street = "";
+                addressSeted = false;
               }
             });
           } catch (e) {
@@ -264,6 +267,9 @@ class UserModel extends Model {
           .getDocuments();
       addresses =
           query.documents.map((doc) => AddressData.fromDocument(doc)).toList();
+      if (addresses.isEmpty) {
+        addressSeted = false;
+      }
     } catch (e) {}
     notifyListeners();
   }
@@ -277,6 +283,7 @@ class UserModel extends Model {
         .document(firebaseUser.uid)
         .updateData(userData);
     currentUserAddress = address;
+    addressSeted = true;
     isLoading = false;
     notifyListeners();
   }

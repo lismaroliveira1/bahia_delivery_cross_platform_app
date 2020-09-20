@@ -1,15 +1,9 @@
-import 'package:bahia_delivery/models/adress.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/widgets/address_input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class RegisterAdrressScreeen extends StatefulWidget {
-  @override
-  _RegisterAdrressScreeenState createState() => _RegisterAdrressScreeenState();
-}
-
-class _RegisterAdrressScreeenState extends State<RegisterAdrressScreeen> {
+class RegisterAdrressScreeen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(

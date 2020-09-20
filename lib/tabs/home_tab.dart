@@ -118,9 +118,11 @@ class _HomeTabState extends State<HomeTab> {
                                     borderRadius: BorderRadius.circular(10)),
                                 child: Row(
                                   children: [
-                                    Text(model.currentUserAddress.street +
-                                        ", nº " +
-                                        model.currentUserAddress.number),
+                                    Text(model.addressSeted
+                                        ? model.currentUserAddress.street +
+                                            ", nº " +
+                                            model.currentUserAddress.number
+                                        : "Localização"),
                                     SizedBox(
                                       width: 20,
                                     ),

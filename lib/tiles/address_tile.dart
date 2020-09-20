@@ -1,6 +1,5 @@
 import 'package:bahia_delivery/data/address_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class AddressTile extends StatelessWidget {
@@ -15,9 +14,9 @@ class AddressTile extends StatelessWidget {
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: FlatButton(
             onPressed: () {
+              Navigator.of(context).pop();
+
               UserModel.of(context).setUserAddress(address);
-              Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => HomeScreen()));
             },
             padding: const EdgeInsets.all(8.0),
             child: Container(

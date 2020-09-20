@@ -22,7 +22,9 @@ class _LocationScreenState extends State<LocationScreen> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
       model.loadAddresstems();
-      if (model.isLoading && UserModel.of(context).isLoggedIn()) {
+      if (model.isLoading && UserModel.of(context).isLoggedIn() ||
+          model.latitude == null ||
+          model.longittude == null) {
         return Container(
           color: Colors.white,
           child: Center(
@@ -84,6 +86,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 Container(
                   height: MediaQuery.of(context).size.height,
                   width: MediaQuery.of(context).size.width,
+                  color: Colors.white,
                   child: GoogleMap(
                     initialCameraPosition: CameraPosition(
                         target: LatLng(model.latitude, model.longittude),
@@ -162,17 +165,26 @@ class _LocationScreenState extends State<LocationScreen> {
             ),
             centerTitle: true,
             actions: <Widget>[
-              IconButton(icon: Icon(Icons.add), onPressed: () {})
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () async {
+                  await model.getAddressFromLatLng(
+                      lat: model.latitude, lng: model.longittude);
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => RegisterAdrressScreeen()));
+                },
+              )
             ],
           ),
           body: Column(
             children: <Widget>[
               Container(
                 height: MediaQuery.of(context).size.height / 2.2,
+                color: Colors.white,
                 child: GoogleMap(
                   initialCameraPosition: CameraPosition(
                       target: LatLng(model.latitude, model.longittude),
-                      zoom: 16.0),
+                      zoom: 20.0),
                   zoomGesturesEnabled: true,
                   myLocationEnabled: true,
                 ),
