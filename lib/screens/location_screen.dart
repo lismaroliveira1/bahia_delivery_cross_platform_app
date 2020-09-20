@@ -1,7 +1,7 @@
-import 'package:bahia_delivery/blocs/search_bloc.dart';
 import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/services/location_service.dart';
-import 'package:bahia_delivery/widgets/address_card.dart';
+import 'package:bahia_delivery/screens/editer_address_screem.dart';
+import 'package:bahia_delivery/screens/login_screen.dart';
+import 'package:bahia_delivery/tiles/address_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -17,23 +17,64 @@ class LocationScreen extends StatefulWidget {
 class _LocationScreenState extends State<LocationScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final homeScaffoldKey = GlobalKey<ScaffoldState>();
-  var searchBloc = SearchBloc();
 
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
-      if (model.latitude == null || model.longittude == null) {
+      model.loadAddresstems();
+      if (model.isLoading && UserModel.of(context).isLoggedIn()) {
         return Container(
           color: Colors.white,
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
           child: Center(
-            child: CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(Colors.red[400]),
-            ),
+            child: CircularProgressIndicator(),
           ),
         );
-      } else {
+      } else if (!UserModel.of(context).isLoggedIn()) {
+        return Container(
+          color: Colors.white,
+          padding: EdgeInsets.only(right: 130, left: 130),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.location_on,
+                size: 80.0,
+                color: Colors.red,
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              Text(
+                "Faça adcionar seus endereços",
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  height: 55,
+                  child: RaisedButton(
+                    color: Colors.red,
+                    child: Text(
+                      "Entrar",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => LoginScreen(),
+                      ));
+                    },
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      } else if (model.addresses == null || model.addresses.length == 0) {
         return Scaffold(
           key: homeScaffoldKey,
           body: Form(
@@ -70,14 +111,10 @@ class _LocationScreenState extends State<LocationScreen> {
                         )),
                     FlatButton(
                         onPressed: () async {
-                          final SearchAdress searchAdress = SearchAdress();
-                          await searchAdress.getAddressFromLatLng(
+                          await model.getAddressFromLatLng(
                               lat: model.latitude, lng: model.longittude);
-                          return showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return Dialog(child: AddressCard());
-                              });
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => RegisterAdrressScreeen()));
                         },
                         child: Text("Ok"))
                   ],
@@ -102,6 +139,54 @@ class _LocationScreenState extends State<LocationScreen> {
                 ),
               ],
             ),
+          ),
+        );
+      } else {
+        return Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.redAccent,
+            title: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: Container(
+                padding: EdgeInsets.only(left: 18, right: 18),
+                color: Colors.white,
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    labelText: 'CEP',
+                    hintText: '12345-678',
+                  ),
+                ),
+              ),
+            ),
+            centerTitle: true,
+            actions: <Widget>[
+              IconButton(icon: Icon(Icons.add), onPressed: () {})
+            ],
+          ),
+          body: Column(
+            children: <Widget>[
+              Container(
+                height: MediaQuery.of(context).size.height / 2.2,
+                child: GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                      target: LatLng(model.latitude, model.longittude),
+                      zoom: 16.0),
+                  zoomGesturesEnabled: true,
+                  myLocationEnabled: true,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Expanded(
+                  child: ListView(
+                children: model.addresses.map((address) {
+                  return AddressTile(address);
+                }).toList(),
+              ))
+            ],
           ),
         );
       }

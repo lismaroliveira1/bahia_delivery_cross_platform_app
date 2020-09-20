@@ -1,11 +1,17 @@
+import 'dart:io';
+import 'package:bahia_delivery/data/address_data.dart';
+import 'package:bahia_delivery/data/search_data.dart';
+import 'package:bahia_delivery/models/adress.dart';
 import 'package:bahia_delivery/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+const token = '635289558f18ba4c749d6928e8cd0ba7';
 
 class UserModel extends Model {
   Map<String, dynamic> userData = Map();
@@ -16,10 +22,17 @@ class UserModel extends Model {
   double longittude;
   double latitude;
   int favoriteStoryQuantity = 0;
+  List<AddressData> addresses = [];
+  String street;
+  String state;
+  String zipCode;
+  String district;
+  String city;
+
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
   @override
-  void addListener(VoidCallback listener) {
+  void addListener(VoidCallback listener) async {
     super.addListener(listener);
     _loadCurrentUser();
     _getCurrentLocation();
@@ -116,6 +129,101 @@ class UserModel extends Model {
         isPartner = userData["isPartner"];
       }
     }
+    notifyListeners();
+  }
+
+  Future<void> getAddressFromZipCode(String zipCode) async {
+    isLoading = true;
+    notifyListeners();
+    final cleanedCep = zipCode.replaceAll('.', '').replaceAll('-', '');
+    final endPoint = "https://www.cepaberto.com/api/v3/cep?cep=$cleanedCep";
+    final Dio dio = Dio();
+    dio.options.headers[HttpHeaders.authorizationHeader] = 'Token token=$token';
+    try {
+      final response = await dio.get<Map<String, dynamic>>(endPoint);
+      if (response.data.isEmpty) {
+        return Future.error('CEP Inválido');
+      }
+      try {
+        final cepAbertoAddress = CepAbertoAddress.fromMap(response.data);
+        if (cepAbertoAddress != null) {
+          street = cepAbertoAddress.logradouro;
+          state = cepAbertoAddress.state.sigla;
+          zipCode = cepAbertoAddress.cep;
+          district = cepAbertoAddress.bairro;
+          city = cepAbertoAddress.city.nome;
+        } else {
+          return 'null ZipCode';
+        }
+      } catch (e) {}
+    } on DioError catch (e) {
+      return Future.error("Erro ao buscar CEP" + e.toString());
+    }
+    isLoading = false;
+    notifyListeners();
+  }
+
+  Future<void> getAddressFromLatLng(
+      {@required double lat, @required double lng}) async {
+    isLoading = true;
+    notifyListeners();
+    final endPoint = "https://www.cepaberto.com/api/v3/nearest";
+    final Dio dio = Dio();
+    dio.options.headers[HttpHeaders.authorizationHeader] = 'Token token=$token';
+    try {
+      final response = await dio.get<Map<String, dynamic>>(endPoint,
+          queryParameters: {'lat': lat, 'lng': lng});
+      if (response.data.isEmpty) {
+        return Future.error('Dados Inválidos');
+      }
+      final cepAbertoAddress = CepAbertoAddress.fromMap(response.data);
+      if (cepAbertoAddress != null) {
+        street = cepAbertoAddress.logradouro;
+        state = cepAbertoAddress.state.sigla;
+        zipCode = cepAbertoAddress.cep;
+        district = cepAbertoAddress.bairro;
+        city = cepAbertoAddress.city.nome;
+      }
+    } on DioError catch (e) {
+      print(e.toString());
+    }
+    isLoading = false;
+    notifyListeners();
+  }
+
+  void addAddress(Address address) async {
+    final addressData = AddressData.fromAdress(address);
+    addresses.add(addressData);
+    await Firestore.instance
+        .collection("users")
+        .document(firebaseUser.uid)
+        .collection('address')
+        .add({
+      'name': address.name,
+      'zipCode': address.zipCode,
+      'street': address.street,
+      'number': address.number,
+      'complement': address.complement,
+      'district': address.district,
+      'city': address.city,
+      "state": address.state,
+      "latitude": address.latitude,
+      "longitude": address.longitude
+    });
+    isLoading = false;
+    notifyListeners();
+  }
+
+  void loadAddresstems() async {
+    try {
+      QuerySnapshot query = await Firestore.instance
+          .collection("users")
+          .document(firebaseUser.uid)
+          .collection("address")
+          .getDocuments();
+      addresses =
+          query.documents.map((doc) => AddressData.fromDocument(doc)).toList();
+    } catch (e) {}
     notifyListeners();
   }
 }

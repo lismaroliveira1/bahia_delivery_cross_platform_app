@@ -1,5 +1,3 @@
-import 'package:bahia_delivery/widgets/address_input_field.dart';
-import 'package:bahia_delivery/widgets/cep_input_filed.dart';
 import 'package:flutter/material.dart';
 
 class AddressCard extends StatefulWidget {

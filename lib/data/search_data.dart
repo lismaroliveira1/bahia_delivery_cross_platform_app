@@ -1,4 +1,4 @@
-class Address {
+class CepAbertoAddress {
   final double altitude;
   final String cep;
   final double latitude;
@@ -8,7 +8,7 @@ class Address {
   final City city;
   final State state;
 
-  Address.fromMap(Map<String, dynamic> map)
+  CepAbertoAddress.fromMap(Map<String, dynamic> map)
       : altitude = map['altitude'] as double,
         cep = map['cep'] as String,
         latitude = double.tryParse(map['latitude'] as String),

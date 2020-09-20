@@ -14,26 +14,27 @@ class _ProductTabState extends State<ProductTab> {
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
-          return <Widget>[
-            SliverAppBar(
-              expandedHeight: 300,
-              floating: false,
-              pinned: false,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: Text(
-                  snapshot.data["title"],
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                background: Image.network(
-                  snapshot.data["image"],
-                  fit: BoxFit.cover,
-                ),
+      headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
+        return <Widget>[
+          SliverAppBar(
+            expandedHeight: 300,
+            floating: false,
+            pinned: false,
+            flexibleSpace: FlexibleSpaceBar(
+              centerTitle: true,
+              title: Text(
+                snapshot.data["title"],
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-            )
-          ];
-        },
-        body: Container());
+              background: Image.network(
+                snapshot.data["image"],
+                fit: BoxFit.cover,
+              ),
+            ),
+          )
+        ];
+      },
+      body: Container(color: Colors.white),
+    );
   }
 }

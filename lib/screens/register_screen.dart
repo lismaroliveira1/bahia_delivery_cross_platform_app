@@ -33,7 +33,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Stack(
                 alignment: Alignment.center,
                 children: <Widget>[
-                  Container(),
                   SingleChildScrollView(
                     child: Container(
                       margin: EdgeInsets.all(16),

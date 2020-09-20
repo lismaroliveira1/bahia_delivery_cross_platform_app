@@ -9,7 +9,9 @@ class ListCategory extends StatelessWidget {
         future: Firestore.instance.collection("categories").getDocuments(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Container();
+            return Container(
+              color: Colors.white,
+            );
           } else
             return Container(
                 margin: EdgeInsets.symmetric(vertical: 20.0),
