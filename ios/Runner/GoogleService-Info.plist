@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>411754724192-mp0pj3nkj2ncuina7aeqstn1l33lcrv0.apps.googleusercontent.com</string>
+	<string>411754724192-47gvsdco9batrabh5aabq11ptuedu3ke.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.411754724192-mp0pj3nkj2ncuina7aeqstn1l33lcrv0</string>
+	<string>com.googleusercontent.apps.411754724192-47gvsdco9batrabh5aabq11ptuedu3ke</string>
 	<key>ANDROID_CLIENT_ID</key>
-	<string>411754724192-v0bmvh35snikeu57ppsufsfj4q84pibc.apps.googleusercontent.com</string>
+	<string>411754724192-e5mtqasqrjago5ug5stnj2cl3107f425.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
 	<string>AIzaSyDjp3RQbOG6hPDJa8j48PWEXMhr5EktKYc</string>
 	<key>GCM_SENDER_ID</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.bahiaDelivery</string>
+	<string>br.com.bahiadelivery.app</string>
 	<key>PROJECT_ID</key>
 	<string>bahia-delivery-app-cp</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:411754724192:ios:85f097ff50b6022ff5fc05</string>
+	<string>1:411754724192:ios:1150b51dd6c543faf5fc05</string>
 	<key>DATABASE_URL</key>
 	<string>https://bahia-delivery-app-cp.firebaseio.com</string>
 </dict>
