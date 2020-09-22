@@ -9,6 +9,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const token = '635289558f18ba4c749d6928e8cd0ba7';
@@ -31,6 +32,8 @@ class UserModel extends Model {
   AddressData currentUserAddress;
   String currentUserId;
   bool addressSeted = false;
+  bool errorSignGoogle = false;
+  bool isLogged = false;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -58,6 +61,88 @@ class UserModel extends Model {
       notifyListeners();
     } on PlatformException catch (_) {
       onFail();
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> signUpWithGoogle({
+    @required AuthResult authResult,
+  }) async {
+    isLoading = true;
+    notifyListeners();
+    this.firebaseUser = authResult.user;
+    DocumentSnapshot docUser = await Firestore.instance
+        .collection("users")
+        .document(firebaseUser.uid)
+        .get();
+    if (docUser.exists) {
+      await _auth.signOut();
+
+      userData = Map();
+      firebaseUser = null;
+      isLogged = false;
+      isLoading = false;
+      notifyListeners();
+    } else {
+      final user = User(
+          name: authResult.user.displayName,
+          email: authResult.user.email,
+          isPartner: false,
+          currentAddress: "");
+      this.firebaseUser = authResult.user;
+      _saveUserData(user);
+      isLogged = true;
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> signInWithGoogle() async {
+    isLoading = true;
+    notifyListeners();
+    isLogged = false;
+    final GoogleSignIn _googleSignIn = GoogleSignIn(
+      scopes: [
+        'email',
+        'https://www.googleapis.com/auth/contacts.readonly',
+      ],
+    );
+    final GoogleSignInAccount googleSignInAccount =
+        await _googleSignIn.signIn();
+    if (googleSignInAccount == null) {
+      return null;
+    }
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+    final AuthCredential authCredential = GoogleAuthProvider.getCredential(
+        idToken: googleSignInAuthentication.idToken,
+        accessToken: googleSignInAuthentication.accessToken);
+    final AuthResult authResult =
+        await FirebaseAuth.instance.signInWithCredential(authCredential);
+
+    try {
+      DocumentSnapshot docUser = await Firestore.instance
+          .collection("users")
+          .document(authResult.user.uid)
+          .get();
+
+      if (docUser.exists) {
+        this.firebaseUser = authResult.user;
+        isLogged = true;
+        _loadCurrentUser();
+        isLoading = false;
+        notifyListeners();
+      } else {
+        await _auth.signOut();
+        userData = Map();
+        firebaseUser = null;
+        isLogged = false;
+        isLoading = false;
+        notifyListeners();
+      }
+    } catch (e) {
+      errorSignGoogle = true;
       isLoading = false;
       notifyListeners();
     }
@@ -94,7 +179,7 @@ class UserModel extends Model {
   Future<Null> _saveUserData(User user) async {
     userData["name"] = user.name;
     userData["email"] = user.email;
-    userData["isPartner"] = user.isPartner;
+    userData["isPartner"] = false;
     await Firestore.instance
         .collection("users")
         .document(firebaseUser.uid)
@@ -106,7 +191,7 @@ class UserModel extends Model {
   }
 
   bool updateUser() {
-    return isPartner;
+    return isPartner != null;
   }
 
   void _getCurrentLocation() async {
@@ -137,7 +222,8 @@ class UserModel extends Model {
             .get();
         userData = docUser.data;
         isPartner = userData["isPartner"];
-        if (userData["currentAddress"] != null) {
+        if (userData["currentAddress"] != null ||
+            userData["currentAddress"] != "") {
           currentUserId = userData["currentAddress"];
           try {
             await Firestore.instance
@@ -161,7 +247,7 @@ class UserModel extends Model {
           } catch (e) {
             print(e.toString());
           }
-        }
+        } else {}
       }
     }
     isLoading = false;

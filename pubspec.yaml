@@ -56,6 +56,7 @@ dependencies:
   flappy_search_bar: ^1.7.2
   dio: ^3.0.10
   brasil_fields: ^0.4.0
+  google_sign_in: ^4.5.3
   
  
   

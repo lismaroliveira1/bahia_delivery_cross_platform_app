@@ -35,17 +35,19 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Stack(
                 alignment: Alignment.center,
                 children: <Widget>[
-                  Container(color: Colors.white),
                   SingleChildScrollView(
                     child: Container(
                       margin: EdgeInsets.all(16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          SizedBox(
-                            height: 200,
-                            width: 200,
-                            child: Image.asset('images/logo_full.png'),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 120.0),
+                            child: SizedBox(
+                              height: 200,
+                              width: 200,
+                              child: Image.asset('images/logo_full.png'),
+                            ),
                           ),
                           StreamBuilder<String>(
                             stream: _loginBloc.outEmail,
@@ -136,7 +138,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
                                   child: RaisedButton(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await model.signInWithGoogle();
+                                      if (model.isLogged) {
+                                        _onSuccess();
+                                      } else {
+                                        _onFailGoogle();
+                                      }
+                                    },
                                     shape: StadiumBorder(),
                                     padding: EdgeInsets.zero,
                                     child: Container(
@@ -211,7 +220,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onSuccess() {
     scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text("Usuário logado com sucesso"),
+      content: Text(
+        "Usuário logado com sucesso",
+        textAlign: TextAlign.center,
+      ),
       backgroundColor: Colors.red,
       duration: Duration(seconds: 2),
     ));
@@ -224,7 +236,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _onFail() {
     scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text("Falha ao realizar login"),
+      content: Text("Falha ao realizar login", textAlign: TextAlign.center),
+      backgroundColor: Colors.red,
+      duration: Duration(seconds: 2),
+    ));
+  }
+
+  void _onFailGoogle() {
+    scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(
+        "Conta Google não registrada",
+        textAlign: TextAlign.center,
+      ),
       backgroundColor: Colors.red,
       duration: Duration(seconds: 2),
     ));

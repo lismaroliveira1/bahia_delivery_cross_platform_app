@@ -2,7 +2,9 @@ import 'package:bahia_delivery/blocs/login_bloc.dart';
 import 'package:bahia_delivery/models/user.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -39,10 +41,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          SizedBox(
-                            height: 200,
-                            width: 200,
-                            child: Image.asset('images/logo_full.png'),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 120.0),
+                            child: SizedBox(
+                              height: 200,
+                              width: 200,
+                              child: Image.asset('images/logo_full.png'),
+                            ),
                           ),
                           StreamBuilder<String>(
                             stream: _loginBlock.outName,
@@ -75,7 +80,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 keyboardType: TextInputType.emailAddress,
                                 onSaved: (email) {
                                   user.email = email;
-                                  user.isPartner = false;
                                 },
                                 onChanged: _loginBlock.changeEmail,
                               );
@@ -182,7 +186,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
                                   child: RaisedButton(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      final GoogleSignIn _googleSignIn =
+                                          GoogleSignIn(
+                                        scopes: [
+                                          'email',
+                                          'https://www.googleapis.com/auth/contacts.readonly',
+                                        ],
+                                      );
+                                      final GoogleSignInAccount
+                                          googleSignInAccount =
+                                          await _googleSignIn.signIn();
+                                      if (googleSignInAccount == null) {
+                                        return null;
+                                      }
+                                      final GoogleSignInAuthentication
+                                          googleSignInAuthentication =
+                                          await googleSignInAccount
+                                              .authentication;
+                                      final AuthCredential authCredential =
+                                          GoogleAuthProvider.getCredential(
+                                              idToken:
+                                                  googleSignInAuthentication
+                                                      .idToken,
+                                              accessToken:
+                                                  googleSignInAuthentication
+                                                      .accessToken);
+                                      final AuthResult authResult =
+                                          await FirebaseAuth.instance
+                                              .signInWithCredential(
+                                                  authCredential);
+                                      await model.signUpWithGoogle(
+                                        authResult: authResult,
+                                      );
+                                      if (model.isLogged) {
+                                        _onSuccess();
+                                      } else {
+                                        _onFailGoogle();
+                                      }
+                                    },
                                     shape: StadiumBorder(),
                                     padding: EdgeInsets.zero,
                                     child: Container(
@@ -231,7 +273,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _onSuccess() {
     scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text("Usuário criado com sucesso"),
+      content: Text(
+        "Usuário criado com sucesso",
+        textAlign: TextAlign.center,
+      ),
       backgroundColor: Colors.red,
       duration: Duration(seconds: 2),
     ));
@@ -244,7 +289,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _onFail() {
     scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text("Falha ao criar o usuário"),
+      content: Text("Falha ao criar o usuário", textAlign: TextAlign.center),
+      backgroundColor: Colors.red,
+      duration: Duration(seconds: 2),
+    ));
+  }
+
+  void _onFailGoogle() {
+    scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(
+        "Esta conta já foi registrada",
+        textAlign: TextAlign.center,
+      ),
       backgroundColor: Colors.red,
       duration: Duration(seconds: 2),
     ));
