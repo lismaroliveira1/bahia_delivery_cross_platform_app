@@ -8,6 +8,7 @@ import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -33,6 +34,7 @@ class UserModel extends Model {
   String currentUserId;
   bool addressSeted = false;
   bool errorSignGoogle = false;
+  bool errorSignFacebook = false;
   bool isLogged = false;
 
   static UserModel of(BuildContext context) =>
@@ -78,7 +80,6 @@ class UserModel extends Model {
         .get();
     if (docUser.exists) {
       await _auth.signOut();
-
       userData = Map();
       firebaseUser = null;
       isLogged = false;
@@ -143,8 +144,106 @@ class UserModel extends Model {
       }
     } catch (e) {
       errorSignGoogle = true;
+
       isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> signInWithFacebook() async {
+    isLoading = false;
+    notifyListeners();
+    final FacebookLogin facebookLogin = FacebookLogin();
+    final result = await facebookLogin.logIn(['email', 'public_profile']);
+
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        final credential = FacebookAuthProvider.getCredential(
+          accessToken: result.accessToken.token,
+        );
+        final authResult = await _auth.signInWithCredential(credential);
+        if (authResult.user != null) {
+          DocumentSnapshot docUser = await Firestore.instance
+              .collection("users")
+              .document(authResult.user.uid)
+              .get();
+          if (docUser.exists) {
+            this.firebaseUser = authResult.user;
+            isLogged = true;
+            _loadCurrentUser();
+            isLoading = false;
+            notifyListeners();
+          } else {
+            await _auth.signOut();
+            userData = Map();
+            firebaseUser = null;
+            isLogged = false;
+            isLoading = false;
+            notifyListeners();
+          }
+        }
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        // TODO: Handle this case.
+        break;
+      case FacebookLoginStatus.error:
+        errorSignFacebook = true;
+        isLogged = false;
+        isLoading = false;
+        notifyListeners();
+        break;
+    }
+  }
+
+  Future<void> signUpWithFacebook() async {
+    isLoading = false;
+    notifyListeners();
+    final FacebookLogin facebookLogin = FacebookLogin();
+    final result = await facebookLogin.logIn(['email', 'public_profile']);
+    switch (result.status) {
+      case FacebookLoginStatus.loggedIn:
+        final credential = FacebookAuthProvider.getCredential(
+          accessToken: result.accessToken.token,
+        );
+
+        final authResult = await _auth.signInWithCredential(credential);
+        if (authResult.user != null) {
+          DocumentSnapshot docUser = await Firestore.instance
+              .collection("users")
+              .document(authResult.user.uid)
+              .get();
+          if (docUser.exists) {
+            await _auth.signOut();
+            userData = Map();
+            firebaseUser = null;
+            isLogged = false;
+            isLoading = false;
+            notifyListeners();
+          } else {
+            final user = User(
+                name: authResult.user.displayName,
+                email: authResult.user.email,
+                isPartner: false,
+                currentAddress: "");
+            this.firebaseUser = authResult.user;
+            _saveUserData(user);
+            isLogged = true;
+            isLoading = false;
+            notifyListeners();
+          }
+        }
+        break;
+      case FacebookLoginStatus.cancelledByUser:
+        isLogged = false;
+        isLoading = false;
+        notifyListeners();
+        break;
+      case FacebookLoginStatus.error:
+        errorSignFacebook = true;
+        isLogged = false;
+        isLoading = false;
+        notifyListeners();
+        break;
     }
   }
 
@@ -222,8 +321,7 @@ class UserModel extends Model {
             .get();
         userData = docUser.data;
         isPartner = userData["isPartner"];
-        if (userData["currentAddress"] != null ||
-            userData["currentAddress"] != "") {
+        if (userData["currentAddress"] != null) {
           currentUserId = userData["currentAddress"];
           try {
             await Firestore.instance

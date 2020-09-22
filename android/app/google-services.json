@@ -8,6 +8,50 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:411754724192:android:b29a3de213a1a3a1f5fc05",
+        "android_client_info": {
+          "package_name": "br.com.bahiadelivery.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "411754724192-e5mtqasqrjago5ug5stnj2cl3107f425.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.bahiadelivery.app",
+            "certificate_hash": "71493d1fb0b9c0ad40b2c49c4a893a4af6c80bb5"
+          }
+        },
+        {
+          "client_id": "411754724192-ak9r4kgfr0nqmagq31gajf8m912o5qpk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "411754724192-ak9r4kgfr0nqmagq31gajf8m912o5qpk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "411754724192-mp0pj3nkj2ncuina7aeqstn1l33lcrv0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.bahiaDelivery"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:411754724192:android:48657ab9c1dc36d0f5fc05",
         "android_client_info": {
           "package_name": "com.example.bahia_delivery"
@@ -15,7 +59,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "411754724192-v0bmvh35snikeu57ppsufsfj4q84pibc.apps.googleusercontent.com",
+          "client_id": "411754724192-4pb58vljlnpq6l8h3fv0plv19adbt60n.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.example.bahia_delivery",

@@ -165,7 +165,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     shape: new RoundedRectangleBorder(
                                         borderRadius:
                                             new BorderRadius.circular(15)),
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await model.signInWithFacebook();
+                                      if (model.isLogged) {
+                                        _onSuccess();
+                                      } else {
+                                        _onFailFacebook();
+                                      }
+                                    },
                                     padding: EdgeInsets.zero,
                                     child: Container(
                                       child: Image.asset(
@@ -246,6 +253,17 @@ class _LoginScreenState extends State<LoginScreen> {
     scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text(
         "Conta Google não registrada",
+        textAlign: TextAlign.center,
+      ),
+      backgroundColor: Colors.red,
+      duration: Duration(seconds: 2),
+    ));
+  }
+
+  void _onFailFacebook() {
+    scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(
+        "Conta Facebook não registrada",
         textAlign: TextAlign.center,
       ),
       backgroundColor: Colors.red,

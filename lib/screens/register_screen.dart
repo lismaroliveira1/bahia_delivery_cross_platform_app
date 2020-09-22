@@ -244,7 +244,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     shape: new RoundedRectangleBorder(
                                         borderRadius:
                                             new BorderRadius.circular(15)),
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      await model.signUpWithFacebook();
+                                      if (model.isLogged) {
+                                        _onSuccess();
+                                      } else {
+                                        _onFailFacebook();
+                                      }
+                                    },
                                     padding: EdgeInsets.zero,
                                     child: Container(
                                       child: Image.asset(
@@ -298,7 +305,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _onFailGoogle() {
     scaffoldKey.currentState.showSnackBar(SnackBar(
       content: Text(
-        "Esta conta já foi registrada",
+        "Esta conta já foi Google registrada",
+        textAlign: TextAlign.center,
+      ),
+      backgroundColor: Colors.red,
+      duration: Duration(seconds: 2),
+    ));
+  }
+
+  void _onFailFacebook() {
+    scaffoldKey.currentState.showSnackBar(SnackBar(
+      content: Text(
+        "Esta conta Facebook já foi registrada",
         textAlign: TextAlign.center,
       ),
       backgroundColor: Colors.red,

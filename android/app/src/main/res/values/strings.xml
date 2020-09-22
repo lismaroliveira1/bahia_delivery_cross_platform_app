@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BahiaDelivery</string>
+    <string name="facebook_app_id">2776094379345758</string>
+    <string name="fb_login_protocol_scheme">fb2776094379345758</string>
+</resources>
