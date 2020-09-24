@@ -7,6 +7,7 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,12 +15,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
         title: Text("Pagamentos"),
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Container(
-            child: CreditCardSession(),
-          ),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              child: CreditCardSession(),
+            ),
+          ],
+        ),
       ),
     );
   }

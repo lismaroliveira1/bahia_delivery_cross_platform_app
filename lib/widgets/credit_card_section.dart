@@ -1,9 +1,11 @@
 import 'package:bahia_delivery/blocs/credit_card_bloc.dart';
 import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/validators/credit_card_imput_formater.dart';
 import 'package:bahia_delivery/widgets/card_back.dart';
 import 'package:bahia_delivery/widgets/card_front.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class CreditCardSession extends StatefulWidget {
@@ -51,12 +53,19 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                     builder: (context, snapshot) {
                       return TextField(
                         onChanged: _creditCardBloc.changeCardNumber,
+                        autocorrect: false,
+                        textCapitalization: TextCapitalization.characters,
+                        keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: "Número do Cartão",
                           hintText: "0000-0000-0000-0000",
                           errorText: snapshot.hasError ? snapshot.error : null,
                           border: OutlineInputBorder(),
                         ),
+                        inputFormatters: [
+                          MaskedTextInputFormatter(
+                              mask: 'xxxx-xxxx-xxxx-xxxx', separator: '-')
+                        ],
                       );
                     }),
               ),
@@ -88,13 +97,21 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                           stream: _creditCardBloc.outValidateDateCard,
                           builder: (context, snapshot) {
                             return TextField(
+                              autocorrect: false,
+                              textCapitalization: TextCapitalization.characters,
+                              keyboardType: TextInputType.number,
                               onChanged: _creditCardBloc.changeValidadeDateCard,
                               decoration: InputDecoration(
-                                  labelText: "Validade",
-                                  errorText:
-                                      snapshot.hasError ? snapshot.error : null,
-                                  hintText: "MM/AAAA",
-                                  border: OutlineInputBorder()),
+                                labelText: "Validade",
+                                errorText:
+                                    snapshot.hasError ? snapshot.error : null,
+                                hintText: "MM/AAAA",
+                                border: OutlineInputBorder(),
+                              ),
+                              inputFormatters: [
+                                MaskedTextInputFormatter(
+                                    mask: 'xx/xxxx', separator: '/')
+                              ],
                             );
                           }),
                     ),

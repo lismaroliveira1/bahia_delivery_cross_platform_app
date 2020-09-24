@@ -1,9 +1,13 @@
 import 'dart:async';
 
+import 'package:credit_card_number_validator/credit_card_number_validator.dart';
+
 class CredirCardValidators {
   final validateCardNumber = StreamTransformer<String, String>.fromHandlers(
     handleData: (cardNumber, sink) {
-      if (cardNumber.length > 8) {
+      Map<String, dynamic> cardData = CreditCardValidator.getCard(cardNumber);
+      bool isValid = cardData[CreditCardValidator.isValidCard];
+      if (isValid) {
         sink.add(cardNumber);
       } else {
         sink.addError("Número de cartão inválido");
