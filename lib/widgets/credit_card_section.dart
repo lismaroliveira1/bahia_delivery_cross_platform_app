@@ -5,7 +5,6 @@ import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/tiles/credit_card_imput_formater.dart';
 import 'package:bahia_delivery/widgets/card_back.dart';
 import 'package:bahia_delivery/widgets/card_front.dart';
-import 'package:cpfcnpj/cpfcnpj.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +17,6 @@ class CreditCardSession extends StatefulWidget {
 
 class _CreditCardSessionState extends State<CreditCardSession> {
   final GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
-  final TextEditingController _cpfController = TextEditingController();
 
   final _creditCardBloc = CreditCardBloc();
   @override
