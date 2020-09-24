@@ -6,6 +6,7 @@ import 'package:bahia_delivery/tiles/cart_tile.dart';
 import 'package:bahia_delivery/widgets/cart_price.dart';
 import 'package:bahia_delivery/widgets/chip_card.dart';
 import 'package:bahia_delivery/widgets/discount_card.dart';
+import 'package:bahia_delivery/widgets/payment_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -100,6 +101,7 @@ class _CartTabState extends State<CartTab> {
                   )),
                   DiscountCard(),
                   ShipCard(),
+                  PaymentCard(),
                   CartPrice(() async {
                     String orderId = await model.finishOrder();
                     if (orderId != null) {

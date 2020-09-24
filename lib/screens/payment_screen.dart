@@ -1,3 +1,4 @@
+import 'package:bahia_delivery/widgets/credit_card_section.dart';
 import 'package:flutter/material.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -10,8 +11,15 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Formas de pagamentos"),
+        title: Text("Pagamentos"),
         centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          Container(
+            child: CreditCardSession(),
+          ),
+        ],
       ),
     );
   }
