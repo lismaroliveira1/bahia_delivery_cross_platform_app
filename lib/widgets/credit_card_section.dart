@@ -1,4 +1,5 @@
 import 'package:bahia_delivery/blocs/credit_card_bloc.dart';
+import 'package:bahia_delivery/data/credit_debit_card_data.dart';
 import 'package:bahia_delivery/input_formaters/cpf_input_formaters.dart';
 import 'package:bahia_delivery/input_formaters/upper_case_input_formater.dart';
 import 'package:bahia_delivery/models/user_model.dart';
@@ -17,7 +18,8 @@ class CreditCardSession extends StatefulWidget {
 
 class _CreditCardSessionState extends State<CreditCardSession> {
   final GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
-
+  final creditDebitCard = CreditDebitCard(
+      cardNumber: '', cardOwnerName: '', validateDate: '', cpf: '', cvv: '');
   final _creditCardBloc = CreditCardBloc();
   @override
   Widget build(BuildContext context) {
@@ -54,7 +56,13 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                     stream: _creditCardBloc.outCardNumber,
                     builder: (context, snapshot) {
                       return TextField(
-                        onChanged: _creditCardBloc.changeCardNumber,
+                        onChanged: (value) {
+                          _creditCardBloc.changeCardNumber(value);
+                          if (cardKey.currentState.isFront) {
+                          } else {
+                            cardKey.currentState.toggleCard();
+                          }
+                        },
                         autocorrect: false,
                         textCapitalization: TextCapitalization.characters,
                         keyboardType: TextInputType.number,
@@ -78,7 +86,9 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                     stream: _creditCardBloc.outOwnerName,
                     builder: (context, snapshot) {
                       return TextField(
-                        onChanged: _creditCardBloc.changeOwnerName,
+                        onChanged: (value) {
+                          _creditCardBloc.changeOwnerName(value);
+                        },
                         decoration: InputDecoration(
                           labelText: "Nome",
                           errorText: snapshot.hasError ? snapshot.error : null,
