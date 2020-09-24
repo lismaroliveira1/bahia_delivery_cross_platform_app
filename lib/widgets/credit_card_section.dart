@@ -1,8 +1,11 @@
 import 'package:bahia_delivery/blocs/credit_card_bloc.dart';
+import 'package:bahia_delivery/input_formaters/cpf_input_formaters.dart';
+import 'package:bahia_delivery/input_formaters/upper_case_input_formater.dart';
 import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/validators/credit_card_imput_formater.dart';
+import 'package:bahia_delivery/tiles/credit_card_imput_formater.dart';
 import 'package:bahia_delivery/widgets/card_back.dart';
 import 'package:bahia_delivery/widgets/card_front.dart';
+import 'package:cpfcnpj/cpfcnpj.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +18,7 @@ class CreditCardSession extends StatefulWidget {
 
 class _CreditCardSessionState extends State<CreditCardSession> {
   final GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
+  final TextEditingController _cpfController = TextEditingController();
 
   final _creditCardBloc = CreditCardBloc();
   @override
@@ -58,13 +62,13 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
                           labelText: "Número do Cartão",
-                          hintText: "0000-0000-0000-0000",
+                          hintText: "0000 0000 0000 0000",
                           errorText: snapshot.hasError ? snapshot.error : null,
                           border: OutlineInputBorder(),
                         ),
                         inputFormatters: [
                           MaskedTextInputFormatter(
-                              mask: 'xxxx-xxxx-xxxx-xxxx', separator: '-')
+                              mask: 'xxxx xxxx xxxx xxxx', separator: ' ')
                         ],
                       );
                     }),
@@ -83,6 +87,7 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                           hintText: "Nome escrito no cartão",
                           border: OutlineInputBorder(),
                         ),
+                        inputFormatters: [UpperCaseTextFormatter()],
                       );
                     }),
               ),
@@ -126,12 +131,16 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                           builder: (context, snapshot) {
                             return TextField(
                               onChanged: _creditCardBloc.changeCVV,
+                              keyboardType: TextInputType.number,
+                              autocorrect: false,
                               decoration: InputDecoration(
-                                  labelText: "CVV",
-                                  errorText:
-                                      snapshot.hasError ? snapshot.error : null,
-                                  hintText: "123",
-                                  border: OutlineInputBorder()),
+                                labelText: "CVV",
+                                errorText:
+                                    snapshot.hasError ? snapshot.error : null,
+                                hintText: "123",
+                                border: OutlineInputBorder(),
+                              ),
+                              inputFormatters: [],
                             );
                           }),
                     ),
@@ -145,12 +154,16 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                     builder: (context, snapshot) {
                       return TextField(
                         onChanged: _creditCardBloc.changeCPF,
+                        autocorrect: false,
+                        keyboardType: TextInputType.number,
+                        maxLength: 14,
                         decoration: InputDecoration(
-                            labelText: "CPF",
-                            errorText:
-                                snapshot.hasError ? snapshot.error : null,
-                            hintText: "000.000.000-00",
-                            border: OutlineInputBorder()),
+                          labelText: "CPF",
+                          errorText: snapshot.hasError ? snapshot.error : null,
+                          hintText: "000.000.000-00",
+                          border: OutlineInputBorder(),
+                        ),
+                        inputFormatters: [CPFTextFormatter()],
                       );
                     }),
               ),

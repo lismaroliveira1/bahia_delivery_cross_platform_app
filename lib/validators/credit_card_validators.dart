@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:cpfcnpj/cpfcnpj.dart';
 import 'package:credit_card_number_validator/credit_card_number_validator.dart';
 
 class CredirCardValidators {
   final validateCardNumber = StreamTransformer<String, String>.fromHandlers(
     handleData: (cardNumber, sink) {
-      Map<String, dynamic> cardData = CreditCardValidator.getCard(cardNumber);
+      Map<String, dynamic> cardData =
+          CreditCardValidator.getCard(cardNumber.replaceAll(" ", ""));
       bool isValid = cardData[CreditCardValidator.isValidCard];
       if (isValid) {
         sink.add(cardNumber);
@@ -16,7 +18,7 @@ class CredirCardValidators {
   );
   final validateOwnerNameCard = StreamTransformer<String, String>.fromHandlers(
       handleData: (ownerNameCard, sink) {
-    if (ownerNameCard.length > 1 || ownerNameCard.contains(" ")) {
+    if (ownerNameCard.length > 1 && ownerNameCard.contains(" ")) {
       sink.add(ownerNameCard);
     } else {
       sink.addError("Nome inválido");
@@ -24,7 +26,7 @@ class CredirCardValidators {
   });
   final validateDate =
       StreamTransformer<String, String>.fromHandlers(handleData: (date, sink) {
-    if (date.length > 3) {
+    if (date.length > 6) {
       sink.add(date);
     } else {
       sink.addError("Data de Expiração inválida");
@@ -41,10 +43,11 @@ class CredirCardValidators {
   );
   final validateCPF =
       StreamTransformer<String, String>.fromHandlers(handleData: (cpf, sink) {
-    if (cpf.length > 11) {
+    String cpfFormated = CPF.format(cpf);
+    if (cpf.length > 11 && CPF.isValid(cpfFormated)) {
       sink.add(cpf);
     } else {
-      sink.addError("CPF Inválido");
+      sink.addError("CPF inválido");
     }
   });
 }
