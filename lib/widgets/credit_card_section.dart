@@ -18,8 +18,11 @@ class CreditCardSession extends StatefulWidget {
 
 class _CreditCardSessionState extends State<CreditCardSession> {
   final GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
-  final creditDebitCard = CreditDebitCard(
-      cardNumber: '', cardOwnerName: '', validateDate: '', cpf: '', cvv: '');
+  String cardNumber = '';
+  String cardOwnerName = '';
+  String cardValidateDate = '';
+  String cardCVV = '';
+  String asset = '';
   final _creditCardBloc = CreditCardBloc();
   @override
   Widget build(BuildContext context) {
@@ -35,7 +38,12 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                   key: cardKey,
                   direction: FlipDirection.HORIZONTAL,
                   speed: 700,
-                  front: CardFront(),
+                  front: CardFront(
+                      cardNumber: cardNumber,
+                      cardOwnerName: cardOwnerName,
+                      cardValidateDate: cardValidateDate,
+                      cardCVV: cardCVV,
+                      asset: asset),
                   back: CardBack(),
                 ),
               ),
@@ -58,10 +66,11 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                       return TextField(
                         onChanged: (value) {
                           _creditCardBloc.changeCardNumber(value);
-                          if (cardKey.currentState.isFront) {
-                          } else {
+                          if (!cardKey.currentState.isFront)
                             cardKey.currentState.toggleCard();
-                          }
+                          setState(() {
+                            cardNumber = value;
+                          });
                         },
                         autocorrect: false,
                         textCapitalization: TextCapitalization.characters,
@@ -88,6 +97,11 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                       return TextField(
                         onChanged: (value) {
                           _creditCardBloc.changeOwnerName(value);
+                          if (!cardKey.currentState.isFront)
+                            cardKey.currentState.toggleCard();
+                          setState(() {
+                            cardOwnerName = value;
+                          });
                         },
                         decoration: InputDecoration(
                           labelText: "Nome",
@@ -113,7 +127,14 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                               autocorrect: false,
                               textCapitalization: TextCapitalization.characters,
                               keyboardType: TextInputType.number,
-                              onChanged: _creditCardBloc.changeValidadeDateCard,
+                              onChanged: (value) {
+                                _creditCardBloc.changeValidadeDateCard(value);
+                                if (!cardKey.currentState.isFront)
+                                  cardKey.currentState.toggleCard();
+                                setState(() {
+                                  cardValidateDate = value;
+                                });
+                              },
                               decoration: InputDecoration(
                                 labelText: "Validade",
                                 errorText:
@@ -138,7 +159,14 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                           stream: _creditCardBloc.outCVV,
                           builder: (context, snapshot) {
                             return TextField(
-                              onChanged: _creditCardBloc.changeCVV,
+                              onChanged: (value) {
+                                _creditCardBloc.changeCVV(value);
+                                if (cardKey.currentState.isFront)
+                                  cardKey.currentState.toggleCard();
+                                setState(() {
+                                  cardCVV = value;
+                                });
+                              },
                               keyboardType: TextInputType.number,
                               autocorrect: false,
                               decoration: InputDecoration(
