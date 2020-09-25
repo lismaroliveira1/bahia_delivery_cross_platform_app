@@ -1,6 +1,7 @@
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/payment_screen.dart';
 import 'package:bahia_delivery/tiles/credit_debit_card_tile.dart';
+import 'package:bahia_delivery/tiles/creditcard_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -39,11 +40,11 @@ class PaymentCard extends StatelessWidget {
                       ScopedModelDescendant<UserModel>(
                           builder: (context, child, model) {
                         if (model.currentCreditDebitCardData != null) {
-                          return CreditDebitCardTile(
+                          return CreditDebitCardTileNB(
                               model.currentCreditDebitCardData);
                         } else {
                           return Text(
-                            "Visa .... 2015",
+                            "Pagamento",
                             style: TextStyle(
                                 fontWeight: FontWeight.w500,
                                 color: Colors.grey[700],

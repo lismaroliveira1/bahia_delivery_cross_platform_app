@@ -18,7 +18,7 @@ class CartTab extends StatefulWidget {
 
 class _CartTabState extends State<CartTab> {
   CartProduct cartProduct = CartProduct();
-
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<CartModel>(builder: (context, child, model) {
@@ -91,24 +91,27 @@ class _CartTabState extends State<CartTab> {
                 child: Text("Seu Carrinho está vázio"),
               );
             } else {
-              return Column(
-                children: [
-                  Expanded(
-                      child: ListView(
-                    children: model.products.map((products) {
-                      return CartTile(products);
-                    }).toList(),
-                  )),
-                  DiscountCard(),
-                  ShipCard(),
-                  PaymentCard(),
-                  CartPrice(() async {
-                    String orderId = await model.finishOrder();
-                    if (orderId != null) {
-                      //TODO implementar um widget para mostrar o resumo do pedido
-                    } else {}
-                  }),
-                ],
+              return Form(
+                key: formKey,
+                child: Column(
+                  children: [
+                    Expanded(
+                        child: ListView(
+                      children: model.products.map((products) {
+                        return CartTile(products);
+                      }).toList(),
+                    )),
+                    DiscountCard(),
+                    ShipCard(),
+                    PaymentCard(),
+                    CartPrice(() async {
+                      String orderId = await model.finishOrder();
+                      if (orderId != null) {
+                        //TODO implementar um widget para mostrar o resumo do pedido
+                      } else {}
+                    }),
+                  ],
+                ),
               );
             }
           },

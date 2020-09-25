@@ -1,5 +1,6 @@
 import 'package:bahia_delivery/data/credit_debit_card_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/cart_screen.dart';
 import 'package:flutter/material.dart';
 
 class CreditDebitCardTile extends StatelessWidget {
@@ -12,7 +13,6 @@ class CreditDebitCardTile extends StatelessWidget {
       child: FlatButton(
         padding: EdgeInsets.zero,
         onPressed: () {
-          print(UserModel.of(context).currentCreditDebitCardData);
           UserModel.of(context).setCurrentCrediCard(creditDebitCardData);
           Navigator.of(context).pop();
         },
