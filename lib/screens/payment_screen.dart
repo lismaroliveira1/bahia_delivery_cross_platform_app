@@ -1,5 +1,4 @@
 import 'package:bahia_delivery/tabs/payments_methos_tab.dart';
-import 'package:bahia_delivery/widgets/credit_card_section.dart';
 import 'package:flutter/material.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -12,6 +11,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white70,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -22,7 +22,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         child: Column(
           children: [
             Container(
-              child: CreditCardSession(),
+              child: PaymentsMethodsTab(),
             ),
           ],
         ),

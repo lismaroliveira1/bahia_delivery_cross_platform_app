@@ -27,7 +27,7 @@ class UserModel extends Model {
   double latitude;
   int favoriteStoryQuantity = 0;
   List<AddressData> addresses = [];
-  List<CreditDebitCard> creditDebitCardList = [];
+  List<CreditDebitCardData> creditDebitCardList = [];
   String street;
   String state;
   String zipCode;
@@ -47,6 +47,7 @@ class UserModel extends Model {
     super.addListener(listener);
     _loadCurrentUser();
     _getCurrentLocation();
+    _loadListCreditDebitCard();
   }
 
   Future<void> signIn(
@@ -491,12 +492,29 @@ class UserModel extends Model {
     }).then((doc) {
       if (doc.documentID != null) {
         creditDebitCardData.cardId = doc.documentID;
-        creditDebitCardList.add(creditDebitCard);
+        creditDebitCardList.add(creditDebitCardData);
       } else {
         creditDebitCardData.cardId = "";
       }
     });
     isLoading = false;
     notifyListeners();
+  }
+
+  void _loadListCreditDebitCard() async {
+    try {
+      if (firebaseUser == null) firebaseUser = await _auth.currentUser();
+      if (firebaseUser != null) {
+        QuerySnapshot query = await Firestore.instance
+            .collection("users")
+            .document(firebaseUser.uid)
+            .collection("paymentForms")
+            .getDocuments();
+        creditDebitCardList = query.documents
+            .map((documentSnapshot) =>
+                CreditDebitCardData.fromDocument(documentSnapshot))
+            .toList();
+      }
+    } catch (e) {}
   }
 }

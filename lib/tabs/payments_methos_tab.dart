@@ -1,4 +1,7 @@
+import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/insert_card_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class PaymentsMethodsTab extends StatefulWidget {
   @override
@@ -21,8 +24,84 @@ class _PaymentsMethodsTabState extends State<PaymentsMethodsTab>
     _controller.dispose();
   }
 
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Form(
+      key: formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: <Widget>[
+            Center(
+              child: Container(
+                width: MediaQuery.of(context).size.width / 1.1,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.white60,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding:
+                          const EdgeInsets.only(left: 8, top: 8, bottom: 4),
+                      child: Text(
+                        "Cartões",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ScopedModelDescendant<UserModel>(
+                          builder: (context, child, model) {
+                        if (model.creditDebitCardList.length == 0) {
+                          return Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Colors.yellow,
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Adcionar novo cartão",
+                                    style: TextStyle(
+                                        color: Colors.black54, fontSize: 14),
+                                  ),
+                                ),
+                                IconButton(
+                                    icon: Icon(Icons.add),
+                                    onPressed: () {
+                                      Navigator.of(context)
+                                          .push(MaterialPageRoute(
+                                        builder: (context) =>
+                                            InsertPaymentScreen(),
+                                      ));
+                                    })
+                              ],
+                            ),
+                          );
+                        } else {
+                          return Container(
+                            color: Colors.red,
+                            height: 100,
+                          );
+                        }
+                      }),
+                    )
+                  ],
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
