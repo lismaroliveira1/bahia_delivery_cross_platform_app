@@ -39,6 +39,7 @@ class UserModel extends Model {
   bool errorSignGoogle = false;
   bool errorSignFacebook = false;
   bool isLogged = false;
+  CreditDebitCardData currentCreditDebitCardData;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -516,5 +517,13 @@ class UserModel extends Model {
             .toList();
       }
     } catch (e) {}
+  }
+
+  void setCurrentCrediCard(CreditDebitCardData creditDebitCardData) {
+    isLoading = true;
+    notifyListeners();
+    currentCreditDebitCardData = creditDebitCardData;
+    isLoading = false;
+    notifyListeners();
   }
 }

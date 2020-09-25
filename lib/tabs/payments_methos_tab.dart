@@ -1,5 +1,6 @@
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/insert_card_screen.dart';
+import 'package:bahia_delivery/tiles/credit_debit_card_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -112,11 +113,10 @@ class _PaymentsMethodsTabState extends State<PaymentsMethodsTab>
                           );
                         } else {
                           return Container(
-                            height: 100,
-                            child: ListView(
+                            child: Column(
                                 children: model.creditDebitCardList.map(
                               (card) {
-                                return Text(card.cardId);
+                                return CreditDebitCardTile(card);
                               },
                             ).toList()),
                           );
