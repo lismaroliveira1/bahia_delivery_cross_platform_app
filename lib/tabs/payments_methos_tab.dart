@@ -46,12 +46,35 @@ class _PaymentsMethodsTabState extends State<PaymentsMethodsTab>
                     Padding(
                       padding:
                           const EdgeInsets.only(left: 8, top: 8, bottom: 4),
-                      child: Text(
-                        "Cartões",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Cartões",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Spacer(),
+                          ScopedModelDescendant<UserModel>(
+                              builder: (context, child, model) {
+                            if (model.creditDebitCardList.length != 0) {
+                              return IconButton(
+                                  icon: Icon(Icons.add),
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                InsertPaymentScreen()));
+                                  });
+                            } else {
+                              return Container(
+                                height: 0,
+                                width: 0,
+                              );
+                            }
+                          }),
+                        ],
                       ),
                     ),
                     Padding(
@@ -89,8 +112,13 @@ class _PaymentsMethodsTabState extends State<PaymentsMethodsTab>
                           );
                         } else {
                           return Container(
-                            color: Colors.red,
                             height: 100,
+                            child: ListView(
+                                children: model.creditDebitCardList.map(
+                              (card) {
+                                return Text(card.cardId);
+                              },
+                            ).toList()),
                           );
                         }
                       }),
