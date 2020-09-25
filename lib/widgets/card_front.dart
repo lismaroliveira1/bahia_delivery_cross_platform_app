@@ -5,6 +5,7 @@ class CardFront extends StatelessWidget {
   final String cardOwnerName;
   final String cardValidateDate;
   final String cardCVV;
+  final String cpf;
   final String asset;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   CardFront(
@@ -12,6 +13,7 @@ class CardFront extends StatelessWidget {
       @required this.cardOwnerName,
       @required this.cardValidateDate,
       @required this.cardCVV,
+      @required this.cpf,
       @required this.asset});
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,7 @@ class CardFront extends StatelessWidget {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             clipBehavior: Clip.antiAlias,
             child: Container(
+              height: 250,
               padding: EdgeInsets.zero,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -48,8 +51,9 @@ class CardFront extends StatelessWidget {
                         padding: const EdgeInsets.only(
                             right: 12.0, top: 12.0, bottom: 40),
                         child: Image.asset(
-                          'images/mastercard_logo.png',
+                          asset,
                           height: 50,
+                          fit: BoxFit.cover,
                         ),
                       )
                     ],
@@ -81,23 +85,70 @@ class CardFront extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 4.0, horizontal: 18.0),
-                    child: Text(
-                      cardOwnerName,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "NOME",
+                          style: TextStyle(color: Colors.white, fontSize: 12),
+                        ),
+                        Text(
+                          cardOwnerName,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(30, 4, 8, 14),
-                    child: Text(
-                      cardValidateDate,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 4.0, horizontal: 18.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 200,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "CPF",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 12),
+                              ),
+                              Text(
+                                cpf,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "VALIDADE",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 12),
+                            ),
+                            Text(
+                              cardValidateDate,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
+                  ),
+                  SizedBox(
+                    height: 12,
                   )
                 ],
               ),

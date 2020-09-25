@@ -1,5 +1,5 @@
 import 'package:bahia_delivery/blocs/credit_card_bloc.dart';
-import 'package:bahia_delivery/data/credit_debit_card_data.dart';
+import 'package:bahia_delivery/data/credit_debit_card_item.dart';
 import 'package:bahia_delivery/input_formaters/cpf_input_formaters.dart';
 import 'package:bahia_delivery/input_formaters/upper_case_input_formater.dart';
 import 'package:bahia_delivery/models/user_model.dart';
@@ -22,45 +22,53 @@ class _CreditCardSessionState extends State<CreditCardSession> {
   String cardOwnerName = '';
   String cardValidateDate = '';
   String cardCVV = '';
-  String asset = '';
+  String asset = 'images/transparent.png';
+  String cpf = '';
   final _creditCardBloc = CreditCardBloc();
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
-      return Form(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              SafeArea(
-                child: FlipCard(
-                  key: cardKey,
-                  direction: FlipDirection.HORIZONTAL,
-                  speed: 700,
-                  front: CardFront(
-                      cardNumber: cardNumber,
-                      cardOwnerName: cardOwnerName,
-                      cardValidateDate: cardValidateDate,
-                      cardCVV: cardCVV,
-                      asset: asset),
-                  back: CardBack(),
+    return ScopedModelDescendant<UserModel>(
+      builder: (context, child, model) {
+        return Form(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SafeArea(
+                  child: FlipCard(
+                    key: cardKey,
+                    direction: FlipDirection.HORIZONTAL,
+                    speed: 700,
+                    front: CardFront(
+                        cardNumber: cardNumber,
+                        cardOwnerName: cardOwnerName,
+                        cardValidateDate: cardValidateDate,
+                        cardCVV: cardCVV,
+                        cpf: cpf,
+                        asset: asset),
+                    back: CardBack(),
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              FlatButton(
-                onPressed: () => cardKey.currentState.toggleCard(),
-                child: Container(
-                  height: 30,
-                  child: Image.asset("images/icon_spin.png"),
+                SizedBox(
+                  height: 20,
                 ),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: StreamBuilder<Object>(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    FlatButton(
+                      onPressed: () => cardKey.currentState.toggleCard(),
+                      child: Container(
+                        height: 30,
+                        child: Image.asset("images/icon_spin.png"),
+                      ),
+                    ),
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 4.0),
+                  child: StreamBuilder<Object>(
                     stream: _creditCardBloc.outCardNumber,
                     builder: (context, snapshot) {
                       return TextField(
@@ -68,9 +76,27 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                           _creditCardBloc.changeCardNumber(value);
                           if (!cardKey.currentState.isFront)
                             cardKey.currentState.toggleCard();
-                          setState(() {
-                            cardNumber = value;
-                          });
+                          setState(
+                            () {
+                              cardNumber = value;
+                              if (value == null || value == '') {
+                                asset = 'images/transparent.png';
+                              } else if (value.substring(0, 1) == '4') {
+                                asset = 'images/visa_logo.png';
+                              } else if (value.substring(0, 2) == '51' ||
+                                  value.substring(0, 2) == '52' ||
+                                  value.substring(0, 2) == '53' ||
+                                  value.substring(0, 2) == '54' ||
+                                  value.substring(0, 2) == '55') {
+                                asset = 'images/mastercard_logo.png';
+                              } else if (value.substring(0, 2) == '36' ||
+                                  value.substring(0, 2) == '38') {
+                                asset = 'images/dinnersclub_logo.png';
+                              } else {
+                                asset = 'images/transparent.png';
+                              }
+                            },
+                          );
                         },
                         autocorrect: false,
                         textCapitalization: TextCapitalization.characters,
@@ -86,12 +112,13 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                               mask: 'xxxx xxxx xxxx xxxx', separator: ' ')
                         ],
                       );
-                    }),
-              ),
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: StreamBuilder<Object>(
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 4.0),
+                  child: StreamBuilder<Object>(
                     stream: _creditCardBloc.outOwnerName,
                     builder: (context, snapshot) {
                       return TextField(
@@ -99,9 +126,11 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                           _creditCardBloc.changeOwnerName(value);
                           if (!cardKey.currentState.isFront)
                             cardKey.currentState.toggleCard();
-                          setState(() {
-                            cardOwnerName = value;
-                          });
+                          setState(
+                            () {
+                              cardOwnerName = value;
+                            },
+                          );
                         },
                         decoration: InputDecoration(
                           labelText: "Nome",
@@ -111,16 +140,17 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                         ),
                         inputFormatters: [UpperCaseTextFormatter()],
                       );
-                    }),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    flex: 6,
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                      child: StreamBuilder<Object>(
+                    },
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 6,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 4.0),
+                        child: StreamBuilder<Object>(
                           stream: _creditCardBloc.outValidateDateCard,
                           builder: (context, snapshot) {
                             return TextField(
@@ -147,15 +177,16 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                                     mask: 'xx/xxxx', separator: '/')
                               ],
                             );
-                          }),
+                          },
+                        ),
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    flex: 4,
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                      child: StreamBuilder<Object>(
+                    Expanded(
+                      flex: 4,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 4.0),
+                        child: StreamBuilder<Object>(
                           stream: _creditCardBloc.outCVV,
                           builder: (context, snapshot) {
                             return TextField(
@@ -163,9 +194,11 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                                 _creditCardBloc.changeCVV(value);
                                 if (cardKey.currentState.isFront)
                                   cardKey.currentState.toggleCard();
-                                setState(() {
-                                  cardCVV = value;
-                                });
+                                setState(
+                                  () {
+                                    cardCVV = value;
+                                  },
+                                );
                               },
                               keyboardType: TextInputType.number,
                               autocorrect: false,
@@ -178,18 +211,24 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                               ),
                               inputFormatters: [],
                             );
-                          }),
-                    ),
-                  )
-                ],
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                child: StreamBuilder<Object>(
+                          },
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                  child: StreamBuilder<Object>(
                     stream: _creditCardBloc.outCPF,
                     builder: (context, snapshot) {
                       return TextField(
-                        onChanged: _creditCardBloc.changeCPF,
+                        onChanged: (value) {
+                          _creditCardBloc.changeCPF(value);
+                          if (!cardKey.currentState.isFront)
+                            cardKey.currentState.toggleCard();
+                          cpf = value;
+                        },
                         autocorrect: false,
                         keyboardType: TextInputType.number,
                         maxLength: 14,
@@ -201,12 +240,35 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                         ),
                         inputFormatters: [CPFTextFormatter()],
                       );
-                    }),
-              ),
-            ],
+                    },
+                  ),
+                ),
+                FlatButton(
+                  onPressed: () async {
+                    final creditDebitCard = CreditDebitCard(
+                        cardNumber: cardNumber,
+                        cardOwnerName: cardOwnerName,
+                        validateDate: cardValidateDate,
+                        cpf: cpf,
+                        cvv: cardCVV,
+                        image: asset);
+                    model.newCard(creditDebitCard);
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    height: 50,
+                    width: 120,
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }

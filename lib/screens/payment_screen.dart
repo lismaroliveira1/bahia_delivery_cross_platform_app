@@ -1,3 +1,4 @@
+import 'package:bahia_delivery/tabs/payments_methos_tab.dart';
 import 'package:bahia_delivery/widgets/credit_card_section.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
         title: Text("Pagamentos"),
         centerTitle: true,
       ),

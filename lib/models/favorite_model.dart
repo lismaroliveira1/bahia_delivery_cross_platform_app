@@ -22,7 +22,6 @@ class FavoriteModel extends Model {
         .setData({"storeId": storeId, "status": 1});
     isLoading = false;
     notifyListeners();
-    print(storeId);
   }
 
   void deleteFavoriteStoreItem(String storeId) async {
@@ -35,7 +34,6 @@ class FavoriteModel extends Model {
         .delete();
     isLoading = false;
     notifyListeners();
-    print(storeId);
   }
 
   Future<bool> verifyCartItem(String storeId) async {
@@ -46,7 +44,6 @@ class FavoriteModel extends Model {
         .getDocuments()
         .then((value) {
       for (DocumentSnapshot doc in value.documents) {
-        print(doc.data["storeId"]);
         if (doc.data["storeId"] == storeId) {
           contains = true;
         } else {

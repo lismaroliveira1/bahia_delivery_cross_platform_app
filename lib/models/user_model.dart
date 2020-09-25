@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:bahia_delivery/data/address_data.dart';
+import 'package:bahia_delivery/data/credit_debit_card_data.dart';
+import 'package:bahia_delivery/data/credit_debit_card_item.dart';
 import 'package:bahia_delivery/data/search_data.dart';
 import 'package:bahia_delivery/models/adress.dart';
 import 'package:bahia_delivery/models/user.dart';
@@ -25,6 +27,7 @@ class UserModel extends Model {
   double latitude;
   int favoriteStoryQuantity = 0;
   List<AddressData> addresses = [];
+  List<CreditDebitCard> creditDebitCardList = [];
   String street;
   String state;
   String zipCode;
@@ -342,9 +345,7 @@ class UserModel extends Model {
                 addressSeted = false;
               }
             });
-          } catch (e) {
-            print(e.toString());
-          }
+          } catch (e) {}
         } else {}
       }
     }
@@ -404,15 +405,13 @@ class UserModel extends Model {
         district = cepAbertoAddress.bairro;
         city = cepAbertoAddress.city.nome;
       }
-    } on DioError catch (e) {
-      print(e.toString());
-    }
+    } on DioError catch (e) {}
     isLoading = false;
     notifyListeners();
   }
 
   void addAddress(Address address) async {
-    final addressData = AddressData.fromAdress(address);
+    final addressData = AddressData.fromAddress(address);
     await Firestore.instance
         .collection("users")
         .document(firebaseUser.uid)
@@ -468,6 +467,35 @@ class UserModel extends Model {
         .updateData(userData);
     currentUserAddress = address;
     addressSeted = true;
+    isLoading = false;
+    notifyListeners();
+  }
+
+  void newCard(CreditDebitCard creditDebitCard) async {
+    isLoading = true;
+    notifyListeners();
+    final creditDebitCardData =
+        CreditDebitCardData.fromCreditDebitCardItem(creditDebitCard);
+    await Firestore.instance
+        .collection('users')
+        .document(firebaseUser.uid)
+        .collection('paymentForms')
+        .add({
+      'cardNumber': creditDebitCard.cardNumber,
+      'cardOwnerName': creditDebitCard.cardOwnerName,
+      'validateDate': creditDebitCard.validateDate,
+      'cpf': creditDebitCard.cpf,
+      'cvv': creditDebitCard.cvv,
+      'image': creditDebitCard.image,
+      'type': 'creditDebitCard'
+    }).then((doc) {
+      if (doc.documentID != null) {
+        creditDebitCardData.cardId = doc.documentID;
+        creditDebitCardList.add(creditDebitCard);
+      } else {
+        creditDebitCardData.cardId = "";
+      }
+    });
     isLoading = false;
     notifyListeners();
   }

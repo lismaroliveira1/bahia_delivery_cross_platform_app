@@ -14,7 +14,7 @@ class AddressData {
   String state;
   String complement;
 
-  AddressData.fromAdress(Address address) {
+  AddressData.fromAddress(Address address) {
     name = address.name;
     zipCode = address.zipCode;
     latitude = address.latitude;

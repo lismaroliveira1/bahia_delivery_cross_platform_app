@@ -104,11 +104,9 @@ class _HomeTabState extends State<HomeTab> {
                                       builder: (context) => LocationScreen(),
                                     ));
                                   } else if (status.isRestricted) {
-                                    print(status.isRestricted);
                                   } else if (status.isUndetermined) {
                                     await Permission.locationWhenInUse
                                         .request();
-                                    //TODO Implementar a função que verifica a resposta de Permission.locationWhenInUse.request() e toma a decisão
                                   } else if (status.isPermanentlyDenied) {
                                     //Implementar para o mesmo abrir o settings
                                   }
