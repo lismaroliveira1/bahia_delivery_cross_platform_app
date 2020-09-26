@@ -134,6 +134,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
+  credit_card_type_detector:
+    dependency: "direct main"
+    description:
+      name: credit_card_type_detector
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
   cupertino_icons:
     dependency: "direct main"
     description:

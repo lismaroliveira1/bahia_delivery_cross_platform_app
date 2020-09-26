@@ -6,6 +6,7 @@ import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/tiles/credit_card_imput_formater.dart';
 import 'package:bahia_delivery/widgets/card_back.dart';
 import 'package:bahia_delivery/widgets/card_front.dart';
+import 'package:credit_card_type_detector/credit_card_type_detector.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +25,7 @@ class _CreditCardSessionState extends State<CreditCardSession> {
   String cardCVV = '';
   String asset = 'images/transparent.png';
   String cpf = '';
+  String brand;
   final _creditCardBloc = CreditCardBloc();
   @override
   Widget build(BuildContext context) {
@@ -79,21 +81,54 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                           setState(
                             () {
                               cardNumber = value;
-                              if (value == null || value == '') {
+                              var valueFormated =
+                                  detectCCType(value.replaceAll(" ", ""));
+                              if (value == null ||
+                                  value == '' ||
+                                  valueFormated == CreditCardType.unknown) {
                                 asset = 'images/transparent.png';
-                              } else if (value.substring(0, 1) == '4') {
+                              } else if (valueFormated == CreditCardType.visa) {
                                 asset = 'images/visa_logo.png';
-                              } else if (value.substring(0, 2) == '51' ||
-                                  value.substring(0, 2) == '52' ||
-                                  value.substring(0, 2) == '53' ||
-                                  value.substring(0, 2) == '54' ||
-                                  value.substring(0, 2) == '55') {
+                                brand = 'visa';
+                              } else if (valueFormated ==
+                                  CreditCardType.mastercard) {
                                 asset = 'images/mastercard_logo.png';
-                              } else if (value.substring(0, 2) == '36' ||
-                                  value.substring(0, 2) == '38') {
+                                brand = 'mastercard';
+                              } else if (valueFormated ==
+                                  CreditCardType.dinersclub) {
                                 asset = 'images/dinnersclub_logo.png';
+                                brand = 'dinersclub';
+                              } else if (valueFormated == CreditCardType.amex) {
+                                asset = 'images/americam_express_logo.png';
+                                brand = 'americamexpress';
+                              } else if (valueFormated ==
+                                  CreditCardType.discover) {
+                                asset = 'images/discover_logo.png';
+                                brand = 'discover';
+                              } else if (valueFormated == CreditCardType.jcb) {
+                                asset = 'images/jcb_logo.png';
+                                brand = 'jcb';
+                              } else if (valueFormated ==
+                                  CreditCardType.unionpay) {
+                                asset = 'images/unionpay_logo.png';
+                                brand = 'unionpay';
+                              } else if (valueFormated ==
+                                  CreditCardType.maestro) {
+                                asset = 'images/maestro_logo.png';
+                                brand = 'maestro';
+                              } else if (valueFormated == CreditCardType.mir) {
+                                asset = 'images/mir_logo.png';
+                                brand = 'mir';
+                              } else if (valueFormated ==
+                                  CreditCardType.hipercard) {
+                                asset = 'images/hipercard_logo.png';
+                                brand = 'hipercard';
+                              } else if (valueFormated == CreditCardType.elo) {
+                                asset = 'images/elo_logo.png';
+                                brand = 'elo';
                               } else {
                                 asset = 'images/transparent.png';
+                                brand = '';
                               }
                             },
                           );
@@ -251,7 +286,8 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                         validateDate: cardValidateDate,
                         cpf: cpf,
                         cvv: cardCVV,
-                        image: asset);
+                        image: asset,
+                        brand: brand);
                     model.newCard(creditDebitCard);
                     Navigator.of(context).pop();
                   },

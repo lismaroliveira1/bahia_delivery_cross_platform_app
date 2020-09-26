@@ -7,6 +7,7 @@ class CreditDebitCard {
   String cpf;
   String cvv;
   String image;
+  String brand;
   CreditDebitCard({
     @required this.cardNumber,
     @required this.cardOwnerName,
@@ -14,5 +15,6 @@ class CreditDebitCard {
     @required this.cpf,
     @required this.cvv,
     @required this.image,
+    @required this.brand,
   });
 }
