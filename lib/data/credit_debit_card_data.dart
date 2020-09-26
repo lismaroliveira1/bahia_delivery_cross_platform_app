@@ -9,6 +9,7 @@ class CreditDebitCardData {
   String cpf;
   String cvv;
   String image;
+  String brand;
 
   CreditDebitCardData.fromCreditDebitCardItem(CreditDebitCard creditDebitCard) {
     cardNumber = creditDebitCard.cardNumber;
@@ -17,6 +18,7 @@ class CreditDebitCardData {
     cpf = creditDebitCard.cpf;
     cvv = creditDebitCard.cvv;
     image = creditDebitCard.image;
+    brand = creditDebitCard.brand;
   }
 
   CreditDebitCardData.fromDocument(DocumentSnapshot documentSnapshot) {
@@ -27,16 +29,28 @@ class CreditDebitCardData {
     cpf = documentSnapshot.data["cpf"];
     cvv = documentSnapshot.data["cvv"];
     image = documentSnapshot.data["image"];
+    brand = documentSnapshot.data["brand"];
   }
   Map<String, dynamic> toMap() {
     return {
       'cardId': cardId,
-      'cardNumber': cardNumber,
+      'cardNumber': cardNumber.replaceAll(" ", ""),
       'cardOwnerName': cardOwnerName,
       'validateDate': validateDate,
       'cpf': cpf,
       'cvv': cvv,
-      'image': image
+      'image': image,
+      'brand': brand,
+    };
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'cardNumber': cardNumber.replaceAll(" ", ""),
+      'holder': cardOwnerName,
+      'expirationDate': validateDate,
+      'secuityCode': cvv,
+      'brand': brand,
     };
   }
 }

@@ -489,7 +489,8 @@ class UserModel extends Model {
       'cpf': creditDebitCard.cpf,
       'cvv': creditDebitCard.cvv,
       'image': creditDebitCard.image,
-      'type': 'creditDebitCard'
+      'type': 'creditDebitCard',
+      'brand': creditDebitCard.brand
     }).then((doc) {
       if (doc.documentID != null) {
         creditDebitCardData.cardId = doc.documentID;
