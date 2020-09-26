@@ -3,11 +3,20 @@ import 'package:bahia_delivery/models/favorite_model.dart';
 import 'package:bahia_delivery/models/payment_model.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/home_screen.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-void main() {
+void main() async {
   runApp(MyApp());
+  final response = await CloudFunctions.instance
+      .getHttpsCallable(functionName: 'helloWorld')
+      .call();
+  final responseUser = await CloudFunctions.instance
+      .getHttpsCallable(functionName: 'getUserData')
+      .call();
+  print(response.data);
+  print(responseUser.data);
 }
 
 class MyApp extends StatelessWidget {

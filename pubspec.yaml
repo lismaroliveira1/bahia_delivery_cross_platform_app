@@ -61,6 +61,7 @@ dependencies:
   change_app_package_name: ^0.1.2
   flip_card: ^0.4.4
   credit_card_number_validator: ^1.0.4
+  cloud_functions: ^0.5.0
   
  
   
