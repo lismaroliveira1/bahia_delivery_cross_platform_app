@@ -463,6 +463,7 @@ class UserModel extends Model {
     isLoading = true;
     notifyListeners();
     userData["currentAddress"] = address.aid;
+    userData["address"] = address.toMap();
     await Firestore.instance
         .collection("users")
         .document(firebaseUser.uid)

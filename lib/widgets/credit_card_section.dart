@@ -281,13 +281,14 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                 FlatButton(
                   onPressed: () async {
                     final creditDebitCard = CreditDebitCard(
-                        cardNumber: cardNumber,
-                        cardOwnerName: cardOwnerName,
-                        validateDate: cardValidateDate,
-                        cpf: cpf,
-                        cvv: cardCVV,
-                        image: asset,
-                        brand: brand);
+                      cardNumber: cardNumber,
+                      cardOwnerName: cardOwnerName,
+                      validateDate: cardValidateDate,
+                      cpf: cpf,
+                      cvv: cardCVV,
+                      image: asset,
+                      brand: brand,
+                    );
                     model.newCard(creditDebitCard);
                     Navigator.of(context).pop();
                   },

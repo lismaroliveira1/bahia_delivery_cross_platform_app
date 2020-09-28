@@ -1,6 +1,8 @@
 import 'package:bahia_delivery/data/cart_product.dart';
+import 'package:bahia_delivery/data/credit_debit_card_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -112,20 +114,22 @@ class CartModel extends Model {
     notifyListeners();
   }
 
-  Future<String> finishOrder() async {
+  Future<String> finishOrder(CreditDebitCardData creditDebitCardData) async {
+    final CloudFunctions functions = CloudFunctions.instance;
     if (products.length == 0) return null;
     isLoading = true;
     notifyListeners();
     double productPrice = getProductsPrice();
     double shipPrice = getShipPrice();
     double discountPrice = getDiscountPrice();
+    double totalPrice = productPrice - discountPrice + shipPrice;
     DocumentReference referOrder =
         await Firestore.instance.collection("orders").add({
       "clients": user.firebaseUser.uid,
       "products": products.map((cartProduct) => cartProduct.toMap()).toList(),
       "shipPrice": shipPrice,
       "discount": discountPrice,
-      "totalPrice": productPrice - discountPrice + shipPrice,
+      "totalPrice": totalPrice,
       "status": 1
     });
     await Firestore.instance
@@ -144,7 +148,20 @@ class CartModel extends Model {
     }
     products.clear();
     couponCode = null;
-    discountPercentage = 0;
+    final Map<String, dynamic> dataSale = {
+      'merchantOrderId': referOrder.documentID,
+      'amount': (totalPrice * 100).toInt(),
+      'sotfDescriptor': "Bahia Delivery",
+      'installments': 1,
+      'creditCard': creditDebitCardData.toJson(),
+      'cpf': creditDebitCardData.cpf,
+      'paymentType': 'CreditCard'
+    };
+    final HttpsCallable callable =
+        functions.getHttpsCallable(functionName: 'authorizedCreditCard');
+    final response = await callable.call(dataSale);
+    print(response.data);
+    //TODO implementar a função autorização, checagem e pagamento
     isLoading = false;
     notifyListeners();
     return referOrder.documentID;

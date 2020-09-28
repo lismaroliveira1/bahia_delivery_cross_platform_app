@@ -4,6 +4,7 @@ import { CieloConstructor, Cielo, TransactionCreditCardRequestModel, EnumBrands 
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
+
 admin.initializeApp(functions.config().firebase);
 const merchantId = functions.config().cielo.merchantid;
 const merchantkey = functions.config().cielo.merchantkey;
@@ -41,9 +42,11 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
     const userData = snapshot.data() || {};
     console.log('Inciando autorização');
     let brand: EnumBrands;
+    console.log("ok");
     switch (data.creditCard.brand) {
         case "visa":
             brand = EnumBrands.VISA;
+            console.log(brand);
             break;
         case "mastercard":
             brand = EnumBrands.MASTER;

@@ -8,7 +8,8 @@ class CartPrice extends StatelessWidget {
   final CieloPayment cieloPayment = CieloPayment();
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
+    return ScopedModelDescendant<UserModel>(
+        builder: (context, child, userModel) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 6.0),
         child: Card(
@@ -78,7 +79,8 @@ class CartPrice extends StatelessWidget {
                         height: 60,
                         child: RaisedButton(
                           onPressed: () async {
-                            await model.finishOrder();
+                            await model.finishOrder(
+                                userModel.currentCreditDebitCardData);
                           },
                           child: Text("Finalizar Pedido"),
                           textColor: Colors.white,
