@@ -129,7 +129,7 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                               } else {
                                 asset = 'images/transparent.png';
                                 brand = '';
-                              }
+                              } //TODO implementar as decisões para as bandeiras aura e discovery
                             },
                           );
                         },

@@ -104,12 +104,7 @@ class _CartTabState extends State<CartTab> {
                     DiscountCard(),
                     ShipCard(),
                     PaymentCard(),
-                    CartPrice(() async {
-                      String orderId = await model.finishOrder();
-                      if (orderId != null) {
-                        //TODO implementar um widget para mostrar o resumo do pedido
-                      } else {}
-                    }),
+                    CartPrice(),
                   ],
                 ),
               );
