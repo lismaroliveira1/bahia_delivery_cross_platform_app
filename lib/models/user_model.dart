@@ -9,6 +9,7 @@ import 'package:bahia_delivery/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -68,6 +69,7 @@ class UserModel extends Model {
       this.firebaseUser = result.user;
       _loadCurrentUser();
       onSuccess();
+      saveToken();
       isLoading = false;
       notifyListeners();
     } on PlatformException catch (_) {
@@ -103,6 +105,7 @@ class UserModel extends Model {
       this.firebaseUser = authResult.user;
       _saveUserData(user);
       isLogged = true;
+      saveToken();
       isLoading = false;
       notifyListeners();
     }
@@ -140,8 +143,8 @@ class UserModel extends Model {
       if (docUser.exists) {
         this.firebaseUser = authResult.user;
         isLogged = true;
-        _loadCurrentUser();
         isLoading = false;
+        saveToken();
         notifyListeners();
       } else {
         await _auth.signOut();
@@ -179,7 +182,7 @@ class UserModel extends Model {
           if (docUser.exists) {
             this.firebaseUser = authResult.user;
             isLogged = true;
-            _loadCurrentUser();
+            saveToken();
             isLoading = false;
             notifyListeners();
           } else {
@@ -237,6 +240,7 @@ class UserModel extends Model {
             this.firebaseUser = authResult.user;
             _saveUserData(user);
             isLogged = true;
+            saveToken();
             isLoading = false;
             notifyListeners();
           }
@@ -543,5 +547,10 @@ class UserModel extends Model {
     payOnApp = false;
     isLoading = false;
     notifyListeners();
+  }
+
+  void saveToken() async {
+    final token = await FirebaseMessaging().getToken();
+    print(token);
   }
 }
