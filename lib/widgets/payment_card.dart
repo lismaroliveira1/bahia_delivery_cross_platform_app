@@ -2,6 +2,7 @@ import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/payment_screen.dart';
 import 'package:bahia_delivery/tiles/credit_debit_card_tile.dart';
 import 'package:bahia_delivery/tiles/creditcard_tile.dart';
+import 'package:bahia_delivery/tiles/payement_on_delivery_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -26,29 +27,41 @@ class PaymentCard extends StatelessWidget {
             child: Container(
               height: 60,
               child: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16),
+                padding: const EdgeInsets.only(left: 8, right: 16),
                 child: Center(
                   child: Row(
                     children: <Widget>[
-                      Icon(
-                        Icons.payment,
-                        color: Colors.grey[700],
-                      ),
-                      SizedBox(
-                        width: 32,
-                      ),
                       ScopedModelDescendant<UserModel>(
                           builder: (context, child, model) {
-                        if (model.currentCreditDebitCardData != null) {
-                          return CreditDebitCardTileNB(
-                              model.currentCreditDebitCardData);
+                        if (model.paymentSet) {
+                          if (model.payOnApp) {
+                            return CreditDebitCardTileNB(
+                                model.currentCreditDebitCardData);
+                          } else {
+                            return PaymentOnDeliveryTile(
+                                model.currentPaymentOndeliveryData);
+                          }
                         } else {
-                          return Text(
-                            "Pagamento",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: Colors.grey[700],
-                                fontSize: 16),
+                          return Padding(
+                            padding: const EdgeInsets.only(left: 12, right: 16),
+                            child: Row(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.payment,
+                                  color: Colors.grey[700],
+                                ),
+                                SizedBox(
+                                  width: 32,
+                                ),
+                                Text(
+                                  "Pagamento",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey[700],
+                                      fontSize: 16),
+                                ),
+                              ],
+                            ),
                           );
                         }
                       }),

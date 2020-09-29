@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:bahia_delivery/data/address_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_item.dart';
+import 'package:bahia_delivery/data/payment_on_delivery_date.dart';
 import 'package:bahia_delivery/data/search_data.dart';
 import 'package:bahia_delivery/models/adress.dart';
 import 'package:bahia_delivery/models/user.dart';
@@ -39,7 +40,10 @@ class UserModel extends Model {
   bool errorSignGoogle = false;
   bool errorSignFacebook = false;
   bool isLogged = false;
+  bool paymentSet = false;
   CreditDebitCardData currentCreditDebitCardData;
+  PaymentOnDeliveryData currentPaymentOndeliveryData;
+  bool payOnApp;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -525,6 +529,18 @@ class UserModel extends Model {
     isLoading = true;
     notifyListeners();
     currentCreditDebitCardData = creditDebitCardData;
+    paymentSet = true;
+    payOnApp = true;
+    isLoading = false;
+    notifyListeners();
+  }
+
+  void setPaymentOnDeliveryMethod(PaymentOnDeliveryData paymentOnDeliveryData) {
+    isLoading = true;
+    notifyListeners();
+    paymentSet = true;
+    currentPaymentOndeliveryData = paymentOnDeliveryData;
+    payOnApp = false;
     isLoading = false;
     notifyListeners();
   }

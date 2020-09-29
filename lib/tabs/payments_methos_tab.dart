@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:bahia_delivery/data/payment_on_delivery_date.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/insert_card_screen.dart';
 import 'package:bahia_delivery/tiles/credit_debit_card_tile.dart';
@@ -125,6 +128,133 @@ class _PaymentsMethodsTabState extends State<PaymentsMethodsTab>
                     )
                   ],
                 ),
+              ),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Pagementos na entrega",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.white60,
+                    ),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                          child: FlatButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              final PaymentOnDeliveryData
+                                  paymentOnDeliveryData = PaymentOnDeliveryData(
+                                      image: "images/money.png",
+                                      description: "Dinheiro");
+                              UserModel.of(context).setPaymentOnDeliveryMethod(
+                                  paymentOnDeliveryData);
+                              Navigator.of(context).pop();
+                            },
+                            child: Row(
+                              children: <Widget>[
+                                Container(
+                                  height: 25,
+                                  child: Image.asset(
+                                    "images/money.png",
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Text("Dinheiro")
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                          child: FlatButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              final PaymentOnDeliveryData
+                                  paymentOnDeliveryData = PaymentOnDeliveryData(
+                                      image: "images/credit_debit_card.png",
+                                      description: "Cartão de Credito");
+                              UserModel.of(context).setPaymentOnDeliveryMethod(
+                                  paymentOnDeliveryData);
+                              Navigator.of(context).pop();
+                            },
+                            child: Row(
+                              children: <Widget>[
+                                Container(
+                                  height: 25,
+                                  child: Image.asset(
+                                    "images/credit_debit_card.png",
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Text("Cartão de Credito")
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                          child: FlatButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              final PaymentOnDeliveryData
+                                  paymentOnDeliveryData = PaymentOnDeliveryData(
+                                      image: "images/credit_debit_card.png",
+                                      description:
+                                          "Cartão de débito (Visa ou Master)");
+                              UserModel.of(context).setPaymentOnDeliveryMethod(
+                                  paymentOnDeliveryData);
+                              Navigator.of(context).pop();
+                            },
+                            child: Row(
+                              children: <Widget>[
+                                Container(
+                                  height: 25,
+                                  child: Image.asset(
+                                    "images/credit_debit_card.png",
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                ),
+                                Text("Cartão de débito (Visa ou Master)")
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
             )
           ],
