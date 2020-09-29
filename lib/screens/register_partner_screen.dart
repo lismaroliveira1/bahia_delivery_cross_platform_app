@@ -16,7 +16,12 @@ class PartnerRegisterScreen extends StatelessWidget {
       ),
       body: ScopedModelDescendant<UserModel>(
         builder: (context, child, model) {
-          return Container();
+          return Container(
+            padding: EdgeInsets.all(12.0),
+            child: Column(
+              children: <Widget>[Container()],
+            ),
+          );
         },
       ),
     );
