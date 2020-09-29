@@ -26,10 +26,22 @@ class CredirCardValidators {
   });
   final validateDate =
       StreamTransformer<String, String>.fromHandlers(handleData: (date, sink) {
-    if (date.length > 6) {
-      sink.add(date);
-    } else {
-      sink.addError("Data de Expiração inválida");
+    String error = '';
+    switch (date.length) {
+      case 1:
+        if (int.parse(date) <= 1) {
+          sink.add(date);
+        } else {
+          sink.addError("Més inválido");
+        }
+        break;
+      case 2:
+        if (int.parse(date) <= 12) {
+          sink.add(date);
+        } else {
+          sink.addError("Més inválido");
+        }
+        break;
     }
   });
   final validateCVV = StreamTransformer<String, String>.fromHandlers(
