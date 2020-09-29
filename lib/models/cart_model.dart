@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:bahia_delivery/data/cart_product.dart';
 import 'package:bahia_delivery/data/credit_debit_card_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
@@ -148,22 +150,37 @@ class CartModel extends Model {
     }
     products.clear();
     couponCode = null;
-    final Map<String, dynamic> dataSale = {
-      'merchantOrderId': referOrder.documentID,
-      'amount': (totalPrice * 100).toInt(),
-      'sotfDescriptor': "Bahia Delivery",
-      'installments': 1,
-      'creditCard': creditDebitCardData.toJson(),
-      'cpf': creditDebitCardData.cpf,
-      'paymentType': 'CreditCard'
-    };
-    final HttpsCallable callable =
-        functions.getHttpsCallable(functionName: 'authorizedCreditCard');
-    final response = await callable.call(dataSale);
-    print(response.data);
+    try {
+      final Map<String, dynamic> dataSale = {
+        'merchantOrderId': referOrder.documentID,
+        'amount': (totalPrice * 100).toInt(),
+        'sotfDescriptor': "Bahia Delivery",
+        'installments': 1,
+        'creditCard': creditDebitCardData.toJson(),
+        'cpf': creditDebitCardData.cpf,
+        'paymentType': 'CreditCard'
+      };
+      final HttpsCallable callable =
+          functions.getHttpsCallable(functionName: 'authorizedCreditCard');
+      final response = await callable.call(dataSale);
+      final data = Map<String, dynamic>.from(response.data as LinkedHashMap);
+      if (data['success'] as bool) {
+        isLoading = false;
+        notifyListeners();
+        return data['paymentId'] as String;
+      } else {
+        isLoading = false;
+        notifyListeners();
+        return Future.error(data['error']['message']);
+      }
+    } catch (e) {
+      debugPrint('$e');
+      isLoading = false;
+      notifyListeners();
+      return Future.error('Fala ao processa a transação. Tente Novamente');
+    }
     //TODO implementar a função autorização, checagem e pagamento
-    isLoading = false;
-    notifyListeners();
-    return referOrder.documentID;
+
+    //return referOrder.documentID;
   }
 }

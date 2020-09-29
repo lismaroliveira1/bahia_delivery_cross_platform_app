@@ -49,7 +49,7 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                         cardCVV: cardCVV,
                         cpf: cpf,
                         asset: asset),
-                    back: CardBack(),
+                    back: CardBack(cardCVV),
                   ),
                 ),
                 SizedBox(
