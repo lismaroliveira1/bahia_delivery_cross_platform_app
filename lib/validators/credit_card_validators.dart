@@ -26,7 +26,6 @@ class CredirCardValidators {
   });
   final validateDate =
       StreamTransformer<String, String>.fromHandlers(handleData: (date, sink) {
-    String error = '';
     switch (date.length) {
       case 1:
         if (int.parse(date) <= 1) {

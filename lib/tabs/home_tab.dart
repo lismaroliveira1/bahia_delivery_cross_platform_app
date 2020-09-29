@@ -92,44 +92,43 @@ class _HomeTabState extends State<HomeTab> {
                         child: Row(
                           children: [
                             FlatButton(
-                                onPressed: () async {
-                                  var status =
-                                      await Permission.locationWhenInUse.status;
+                              onPressed: () async {
+                                var status =
+                                    await Permission.locationWhenInUse.status;
 
-                                  if (status.isDenied) {
-                                    //TODO Inplement GO to the settings function
-                                  } else if (status.isGranted) {
-                                    Navigator.of(context)
-                                        .push(MaterialPageRoute(
-                                      builder: (context) => LocationScreen(),
-                                    ));
-                                  } else if (status.isRestricted) {
-                                  } else if (status.isUndetermined) {
-                                    await Permission.locationWhenInUse
-                                        .request();
-                                  } else if (status.isPermanentlyDenied) {
-                                    //Implementar para o mesmo abrir o settings
-                                  }
-                                },
-                                color: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: Row(
-                                  children: [
-                                    Text(model.addressSeted
-                                        ? model.currentUserAddress.street +
-                                            ", nº " +
-                                            model.currentUserAddress.number
-                                        : "Localização"),
-                                    SizedBox(
-                                      width: 20,
-                                    ),
-                                    Icon(
-                                      Icons.location_on,
-                                      size: 20,
-                                    )
-                                  ],
-                                ))
+                                if (status.isDenied) {
+                                  //TODO Inplement GO to the settings function
+                                } else if (status.isGranted) {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => LocationScreen(),
+                                  ));
+                                } else if (status.isRestricted) {
+                                } else if (status.isUndetermined) {
+                                  await Permission.locationWhenInUse.request();
+                                } else if (status.isPermanentlyDenied) {
+                                  //Implementar para o mesmo abrir o settings
+                                }
+                              },
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              child: Row(
+                                children: [
+                                  Text(model.addressSeted
+                                      ? model.currentUserAddress.street +
+                                          ", nº " +
+                                          model.currentUserAddress.number
+                                      : "Localização"),
+                                  SizedBox(
+                                    width: 20,
+                                  ),
+                                  Icon(
+                                    Icons.location_on,
+                                    size: 20,
+                                  )
+                                ],
+                              ),
+                            ),
                           ],
                         ),
                       ),

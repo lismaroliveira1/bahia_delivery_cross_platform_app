@@ -1,12 +1,16 @@
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/payment_screen.dart';
-import 'package:bahia_delivery/tiles/credit_debit_card_tile.dart';
 import 'package:bahia_delivery/tiles/creditcard_tile.dart';
 import 'package:bahia_delivery/tiles/payement_on_delivery_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class PaymentCard extends StatelessWidget {
+class PaymentCard extends StatefulWidget {
+  @override
+  _PaymentCardState createState() => _PaymentCardState();
+}
+
+class _PaymentCardState extends State<PaymentCard> {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
