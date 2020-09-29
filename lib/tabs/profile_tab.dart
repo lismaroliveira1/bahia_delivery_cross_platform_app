@@ -1,4 +1,3 @@
-import 'package:bahia_delivery/models/store_model.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/be_a_partener_screen.dart';
 import 'package:bahia_delivery/screens/order_screen.dart';
