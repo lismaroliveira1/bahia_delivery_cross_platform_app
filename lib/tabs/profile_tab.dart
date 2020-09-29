@@ -1,7 +1,9 @@
+import 'package:bahia_delivery/models/store_model.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/be_a_partener_screen.dart';
 import 'package:bahia_delivery/screens/order_screen.dart';
 import 'package:bahia_delivery/tiles/profile_tile.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -40,125 +42,158 @@ class ProfileTab extends StatelessWidget {
                   description: "Meus Cupons",
                   icon: Icons.money_off),
             ),
-            FlatButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                return showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Dialog(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                        child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20.0),
-                                color: Colors.white),
-                            height: 400,
-                            child: Column(
-                              children: [
-                                Container(
+            StreamBuilder<DocumentSnapshot>(
+              stream: Firestore.instance
+                  .collection("users")
+                  .document(model.firebaseUser.uid)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return CircularProgressIndicator();
+                } else {
+                  if (snapshot.data["isPartner"] == true) {
+                    return FlatButton(
+                      padding: EdgeInsets.zero,
+                      child: ProfileTile(
+                        title: "Gerencie Sua loja",
+                        description:
+                            "Venda seus produtos através do Bahia Delivery",
+                        icon: Icons.scatter_plot,
+                      ),
+                      onPressed: () {},
+                    );
+                  } else {
+                    return FlatButton(
+                      padding: EdgeInsets.zero,
+                      child: ProfileTile(
+                        title: "Crie sua loja",
+                        description:
+                            "Venda seus produtos através do Bahia Delivery",
+                        icon: Icons.scatter_plot,
+                      ),
+                      onPressed: () => showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return Dialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0)),
+                              child: Container(
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: Colors.red[50]),
-                                  height: 150,
-                                  child: Container(
-                                    padding: EdgeInsets.all(12),
-                                    child: Center(
-                                      child: Image.asset("images/logo.png"),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                    padding: EdgeInsets.all(8),
-                                    child: Center(
-                                      child: Text(
-                                        "Bem vindo ao Bahia Delivery Partners",
-                                        style: TextStyle(
-                                            fontSize: 24,
-                                            fontWeight: FontWeight.bold),
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    )),
-                                SizedBox(
-                                  height: 20,
-                                ),
-                                Text(
-                                  "Algumas informações a mais serão requeridas.",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.black45,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(
-                                  height: 60,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.only(left: 20, right: 20),
-                                  child: Row(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                      color: Colors.white),
+                                  height: 400,
+                                  child: Column(
                                     children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(12),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            color: Colors.red[50]),
+                                        height: 150,
                                         child: Container(
-                                          height: 50,
-                                          width: 140,
-                                          child: RaisedButton(
-                                            padding: EdgeInsets.zero,
-                                            color: Colors.red,
-                                            child: Text(
-                                              "Voltar",
-                                              style: TextStyle(fontSize: 18),
-                                            ),
-                                            textColor: Colors.white,
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            disabledColor: Colors.grey,
-                                            disabledTextColor: Colors.black,
+                                          padding: EdgeInsets.all(12),
+                                          child: Center(
+                                            child:
+                                                Image.asset("images/logo.png"),
                                           ),
                                         ),
                                       ),
-                                      Spacer(),
-                                      ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          child: Container(
-                                            height: 50,
-                                            width: 140,
-                                            child: RaisedButton(
-                                              padding: EdgeInsets.zero,
-                                              color: Colors.red,
-                                              child: Text(
-                                                "Ok, vamos lá!",
-                                                style: TextStyle(fontSize: 18),
-                                              ),
-                                              textColor: Colors.white,
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                                Navigator.of(context)
-                                                    .push(MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      BeAParterScreen(),
-                                                ));
-                                              },
-                                              disabledColor: Colors.grey,
-                                              disabledTextColor: Colors.black,
+                                      Container(
+                                          padding: EdgeInsets.all(8),
+                                          child: Center(
+                                            child: Text(
+                                              "Bem vindo ao Bahia Delivery Partners",
+                                              style: TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.bold),
+                                              textAlign: TextAlign.center,
                                             ),
-                                          ))
+                                          )),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      Text(
+                                        "Algumas informações a mais serão requeridas.",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.black45,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      SizedBox(
+                                        height: 60,
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.only(
+                                            left: 20, right: 20),
+                                        child: Row(
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              child: Container(
+                                                height: 50,
+                                                width: 140,
+                                                child: RaisedButton(
+                                                  padding: EdgeInsets.zero,
+                                                  color: Colors.red,
+                                                  child: Text(
+                                                    "Voltar",
+                                                    style:
+                                                        TextStyle(fontSize: 18),
+                                                  ),
+                                                  textColor: Colors.white,
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  disabledColor: Colors.grey,
+                                                  disabledTextColor:
+                                                      Colors.black,
+                                                ),
+                                              ),
+                                            ),
+                                            Spacer(),
+                                            ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                                child: Container(
+                                                  height: 50,
+                                                  width: 140,
+                                                  child: RaisedButton(
+                                                    padding: EdgeInsets.zero,
+                                                    color: Colors.red,
+                                                    child: Text(
+                                                      "Ok, vamos lá!",
+                                                      style: TextStyle(
+                                                          fontSize: 18),
+                                                    ),
+                                                    textColor: Colors.white,
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      Navigator.of(context)
+                                                          .push(
+                                                              MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            BeAParterScreen(),
+                                                      ));
+                                                    },
+                                                    disabledColor: Colors.grey,
+                                                    disabledTextColor:
+                                                        Colors.black,
+                                                  ),
+                                                ))
+                                          ],
+                                        ),
+                                      )
                                     ],
-                                  ),
-                                )
-                              ],
-                            )),
-                      );
-                    });
+                                  )),
+                            );
+                          }),
+                    );
+                  }
+                }
               },
-              child: ProfileTile(
-                  title: model.updateUser()
-                      ? "Gerencie sua loja"
-                      : "Crie sua loja",
-                  description: "Venda seus produtos através do nosso app",
-                  icon: Icons.scatter_plot),
             ),
             FlatButton(
               padding: EdgeInsets.zero,
@@ -183,10 +218,127 @@ class ProfileTab extends StatelessWidget {
             FlatButton(
               onPressed: () {},
               padding: EdgeInsets.zero,
-              child: ProfileTile(
-                  title: "Minha Conta",
-                  description: "Aconpanhe seus pedidos",
-                  icon: Icons.list),
+              child: FlatButton(
+                padding: EdgeInsets.zero,
+                onPressed: () {
+                  return showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Dialog(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0)),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                  color: Colors.white),
+                              height: 400,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(20),
+                                        color: Colors.red[50]),
+                                    height: 150,
+                                    child: Container(
+                                      padding: EdgeInsets.all(12),
+                                      child: Center(
+                                        child: Image.asset("images/logo.png"),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                      padding: EdgeInsets.all(8),
+                                      child: Center(
+                                        child: Text(
+                                          "Bem vindo ao Bahia Delivery Partners",
+                                          style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      )),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  Text(
+                                    "Algumas informações a mais serão requeridas.",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black45,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(
+                                    height: 60,
+                                  ),
+                                  Container(
+                                    padding:
+                                        EdgeInsets.only(left: 20, right: 20),
+                                    child: Row(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          child: Container(
+                                            height: 50,
+                                            width: 140,
+                                            child: RaisedButton(
+                                              padding: EdgeInsets.zero,
+                                              color: Colors.red,
+                                              child: Text(
+                                                "Voltar",
+                                                style: TextStyle(fontSize: 18),
+                                              ),
+                                              textColor: Colors.white,
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              disabledColor: Colors.grey,
+                                              disabledTextColor: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            child: Container(
+                                              height: 50,
+                                              width: 140,
+                                              child: RaisedButton(
+                                                padding: EdgeInsets.zero,
+                                                color: Colors.red,
+                                                child: Text(
+                                                  "Ok, vamos lá!",
+                                                  style:
+                                                      TextStyle(fontSize: 18),
+                                                ),
+                                                textColor: Colors.white,
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  Navigator.of(context)
+                                                      .push(MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        BeAParterScreen(),
+                                                  ));
+                                                },
+                                                disabledColor: Colors.grey,
+                                                disabledTextColor: Colors.black,
+                                              ),
+                                            ))
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              )),
+                        );
+                      });
+                },
+                child: ProfileTile(
+                    title: "Minha Conta",
+                    description: "Aconpanhe seus pedidos",
+                    icon: Icons.list),
+              ),
             ),
             FlatButton(
               padding: EdgeInsets.zero,

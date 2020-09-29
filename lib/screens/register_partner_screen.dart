@@ -13,6 +13,7 @@ class PartnerRegisterScreen extends StatelessWidget {
       body: ScopedModelDescendant<UserModel>(
         builder: (context, child, model) {
           return Form(
+            key: _formKey,
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
