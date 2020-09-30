@@ -551,6 +551,15 @@ class UserModel extends Model {
 
   void saveToken() async {
     final token = await FirebaseMessaging().getToken();
-    print(token);
+    await Firestore.instance
+        .collection('users')
+        .document(firebaseUser.uid)
+        .collection('tokens')
+        .document(token)
+        .setData({
+      'token': token,
+      'updateAt': FieldValue.serverTimestamp(),
+      'platform': Platform.operatingSystem
+    });
   }
 }
