@@ -13,7 +13,16 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController socialNameController = TextEditingController();
+  final TextEditingController fantasyNameController = TextEditingController();
   final TextEditingController cpfController = TextEditingController();
+  final TextEditingController cnpjController = TextEditingController();
+  final TextEditingController zipCodeController = TextEditingController();
+  final TextEditingController streetController = TextEditingController();
+  final TextEditingController districtController = TextEditingController();
+  final TextEditingController numberController = TextEditingController();
+  final TextEditingController cityController = TextEditingController();
+  final TextEditingController stateController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,12 +113,20 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                             child: Column(
                               children: <Widget>[
                                 InputStoreData(
-                                    hintText: "", labelText: "Nome Fantasia"),
+                                  hintText: "",
+                                  labelText: "Nome Fantasia",
+                                  controller: fantasyNameController,
+                                ),
                                 InputStoreData(
-                                    hintText: "", labelText: "Razão Social"),
+                                  hintText: "",
+                                  labelText: "Razão Social",
+                                  controller: socialNameController,
+                                ),
                                 InputStoreData(
-                                    hintText: "00.000.000/0000-00 ",
-                                    labelText: "CNPJ"),
+                                  hintText: "00.000.000/0000-00 ",
+                                  labelText: "CNPJ",
+                                  controller: cnpjController,
+                                ),
                                 Row(
                                   children: [
                                     Padding(
@@ -121,23 +138,30 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                   ],
                                 ),
                                 InputStoreData(
-                                    hintText: "00000-000", labelText: "CEP"),
+                                  hintText: "00000-000",
+                                  labelText: "CEP",
+                                  controller: zipCodeController,
+                                ),
                                 InputStoreData(
-                                    hintText: "", labelText: "Logradouro"),
+                                  hintText: "",
+                                  labelText: "Logradouro",
+                                  controller: streetController,
+                                ),
                                 Row(
                                   children: [
                                     Expanded(
                                       flex: 6,
                                       child: InputStoreData(
-                                        labelText: "Bairro",
-                                        hintText: "",
-                                      ),
+                                          labelText: "Bairro",
+                                          hintText: "",
+                                          controller: districtController),
                                     ),
                                     Expanded(
                                       flex: 4,
                                       child: InputStoreData(
                                         labelText: "Número",
                                         hintText: "123",
+                                        controller: numberController,
                                       ),
                                     ),
                                   ],
@@ -149,6 +173,7 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                       child: InputStoreData(
                                         labelText: "Cidade",
                                         hintText: "",
+                                        controller: cityController,
                                       ),
                                     ),
                                     Expanded(
@@ -156,6 +181,7 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                       child: InputStoreData(
                                         labelText: "Estado",
                                         hintText: "123",
+                                        controller: stateController,
                                       ),
                                     ),
                                   ],
@@ -184,10 +210,16 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
                               children: <Widget>[
-                                InputStoreData(hintText: "", labelText: "Nome"),
                                 InputStoreData(
-                                    hintText: "000.000.000-00",
-                                    labelText: "CPF"),
+                                  hintText: "",
+                                  labelText: "Nome",
+                                  controller: nameController,
+                                ),
+                                InputStoreData(
+                                  hintText: "000.000.000-00",
+                                  labelText: "CPF",
+                                  controller: cpfController,
+                                ),
                                 Row(
                                   children: [
                                     Padding(
@@ -199,9 +231,15 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                   ],
                                 ),
                                 InputStoreData(
-                                    hintText: "00000-000", labelText: "CEP"),
+                                  hintText: "00000-000",
+                                  labelText: "CEP",
+                                  controller: zipCodeController,
+                                ),
                                 InputStoreData(
-                                    hintText: "", labelText: "Logradouro"),
+                                  hintText: "",
+                                  labelText: "Logradouro",
+                                  controller: streetController,
+                                ),
                                 Row(
                                   children: [
                                     Expanded(
@@ -209,6 +247,7 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                       child: InputStoreData(
                                         labelText: "Bairro",
                                         hintText: "",
+                                        controller: districtController,
                                       ),
                                     ),
                                     Expanded(
@@ -216,6 +255,7 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                       child: InputStoreData(
                                         labelText: "Número",
                                         hintText: "123",
+                                        controller: numberController,
                                       ),
                                     ),
                                   ],
@@ -227,6 +267,7 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                       child: InputStoreData(
                                         labelText: "Cidade",
                                         hintText: "",
+                                        controller: cityController,
                                       ),
                                     ),
                                     Expanded(
@@ -234,6 +275,7 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                       child: InputStoreData(
                                         labelText: "Estado",
                                         hintText: "123",
+                                        controller: numberController,
                                       ),
                                     ),
                                   ],
