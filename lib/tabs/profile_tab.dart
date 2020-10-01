@@ -59,7 +59,7 @@ class ProfileTab extends StatelessWidget {
                       return CircularProgressIndicator();
                     } else if (snapshot.hasData) {
                       if (snapshot.data["isPartner"] != null) {
-                        if (snapshot.data["isPartner"] == true) {
+                        if (snapshot.data["isPartner"] == 1) {
                           return FlatButton(
                             padding: EdgeInsets.zero,
                             child: ProfileTile(
@@ -76,11 +76,21 @@ class ProfileTab extends StatelessWidget {
                               );
                             },
                           );
+                        } else if (snapshot.data["isPartner"] == 2) {
+                          return FlatButton(
+                            padding: EdgeInsets.zero,
+                            child: ProfileTile(
+                              title: "Proposta enviada",
+                              description: "Analisando seus dados",
+                              icon: Icons.scatter_plot,
+                            ),
+                            onPressed: () {},
+                          );
                         } else {
                           return FlatButton(
                             padding: EdgeInsets.zero,
                             child: ProfileTile(
-                              title: "Crie sua loja",
+                              title: "Seja nosso parceiro",
                               description:
                                   "Venda seus produtos através do Bahia Delivery",
                               icon: Icons.scatter_plot,

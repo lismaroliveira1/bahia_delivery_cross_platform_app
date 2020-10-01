@@ -25,7 +25,7 @@ class UserModel extends Model {
   FirebaseUser firebaseUser;
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = false;
-  bool isPartner = false;
+  int isPartner = 3;
   double longittude;
   double latitude;
   int favoriteStoryQuantity = 0;
@@ -57,11 +57,12 @@ class UserModel extends Model {
     _loadListCreditDebitCard();
   }
 
-  Future<void> signIn(
-      {@required String email,
-      @required String pass,
-      @required Function onFail,
-      @required Function onSuccess}) async {
+  Future<void> signIn({
+    @required String email,
+    @required String pass,
+    @required Function onFail,
+    @required Function onSuccess,
+  }) async {
     isLoading = true;
     notifyListeners();
     try {
@@ -566,10 +567,11 @@ class UserModel extends Model {
 
   void createNewStoreWithCPF(StoreCPF storeCPF) async {
     await Firestore.instance.collection("stores").add({
-      "name": storeCPF.name,
+      "title": storeCPF.name,
       "cpf": storeCPF.cpf,
-      "image": "",
-      "isOpen": false,
+      "image": storeCPF.image,
+      "description": storeCPF.description,
+      "isOpen": true,
       "address": {
         "zipCode": storeCPF.zipCode,
         "street": storeCPF.street,
@@ -583,7 +585,10 @@ class UserModel extends Model {
       await Firestore.instance
           .collection("users")
           .document(firebaseUser.uid)
-          .updateData({"storeId": store.documentID});
+          .updateData({
+        "storeId": store.documentID,
+        "isPartner": 2,
+      });
     });
   }
 }

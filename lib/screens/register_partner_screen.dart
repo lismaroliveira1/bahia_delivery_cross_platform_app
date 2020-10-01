@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:bahia_delivery/data/store_with_cpf_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/widgets/input_store_data.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,6 +20,7 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
   final TextEditingController socialNameController = TextEditingController();
   final TextEditingController fantasyNameController = TextEditingController();
   final TextEditingController cpfController = TextEditingController();
@@ -162,6 +162,11 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                               controller: socialNameController,
                             ),
                             InputStoreData(
+                              hintText: "",
+                              labelText: "Descrição",
+                              controller: descriptionController,
+                            ),
+                            InputStoreData(
                               hintText: "00.000.000/0000-00 ",
                               labelText: "CNPJ",
                               controller: cnpjController,
@@ -251,8 +256,13 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                           children: <Widget>[
                             InputStoreData(
                               hintText: "",
-                              labelText: "Nome",
+                              labelText: "Nome da loja",
                               controller: nameController,
+                            ),
+                            InputStoreData(
+                              hintText: "",
+                              labelText: "Descrição",
+                              controller: descriptionController,
                             ),
                             InputStoreData(
                               hintText: "000.000.000-00",
@@ -326,6 +336,7 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                 } else {
                                   final StoreCPF storeCPF = StoreCPF(
                                       name: nameController.text,
+                                      description: descriptionController.text,
                                       cpf: cpfController.text,
                                       zipCode: zipCodeController.text,
                                       street: streetController.text,

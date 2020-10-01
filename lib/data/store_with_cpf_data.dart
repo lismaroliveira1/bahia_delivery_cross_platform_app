@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 class StoreCPF {
   String image;
+  String description;
   String name;
   String cpf;
   String zipCode;
@@ -12,6 +13,7 @@ class StoreCPF {
   String state;
   StoreCPF({
     @required this.name,
+    @required this.description,
     @required this.cpf,
     @required this.zipCode,
     @required this.street,
