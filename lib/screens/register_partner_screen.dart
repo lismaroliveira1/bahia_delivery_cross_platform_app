@@ -1,4 +1,5 @@
 import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/widgets/input_store_data.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -9,9 +10,14 @@ class PartnerRegisterScreen extends StatefulWidget {
 
 class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
   bool isJuridicPerson = false;
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController cpfController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -22,87 +28,238 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
       ),
       body: ScopedModelDescendant<UserModel>(
         builder: (context, child, model) {
-          return Container(
-            padding: EdgeInsets.all(12.0),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: Center(
-                    child: Container(
-                      height: 150,
-                      width: 150,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.yellow),
-                      child: Stack(
+          return Form(
+            key: formKey,
+            child: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.all(12.0),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: Center(
+                        child: Container(
+                          height: 150,
+                          width: 150,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12),
+                              color: Colors.yellow),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                right: 4,
+                                bottom: 4,
+                                child: IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(Icons.camera_alt),
+                                  color: Colors.black54,
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    FlatButton(
+                      padding: EdgeInsets.all(
+                        12.0,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          isJuridicPerson = false;
+                        });
+                      },
+                      child: Row(
                         children: [
-                          Positioned(
-                            right: 4,
-                            bottom: 4,
-                            child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(Icons.camera_alt),
-                              color: Colors.black54,
-                            ),
-                          )
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Icon(Icons.ac_unit),
+                          ),
+                          Text("Pessoa Físca"),
                         ],
                       ),
                     ),
-                  ),
-                ),
-                FlatButton(
-                  padding: EdgeInsets.all(
-                    12.0,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isJuridicPerson = false;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Icon(Icons.ac_unit),
+                    FlatButton(
+                      padding: EdgeInsets.all(
+                        12.0,
                       ),
-                      Text("Pessoa Físca"),
-                    ],
-                  ),
-                ),
-                FlatButton(
-                  padding: EdgeInsets.all(
-                    12.0,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      isJuridicPerson = true;
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Icon(Icons.ac_unit),
+                      onPressed: () {
+                        setState(() {
+                          isJuridicPerson = true;
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Icon(Icons.ac_unit),
+                          ),
+                          Text("Pessoa Jurídica"),
+                        ],
                       ),
-                      Text("Pessoa Jurídica"),
-                    ],
-                  ),
+                    ),
+                    isJuridicPerson
+                        ? Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: <Widget>[
+                                InputStoreData(
+                                    hintText: "", labelText: "Nome Fantasia"),
+                                InputStoreData(
+                                    hintText: "", labelText: "Razão Social"),
+                                InputStoreData(
+                                    hintText: "00.000.000/0000-00 ",
+                                    labelText: "CNPJ"),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "Endereço",
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                InputStoreData(
+                                    hintText: "00000-000", labelText: "CEP"),
+                                InputStoreData(
+                                    hintText: "", labelText: "Logradouro"),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 6,
+                                      child: InputStoreData(
+                                        labelText: "Bairro",
+                                        hintText: "",
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: InputStoreData(
+                                        labelText: "Número",
+                                        hintText: "123",
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 7,
+                                      child: InputStoreData(
+                                        labelText: "Cidade",
+                                        hintText: "",
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: InputStoreData(
+                                        labelText: "Estado",
+                                        hintText: "123",
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                FlatButton(
+                                  padding: EdgeInsets.all(8),
+                                  onPressed: () {},
+                                  child: Container(
+                                    height: 50,
+                                    width: 100,
+                                    child: Center(
+                                      child: Text(
+                                        "Enviar",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: Colors.red),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              children: <Widget>[
+                                InputStoreData(hintText: "", labelText: "Nome"),
+                                InputStoreData(
+                                    hintText: "000.000.000-00",
+                                    labelText: "CPF"),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "Endereço",
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                InputStoreData(
+                                    hintText: "00000-000", labelText: "CEP"),
+                                InputStoreData(
+                                    hintText: "", labelText: "Logradouro"),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 6,
+                                      child: InputStoreData(
+                                        labelText: "Bairro",
+                                        hintText: "",
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: InputStoreData(
+                                        labelText: "Número",
+                                        hintText: "123",
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 7,
+                                      child: InputStoreData(
+                                        labelText: "Cidade",
+                                        hintText: "",
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 3,
+                                      child: InputStoreData(
+                                        labelText: "Estado",
+                                        hintText: "123",
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                FlatButton(
+                                  padding: EdgeInsets.all(8),
+                                  onPressed: () {},
+                                  child: Container(
+                                    height: 50,
+                                    width: 100,
+                                    child: Center(
+                                      child: Text(
+                                        "Enviar",
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: Colors.red),
+                                  ),
+                                ),
+                              ],
+                            )),
+                  ],
                 ),
-                isJuridicPerson
-                    ? Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          height: 120,
-                          color: Colors.blue,
-                        ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: <Widget>[TextField()],
-                        )),
-              ],
+              ),
             ),
           );
         },

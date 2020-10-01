@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:bahia_delivery/data/payment_on_delivery_date.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/insert_card_screen.dart';
