@@ -577,6 +577,7 @@ class UserModel extends Model {
         "number": storeCPF.number,
         "city": storeCPF.city,
         "state": storeCPF.state,
+        "image": storeCPF.image,
       }
     }).then((store) async {
       await Firestore.instance

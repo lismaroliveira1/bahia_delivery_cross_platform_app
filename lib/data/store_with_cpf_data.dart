@@ -19,5 +19,6 @@ class StoreCPF {
     @required this.number,
     @required this.city,
     @required this.state,
+    @required this.image,
   });
 }

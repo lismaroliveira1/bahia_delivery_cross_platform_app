@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:bahia_delivery/data/store_with_cpf_data.dart';
-import 'package:bahia_delivery/models/store_model.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/widgets/input_store_data.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PartnerRegisterScreen extends StatefulWidget {
   @override
@@ -11,7 +14,10 @@ class PartnerRegisterScreen extends StatefulWidget {
 }
 
 class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
+  File _image;
   bool isJuridicPerson = false;
+  String imageUrl = "https://meuvidraceiro.com.br/images/sem-imagem.png";
+  final picker = ImagePicker();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController nameController = TextEditingController();
@@ -52,14 +58,47 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                       width: 150,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
-                          color: Colors.yellow),
+                          color: Colors.transparent),
                       child: Stack(
                         children: [
+                          Container(
+                            height: 150.0,
+                            width: 150.0,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.network(
+                                imageUrl,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
                           Positioned(
                             right: 4,
                             bottom: 4,
                             child: IconButton(
-                              onPressed: () {},
+                              onPressed: () async {
+                                final _pickedFile = await picker.getImage(
+                                    source: ImageSource.camera,
+                                    maxHeight: 500,
+                                    maxWidth: 500);
+                                if (_pickedFile == null) return;
+                                _image = File(_pickedFile.path);
+                                if (_image == null) return;
+                                StorageUploadTask task = FirebaseStorage
+                                    .instance
+                                    .ref()
+                                    .child("images")
+                                    .child(nameController.text +
+                                        DateTime.now().millisecond.toString())
+                                    .putFile(_image);
+                                StorageTaskSnapshot taskSnapshot =
+                                    await task.onComplete;
+                                String url =
+                                    await taskSnapshot.ref.getDownloadURL();
+                                setState(() {
+                                  imageUrl = url;
+                                });
+                              },
                               icon: Icon(Icons.camera_alt),
                               color: Colors.black54,
                             ),
@@ -286,15 +325,15 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                 if (isJuridicPerson) {
                                 } else {
                                   final StoreCPF storeCPF = StoreCPF(
-                                    name: nameController.text,
-                                    cpf: cpfController.text,
-                                    zipCode: zipCodeController.text,
-                                    street: streetController.text,
-                                    district: districtController.text,
-                                    number: numberController.text,
-                                    city: cityController.text,
-                                    state: stateController.text,
-                                  );
+                                      name: nameController.text,
+                                      cpf: cpfController.text,
+                                      zipCode: zipCodeController.text,
+                                      street: streetController.text,
+                                      district: districtController.text,
+                                      number: numberController.text,
+                                      city: cityController.text,
+                                      state: stateController.text,
+                                      image: imageUrl);
                                   UserModel.of(context)
                                       .createNewStoreWithCPF(storeCPF);
                                 }
