@@ -295,6 +295,8 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                     city: cityController.text,
                                     state: stateController.text,
                                   );
+                                  UserModel.of(context)
+                                      .createNewStoreWithCPF(storeCPF);
                                 }
                               },
                               child: Container(
