@@ -4,6 +4,7 @@ import 'package:bahia_delivery/data/credit_debit_card_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_item.dart';
 import 'package:bahia_delivery/data/payment_on_delivery_date.dart';
 import 'package:bahia_delivery/data/search_data.dart';
+import 'package:bahia_delivery/data/store_with_cpf_data.dart';
 import 'package:bahia_delivery/models/adress.dart';
 import 'package:bahia_delivery/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -560,6 +561,28 @@ class UserModel extends Model {
       'token': token,
       'updateAt': FieldValue.serverTimestamp(),
       'platform': Platform.operatingSystem
+    });
+  }
+
+  void createNewStoreWithCPF(StoreCPF storeCPF) async {
+    await Firestore.instance.collection("stores").add({
+      "name": storeCPF.name,
+      "cpf": storeCPF.cpf,
+      "image": "",
+      "isOpen": false,
+      "address": {
+        "zipCode": storeCPF.zipCode,
+        "street": storeCPF.street,
+        "district": storeCPF.district,
+        "number": storeCPF.number,
+        "city": storeCPF.city,
+        "state": storeCPF.state,
+      }
+    }).then((store) async {
+      await Firestore.instance
+          .collection("users")
+          .document(firebaseUser.uid)
+          .updateData({"storeId": store.documentID});
     });
   }
 }

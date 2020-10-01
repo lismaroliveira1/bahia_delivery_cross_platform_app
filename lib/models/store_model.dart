@@ -1,3 +1,4 @@
+import 'package:bahia_delivery/data/store_with_cpf_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -24,4 +25,6 @@ class StoreModel extends Model {
       isPartner = false;
     }
   }
+
+  void createNewStoreWithCNPJ() {}
 }
