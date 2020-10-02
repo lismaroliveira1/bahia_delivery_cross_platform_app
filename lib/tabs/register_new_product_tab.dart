@@ -145,6 +145,8 @@ class _RegisterNewProductTabState extends State<RegisterNewProductTab> {
                         return FlatButton(
                           onPressed: () {
                             model.createNewProduct(
+                              onFail: _onFail,
+                              onSuccess: _onSuccess,
                               price: priceController.text,
                               category: categgoryController.text,
                               imageFile: imageFile,
@@ -176,5 +178,14 @@ class _RegisterNewProductTabState extends State<RegisterNewProductTab> {
         ),
       ],
     );
+  }
+
+  void _onSuccess() {
+    print("sucesso");
+    Navigator.of(context).pop();
+  }
+
+  void _onFail() {
+    print("failure");
   }
 }

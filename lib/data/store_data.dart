@@ -16,7 +16,7 @@ class StoreData {
   Map<String, dynamic> toMap() {
     return {
       "id": id,
-      "name": name,
+      "title": name,
       "image": image,
       "description": description,
     };

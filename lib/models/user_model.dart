@@ -617,31 +617,38 @@ class UserModel extends Model {
     @required String description,
     @required String price,
     @required String category,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
   }) async {
     isLoading = true;
     notifyListeners();
-    StorageUploadTask task = FirebaseStorage.instance
-        .ref()
-        .child("images")
-        .child(storeData.id + DateTime.now().millisecond.toString())
-        .putFile(imageFile);
-    StorageTaskSnapshot taskSnapshot = await task.onComplete;
-    String url = await taskSnapshot.ref.getDownloadURL();
-    print(userData["storeId"] + "  " + url);
-    Firestore.instance
-        .collection("stores")
-        .document(userData["storeId"])
-        .collection("products")
-        .add({
-      "title": title,
-      "description": description,
-      "image": url,
-      "price": double.parse(
-        price.replaceAll(",", "."),
-      ),
-      "storeId": userData["storeId"]
-    }).then((value) {});
-    isLoading = false;
-    notifyListeners();
+    try {
+      StorageUploadTask task = FirebaseStorage.instance
+          .ref()
+          .child("images")
+          .child(storeData.id + DateTime.now().millisecond.toString())
+          .putFile(imageFile);
+      StorageTaskSnapshot taskSnapshot = await task.onComplete;
+      String url = await taskSnapshot.ref.getDownloadURL();
+      Firestore.instance
+          .collection("stores")
+          .document(userData["storeId"])
+          .collection("products")
+          .add({
+        "title": title,
+        "category": category,
+        "description": description,
+        "image": url,
+        "price": double.parse(
+          price.replaceAll(",", "."),
+        ),
+        "storeID": userData["storeId"]
+      }).then((value) {});
+      onSuccess();
+      isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      onFail();
+    }
   }
 }
