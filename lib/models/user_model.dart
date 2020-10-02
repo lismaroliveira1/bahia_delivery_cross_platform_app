@@ -12,11 +12,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const token = '635289558f18ba4c749d6928e8cd0ba7';
@@ -607,5 +609,39 @@ class UserModel extends Model {
       storeData.image = storeCPF.description;
       storeData.description = storeCPF.description;
     });
+  }
+
+  void createNewProduct({
+    @required File imageFile,
+    @required String title,
+    @required String description,
+    @required String price,
+    @required String category,
+  }) async {
+    isLoading = true;
+    notifyListeners();
+    StorageUploadTask task = FirebaseStorage.instance
+        .ref()
+        .child("images")
+        .child(storeData.id + DateTime.now().millisecond.toString())
+        .putFile(imageFile);
+    StorageTaskSnapshot taskSnapshot = await task.onComplete;
+    String url = await taskSnapshot.ref.getDownloadURL();
+    print(userData["storeId"] + "  " + url);
+    Firestore.instance
+        .collection("stores")
+        .document(userData["storeId"])
+        .collection("products")
+        .add({
+      "title": title,
+      "description": description,
+      "image": url,
+      "price": double.parse(
+        price.replaceAll(",", "."),
+      ),
+      "storeId": userData["storeId"]
+    }).then((value) {});
+    isLoading = false;
+    notifyListeners();
   }
 }
