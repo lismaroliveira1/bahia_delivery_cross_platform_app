@@ -4,6 +4,7 @@ import 'package:bahia_delivery/data/credit_debit_card_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_item.dart';
 import 'package:bahia_delivery/data/payment_on_delivery_date.dart';
 import 'package:bahia_delivery/data/search_data.dart';
+import 'package:bahia_delivery/data/store_data.dart';
 import 'package:bahia_delivery/data/store_with_cpf_data.dart';
 import 'package:bahia_delivery/models/adress.dart';
 import 'package:bahia_delivery/models/user.dart';
@@ -46,6 +47,7 @@ class UserModel extends Model {
   CreditDebitCardData currentCreditDebitCardData;
   PaymentOnDeliveryData currentPaymentOndeliveryData;
   bool payOnApp;
+  StoreData storeData;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -336,6 +338,18 @@ class UserModel extends Model {
             .get();
         userData = docUser.data;
         isPartner = userData["isPartner"];
+        if (userData["storeId"] != null) {
+          await Firestore.instance
+              .collection("stores")
+              .document(userData["storeId"])
+              .get()
+              .then((doc) {
+            if (doc.exists) {
+              final storeDocument = StoreData.fromDocument(doc);
+              storeData = storeDocument;
+            }
+          });
+        }
         if (userData["currentAddress"] != null) {
           currentUserId = userData["currentAddress"];
           try {
@@ -589,6 +603,9 @@ class UserModel extends Model {
         "storeId": store.documentID,
         "isPartner": 2,
       });
+      storeData.name = storeCPF.name;
+      storeData.image = storeCPF.description;
+      storeData.description = storeCPF.description;
     });
   }
 }

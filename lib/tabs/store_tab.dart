@@ -23,9 +23,11 @@ class _StoreTabState extends State<StoreTab> {
           return <Widget>[
             SliverAppBar(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30))),
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
+                ),
+              ),
               expandedHeight: 300.0,
               floating: false,
               pinned: false,
