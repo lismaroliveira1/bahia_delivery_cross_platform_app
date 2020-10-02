@@ -1,4 +1,7 @@
 import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/create_edite_product_screen.dart';
+import 'package:bahia_delivery/screens/financial_screen.dart';
+import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -10,41 +13,118 @@ class StoreHomeTab extends StatefulWidget {
 class _StoreHomeTabState extends State<StoreHomeTab> {
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
-      if (model.isLoading) {
-        return Container(
-          color: Colors.white,
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      } else {
-        return CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(25),
-                  bottomRight: Radius.circular(25),
-                ),
-              ),
-              expandedHeight: MediaQuery.of(context).size.height / 6,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(25),
-                      bottomRight: Radius.circular(25),
-                    ),
-                    color: Colors.black,
+    return ScopedModelDescendant<UserModel>(
+      builder: (context, child, model) {
+        if (model.isLoading) {
+          return Container(
+            color: Colors.white,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        } else {
+          return CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                title: Text(
+                  model.storeData.name,
+                  style: TextStyle(
+                    color: Colors.white,
                   ),
-                  child: Image.network(model.storeData.image),
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(25),
+                    bottomRight: Radius.circular(25),
+                  ),
+                ),
+                expandedHeight: MediaQuery.of(context).size.height / 6,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(25),
+                        bottomRight: Radius.circular(25),
+                      ),
+                      color: Colors.black,
+                    ),
+                    child: Image.network(model.storeData.image),
+                  ),
                 ),
               ),
-            )
-          ],
-        );
-      }
-    });
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    SizedBox(
+                      height: 100,
+                    )
+                  ],
+                ),
+              ),
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    StoreHomeWigget(
+                      onPressed: _onFinancialCashWidgetPressed,
+                      icon: Icons.attach_money,
+                      name: "Caixa",
+                      description: "Acesso ao financeiro da loja",
+                    ),
+                    StoreHomeWigget(
+                      onPressed: _onProductWidgetPressed,
+                      icon: Icons.add_circle_outline,
+                      name: "Produtos",
+                      description: "Adcione ou edite produtos",
+                    ),
+                    StoreHomeWigget(
+                      onPressed: () {},
+                      icon: Icons.bolt,
+                      name: "Promoções",
+                      description: "Adicione ou edite promoções",
+                    ),
+                    StoreHomeWigget(
+                      onPressed: () {},
+                      icon: Icons.list_alt_rounded,
+                      name: "Pedidos",
+                      description:
+                          "Consulte os andamentos e detalhes de seus pedidos",
+                    ),
+                    StoreHomeWigget(
+                      onPressed: () {},
+                      icon: Icons.message_outlined,
+                      name: "Chats",
+                      description:
+                          "Consulte o histórico de chats com os clientes",
+                    ),
+                    StoreHomeWigget(
+                      onPressed: () {},
+                      icon: Icons.settings,
+                      name: "Configurações",
+                      description: "Personalize sua loja",
+                    )
+                  ],
+                ),
+              ),
+            ],
+          );
+        }
+      },
+    );
+  }
+
+  void _onFinancialCashWidgetPressed() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => FinancialScrenn(),
+      ),
+    );
+  }
+
+  void _onProductWidgetPressed() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => CreateEditProductScreen(),
+      ),
+    );
   }
 }
