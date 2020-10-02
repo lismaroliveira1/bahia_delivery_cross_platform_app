@@ -1,5 +1,5 @@
 import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/create_edite_product_screen.dart';
+import 'package:bahia_delivery/screens/create_edit_product_screen.dart';
 import 'package:bahia_delivery/screens/financial_screen.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
