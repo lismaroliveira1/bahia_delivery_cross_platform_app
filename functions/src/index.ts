@@ -12,7 +12,7 @@ const cieloParams: CieloConstructor = {
     merchantId: merchantId,
     merchantKey: merchantkey,
     sandbox: true,
-    debug: true
+    debug: true,
 };
 
 const cielo = new Cielo(cieloParams);
@@ -23,7 +23,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
             "success": false,
             "error": {
                 "code": -1,
-                "message": "Dados não informados"
+                "message": "Dados não informados",
             }
         };
     }
@@ -32,7 +32,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
             "success": false,
             "error": {
                 "code": -1,
-                "message": "Nenhum Usuário Logado"
+                "message": "Nenhum Usuário Logado",
             }
         };
     }
@@ -83,7 +83,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                 "success": false,
                 "error": {
                     "code": -1,
-                    "message": "Caratão não suportado: " + data.creditCard.brand
+                    "message": "Caratão não suportado: " + data.creditCard.brand,
                 }
             };
     }
@@ -102,7 +102,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                 city: userData.address.city,
                 state: userData.address.state,
                 country: "BRA",
-                district: userData.address.district
+                district: userData.address.district,
             }
         },
         payment: {
@@ -156,7 +156,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                 "status": transaction.payment.status,
                 "error": {
                     "code": transaction.payment.returnCode,
-                    "message": message
+                    "message": message,
                 }
             };
         }
@@ -165,7 +165,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
             "success": false,
             "error": {
                 'code': e.response[0].Code,
-                'message': e.response[0].Message
+                'message': e.response[0].Message,
             }
         };
     }
@@ -174,7 +174,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
 
 export const helloWorld = functions.https.onCall((data, context) => {
     return {
-        data: "Hello from cloud functions!!!!"
+        data: "Hello from cloud functions!!!!",
     };
 });
 
