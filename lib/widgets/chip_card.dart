@@ -11,13 +11,15 @@ class ShipCard extends StatelessWidget {
       return Card(
         margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
         child: ExpansionTile(
-          title: Text(
-            model.currentUserAddress.street +
-                ", nº " +
-                model.currentUserAddress.number,
-            style:
-                TextStyle(fontWeight: FontWeight.w500, color: Colors.grey[700]),
-          ),
+          title: model.addressSeted
+              ? Text(
+                  model.currentUserAddress.street +
+                      ", nº " +
+                      model.currentUserAddress.number,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500, color: Colors.grey[700]),
+                )
+              : Text("Adcionar Endereço"),
           leading: Icon(Icons.location_on),
           trailing: IconButton(
             padding: EdgeInsets.zero,

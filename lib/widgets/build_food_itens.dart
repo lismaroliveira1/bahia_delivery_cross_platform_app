@@ -2,8 +2,10 @@ import 'package:bahia_delivery/data/cart_product.dart';
 import 'package:bahia_delivery/data/product_data.dart';
 import 'package:bahia_delivery/models/cart_model.dart';
 import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/cart_screen.dart';
 import 'package:bahia_delivery/screens/login_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -138,13 +140,26 @@ class _FoodItemState extends State<FoodItem> {
 
   Future<void> _onDifferentStore() async {
     return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            height: 100,
-            width: 100,
-            color: Colors.amber,
-          );
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return CupertinoAlertDialog(
+          title: Text("Existem Itens no seu Carrinho"),
+          content: Text("Gostaria de encerrar a comprar primeiro"),
+          actions: [
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => CartScreen()));
+              },
+              child: Text("Sim"),
+            ),
+            FlatButton(
+              onPressed: () {},
+              child: Text("Não"),
+            ),
+          ],
+        );
+      },
+    );
   }
 }
