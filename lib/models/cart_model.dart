@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:bahia_delivery/data/cart_product.dart';
 import 'package:bahia_delivery/data/credit_debit_card_data.dart';
@@ -15,24 +16,42 @@ class CartModel extends Model {
   int discountPercentage = 0;
   bool isLoading = false;
   bool itemExist = false;
+  String currentStore;
   CartModel(this.user) {
     if (user.isLoggedIn()) _loadCartItems();
   }
   static CartModel of(BuildContext context) =>
       ScopedModel.of<CartModel>(context);
 
-  void addCartItem(CartProduct cartProduct) async {
-    products.add(cartProduct);
-
-    Firestore.instance
-        .collection("users")
-        .document(user.firebaseUser.uid)
-        .collection("cart")
-        .add(cartProduct.toMap())
-        .then((doc) {
-      cartProduct.cId = doc.documentID;
-    });
-    notifyListeners();
+  void addCartItem(
+      {@required CartProduct cartProduct,
+      @required VoidCallback onFail}) async {
+    if (currentStore == null) {
+      currentStore = cartProduct.storeId;
+      products.add(cartProduct);
+      Firestore.instance
+          .collection("users")
+          .document(user.firebaseUser.uid)
+          .collection("cart")
+          .add(cartProduct.toMap())
+          .then((doc) {
+        cartProduct.cId = doc.documentID;
+      });
+      notifyListeners();
+    } else if (currentStore == cartProduct.storeId) {
+      products.add(cartProduct);
+      Firestore.instance
+          .collection("users")
+          .document(user.firebaseUser.uid)
+          .collection("cart")
+          .add(cartProduct.toMap())
+          .then((doc) {
+        cartProduct.cId = doc.documentID;
+      });
+      notifyListeners();
+    } else {
+      onFail();
+    }
   }
 
   void verifyItemCart(CartProduct cartProduct) async {
@@ -132,7 +151,9 @@ class CartModel extends Model {
       "shipPrice": shipPrice,
       "discount": discountPrice,
       "totalPrice": totalPrice,
-      "status": 1
+      "status": 1,
+      'updateAt': FieldValue.serverTimestamp(),
+      'platform': Platform.operatingSystem
     });
     await Firestore.instance
         .collection("users")
@@ -179,8 +200,6 @@ class CartModel extends Model {
       notifyListeners();
       return Future.error('Fala ao processa a transação. Tente Novamente');
     }
-    //TODO implementar a função autorização, checagem e pagamento
-
-    //return referOrder.documentID;
+    //TODO implementar a função autorização, checagem e pagament
   }
 }
