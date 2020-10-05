@@ -12,8 +12,8 @@ const cieloParams: CieloConstructor = {
     merchantId: merchantId,
     merchantKey: merchantkey,
     sandbox: true,
-    debug: true,
-}
+    debug: true
+};
 
 const cielo = new Cielo(cieloParams);
 
@@ -124,7 +124,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
 
     try {
         const transaction = await cielo.creditCard.transaction(saleData);
-        if (transaction.payment.status == 1) {
+        if (transaction.payment.status === 1) {
             return {
                 "success": true,
                 "paymentId": transaction.payment.paymentId
@@ -156,7 +156,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                 "status": transaction.payment.status,
                 "error": {
                     "code": transaction.payment.returnCode,
-                    "message": message,
+                    "message": message
                 }
             };
         }
@@ -165,7 +165,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
             "success": false,
             "error": {
                 'code': e.response[0].Code,
-                'message': e.response[0].Message,
+                'message': e.response[0].Message
             }
         };
     }
@@ -189,4 +189,3 @@ export const getUserData = functions.https.onCall(async (data, context) => {
         "data": snapshot.data()
     };
 });
-
