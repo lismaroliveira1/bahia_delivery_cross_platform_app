@@ -88,10 +88,11 @@ class _HomeTabState extends State<HomeTab> {
                   SliverList(
                     delegate: SliverChildListDelegate([
                       Padding(
-                        padding: EdgeInsets.all(10),
+                        padding: EdgeInsets.only(left: 18),
                         child: Row(
                           children: [
                             FlatButton(
+                              padding: EdgeInsets.zero,
                               onPressed: () async {
                                 var status =
                                     await Permission.locationWhenInUse.status;
@@ -133,7 +134,7 @@ class _HomeTabState extends State<HomeTab> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(right: 12, left: 12),
+                        padding: EdgeInsets.only(left: 18),
                         child: Text(
                           "Categorias",
                           style: TextStyle(

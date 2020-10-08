@@ -7,7 +7,7 @@ class AddressData {
   String zipCode;
   double latitude;
   double longitude;
-  String number; //TODO converter number para int
+  String number;
   String street;
   String district;
   String city;

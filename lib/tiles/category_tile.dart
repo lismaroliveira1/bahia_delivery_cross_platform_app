@@ -14,50 +14,49 @@ class ListCategory extends StatelessWidget {
             );
           } else
             return Container(
-                margin: EdgeInsets.symmetric(vertical: 20.0),
-                height: 120.0,
-                width: 100.0,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: snapshot.data.documents.map((doc) {
-                    return Container(
-                      height: 120,
-                      width: 120,
-                      child: Card(
-                        child: Column(
-                          children: [
-                            Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12)),
-                                height: 80,
-                                width: 80,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: FadeInImage.memoryNetwork(
-                                    placeholder: kTransparentImage,
-                                    image: doc.data["image"],
-                                    fit: BoxFit.fill,
-                                  ),
-                                )),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Container(
-                              child: Text(
-                                doc.data["title"],
-                                style: TextStyle(
-                                    color: Colors.grey[600],
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic),
+              margin: EdgeInsets.all(8),
+              height: 120.0,
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: snapshot.data.documents.map((doc) {
+                  return Container(
+                    height: 100,
+                    width: 100,
+                    child: Column(
+                      children: [
+                        Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12)),
+                            height: 75,
+                            width: 75,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: FadeInImage.memoryNetwork(
+                                placeholder: kTransparentImage,
+                                image: doc.data["image"],
+                                fit: BoxFit.fill,
                               ),
-                            ),
-                          ],
+                            )),
+                        SizedBox(
+                          height: 10,
                         ),
-                      ),
-                    );
-                  }).toList(),
-                ));
+                        Container(
+                          child: Text(
+                            doc.data["title"],
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            );
         });
   }
 }

@@ -11,6 +11,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import '../tabs/home_tab.dart';
+import 'package:flushbar/flushbar.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -49,8 +50,25 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       onMessage: (Map<String, dynamic> message) async {
         print("onMessage: $message");
+        showNotification(
+          message['notification']['title'] as String,
+          message['notification']['body'] as String,
+        );
       },
     );
+  }
+
+  void showNotification(String title, String message) {
+    Flushbar(
+      title: title,
+      message: message,
+      flushbarPosition: FlushbarPosition.TOP,
+      flushbarStyle: FlushbarStyle.GROUNDED,
+      isDismissible: true,
+      backgroundColor: Colors.red,
+      duration: const Duration(seconds: 5),
+      icon: Icon(Icons.list),
+    ).show(context);
   }
 
   Widget _pageChooser(int page) {
@@ -84,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
           drawer: CustomDrawer(_pageController),
           body: _showPage,
           bottomNavigationBar: CurvedNavigationBar(
-            height: 60,
+            height: 50,
             color: Colors.red,
             backgroundColor: Colors.white,
             buttonBackgroundColor: Colors.redAccent,
