@@ -114,8 +114,8 @@ class ListStories extends StatelessWidget {
                                       decoration: BoxDecoration(
                                           borderRadius:
                                               BorderRadius.circular(12)),
-                                      height: 80,
-                                      width: 80,
+                                      height: 70,
+                                      width: 70,
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(12),
                                         child: FadeInImage.memoryNetwork(
