@@ -213,7 +213,10 @@ async function sendPushFCM(tokens: string[], title: string, message: string) {
                 title: title,
                 body: message,
                 click_action: 'FLUTTER_NOTIFICATION_CLICK'
-            }
+                
+            },
+            
+            
         };
         return admin.messaging().sendToDevice(tokens, payload);
     } return;
