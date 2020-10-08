@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:bahia_delivery/screens/cart_screen.dart';
 import 'package:bahia_delivery/screens/favorite_screen.dart';
 import 'package:bahia_delivery/screens/profile_screen.dart';
@@ -7,6 +8,7 @@ import 'package:bahia_delivery/tabs/order_tab.dart';
 import 'package:bahia_delivery/tabs/setup_tab.dart';
 import 'package:bahia_delivery/widgets/custom_drawer.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import '../tabs/home_tab.dart';
 
@@ -29,6 +31,26 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    configFCM();
+  }
+
+  void configFCM() {
+    final fcm = FirebaseMessaging();
+    if (Platform.isIOS) {
+      fcm.requestNotificationPermissions(
+          const IosNotificationSettings(provisional: true));
+    }
+    fcm.configure(
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunc: $message");
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+      },
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+      },
+    );
   }
 
   Widget _pageChooser(int page) {

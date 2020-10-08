@@ -571,7 +571,7 @@ class UserModel extends Model {
     await Firestore.instance
         .collection('users')
         .document(firebaseUser.uid)
-        .collection('tokens')
+        .collection("tokens")
         .document(token)
         .setData({
       'token': token,
@@ -582,6 +582,7 @@ class UserModel extends Model {
 
   void createNewStoreWithCPF(StoreCPF storeCPF) async {
     await Firestore.instance.collection("stores").add({
+      "partnerId": firebaseUser.uid,
       "title": storeCPF.name,
       "cpf": storeCPF.cpf,
       "image": storeCPF.image,

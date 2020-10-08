@@ -12,7 +12,7 @@ const cieloParams: CieloConstructor = {
     merchantId: merchantId,
     merchantKey: merchantkey,
     sandbox: true,
-    debug: true,
+    debug: true
 };
 
 const cielo = new Cielo(cieloParams);
@@ -23,7 +23,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
             "success": false,
             "error": {
                 "code": -1,
-                "message": "Dados não informados",
+                "message": "Dados não informados"
             }
         };
     }
@@ -32,7 +32,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
             "success": false,
             "error": {
                 "code": -1,
-                "message": "Nenhum Usuário Logado",
+                "message": "Nenhum Usuário Logado"
             }
         };
     }
@@ -83,7 +83,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                 "success": false,
                 "error": {
                     "code": -1,
-                    "message": "Caratão não suportado: " + data.creditCard.brand,
+                    "message": "Caratão não suportado: " + data.creditCard.brand
                 }
             };
     }
@@ -102,7 +102,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                 city: userData.address.city,
                 state: userData.address.state,
                 country: "BRA",
-                district: userData.address.district,
+                district: userData.address.district
             }
         },
         payment: {
@@ -156,7 +156,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                 "status": transaction.payment.status,
                 "error": {
                     "code": transaction.payment.returnCode,
-                    "message": message,
+                    "message": message
                 }
             };
         }
@@ -165,7 +165,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
             "success": false,
             "error": {
                 'code': e.response[0].Code,
-                'message': e.response[0].Message,
+                'message': e.response[0].Message
             }
         };
     }
@@ -174,7 +174,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
 
 export const helloWorld = functions.https.onCall((data, context) => {
     return {
-        data: "Hello from cloud functions!!!!",
+        data: "Hello from cloud functions!!!!"
     };
 });
 
@@ -189,3 +189,54 @@ export const getUserData = functions.https.onCall(async (data, context) => {
         "data": snapshot.data()
     };
 });
+
+export const onNewOrder = functions.firestore.document("/orders/{orderId}").onCreate(async (data, context) => {
+    const orderId = context.params.orderId;
+    console.log(orderId);
+    const orderSnapshot = await admin.firestore()
+        .collection("orders").doc(orderId).get();
+    const orderData = orderSnapshot.data() || {};
+    const storeSnapshot = await admin.firestore()
+        .collection("stores").doc(orderData.storeId).get();
+    const storeData = storeSnapshot.data() || {};
+    const querySnapshot = await admin.firestore().collection("users").doc(storeData.partnerId).collection("tokens").get();
+    console.log("aqui");
+    const tokens = querySnapshot.docs.map(doc => doc.id);
+    await sendPushFCM(tokens, 'Novo Pedido', 'Nova venda realizada. Pedido: ' + orderId);
+    console.log(tokens);
+});
+
+async function sendPushFCM(tokens: string[], title: string, message: string) {
+    if (tokens.length > 0) {
+        const payload = {
+            notification: {
+                title: title,
+                body: message,
+                click_action: 'FLUTTER_NOTIFICATION_CLICK'
+            }
+        };
+        return admin.messaging().sendToDevice(tokens, payload);
+    } return;
+}
+
+const orderStatus = new Map([
+    [1, "Aguardando reposta da Loja"],
+    [2, "Tudo ok! Seu pedido já está em preparação."],
+    [3, "Opa! Seu pedido saiu para entrega"],
+    [4, "Parabens!!! O peido foi Emtregue"],
+    [5, "Seu pedido foi cancelado pela loja"]
+]);
+export const onOrderStatusChanged = functions
+    .firestore.document("/orders/{orderId}").onUpdate(async (snapshot, contexxt) => {
+        const beforeStatus = snapshot.before.data().status;
+        const afterStatus = snapshot.after.data().status;
+        if (beforeStatus !== afterStatus) {
+            const tokensUser = await admin.firestore().collection("users")
+                .doc(snapshot.after.data().clients).collection("tokens").get();
+            const tokens = tokensUser.docs.map(doc => doc.id);
+            await sendPushFCM(tokens,
+                'Novo status do pedido',
+                '' + orderStatus.get(afterStatus));
+        }
+
+    });

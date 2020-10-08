@@ -43,9 +43,7 @@ class MyApp extends StatelessWidget {
                                           primaryColor: Color.fromARGB(
                                               255, 216, 216, 216)),
                                       debugShowCheckedModeBanner: false,
-                                      home: Scaffold(
-                                        body: HomeScreen(),
-                                      ),
+                                      home: HomeScreen(),
                                     );
                                   },
                                 ),

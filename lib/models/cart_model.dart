@@ -8,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:random_string/random_string.dart';
 
 class CartModel extends Model {
   UserModel user;
@@ -144,37 +145,10 @@ class CartModel extends Model {
     double shipPrice = getShipPrice();
     double discountPrice = getDiscountPrice();
     double totalPrice = productPrice - discountPrice + shipPrice;
-    DocumentReference referOrder =
-        await Firestore.instance.collection("orders").add({
-      "clients": user.firebaseUser.uid,
-      "storeId": currentStore,
-      "products": products.map((cartProduct) => cartProduct.toMap()).toList(),
-      "shipPrice": shipPrice,
-      "discount": discountPrice,
-      "totalPrice": totalPrice,
-      "status": 1,
-      'updateAt': FieldValue.serverTimestamp(),
-      'platform': Platform.operatingSystem
-    });
-    await Firestore.instance
-        .collection("users")
-        .document(user.firebaseUser.uid)
-        .collection("orders")
-        .document(referOrder.documentID)
-        .setData({"orderId": referOrder.documentID});
-    QuerySnapshot query = await Firestore.instance
-        .collection("users")
-        .document(user.firebaseUser.uid)
-        .collection("cart")
-        .getDocuments();
-    for (DocumentSnapshot doc in query.documents) {
-      doc.reference.delete();
-    }
-    products.clear();
-    couponCode = null;
+
     try {
       final Map<String, dynamic> dataSale = {
-        'merchantOrderId': referOrder.documentID,
+        'merchantOrderId': randomAlphaNumeric(10),
         'amount': (totalPrice * 100).toInt(),
         'sotfDescriptor': "Bahia Delivery",
         'installments': 1,
@@ -187,6 +161,28 @@ class CartModel extends Model {
       final response = await callable.call(dataSale);
       final data = Map<String, dynamic>.from(response.data as LinkedHashMap);
       if (data['success'] as bool) {
+        QuerySnapshot query = await Firestore.instance
+            .collection("users")
+            .document(user.firebaseUser.uid)
+            .collection("cart")
+            .getDocuments();
+        for (DocumentSnapshot doc in query.documents) {
+          doc.reference.delete();
+        }
+        await Firestore.instance.collection("orders").add({
+          "clients": user.firebaseUser.uid,
+          "storeId": currentStore,
+          "products":
+              products.map((cartProduct) => cartProduct.toMap()).toList(),
+          "shipPrice": shipPrice,
+          "discount": discountPrice,
+          "totalPrice": totalPrice,
+          "status": 1,
+          'createdAt': FieldValue.serverTimestamp(),
+          'platform': Platform.operatingSystem
+        });
+        products.clear();
+        couponCode = null;
         isLoading = false;
         notifyListeners();
         return data['paymentId'] as String;
@@ -201,6 +197,6 @@ class CartModel extends Model {
       notifyListeners();
       return Future.error('Fala ao processa a transação. Tente Novamente');
     }
-    //TODO implementar a função autorização, checagem e pagament
+    //TODO implementar a função autorização, checagem e pagamento
   }
 }
