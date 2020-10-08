@@ -33,7 +33,7 @@ class ListStories extends StatelessWidget {
                 children: snapshot.data.documents.map((doc) {
                   bool contains = false;
                   return FlatButton(
-                      padding: EdgeInsets.all(0),
+                      padding: EdgeInsets.zero,
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => StoreScreen(doc),
