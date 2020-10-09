@@ -35,7 +35,7 @@ class UserModel extends Model {
   List<AddressData> addresses = [];
   List<CreditDebitCardData> creditDebitCardList = [];
   List<CategoryData> categoryDataList = [];
-
+  List<StoreData> storeDataList = [];
   String street;
   String state;
   String zipCode;
@@ -63,6 +63,7 @@ class UserModel extends Model {
     _getCurrentLocation();
     _loadListCreditDebitCard();
     updateCategory();
+    updateStories();
   }
 
   Future<void> signIn({
@@ -667,6 +668,23 @@ class UserModel extends Model {
             await Firestore.instance.collection("categories").getDocuments();
         categoryDataList = query.documents
             .map((doc) => CategoryData.fromDocument(doc))
+            .toList();
+      }
+    } catch (e) {}
+    isLoading = false;
+    notifyListeners();
+  }
+
+  void updateStories() async {
+    isLoading = true;
+    notifyListeners();
+    try {
+      if (firebaseUser == null) await _auth.currentUser();
+      if (firebaseUser != null) {
+        QuerySnapshot querySnapshot =
+            await Firestore.instance.collection("stores").getDocuments();
+        storeDataList = querySnapshot.documents
+            .map((doc) => StoreData.fromDocument(doc))
             .toList();
       }
     } catch (e) {}
