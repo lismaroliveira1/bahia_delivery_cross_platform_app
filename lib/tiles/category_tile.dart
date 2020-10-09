@@ -16,8 +16,11 @@ class ListCategory extends StatelessWidget {
       } else {
         if (model.categoryDataList.length == 0) {
           model.updateCategory();
+          return Container(
+            height: 0,
+            width: 0,
+          );
         } else {
-          print(model.categoryDataList.length);
           return Container(
             margin: EdgeInsets.all(8),
             height: 120.0,
