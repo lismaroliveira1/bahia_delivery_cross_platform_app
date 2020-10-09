@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:bahia_delivery/data/address_data.dart';
+import 'package:bahia_delivery/data/category_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_item.dart';
 import 'package:bahia_delivery/data/payment_on_delivery_date.dart';
@@ -33,6 +34,8 @@ class UserModel extends Model {
   int favoriteStoryQuantity = 0;
   List<AddressData> addresses = [];
   List<CreditDebitCardData> creditDebitCardList = [];
+  List<CategoryData> categoryDataList = [];
+
   String street;
   String state;
   String zipCode;
@@ -49,6 +52,7 @@ class UserModel extends Model {
   PaymentOnDeliveryData currentPaymentOndeliveryData;
   bool payOnApp;
   StoreData storeData;
+  CategoryData categoryData;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -58,6 +62,7 @@ class UserModel extends Model {
     _loadCurrentUser();
     _getCurrentLocation();
     _loadListCreditDebitCard();
+    _updateCategory();
   }
 
   Future<void> signIn({
@@ -650,5 +655,18 @@ class UserModel extends Model {
     } catch (e) {
       onFail();
     }
+  }
+
+  void _updateCategory() async {
+    try {
+      if (firebaseUser == null) firebaseUser = await _auth.currentUser();
+      if (firebaseUser != null) {
+        QuerySnapshot query =
+            await Firestore.instance.collection("categories").getDocuments();
+        categoryDataList = query.documents.map((doc) {
+          CategoryData.fromDocument(doc);
+        }).toList();
+      }
+    } catch (e) {}
   }
 }
