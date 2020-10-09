@@ -36,7 +36,7 @@ class UserModel extends Model {
   List<CreditDebitCardData> creditDebitCardList = [];
   List<CategoryData> categoryDataList = [];
   List<StoreData> storeDataList = [];
-  List<String> storeListFavorites = [];
+  List<StoreData> storeListFavorites = [];
   String street;
   String state;
   String zipCode;
@@ -703,11 +703,18 @@ class UserModel extends Model {
           .document(firebaseUser.uid)
           .collection("favorites")
           .getDocuments();
-      storeListFavorites =
-          querySnapshot.documents.map((doc) => doc.documentID).toList();
-    } catch (e) {}
-
-    isLoading = false;
-    notifyListeners();
+      querySnapshot.documents.map((doc) async {
+        DocumentSnapshot documentSnapshot = await Firestore.instance
+            .collection("stores")
+            .document(doc.documentID)
+            .get();
+        storeListFavorites.add(StoreData.fromDocument(documentSnapshot));
+      }).toList();
+      isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      isLoading = false;
+      notifyListeners();
+    }
   }
 }
