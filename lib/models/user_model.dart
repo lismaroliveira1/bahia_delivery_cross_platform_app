@@ -113,7 +113,7 @@ class UserModel extends Model {
       final user = User(
           name: authResult.user.displayName,
           email: authResult.user.email,
-          isPartner: false,
+          isPartner: 3,
           currentAddress: "");
       this.firebaseUser = authResult.user;
       _saveUserData(user);
@@ -209,6 +209,7 @@ class UserModel extends Model {
         }
         break;
       case FacebookLoginStatus.cancelledByUser:
+
         // TODO: Handle this case.
         break;
       case FacebookLoginStatus.error:
@@ -248,7 +249,7 @@ class UserModel extends Model {
             final user = User(
                 name: authResult.user.displayName,
                 email: authResult.user.email,
-                isPartner: false,
+                isPartner: 3,
                 currentAddress: "");
             this.firebaseUser = authResult.user;
             _saveUserData(user);
@@ -304,7 +305,7 @@ class UserModel extends Model {
   Future<Null> _saveUserData(User user) async {
     userData["name"] = user.name;
     userData["email"] = user.email;
-    userData["isPartner"] = false;
+    userData["isPartner"] = 3;
     await Firestore.instance
         .collection("users")
         .document(firebaseUser.uid)
@@ -412,7 +413,7 @@ class UserModel extends Model {
           return 'null ZipCode';
         }
       } catch (e) {}
-    } on DioError catch (e) {
+    } on DioError {
       //return Future.error("Erro ao buscar CEP" + e.toString());
     }
     isLoading = false;
@@ -440,7 +441,7 @@ class UserModel extends Model {
         district = cepAbertoAddress.bairro;
         city = cepAbertoAddress.city.nome;
       }
-    } on DioError catch (e) {}
+    } on DioError {}
     isLoading = false;
     notifyListeners();
   }
@@ -698,23 +699,63 @@ class UserModel extends Model {
     isLoading = true;
     notifyListeners();
     try {
-      QuerySnapshot querySnapshot = await Firestore.instance
-          .collection("users")
-          .document(firebaseUser.uid)
-          .collection("favorites")
-          .getDocuments();
-      querySnapshot.documents.map((doc) async {
-        DocumentSnapshot documentSnapshot = await Firestore.instance
-            .collection("stores")
-            .document(doc.documentID)
-            .get();
-        storeListFavorites.add(StoreData.fromDocument(documentSnapshot));
-      }).toList();
-      isLoading = false;
-      notifyListeners();
+      if (firebaseUser == null) await _auth.currentUser();
+      if (firebaseUser != null) {
+        QuerySnapshot querySnapshot = await Firestore.instance
+            .collection("users")
+            .document(firebaseUser.uid)
+            .collection("favorites")
+            .getDocuments();
+        querySnapshot.documents.map((doc) async {
+          DocumentSnapshot documentSnapshot = await Firestore.instance
+              .collection("stores")
+              .document(doc.documentID)
+              .get();
+          storeListFavorites.add(StoreData.fromDocument(documentSnapshot));
+        }).toList();
+        isLoading = false;
+        notifyListeners();
+      }
     } catch (e) {
+      print(e);
       isLoading = false;
       notifyListeners();
     }
+  }
+
+  bool verifyFavoriteStore(String storeId) {
+    bool isFavorite = false;
+    for (int i = 0; i < storeListFavorites.length; i++) {
+      if (storeListFavorites[i].id == storeId) {
+        isFavorite = true;
+      } else {
+        isFavorite = false;
+      }
+    }
+    return isFavorite;
+  }
+
+  void addFavoriteStore(StoreData storeDataFavorite) {
+    Firestore.instance
+        .collection("users")
+        .document(firebaseUser.uid)
+        .collection("favorites")
+        .document(storeDataFavorite.id)
+        .setData(
+      {
+        "storeId": storeDataFavorite.id,
+      },
+    );
+    storeListFavorites.add(storeDataFavorite);
+  }
+
+  void removeFavoriteStore(StoreData storeDataFavorite) {
+    Firestore.instance
+        .collection("users")
+        .document(firebaseUser.uid)
+        .collection('favorites')
+        .document(storeDataFavorite.id)
+        .delete();
+    storeListFavorites.remove(storeListFavorites);
   }
 }

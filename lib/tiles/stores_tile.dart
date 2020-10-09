@@ -1,14 +1,18 @@
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/store_screen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-class ListStories extends StatelessWidget {
+class ListStories extends StatefulWidget {
+  @override
+  _ListStoriesState createState() => _ListStoriesState();
+}
+
+class _ListStoriesState extends State<ListStories> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
+      bool isFavorite = false;
       if (model.isLoading) {
         return SliverToBoxAdapter(
           child: Container(
@@ -39,27 +43,20 @@ class ListStories extends StatelessWidget {
                           horizontal: 8.0, vertical: 4.0),
                       child: Stack(
                         children: [
-                          Positioned(
-                            top: 3.0,
-                            right: 3.0,
-                            child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.favorite,
-                                color: UserModel.of(context).isLoggedIn()
-                                    ? Colors.red
-                                    : Colors.grey,
-                                size: 18,
-                              ),
-                            ),
-                          ),
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: FlatButton(
                               padding: EdgeInsets.zero,
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        StoreScreen(doc.storeSnapshot),
+                                  ),
+                                );
+                              },
                               child: Row(
                                 children: [
                                   Padding(
@@ -114,6 +111,21 @@ class ListStories extends StatelessWidget {
                                     ),
                                   )
                                 ],
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 3.0,
+                            right: 3.0,
+                            child: IconButton(
+                              onPressed: () {
+                                print("ok");
+                                model.addFavoriteStore(doc);
+                              },
+                              icon: Icon(
+                                Icons.favorite,
+                                color: isFavorite ? Colors.red : Colors.grey,
+                                size: 18,
                               ),
                             ),
                           ),

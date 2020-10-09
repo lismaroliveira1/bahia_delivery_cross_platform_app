@@ -5,12 +5,14 @@ class StoreData {
   String name;
   String image;
   String description;
+  DocumentSnapshot storeSnapshot;
 
   StoreData.fromDocument(DocumentSnapshot documentSnapshot) {
     id = documentSnapshot.documentID;
     name = documentSnapshot.data["title"];
     image = documentSnapshot.data["image"];
     description = documentSnapshot.data["description"];
+    storeSnapshot = documentSnapshot;
   }
 
   Map<String, dynamic> toMap() {

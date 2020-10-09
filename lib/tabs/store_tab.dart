@@ -28,7 +28,7 @@ class _StoreTabState extends State<StoreTab> {
                   bottomRight: Radius.circular(30),
                 ),
               ),
-              expandedHeight: 300.0,
+              expandedHeight: 250.0,
               floating: false,
               pinned: false,
               flexibleSpace: FlexibleSpaceBar(
@@ -83,10 +83,6 @@ class _StoreTabState extends State<StoreTab> {
                                   snapshot: doc));
                         }).toList()),
                       ),
-                      Container(
-                        height: 100,
-                        color: Colors.black,
-                      )
                     ],
                   ),
                 );

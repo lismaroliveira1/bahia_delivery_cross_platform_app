@@ -197,6 +197,5 @@ class CartModel extends Model {
       notifyListeners();
       return Future.error('Fala ao processa a transação. Tente Novamente');
     }
-    //TODO implementar a função autorização, checagem e pagamento
   }
 }

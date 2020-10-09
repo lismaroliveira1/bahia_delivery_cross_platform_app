@@ -4,7 +4,7 @@ class User {
   String password;
   String confirmPassword;
   String currentAddress;
-  bool isPartner;
+  int isPartner;
 
   User(
       {this.currentAddress,
