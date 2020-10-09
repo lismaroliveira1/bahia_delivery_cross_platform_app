@@ -10,7 +10,7 @@ class ProfileTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(6),
         child: Container(
           height: 40,
           child: Row(

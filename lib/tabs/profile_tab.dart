@@ -17,13 +17,15 @@ class ProfileTab extends StatelessWidget {
           Container(
             height: 200.0,
           ),
-          FlatButton(
-            padding: EdgeInsets.zero,
-            onPressed: () {},
-            child: ProfileTile(
-                title: "Chats",
-                description: "Minhas Conversas",
-                icon: Icons.message),
+          Container(
+            child: FlatButton(
+              padding: EdgeInsets.zero,
+              onPressed: () {},
+              child: ProfileTile(
+                  title: "Chats",
+                  description: "Minhas Conversas",
+                  icon: Icons.message),
+            ),
           ),
           FlatButton(
             padding: EdgeInsets.zero,
