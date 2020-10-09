@@ -36,7 +36,7 @@ class UserModel extends Model {
   List<CreditDebitCardData> creditDebitCardList = [];
   List<CategoryData> categoryDataList = [];
   List<StoreData> storeDataList = [];
-  List<StoreData> storeListFavorites = [];
+  List<String> storeListFavorites = [];
   String street;
   String state;
   String zipCode;
@@ -65,6 +65,7 @@ class UserModel extends Model {
     _loadListCreditDebitCard();
     updateCategory();
     updateStories();
+    updateStoreFavorites();
   }
 
   Future<void> signIn({
@@ -696,11 +697,15 @@ class UserModel extends Model {
   void updateStoreFavorites() async {
     isLoading = true;
     notifyListeners();
-    QuerySnapshot querySnapshot = await Firestore.instance
-        .collection("users")
-        .document(firebaseUser.uid)
-        .collection("favorites")
-        .getDocuments();
+    try {
+      QuerySnapshot querySnapshot = await Firestore.instance
+          .collection("users")
+          .document(firebaseUser.uid)
+          .collection("favorites")
+          .getDocuments();
+      storeListFavorites =
+          querySnapshot.documents.map((doc) => doc.documentID).toList();
+    } catch (e) {}
 
     isLoading = false;
     notifyListeners();
