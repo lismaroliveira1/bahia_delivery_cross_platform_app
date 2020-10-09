@@ -62,7 +62,7 @@ class UserModel extends Model {
     _loadCurrentUser();
     _getCurrentLocation();
     _loadListCreditDebitCard();
-    _updateCategory();
+    updateCategory();
   }
 
   Future<void> signIn({
@@ -657,16 +657,20 @@ class UserModel extends Model {
     }
   }
 
-  void _updateCategory() async {
+  void updateCategory() async {
+    isLoading = true;
+    notifyListeners();
     try {
       if (firebaseUser == null) firebaseUser = await _auth.currentUser();
       if (firebaseUser != null) {
         QuerySnapshot query =
             await Firestore.instance.collection("categories").getDocuments();
-        categoryDataList = query.documents.map((doc) {
-          CategoryData.fromDocument(doc);
-        }).toList();
+        categoryDataList = query.documents
+            .map((doc) => CategoryData.fromDocument(doc))
+            .toList();
       }
     } catch (e) {}
+    isLoading = false;
+    notifyListeners();
   }
 }

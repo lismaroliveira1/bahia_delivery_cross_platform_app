@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class CategoryData {
   String title;
   String image;
+  CategoryData();
 
   CategoryData.fromDocument(DocumentSnapshot documentSnapahot) {
     title = documentSnapahot.data["title"];
