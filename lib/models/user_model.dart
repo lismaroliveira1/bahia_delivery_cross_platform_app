@@ -658,10 +658,10 @@ class UserModel extends Model {
             "storeId": store.documentID,
             "isPartner": 2,
           });
-          storeData.name = storeCPF.name;
-          storeData.image = storeCPF.description;
-          storeData.description = storeCPF.description;
         });
+        storeData.name = storeCPF.name;
+        storeData.image = storeCPF.description;
+        storeData.description = storeCPF.description;
         onSuccess();
         isLoading = false;
         notifyListeners();

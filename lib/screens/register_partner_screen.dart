@@ -352,6 +352,7 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                     onSuccess: _onSuccess,
                                     onFail: _onFail,
                                   );
+                                  Navigator.of(context).pop();
                                 }
                               },
                               child: Container(
@@ -378,9 +379,7 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
     );
   }
 
-  void _onSuccess() {
-    Navigator.of(context).pop();
-  }
+  void _onSuccess() {}
 
   void _onFail() {}
 }
