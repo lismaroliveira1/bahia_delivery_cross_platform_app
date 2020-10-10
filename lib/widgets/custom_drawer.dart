@@ -29,6 +29,7 @@ class CustomDrawer extends StatelessWidget {
               _buildDrawerBack(),
               ScopedModelDescendant<UserModel>(
                   builder: (context, child, model) {
+                if (model.userName == null) model.getUserData();
                 return ListView(
                   padding: EdgeInsets.only(left: 32.0, top: 32.0),
                   children: <Widget>[
@@ -38,8 +39,7 @@ class CustomDrawer extends StatelessWidget {
                       height: 170.0,
                       child: Image.asset("images/logo.png"),
                     ),
-                    Text(
-                        "Olá, ${!model.isLoggedIn() ? "" : model.userData["name"]}",
+                    Text("Olá, ${!model.isLoggedIn() ? "" : model.userName}",
                         style: TextStyle(
                             fontSize: 18.0, fontWeight: FontWeight.bold)),
                     Row(

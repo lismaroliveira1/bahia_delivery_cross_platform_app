@@ -1,6 +1,7 @@
 class User {
   String name;
   String email;
+  String image;
   String password;
   String confirmPassword;
   String currentAddress;
@@ -10,6 +11,7 @@ class User {
       {this.currentAddress,
       this.name,
       this.email,
+      this.image,
       this.password,
       this.confirmPassword,
       this.isPartner});

@@ -42,7 +42,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.only(top: 120.0),
+                            padding: const EdgeInsets.only(top: 100.0),
                             child: SizedBox(
                               height: 200,
                               width: 200,

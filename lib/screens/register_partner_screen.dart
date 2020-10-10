@@ -345,8 +345,12 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                       city: cityController.text,
                                       state: stateController.text,
                                       image: imageUrl);
-                                  UserModel.of(context)
-                                      .createNewStoreWithCPF(storeCPF);
+                                  UserModel.of(context).createNewStoreWithCPF(
+                                    storeCPF: storeCPF,
+                                    onSuccess: _onSuccess,
+                                    onFail: _onFail,
+                                  );
+                                  Navigator.of(context).pop();
                                 }
                               },
                               child: Container(
@@ -372,4 +376,7 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
       ),
     );
   }
+
+  void _onSuccess() {}
+  void _onFail() {}
 }

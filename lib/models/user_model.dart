@@ -54,6 +54,11 @@ class UserModel extends Model {
   bool payOnApp;
   StoreData storeData;
   CategoryData categoryData;
+  bool hasStories = false;
+  String userName;
+  String userImage;
+  String userPhoneNumber = '';
+  String userEmail;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -66,6 +71,7 @@ class UserModel extends Model {
     updateCategory();
     updateStories();
     updateStoreFavorites();
+    loadAddressItems();
   }
 
   Future<void> signIn({
@@ -80,6 +86,7 @@ class UserModel extends Model {
       final AuthResult result =
           await _auth.signInWithEmailAndPassword(email: email, password: pass);
       this.firebaseUser = result.user;
+
       _loadCurrentUser();
       onSuccess();
       saveToken();
@@ -110,9 +117,12 @@ class UserModel extends Model {
       isLoading = false;
       notifyListeners();
     } else {
+      userName = authResult.user.displayName;
+      userImage = authResult.user.photoUrl;
       final user = User(
           name: authResult.user.displayName,
           email: authResult.user.email,
+          image: authResult.user.photoUrl,
           isPartner: 3,
           currentAddress: "");
       this.firebaseUser = authResult.user;
@@ -296,9 +306,15 @@ class UserModel extends Model {
   }
 
   void signOut() async {
+    isLoading = true;
+    notifyListeners();
     await _auth.signOut();
     userData = Map();
     firebaseUser = null;
+    userEmail = '';
+    userImage = null;
+    userName = null;
+    isLoading = false;
     notifyListeners();
   }
 
@@ -310,10 +326,27 @@ class UserModel extends Model {
         .collection("users")
         .document(firebaseUser.uid)
         .setData(userData);
+    notifyListeners();
   }
 
   bool isLoggedIn() {
     return firebaseUser != null;
+  }
+
+  void getUserData() {
+    if (firebaseUser.displayName == null) {
+      userName = userData["name"];
+    } else {
+      userName = firebaseUser.displayName;
+    }
+
+    if (firebaseUser.photoUrl == null) {
+      userImage = "https://meuvidraceiro.com.br/images/sem-imagem.png";
+    } else {
+      userImage = firebaseUser.photoUrl;
+    }
+    userPhoneNumber = firebaseUser.phoneNumber;
+    userEmail = firebaseUser.email;
   }
 
   bool updateUser() {
@@ -477,7 +510,7 @@ class UserModel extends Model {
     notifyListeners();
   }
 
-  void loadAddresstems() async {
+  void loadAddressItems() async {
     try {
       QuerySnapshot query = await Firestore.instance
           .collection("users")
@@ -589,35 +622,56 @@ class UserModel extends Model {
     });
   }
 
-  void createNewStoreWithCPF(StoreCPF storeCPF) async {
-    await Firestore.instance.collection("stores").add({
-      "partnerId": firebaseUser.uid,
-      "title": storeCPF.name,
-      "cpf": storeCPF.cpf,
-      "image": storeCPF.image,
-      "description": storeCPF.description,
-      "isOpen": true,
-      "address": {
-        "zipCode": storeCPF.zipCode,
-        "street": storeCPF.street,
-        "district": storeCPF.district,
-        "number": storeCPF.number,
-        "city": storeCPF.city,
-        "state": storeCPF.state,
-        "image": storeCPF.image,
+  void createNewStoreWithCPF({
+    @required StoreCPF storeCPF,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    isLoading = true;
+    notifyListeners();
+    try {
+      if (firebaseUser == null) await _auth.currentUser();
+      if (firebaseUser != null) {
+        await Firestore.instance.collection("stores").add({
+          "partnerId": firebaseUser.uid,
+          "title": storeCPF.name,
+          "name": storeCPF.name,
+          "cpf": storeCPF.cpf,
+          "image": storeCPF.image,
+          "description": storeCPF.description,
+          "isOpen": true,
+          "address": {
+            "name": "Store Address",
+            "zipCode": storeCPF.zipCode,
+            "street": storeCPF.street,
+            "district": storeCPF.district,
+            "number": storeCPF.number,
+            "city": storeCPF.city,
+            "state": storeCPF.state,
+            "image": storeCPF.image,
+          }
+        }).then((store) async {
+          await Firestore.instance
+              .collection("users")
+              .document(firebaseUser.uid)
+              .updateData({
+            "storeId": store.documentID,
+            "isPartner": 2,
+          });
+          storeData.name = storeCPF.name;
+          storeData.image = storeCPF.description;
+          storeData.description = storeCPF.description;
+        });
+        isLoading = false;
+        notifyListeners();
+
+        print("ok");
       }
-    }).then((store) async {
-      await Firestore.instance
-          .collection("users")
-          .document(firebaseUser.uid)
-          .updateData({
-        "storeId": store.documentID,
-        "isPartner": 2,
-      });
-      storeData.name = storeCPF.name;
-      storeData.image = storeCPF.description;
-      storeData.description = storeCPF.description;
-    });
+    } catch (e) {
+      isLoading = false;
+      notifyListeners();
+      print(e);
+    }
   }
 
   void createNewProduct({
@@ -691,6 +745,7 @@ class UserModel extends Model {
             .toList();
       }
     } catch (e) {}
+    if (storeDataList.length > 0) hasStories = true;
     isLoading = false;
     notifyListeners();
   }

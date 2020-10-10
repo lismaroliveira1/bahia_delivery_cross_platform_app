@@ -21,7 +21,7 @@ class _LocationScreenState extends State<LocationScreen> {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
-      model.loadAddresstems();
+      model.loadAddressItems();
       if (model.isLoading && UserModel.of(context).isLoggedIn() ||
           model.latitude == null ||
           model.longittude == null) {
@@ -48,7 +48,7 @@ class _LocationScreenState extends State<LocationScreen> {
                 height: 16.0,
               ),
               Text(
-                "Faça adcionar seus endereços",
+                "Faça login para adcionar seus endereços",
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),

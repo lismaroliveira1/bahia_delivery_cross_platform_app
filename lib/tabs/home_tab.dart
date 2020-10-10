@@ -9,6 +9,7 @@ import 'package:bahia_delivery/tiles/stores_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -25,6 +26,7 @@ class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
+      if (model.userImage == null) model.getUserData();
       if (model.isLoading && model.street == null) {
         return Container(
           color: Colors.white,
@@ -69,19 +71,19 @@ class _HomeTabState extends State<HomeTab> {
                     actions: [
                       Padding(
                         padding: EdgeInsets.all(10),
-                        child: GestureDetector(
-                            child: Container(
-                              height: 50,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
-                                image: DecorationImage(
-                                    image: AssetImage("images/user.png"),
-                                    fit: BoxFit.cover),
-                              ),
+                        child: Container(
+                          width: 40,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8)),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: FadeInImage.memoryNetwork(
+                              placeholder: kTransparentImage,
+                              image: model.userImage,
+                              fit: BoxFit.cover,
                             ),
-                            onTap: () {}),
+                          ),
+                        ),
                       ),
                     ],
                   ),

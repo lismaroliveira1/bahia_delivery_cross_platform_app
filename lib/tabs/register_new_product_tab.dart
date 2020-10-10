@@ -130,7 +130,7 @@ class _RegisterNewProductTabState extends State<RegisterNewProductTab> {
                   width: 120,
                   child: ScopedModelDescendant<UserModel>(
                     builder: (context, child, model) {
-                      if (model.isLoading) {
+                      if (model.isLoading || !model.isLoggedIn()) {
                         return Center(
                           child: Container(
                             width: 20,

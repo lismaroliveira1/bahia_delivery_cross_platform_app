@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.only(top: 120.0),
+                            padding: const EdgeInsets.only(top: 100.0),
                             child: SizedBox(
                               height: 200,
                               width: 200,
@@ -109,10 +109,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                       onPressed: snapshot.hasData
                                           ? () {
                                               model.signIn(
-                                                  email: emailController.text,
-                                                  pass: passwordController.text,
-                                                  onFail: _onFail,
-                                                  onSuccess: _onSuccess);
+                                                email: emailController.text,
+                                                pass: passwordController.text,
+                                                onFail: _onFail,
+                                                onSuccess: _onSuccess,
+                                              );
                                             }
                                           : null,
                                       disabledColor: Colors.grey,
@@ -235,7 +236,7 @@ class _LoginScreenState extends State<LoginScreen> {
       duration: Duration(seconds: 2),
     ));
     Future.delayed(Duration(seconds: 2)).then((_) {
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
+      Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => HomeScreen(),
       ));
     });

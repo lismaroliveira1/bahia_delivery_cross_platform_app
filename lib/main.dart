@@ -4,6 +4,7 @@ import 'package:bahia_delivery/models/payment_model.dart';
 import 'package:bahia_delivery/models/store_model.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/home_screen.dart';
+import 'package:bahia_delivery/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -43,7 +44,9 @@ class MyApp extends StatelessWidget {
                                           primaryColor: Color.fromARGB(
                                               255, 216, 216, 216)),
                                       debugShowCheckedModeBanner: false,
-                                      home: HomeScreen(),
+                                      home: UserModel.of(context).isLoggedIn()
+                                          ? HomeScreen()
+                                          : LoginScreen(),
                                     );
                                   },
                                 ),

@@ -25,51 +25,60 @@ class _FavoriteTabState extends State<FavoriteTab> {
       }
       if (!model.isLoggedIn()) {
         return Container(
-            padding: EdgeInsets.symmetric(horizontal: 100),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Icon(
-                    Icons.favorite,
-                    size: 120,
-                    color: Colors.red,
-                  ),
-                  Text(
-                    "Você deve estar logado para ver seus favoritos",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[700]),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: FlatButton(
-                        color: Colors.red,
-                        child: Text(
-                          "Entrar",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => LoginScreen()));
-                        },
-                      ))
-                ],
-              ),
-            ));
-      } else if (model.isLoading) {
-        return Center(child: CircularProgressIndicator());
+          padding: EdgeInsets.symmetric(horizontal: 100),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.favorite,
+                  size: 120,
+                  color: Colors.red,
+                ),
+                Text(
+                  "Você deve estar logado para ver seus favoritos",
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[700]),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: FlatButton(
+                      color: Colors.red,
+                      child: Text(
+                        "Entrar",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => LoginScreen()));
+                      },
+                    ))
+              ],
+            ),
+          ),
+        );
       } else if (model.storeListFavorites.length == 0) {
         return Container(
           child: Center(
-            child: CircularProgressIndicator(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Icon(
+                  Icons.favorite,
+                  size: 140,
+                  color: Colors.red,
+                ),
+                Text("Você ainda n]ao tem lojas favoritas")
+              ],
+            ),
           ),
         );
       } else {

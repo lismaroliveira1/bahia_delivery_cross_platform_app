@@ -23,11 +23,10 @@ class _ListStoriesState extends State<ListStories> {
         );
       } else {
         if (model.storeDataList.length == 0) {
-          model.updateStories();
           return SliverToBoxAdapter(
             child: Container(
               child: Center(
-                child: CircularProgressIndicator(),
+                child: Text("Sem Parceiros Cadastrados"),
               ),
             ),
           );
