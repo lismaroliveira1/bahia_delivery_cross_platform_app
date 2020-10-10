@@ -711,6 +711,8 @@ class UserModel extends Model {
       isLoading = false;
       notifyListeners();
     } catch (e) {
+      isLoading = false;
+      notifyListeners();
       onFail();
     }
   }

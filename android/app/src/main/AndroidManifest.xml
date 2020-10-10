@@ -16,6 +16,7 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="bahia_delivery"
         android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true">
         <activity
             android:name=".MainActivity"

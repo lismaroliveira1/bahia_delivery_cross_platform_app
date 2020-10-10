@@ -46,7 +46,6 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
     switch (data.creditCard.brand) {
         case "visa":
             brand = EnumBrands.VISA;
-            console.log(brand);
             break;
         case "mastercard":
             brand = EnumBrands.MASTER;
@@ -164,8 +163,8 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
         return {
             "success": false,
             "error": {
-                'code': e.response[0].Code,
-                'message': e.response[0].Message
+                'code': e.response[0],
+                'message': e.response[0]
             }
         };
     }
@@ -214,9 +213,7 @@ async function sendPushFCM(tokens: string[], title: string, message: string) {
                 body: message,
                 click_action: 'FLUTTER_NOTIFICATION_CLICK'
                 
-            },
-            
-            
+            }
         };
         return admin.messaging().sendToDevice(tokens, payload);
     } return;
@@ -242,4 +239,18 @@ export const onOrderStatusChanged = functions
                 '' + orderStatus.get(afterStatus));
         }
 
-    });
+});
+    
+export const onParnerterStatusChanged = functions.firestore.document("/users/{isPartner}").onUpdate(async (snapshot, context) => {
+    const beforeStatus = snapshot.before.data().status;
+    const afterStatus = snapshot.after.data().status;
+    console.log(beforeStatus);
+    if (beforeStatus !== afterStatus) {
+        const tokensUser = await admin.firestore().collection("users")
+            .doc(snapshot.after.data().clients).collection("tokens").get();
+        const tokens = tokensUser.docs.map(doc => doc.id);
+        await sendPushFCM(tokens,
+            'Novo status do pedido',
+            '' + orderStatus.get(afterStatus));        
+    }
+ });
