@@ -622,7 +622,7 @@ class UserModel extends Model {
     });
   }
 
-  void createNewStoreWithCPF({
+  Future<void> createNewStoreWithCPF({
     @required StoreCPF storeCPF,
     @required VoidCallback onSuccess,
     @required VoidCallback onFail,
@@ -662,15 +662,15 @@ class UserModel extends Model {
           storeData.image = storeCPF.description;
           storeData.description = storeCPF.description;
         });
+        onSuccess();
         isLoading = false;
         notifyListeners();
-
         print("ok");
       }
     } catch (e) {
+      onFail();
       isLoading = false;
       notifyListeners();
-      print(e);
     }
   }
 

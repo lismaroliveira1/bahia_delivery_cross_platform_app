@@ -31,6 +31,7 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
   final TextEditingController numberController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
   final TextEditingController stateController = TextEditingController();
+  final StoreCPF storeCPF = StoreCPF();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -324,17 +325,17 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                   child: InputStoreData(
                                     labelText: "Estado",
                                     hintText: "123",
-                                    controller: numberController,
+                                    controller: stateController,
                                   ),
                                 ),
                               ],
                             ),
                             FlatButton(
                               padding: EdgeInsets.all(8),
-                              onPressed: () {
+                              onPressed: () async {
                                 if (isJuridicPerson) {
                                 } else {
-                                  final StoreCPF storeCPF = StoreCPF(
+                                  final storeCPF = StoreCPF(
                                       name: nameController.text,
                                       description: descriptionController.text,
                                       cpf: cpfController.text,
@@ -345,12 +346,12 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                       city: cityController.text,
                                       state: stateController.text,
                                       image: imageUrl);
-                                  UserModel.of(context).createNewStoreWithCPF(
+                                  await UserModel.of(context)
+                                      .createNewStoreWithCPF(
                                     storeCPF: storeCPF,
                                     onSuccess: _onSuccess,
                                     onFail: _onFail,
                                   );
-                                  Navigator.of(context).pop();
                                 }
                               },
                               child: Container(
@@ -377,6 +378,9 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
     );
   }
 
-  void _onSuccess() {}
+  void _onSuccess() {
+    Navigator.of(context).pop();
+  }
+
   void _onFail() {}
 }
