@@ -234,7 +234,7 @@ export const onOrderStatusChanged = functions
         const afterStatus = snapshot.after.data().status;
         if (beforeStatus !== afterStatus) {
             const tokensUser = await admin.firestore().collection("users")
-                .doc(snapshot.after.data().clients).collection("tokens").get();
+                .doc(snapshot.after.data().client).collection("tokens").get();
             const tokens = tokensUser.docs.map(doc => doc.id);
             await sendPushFCM(tokens,
                 'Novo status do pedido',

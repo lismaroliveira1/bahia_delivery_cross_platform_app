@@ -3,6 +3,7 @@ import 'package:bahia_delivery/data/address_data.dart';
 import 'package:bahia_delivery/data/category_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_item.dart';
+import 'package:bahia_delivery/data/order_data.dart';
 import 'package:bahia_delivery/data/payment_on_delivery_date.dart';
 import 'package:bahia_delivery/data/search_data.dart';
 import 'package:bahia_delivery/data/store_data.dart';
@@ -37,6 +38,8 @@ class UserModel extends Model {
   List<CategoryData> categoryDataList = [];
   List<StoreData> storeDataList = [];
   List<StoreData> storeListFavorites = [];
+  List<OrderData> listUserOrders = [];
+  List<OrderData> listPartnerOders = [];
   String street;
   String state;
   String zipCode;
@@ -71,6 +74,7 @@ class UserModel extends Model {
     updateCategory();
     updateStories();
     updateStoreFavorites();
+    getUserOrder();
     loadAddressItems();
   }
 
@@ -317,6 +321,11 @@ class UserModel extends Model {
     userEmail = '';
     userImage = null;
     userName = null;
+    addresses = [];
+    creditDebitCardList = [];
+    categoryDataList = [];
+    storeDataList = [];
+    storeListFavorites = [];
     isLoading = false;
     notifyListeners();
   }
@@ -836,7 +845,37 @@ class UserModel extends Model {
   }
 
   void getUserOrder() async {
-    QuerySnapshot querySnapshot =
-        await Firestore.instance.collection("orders").getDocuments();
+    isLoading = true;
+    notifyListeners();
+    if (firebaseUser == null) firebaseUser = await _auth.currentUser();
+    if (firebaseUser != null) {
+      QuerySnapshot query =
+          await Firestore.instance.collection("orders").getDocuments();
+
+      query.documents.map((doc) {
+        if (doc.data["client"] == firebaseUser.uid) {
+          listUserOrders.add(OrderData.fromDocument(doc));
+        }
+      }).toList();
+    }
+    print(listUserOrders.length);
+
+    isLoading = false;
+    notifyListeners();
+  }
+
+  void getPartnerOrders() async {
+    isLoading = true;
+    notifyListeners();
+    if (firebaseUser == null) firebaseUser = await _auth.currentUser();
+    if (firebaseUser != null) {
+      QuerySnapshot querySnapshot =
+          await Firestore.instance.collection("oders").getDocuments();
+      querySnapshot.documents.map((doc) {
+        if (doc.data["storeId"] == storeData.id) {}
+      }).toList();
+    }
+    isLoading = false;
+    notifyListeners();
   }
 }

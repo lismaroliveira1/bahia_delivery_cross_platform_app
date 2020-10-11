@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:bahia_delivery/data/cart_product.dart';
 import 'package:bahia_delivery/data/credit_debit_card_data.dart';
+import 'package:bahia_delivery/data/store_with_cpf_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -29,7 +30,6 @@ class CartModel extends Model {
       {@required CartProduct cartProduct,
       @required VoidCallback onFail}) async {
     if (currentStore == '') {
-      print(cartProduct.storeId);
       currentStore = cartProduct.storeId;
       products.add(cartProduct);
       Firestore.instance
@@ -227,10 +227,12 @@ class CartModel extends Model {
       doc.reference.delete();
     }
     await Firestore.instance.collection("orders").add({
-      "clients": user.firebaseUser.uid,
+      "client": user.firebaseUser.uid,
       "storeId": products[0].storeId,
       "products": products.map((cartProduct) => cartProduct.toMap()).toList(),
       "shipPrice": shipPrice,
+      "storeImage": "storeImage",
+      "storeDescription": "storeDescrition",
       "discount": discountPrice,
       "totalPrice": totalPrice,
       "status": 1,
