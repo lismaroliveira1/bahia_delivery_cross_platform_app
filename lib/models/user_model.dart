@@ -75,7 +75,9 @@ class UserModel extends Model {
     updateStories();
     updateStoreFavorites();
     getUserOrder();
+    getPartnerOrders();
     loadAddressItems();
+    updatePartnerData();
   }
 
   Future<void> signIn({
@@ -854,12 +856,35 @@ class UserModel extends Model {
 
       query.documents.map((doc) {
         if (doc.data["client"] == firebaseUser.uid) {
-          listUserOrders.add(OrderData.fromDocument(doc));
+          listUserOrders.add(
+            OrderData.fromDocument(doc),
+          );
         }
       }).toList();
     }
     print(listUserOrders.length);
 
+    isLoading = false;
+    notifyListeners();
+  }
+
+  void updatePartnerData() async {
+    isLoading = true;
+    notifyListeners();
+    if (firebaseUser == null) firebaseUser = await _auth.currentUser();
+    if (firebaseUser != null) {
+      DocumentSnapshot partnerDocument = await Firestore.instance
+          .collection("users")
+          .document(firebaseUser.uid)
+          .get();
+      if (partnerDocument.data["storeId"] != null) {
+        DocumentSnapshot storeDocument = await Firestore.instance
+            .collection("stores")
+            .document(partnerDocument.data["storeId"])
+            .get();
+        storeData = StoreData.fromDocument(storeDocument);
+      }
+    }
     isLoading = false;
     notifyListeners();
   }
@@ -870,11 +895,16 @@ class UserModel extends Model {
     if (firebaseUser == null) firebaseUser = await _auth.currentUser();
     if (firebaseUser != null) {
       QuerySnapshot querySnapshot =
-          await Firestore.instance.collection("oders").getDocuments();
+          await Firestore.instance.collection("orders").getDocuments();
       querySnapshot.documents.map((doc) {
-        if (doc.data["storeId"] == storeData.id) {}
+        if (doc.data["storeId"] == storeData.id) {
+          listPartnerOders.add(
+            OrderData.fromDocument(doc),
+          );
+        }
       }).toList();
     }
+    print(listPartnerOders);
     isLoading = false;
     notifyListeners();
   }
