@@ -1,10 +1,10 @@
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/login_screen.dart';
-import 'package:bahia_delivery/tiles/order_tile.dart';
+import 'package:bahia_delivery/tiles/order_partner_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class OrderTab extends StatelessWidget {
+class OrderPartnerTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(
@@ -62,9 +62,9 @@ class OrderTab extends StatelessWidget {
         } else {
           if (model.listUserOrders.length > 0) {
             return ListView(
-                children: model.listUserOrders.map(
+                children: model.listPartnerOders.map(
               (doc) {
-                return OrderTile(doc);
+                return OrderPartnerTile(doc);
               },
             ).toList());
           } else {

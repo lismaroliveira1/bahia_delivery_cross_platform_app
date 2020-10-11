@@ -4,9 +4,9 @@ import 'package:bahia_delivery/data/order_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class OrderTile extends StatelessWidget {
+class OrderPartnerTile extends StatelessWidget {
   final OrderData orderData;
-  OrderTile(this.orderData);
+  OrderPartnerTile(this.orderData);
   @override
   Widget build(BuildContext context) {
     String month = '';

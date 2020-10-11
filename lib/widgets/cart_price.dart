@@ -82,7 +82,6 @@ class CartPrice extends StatelessWidget {
                             if (userModel.payOnApp) {
                               print("payOnApp");
                             } else {
-                              userModel.getUserOrder();
                               await model.finishOrderWithPayOnDelivery();
                             }
                           },

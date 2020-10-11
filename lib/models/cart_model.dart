@@ -165,7 +165,7 @@ class CartModel extends Model {
         'cpf': creditDebitCardData.cpf,
         'paymentType': 'CreditCard'
       };
-      print(dataSale);
+
       final HttpsCallable callable =
           functions.getHttpsCallable(functionName: 'authorizedCreditCard');
       final response = await callable.call(dataSale);

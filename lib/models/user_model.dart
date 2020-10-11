@@ -74,10 +74,9 @@ class UserModel extends Model {
     updateCategory();
     updateStories();
     updateStoreFavorites();
-    getUserOrder();
-    getPartnerOrders();
-    loadAddressItems();
     updatePartnerData();
+    getUserOrder();
+    loadAddressItems();
   }
 
   Future<void> signIn({
@@ -399,7 +398,6 @@ class UserModel extends Model {
         userImage = userData["image"];
         isPartner = userData["isPartner"];
         if (userData["storeId"] != null) {
-          print(userData["storeId"]);
           await Firestore.instance
               .collection("stores")
               .document(userData["storeId"])
@@ -408,7 +406,6 @@ class UserModel extends Model {
             if (doc.exists) {
               final storeDocument = StoreData.fromDocument(doc);
               storeData = storeDocument;
-              print(storeData.name);
             }
           });
         }
@@ -847,8 +844,6 @@ class UserModel extends Model {
   }
 
   void getUserOrder() async {
-    isLoading = true;
-    notifyListeners();
     if (firebaseUser == null) firebaseUser = await _auth.currentUser();
     if (firebaseUser != null) {
       QuerySnapshot query =
@@ -862,15 +857,10 @@ class UserModel extends Model {
         }
       }).toList();
     }
-    print(listUserOrders.length);
-
-    isLoading = false;
     notifyListeners();
   }
 
   void updatePartnerData() async {
-    isLoading = true;
-    notifyListeners();
     if (firebaseUser == null) firebaseUser = await _auth.currentUser();
     if (firebaseUser != null) {
       DocumentSnapshot partnerDocument = await Firestore.instance
@@ -883,29 +873,17 @@ class UserModel extends Model {
             .document(partnerDocument.data["storeId"])
             .get();
         storeData = StoreData.fromDocument(storeDocument);
+        QuerySnapshot querySnapshot =
+            await Firestore.instance.collection("orders").getDocuments();
+        querySnapshot.documents.map((doc) {
+          if (doc.data["storeId"] == storeData.id) {
+            listPartnerOders.add(
+              OrderData.fromDocument(doc),
+            );
+          }
+        }).toList();
       }
     }
-    isLoading = false;
-    notifyListeners();
-  }
-
-  void getPartnerOrders() async {
-    isLoading = true;
-    notifyListeners();
-    if (firebaseUser == null) firebaseUser = await _auth.currentUser();
-    if (firebaseUser != null) {
-      QuerySnapshot querySnapshot =
-          await Firestore.instance.collection("orders").getDocuments();
-      querySnapshot.documents.map((doc) {
-        if (doc.data["storeId"] == storeData.id) {
-          listPartnerOders.add(
-            OrderData.fromDocument(doc),
-          );
-        }
-      }).toList();
-    }
-    print(listPartnerOders);
-    isLoading = false;
     notifyListeners();
   }
 }
