@@ -1,13 +1,13 @@
 import 'dart:collection';
 
+import 'package:bahia_delivery/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class OrderTile extends StatelessWidget {
-  final String orderId;
-  OrderTile(this.orderId);
   @override
   Widget build(BuildContext context) {
+    String userId = UserModel.of(context).firebaseUser.uid;
     return Column(
       children: [
         Card(
@@ -17,7 +17,7 @@ class OrderTile extends StatelessWidget {
             child: StreamBuilder<DocumentSnapshot>(
               stream: Firestore.instance
                   .collection("orders")
-                  .document(orderId)
+                  .document()
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -26,6 +26,9 @@ class OrderTile extends StatelessWidget {
                   );
                 } else {
                   int status = snapshot.data["status"];
+                  if (snapshot.data["clients"] == userId) {
+                    print("ok");
+                  }
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[

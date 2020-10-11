@@ -295,7 +295,10 @@ class UserModel extends Model {
           email: user.email, password: user.password);
       this.firebaseUser = result.user;
       await _saveUserData(user);
+      userName = user.name;
+      userImage = user.image;
       onSuccess();
+      saveToken();
       isLoading = false;
       notifyListeners();
     } on PlatformException catch (_) {
@@ -372,6 +375,7 @@ class UserModel extends Model {
   void _loadCurrentUser() async {
     isLoading = true;
     notifyListeners();
+    updateStories();
     if (firebaseUser == null) firebaseUser = await _auth.currentUser();
     if (firebaseUser != null) {
       if (userData["name"] == null) {
@@ -380,8 +384,11 @@ class UserModel extends Model {
             .document(firebaseUser.uid)
             .get();
         userData = docUser.data;
+        userName = userData["name"];
+        userImage = userData["image"];
         isPartner = userData["isPartner"];
         if (userData["storeId"] != null) {
+          print(userData["storeId"]);
           await Firestore.instance
               .collection("stores")
               .document(userData["storeId"])
@@ -390,6 +397,7 @@ class UserModel extends Model {
             if (doc.exists) {
               final storeDocument = StoreData.fromDocument(doc);
               storeData = storeDocument;
+              print(storeData.name);
             }
           });
         }
@@ -418,6 +426,17 @@ class UserModel extends Model {
         } else {}
       }
     }
+    try {
+      if (firebaseUser == null) await _auth.currentUser();
+      if (firebaseUser != null) {
+        QuerySnapshot querySnapshot =
+            await Firestore.instance.collection("stores").getDocuments();
+        storeDataList = querySnapshot.documents
+            .map((doc) => StoreData.fromDocument(doc))
+            .toList();
+      }
+    } catch (e) {}
+    if (storeDataList.length > 0) hasStories = true;
     isLoading = false;
     notifyListeners();
   }
@@ -814,5 +833,10 @@ class UserModel extends Model {
         .document(storeDataFavorite.id)
         .delete();
     storeListFavorites.remove(storeListFavorites);
+  }
+
+  void getUserOrder() async {
+    QuerySnapshot querySnapshot =
+        await Firestore.instance.collection("orders").getDocuments();
   }
 }

@@ -18,14 +18,7 @@ class OrderTab extends StatelessWidget {
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
-          } else {
-            return ListView(
-                reverse: false,
-                scrollDirection: Axis.vertical,
-                children: snapshot.data.documents
-                    .map((e) => OrderTile(e.documentID))
-                    .toList());
-          }
+          } else {}
         },
       );
     } else {

@@ -18,7 +18,7 @@ class CartModel extends Model {
   int discountPercentage = 0;
   bool isLoading = false;
   bool itemExist = false;
-  String currentStore;
+  String currentStore = '';
   CartModel(this.user) {
     if (user.isLoggedIn()) _loadCartItems();
   }
@@ -28,7 +28,8 @@ class CartModel extends Model {
   void addCartItem(
       {@required CartProduct cartProduct,
       @required VoidCallback onFail}) async {
-    if (currentStore == null) {
+    if (currentStore == '') {
+      print(cartProduct.storeId);
       currentStore = cartProduct.storeId;
       products.add(cartProduct);
       Firestore.instance
@@ -227,7 +228,7 @@ class CartModel extends Model {
     }
     await Firestore.instance.collection("orders").add({
       "clients": user.firebaseUser.uid,
-      "storeId": currentStore,
+      "storeId": products[0].storeId,
       "products": products.map((cartProduct) => cartProduct.toMap()).toList(),
       "shipPrice": shipPrice,
       "discount": discountPrice,

@@ -260,6 +260,7 @@ export const onParnerterStatusChanged = functions.firestore.document("/users/{is
         console.log(newDataUser.partnerId);
         const tokensPartnerUser = await admin.firestore().collection("users").doc(newDataUser.partnerId).collection("tokens").get();
         const partnerTokens = tokensPartnerUser.docs.map(doc => doc.id);
-        await sendPushFCM(partnerTokens, 'Nova Atiualização', '' + partnerStatus.get(afterStatus));
+        await sendPushFCM(partnerTokens, 'Nova Atualização',
+            '' + partnerStatus.get(afterStatus));
     }
  });
