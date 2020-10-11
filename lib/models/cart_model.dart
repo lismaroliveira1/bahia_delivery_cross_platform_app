@@ -14,6 +14,7 @@ class CartModel extends Model {
   UserModel user;
   List<CartProduct> products = [];
   String couponCode;
+  Map<String, dynamic> dataSale = {};
   int discountPercentage = 0;
   bool isLoading = false;
   bool itemExist = false;
@@ -145,17 +146,25 @@ class CartModel extends Model {
     double shipPrice = getShipPrice();
     double discountPrice = getDiscountPrice();
     double totalPrice = productPrice - discountPrice + shipPrice;
-
+    print(creditDebitCardData.cardNumber.replaceAll(" ", ""));
+    print((totalPrice * 100).toInt());
     try {
-      final Map<String, dynamic> dataSale = {
+      dataSale = {
         'merchantOrderId': randomAlphaNumeric(10),
         'amount': (totalPrice * 100).toInt(),
         'sotfDescriptor': "Bahia Delivery",
         'installments': 1,
-        'creditCard': creditDebitCardData.toJson(),
+        'creditCard': {
+          'cardNumber': creditDebitCardData.cardNumber.replaceAll(" ", ""),
+          'holder': creditDebitCardData.cardOwnerName,
+          'expirationDate': creditDebitCardData.validateDate,
+          'secuityCode': creditDebitCardData.cvv,
+          'brand': creditDebitCardData.brand,
+        },
         'cpf': creditDebitCardData.cpf,
         'paymentType': 'CreditCard'
       };
+      print(dataSale);
       final HttpsCallable callable =
           functions.getHttpsCallable(functionName: 'authorizedCreditCard');
       final response = await callable.call(dataSale);
@@ -197,5 +206,39 @@ class CartModel extends Model {
       notifyListeners();
       return Future.error('Fala ao processa a transação. Tente Novamente');
     }
+  }
+
+  Future<void> finishOrderWithPayOnDelivery() async {
+    print("payOnDelivery");
+    if (products.length == 0) return null;
+    isLoading = true;
+    notifyListeners();
+    double productPrice = getProductsPrice();
+    double shipPrice = getShipPrice();
+    double discountPrice = getDiscountPrice();
+    double totalPrice = productPrice - discountPrice + shipPrice;
+    QuerySnapshot query = await Firestore.instance
+        .collection("users")
+        .document(user.firebaseUser.uid)
+        .collection("cart")
+        .getDocuments();
+    for (DocumentSnapshot doc in query.documents) {
+      doc.reference.delete();
+    }
+    await Firestore.instance.collection("orders").add({
+      "clients": user.firebaseUser.uid,
+      "storeId": currentStore,
+      "products": products.map((cartProduct) => cartProduct.toMap()).toList(),
+      "shipPrice": shipPrice,
+      "discount": discountPrice,
+      "totalPrice": totalPrice,
+      "status": 1,
+      'createdAt': FieldValue.serverTimestamp(),
+      'platform': Platform.operatingSystem
+    });
+    products.clear();
+    couponCode = null;
+    isLoading = false;
+    notifyListeners();
   }
 }

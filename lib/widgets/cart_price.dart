@@ -79,12 +79,10 @@ class CartPrice extends StatelessWidget {
                         height: 60,
                         child: RaisedButton(
                           onPressed: () async {
-                            try {
-                              String payId = await model.finishOrder(
-                                  userModel.currentCreditDebitCardData);
-                              print(payId);
-                            } catch (e) {
-                              print(e);
+                            if (userModel.payOnApp) {
+                              print("payOnApp");
+                            } else {
+                              await model.finishOrderWithPayOnDelivery();
                             }
                           },
                           child: Text("Finalizar Pedido"),

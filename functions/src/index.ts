@@ -43,6 +43,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
     console.log('Inciando autorização');
     let brand: EnumBrands;
     console.log("ok");
+    console.log(data.creditCard.brand);
     switch (data.creditCard.brand) {
         case "visa":
             brand = EnumBrands.VISA;
@@ -104,6 +105,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                 district: userData.address.district
             }
         },
+        
         payment: {
             currency: "BRL",
             country: "BRA",
@@ -240,17 +242,24 @@ export const onOrderStatusChanged = functions
         }
 
 });
+
+const partnerStatus = new Map([
+    [1, "Parabéns!! Seja bem vindo! Você agora é um Parceiro Bahia Delivery!!"],
+    [2, "Agora é so esperar, sua proposta está em análize"]
     
+]);
 export const onParnerterStatusChanged = functions.firestore.document("/users/{isPartner}").onUpdate(async (snapshot, context) => {
-    const beforeStatus = snapshot.before.data().status;
-    const afterStatus = snapshot.after.data().status;
+    const beforeStatus = snapshot.before.data().isPartner;
+    const afterStatus = snapshot.after.data().isPartner;
     console.log(beforeStatus);
     if (beforeStatus !== afterStatus) {
-        const tokensUser = await admin.firestore().collection("users")
-            .doc(snapshot.after.data().clients).collection("tokens").get();
-        const tokens = tokensUser.docs.map(doc => doc.id);
-        await sendPushFCM(tokens,
-            'Novo status do pedido',
-            '' + orderStatus.get(afterStatus));        
+        console.log("entrou na função");
+        const storeDataUser = await admin.firestore().collection("stores")
+            .doc(snapshot.after.data().storeId).get();
+        const newDataUser = storeDataUser.data() || {};
+        console.log(newDataUser.partnerId);
+        const tokensPartnerUser = await admin.firestore().collection("users").doc(newDataUser.partnerId).collection("tokens").get();
+        const partnerTokens = tokensPartnerUser.docs.map(doc => doc.id);
+        await sendPushFCM(partnerTokens, 'Nova Atiualização', '' + partnerStatus.get(afterStatus));
     }
  });

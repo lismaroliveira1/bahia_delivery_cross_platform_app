@@ -40,10 +40,12 @@ class _PaymentCardState extends State<PaymentCard> {
                         if (model.paymentSet) {
                           if (model.payOnApp) {
                             return CreditDebitCardTileNB(
-                                model.currentCreditDebitCardData);
+                              model.currentCreditDebitCardData,
+                            );
                           } else {
                             return PaymentOnDeliveryTile(
-                                model.currentPaymentOndeliveryData);
+                              model.currentPaymentOndeliveryData,
+                            );
                           }
                         } else {
                           return Padding(

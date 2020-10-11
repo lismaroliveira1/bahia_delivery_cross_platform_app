@@ -163,8 +163,9 @@ class _PaymentsMethodsTabState extends State<PaymentsMethodsTab>
                             onPressed: () {
                               final PaymentOnDeliveryData
                                   paymentOnDeliveryData = PaymentOnDeliveryData(
-                                      image: "images/money.png",
-                                      description: "Dinheiro");
+                                image: "images/money.png",
+                                description: "Dinheiro",
+                              );
                               UserModel.of(context).setPaymentOnDeliveryMethod(
                                   paymentOnDeliveryData);
                               Navigator.of(context).pop();
