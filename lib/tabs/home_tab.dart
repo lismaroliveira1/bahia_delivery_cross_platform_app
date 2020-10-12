@@ -84,7 +84,9 @@ class _HomeTabState extends State<HomeTab> {
                             borderRadius: BorderRadius.circular(8),
                             child: FadeInImage.memoryNetwork(
                               placeholder: kTransparentImage,
-                              image: model.firebaseUser.photoUrl,
+                              image: model.firebaseUser.photoUrl == null
+                                  ? "https://meuvidraceiro.com.br/images/sem-imagem.png"
+                                  : model.firebaseUser.photoUrl,
                               fit: BoxFit.cover,
                             ),
                           ),

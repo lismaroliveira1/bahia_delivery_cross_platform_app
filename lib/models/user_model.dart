@@ -97,53 +97,23 @@ class UserModel extends Model {
       onSuccess();
       saveToken();
       isLoading = false;
+      isLogged = true;
       notifyListeners();
     } on PlatformException catch (_) {
       onFail();
       isLoading = false;
       notifyListeners();
+      isLogged = false;
     }
   }
 
   Future<void> signUpWithGoogle({
-    @required AuthResult authResult,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+    @required VoidCallback onFailGoogle,
   }) async {
     isLoading = true;
     notifyListeners();
-    this.firebaseUser = authResult.user;
-    DocumentSnapshot docUser = await Firestore.instance
-        .collection("users")
-        .document(firebaseUser.uid)
-        .get();
-    if (docUser.exists) {
-      await _auth.signOut();
-      userData = Map();
-      firebaseUser = null;
-      isLogged = false;
-      isLoading = false;
-      notifyListeners();
-    } else {
-      userName = authResult.user.displayName;
-      userImage = authResult.user.photoUrl;
-      final user = User(
-          name: authResult.user.displayName,
-          email: authResult.user.email,
-          image: authResult.user.photoUrl,
-          isPartner: 3,
-          currentAddress: "");
-      this.firebaseUser = authResult.user;
-      _saveUserData(user);
-      isLogged = true;
-      saveToken();
-      isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> signInWithGoogle() async {
-    isLoading = true;
-    notifyListeners();
-    print('ok');
     final GoogleSignIn _googleSignIn = GoogleSignIn(
       scopes: [
         'email',
@@ -168,7 +138,67 @@ class UserModel extends Model {
           .collection("users")
           .document(authResult.user.uid)
           .get();
+      if (docUser.exists) {
+        await _auth.signOut();
+        userData = Map();
+        firebaseUser = null;
+        onFailGoogle();
+        isLogged = false;
+        isLoading = false;
+        notifyListeners();
+      } else {
+        userName = authResult.user.displayName;
+        userImage = authResult.user.photoUrl;
+        final user = User(
+            name: authResult.user.displayName,
+            email: authResult.user.email,
+            image: authResult.user.photoUrl,
+            isPartner: 3,
+            currentAddress: "");
+        this.firebaseUser = authResult.user;
+        _saveUserData(user);
+        isLogged = true;
+        saveToken();
+        onSuccess();
+        isLoading = false;
+        notifyListeners();
+      }
+    } catch (e) {
+      isLogged = false;
+      print(e);
+      onFail();
+    }
+  }
 
+  Future<void> signInWithGoogle(
+      {@required VoidCallback onSuccess, @required VoidCallback onFail}) async {
+    isLoading = true;
+    notifyListeners();
+
+    final GoogleSignIn _googleSignIn = GoogleSignIn(
+      scopes: [
+        'email',
+        'https://www.googleapis.com/auth/contacts.readonly',
+      ],
+    );
+    final GoogleSignInAccount googleSignInAccount =
+        await _googleSignIn.signIn();
+    if (googleSignInAccount == null) {
+      return null;
+    }
+    final GoogleSignInAuthentication googleSignInAuthentication =
+        await googleSignInAccount.authentication;
+    final AuthCredential authCredential = GoogleAuthProvider.getCredential(
+        idToken: googleSignInAuthentication.idToken,
+        accessToken: googleSignInAuthentication.accessToken);
+    final AuthResult authResult =
+        await FirebaseAuth.instance.signInWithCredential(authCredential);
+
+    try {
+      DocumentSnapshot docUser = await Firestore.instance
+          .collection("users")
+          .document(authResult.user.uid)
+          .get();
       if (docUser.exists) {
         userName = authResult.user.displayName;
         userImage = authResult.user.photoUrl;
@@ -195,11 +225,13 @@ class UserModel extends Model {
     } catch (e) {
       errorSignGoogle = true;
       isLoading = false;
+      isLogged = false;
       notifyListeners();
     }
   }
 
-  Future<void> signInWithFacebook() async {
+  Future<void> signInWithFacebook(
+      {@required onSuccess, @required onFail}) async {
     isLoading = false;
     notifyListeners();
     final FacebookLogin facebookLogin = FacebookLogin();
@@ -233,8 +265,8 @@ class UserModel extends Model {
         }
         break;
       case FacebookLoginStatus.cancelledByUser:
-
         // TODO: Handle this case.
+        isLogged = false;
         break;
       case FacebookLoginStatus.error:
         errorSignFacebook = true;
@@ -245,56 +277,70 @@ class UserModel extends Model {
     }
   }
 
-  Future<void> signUpWithFacebook() async {
-    isLoading = false;
+  Future<void> signUpWithFacebook({
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+    @required onFailFacebbok,
+  }) async {
+    isLoading = true;
     notifyListeners();
-    final FacebookLogin facebookLogin = FacebookLogin();
-    final result = await facebookLogin.logIn(['email', 'public_profile']);
-    switch (result.status) {
-      case FacebookLoginStatus.loggedIn:
-        final credential = FacebookAuthProvider.getCredential(
-          accessToken: result.accessToken.token,
-        );
+    try {
+      final FacebookLogin facebookLogin = FacebookLogin();
+      final result = await facebookLogin.logIn(['email', 'public_profile']);
+      switch (result.status) {
+        case FacebookLoginStatus.loggedIn:
+          final credential = FacebookAuthProvider.getCredential(
+            accessToken: result.accessToken.token,
+          );
 
-        final authResult = await _auth.signInWithCredential(credential);
-        if (authResult.user != null) {
-          DocumentSnapshot docUser = await Firestore.instance
-              .collection("users")
-              .document(authResult.user.uid)
-              .get();
-          if (docUser.exists) {
-            await _auth.signOut();
-            userData = Map();
-            firebaseUser = null;
-            isLogged = false;
-            isLoading = false;
-            notifyListeners();
-          } else {
-            final user = User(
-                name: authResult.user.displayName,
-                email: authResult.user.email,
-                isPartner: 3,
-                currentAddress: "");
-            this.firebaseUser = authResult.user;
-            _saveUserData(user);
-            isLogged = true;
-            saveToken();
-            isLoading = false;
-            notifyListeners();
+          final authResult = await _auth.signInWithCredential(credential);
+          if (authResult.user != null) {
+            DocumentSnapshot docUser = await Firestore.instance
+                .collection("users")
+                .document(authResult.user.uid)
+                .get();
+            if (docUser.exists) {
+              await _auth.signOut();
+              userData = Map();
+              firebaseUser = null;
+              onFail();
+              isLogged = false;
+              isLoading = false;
+              notifyListeners();
+            } else {
+              final user = User(
+                  name: authResult.user.displayName,
+                  email: authResult.user.email,
+                  isPartner: 3,
+                  currentAddress: "");
+              this.firebaseUser = authResult.user;
+              _saveUserData(user);
+              isLogged = true;
+              saveToken();
+              onSuccess();
+              isLoading = false;
+              notifyListeners();
+            }
           }
-        }
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        isLogged = false;
-        isLoading = false;
-        notifyListeners();
-        break;
-      case FacebookLoginStatus.error:
-        errorSignFacebook = true;
-        isLogged = false;
-        isLoading = false;
-        notifyListeners();
-        break;
+          break;
+        case FacebookLoginStatus.cancelledByUser:
+          isLogged = false;
+          isLoading = false;
+          notifyListeners();
+          break;
+        case FacebookLoginStatus.error:
+          errorSignFacebook = true;
+          isLogged = false;
+          isLoading = false;
+          notifyListeners();
+          break;
+      }
+    } catch (e) {
+      print(e);
+      onFail();
+      isLogged = false;
+      isLoading = false;
+      notifyListeners();
     }
   }
 
@@ -310,11 +356,13 @@ class UserModel extends Model {
       this.firebaseUser = result.user;
       await _saveUserData(user);
       onSuccess();
+      isLogged = true;
       saveToken();
       isLoading = false;
       notifyListeners();
     } on PlatformException catch (_) {
       onFail();
+      isLogged = false;
       isLoading = false;
       notifyListeners();
     }
@@ -326,6 +374,7 @@ class UserModel extends Model {
     await _auth.signOut();
     userData = Map();
     firebaseUser = null;
+    isLogged = false;
     isLoading = false;
     notifyListeners();
   }
