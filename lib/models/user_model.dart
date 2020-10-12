@@ -71,12 +71,13 @@ class UserModel extends Model {
     _loadCurrentUser();
     _getCurrentLocation();
     _loadListCreditDebitCard();
+    loadAddressItems();
     updateCategory();
+
     updateStories();
     updateStoreFavorites();
     updatePartnerData();
     getUserOrder();
-    loadAddressItems();
   }
 
   Future<void> signIn({
@@ -142,7 +143,7 @@ class UserModel extends Model {
   Future<void> signInWithGoogle() async {
     isLoading = true;
     notifyListeners();
-    isLogged = false;
+    print('ok');
     final GoogleSignIn _googleSignIn = GoogleSignIn(
       scopes: [
         'email',
@@ -169,10 +170,19 @@ class UserModel extends Model {
           .get();
 
       if (docUser.exists) {
+        userName = authResult.user.displayName;
+        userImage = authResult.user.photoUrl;
+        final user = User(
+            name: authResult.user.displayName,
+            email: authResult.user.email,
+            image: authResult.user.photoUrl,
+            isPartner: 3,
+            currentAddress: "");
         this.firebaseUser = authResult.user;
+        _saveUserData(user);
         isLogged = true;
-        isLoading = false;
         saveToken();
+        isLoading = false;
         notifyListeners();
       } else {
         await _auth.signOut();
@@ -184,7 +194,6 @@ class UserModel extends Model {
       }
     } catch (e) {
       errorSignGoogle = true;
-
       isLoading = false;
       notifyListeners();
     }
@@ -300,8 +309,6 @@ class UserModel extends Model {
           email: user.email, password: user.password);
       this.firebaseUser = result.user;
       await _saveUserData(user);
-      userName = user.name;
-      userImage = user.image;
       onSuccess();
       saveToken();
       isLoading = false;
@@ -319,14 +326,6 @@ class UserModel extends Model {
     await _auth.signOut();
     userData = Map();
     firebaseUser = null;
-    userEmail = '';
-    userImage = null;
-    userName = null;
-    addresses = [];
-    creditDebitCardList = [];
-    categoryDataList = [];
-    storeDataList = [];
-    storeListFavorites = [];
     isLoading = false;
     notifyListeners();
   }
@@ -346,22 +345,6 @@ class UserModel extends Model {
     return firebaseUser != null;
   }
 
-  void getUserData() {
-    if (firebaseUser.displayName == null) {
-      userName = userData["name"];
-    } else {
-      userName = firebaseUser.displayName;
-    }
-
-    if (firebaseUser.photoUrl == null) {
-      userImage = "https://meuvidraceiro.com.br/images/sem-imagem.png";
-    } else {
-      userImage = firebaseUser.photoUrl;
-    }
-    userPhoneNumber = firebaseUser.phoneNumber;
-    userEmail = firebaseUser.email;
-  }
-
   bool updateUser() {
     return isPartner != null;
   }
@@ -369,15 +352,18 @@ class UserModel extends Model {
   void _getCurrentLocation() async {
     isLoading = true;
     notifyListeners();
-    final postition =
-        await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    if (postition.latitude != null) {
+    if (firebaseUser == null) firebaseUser = await _auth.currentUser();
+    if (firebaseUser != null) {
+      final postition =
+          await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      if (postition.latitude != null) {
+        latitude = postition.latitude;
+      }
+      if (postition.longitude != null) {
+        longittude = postition.longitude;
+      }
       latitude = postition.latitude;
     }
-    if (postition.longitude != null) {
-      longittude = postition.longitude;
-    }
-    latitude = postition.latitude;
     isLoading = false;
     notifyListeners();
   }
@@ -385,7 +371,6 @@ class UserModel extends Model {
   void _loadCurrentUser() async {
     isLoading = true;
     notifyListeners();
-    updateStories();
     if (firebaseUser == null) firebaseUser = await _auth.currentUser();
     if (firebaseUser != null) {
       if (userData["name"] == null) {
@@ -650,21 +635,35 @@ class UserModel extends Model {
   }
 
   Future<void> createNewStoreWithCPF({
+    @required File imageFile,
     @required StoreCPF storeCPF,
     @required VoidCallback onSuccess,
     @required VoidCallback onFail,
   }) async {
     isLoading = true;
     notifyListeners();
+    String url;
     try {
       if (firebaseUser == null) await _auth.currentUser();
       if (firebaseUser != null) {
+        if (imageFile == null) {
+          url = "https://meuvidraceiro.com.br/images/sem-imagem.png";
+        } else {
+          print("ok");
+          StorageUploadTask task = FirebaseStorage.instance
+              .ref()
+              .child("images")
+              .child(storeData.id + DateTime.now().millisecond.toString())
+              .putFile(imageFile);
+          StorageTaskSnapshot taskSnapshot = await task.onComplete;
+          url = await taskSnapshot.ref.getDownloadURL();
+        }
         await Firestore.instance.collection("stores").add({
           "partnerId": firebaseUser.uid,
           "title": storeCPF.name,
           "name": storeCPF.name,
           "cpf": storeCPF.cpf,
-          "image": storeCPF.image,
+          "image": url,
           "description": storeCPF.description,
           "isOpen": true,
           "address": {
@@ -689,10 +688,10 @@ class UserModel extends Model {
         storeData.name = storeCPF.name;
         storeData.image = storeCPF.description;
         storeData.description = storeCPF.description;
+        storeCPF = null;
         onSuccess();
         isLoading = false;
         notifyListeners();
-        print("ok");
       }
     } catch (e) {
       onFail();
@@ -712,14 +711,19 @@ class UserModel extends Model {
   }) async {
     isLoading = true;
     notifyListeners();
+    String url;
     try {
-      StorageUploadTask task = FirebaseStorage.instance
-          .ref()
-          .child("images")
-          .child(storeData.id + DateTime.now().millisecond.toString())
-          .putFile(imageFile);
-      StorageTaskSnapshot taskSnapshot = await task.onComplete;
-      String url = await taskSnapshot.ref.getDownloadURL();
+      if (imageFile == null) {
+        url = "https://meuvidraceiro.com.br/images/sem-imagem.png";
+      } else {
+        StorageUploadTask task = FirebaseStorage.instance
+            .ref()
+            .child("images")
+            .child(storeData.id + DateTime.now().millisecond.toString())
+            .putFile(imageFile);
+        StorageTaskSnapshot taskSnapshot = await task.onComplete;
+        url = await taskSnapshot.ref.getDownloadURL();
+      }
       Firestore.instance
           .collection("stores")
           .document(userData["storeId"])
@@ -738,6 +742,7 @@ class UserModel extends Model {
       isLoading = false;
       notifyListeners();
     } catch (e) {
+      print(e);
       isLoading = false;
       notifyListeners();
       onFail();
@@ -808,15 +813,7 @@ class UserModel extends Model {
   }
 
   bool verifyFavoriteStore(String storeId) {
-    bool isFavorite = false;
-    for (int i = 0; i < storeListFavorites.length; i++) {
-      if (storeListFavorites[i].id == storeId) {
-        isFavorite = true;
-      } else {
-        isFavorite = false;
-      }
-    }
-    return isFavorite;
+    return true;
   }
 
   void addFavoriteStore(StoreData storeDataFavorite) {
@@ -850,13 +847,7 @@ class UserModel extends Model {
       QuerySnapshot query =
           await Firestore.instance.collection("orders").getDocuments();
 
-      query.documents.map((doc) {
-        if (doc.data["client"] == firebaseUser.uid) {
-          listUserOrders.add(
-            OrderData.fromDocument(doc),
-          );
-        }
-      }).toList();
+      query.documents.map((doc) {}).toList();
     }
     notifyListeners();
   }

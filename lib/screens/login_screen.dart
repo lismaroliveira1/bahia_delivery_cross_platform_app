@@ -141,6 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   child: RaisedButton(
                                     onPressed: () async {
                                       await model.signInWithGoogle();
+
                                       if (model.isLogged) {
                                         _onSuccess();
                                       } else {

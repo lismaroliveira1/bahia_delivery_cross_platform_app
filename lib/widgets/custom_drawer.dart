@@ -29,49 +29,56 @@ class CustomDrawer extends StatelessWidget {
               _buildDrawerBack(),
               ScopedModelDescendant<UserModel>(
                   builder: (context, child, model) {
-                if (model.userName == null) model.getUserData();
-                return ListView(
-                  padding: EdgeInsets.only(left: 32.0, top: 32.0),
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(bottom: 8.0),
-                      padding: EdgeInsets.fromLTRB(0.0, 16.0, 16.0, 8.0),
-                      height: 170.0,
-                      child: Image.asset("images/logo.png"),
-                    ),
-                    Text("Olá, ${!model.isLoggedIn() ? "" : model.userName}",
-                        style: TextStyle(
-                            fontSize: 18.0, fontWeight: FontWeight.bold)),
-                    Row(
-                      children: [
-                        FlatButton(
-                          child: Text(
-                            !model.isLoggedIn()
-                                ? "Entre ou Cadastra-se >"
-                                : "Sair",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold),
+                if (!model.isLoggedIn()) {
+                  Navigator.of(context).pop();
+                } else if (model.isLoading) {
+                  Container(
+                    height: 0,
+                  );
+                } else {
+                  return ListView(
+                    padding: EdgeInsets.only(left: 32.0, top: 32.0),
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(bottom: 8.0),
+                        padding: EdgeInsets.fromLTRB(0.0, 16.0, 16.0, 8.0),
+                        height: 170.0,
+                        child: Image.asset("images/logo.png"),
+                      ),
+                      Text("Olá, ${!model.isLoggedIn() ? "" : model.userName}",
+                          style: TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.bold)),
+                      Row(
+                        children: [
+                          FlatButton(
+                            child: Text(
+                              !model.isLoggedIn()
+                                  ? "Entre ou Cadastra-se >"
+                                  : "Sair",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            onPressed: () {
+                              if (!model.isLoggedIn())
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => LoginScreen()));
+                              else
+                                model.signOut();
+                            },
                           ),
-                          onPressed: () {
-                            if (!model.isLoggedIn())
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => LoginScreen()));
-                            else
-                              model.signOut();
-                          },
-                        ),
-                      ],
-                    ),
-                    Divider(),
-                    DrawerTile("Início", Icons.home, pageController, 0),
-                    DrawerTile("Pedidos", Icons.list, pageController, 1),
-                    DrawerTile(
-                        "Configurações", Icons.settings, pageController, 2),
-                    DrawerTile("Sobre", Icons.album, pageController, 3)
-                  ],
-                );
+                        ],
+                      ),
+                      Divider(),
+                      DrawerTile("Início", Icons.home, pageController, 0),
+                      DrawerTile("Pedidos", Icons.list, pageController, 1),
+                      DrawerTile(
+                          "Configurações", Icons.settings, pageController, 2),
+                      DrawerTile("Sobre", Icons.album, pageController, 3)
+                    ],
+                  );
+                }
               })
             ],
           ),

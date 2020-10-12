@@ -23,14 +23,16 @@ class _HomeTabState extends State<HomeTab> {
     Permission.locationWhenInUse.serviceStatus.isEnabled.then(_updateStatus);
   }
 
+  bool isStoresLengthVerified = false;
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
-      if (model.storeDataList.length == 0) {
-        model.updateStories();
+      if (!model.isLoggedIn()) {
+        return Container(
+          height: 0,
+        );
       }
-      if (model.userImage == null) model.getUserData();
-      if (model.isLoading && model.street == null) {
+      if (model.isLoading) {
         return Container(
           color: Colors.white,
           child: Center(
@@ -82,7 +84,7 @@ class _HomeTabState extends State<HomeTab> {
                             borderRadius: BorderRadius.circular(8),
                             child: FadeInImage.memoryNetwork(
                               placeholder: kTransparentImage,
-                              image: model.userImage,
+                              image: model.firebaseUser.photoUrl,
                               fit: BoxFit.cover,
                             ),
                           ),

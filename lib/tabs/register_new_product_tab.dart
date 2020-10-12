@@ -58,26 +58,98 @@ class _RegisterNewProductTabState extends State<RegisterNewProductTab> {
                         bottom: 4.0,
                         right: 4.0,
                         child: IconButton(
-                          icon: Icon(Icons.camera_alt),
-                          onPressed: () async {
-                            try {
-                              final _pickedFile = await picker.getImage(
-                                source: ImageSource.camera,
-                                maxHeight: 500,
-                                maxWidth: 500,
-                              );
-                              if (_pickedFile == null) return;
-                              imageFile = File(_pickedFile.path);
-                              if (imageFile == null) return;
-                              setState(() {
-                                isImageChoosed = true;
-                              });
-                            } catch (e) {
-                              setState(() {
-                                isImageChoosed = false;
-                              });
-                            }
+                          onPressed: () {
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                              backgroundColor: Colors.redAccent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(12),
+                                  topRight: Radius.circular(12),
+                                ),
+                              ),
+                              content: Container(
+                                  width: MediaQuery.of(context).size.width,
+                                  height:
+                                      MediaQuery.of(context).size.height / 12,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      FlatButton(
+                                        padding: EdgeInsets.only(
+                                          left: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              18,
+                                        ),
+                                        onPressed: () async {
+                                          try {
+                                            final _pickedFile =
+                                                await picker.getImage(
+                                              source: ImageSource.gallery,
+                                              maxHeight: 500,
+                                              maxWidth: 500,
+                                            );
+                                            if (_pickedFile == null) return;
+                                            imageFile = File(_pickedFile.path);
+                                            if (imageFile == null) return;
+                                            setState(() {
+                                              isImageChoosed = true;
+                                            });
+                                          } catch (e) {
+                                            setState(() {
+                                              isImageChoosed = false;
+                                            });
+                                          }
+                                        },
+                                        child: Container(
+                                          child: Image.asset(
+                                            "images/gallery_image.png",
+                                          ),
+                                          height: 50,
+                                          width: 50,
+                                        ),
+                                      ),
+                                      FlatButton(
+                                        padding: EdgeInsets.only(
+                                          right: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              18,
+                                        ),
+                                        onPressed: () async {
+                                          try {
+                                            final _pickedFile =
+                                                await picker.getImage(
+                                              source: ImageSource.camera,
+                                              maxHeight: 500,
+                                              maxWidth: 500,
+                                            );
+                                            if (_pickedFile == null) return;
+                                            imageFile = File(_pickedFile.path);
+                                            if (imageFile == null) return;
+                                            setState(() {
+                                              isImageChoosed = true;
+                                            });
+                                          } catch (e) {
+                                            setState(() {
+                                              isImageChoosed = false;
+                                            });
+                                          }
+                                        },
+                                        child: Container(
+                                          child: Image.asset(
+                                            "images/camera_image.png",
+                                          ),
+                                          height: 50,
+                                          width: 50,
+                                        ),
+                                      )
+                                    ],
+                                  )),
+                            ));
                           },
+                          icon: Icon(Icons.camera_alt),
                         ),
                       ),
                     ],
