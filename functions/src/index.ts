@@ -225,7 +225,7 @@ const orderStatus = new Map([
     [1, "Aguardando reposta da Loja"],
     [2, "Tudo ok! Seu pedido já está em preparação."],
     [3, "Opa! Seu pedido saiu para entrega"],
-    [4, "Parabens!!! O peido foi Emtregue"],
+    [4, "Parabéns!!! O peido foi Emtregue"],
     [5, "Seu pedido foi cancelado pela loja"]
 ]);
 export const onOrderStatusChanged = functions
@@ -245,7 +245,7 @@ export const onOrderStatusChanged = functions
 
 const partnerStatus = new Map([
     [1, "Parabéns!! Seja bem vindo! Você agora é um Parceiro Bahia Delivery!!"],
-    [2, "Agora é so esperar, sua proposta está em análize"]
+    [2, "Agora é so esperar, sua proposta está em análise"]
     
 ]);
 export const onParnerterStatusChanged = functions.firestore.document("/users/{isPartner}").onUpdate(async (snapshot, context) => {

@@ -26,6 +26,9 @@ class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
+      if (model.storeDataList.length == 0) {
+        model.updateStories();
+      }
       if (model.userImage == null) model.getUserData();
       if (model.isLoading && model.street == null) {
         return Container(

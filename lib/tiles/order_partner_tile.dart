@@ -4,13 +4,22 @@ import 'package:bahia_delivery/data/order_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class OrderPartnerTile extends StatelessWidget {
+class OrderPartnerTile extends StatefulWidget {
   final OrderData orderData;
   OrderPartnerTile(this.orderData);
+
+  @override
+  _OrderPartnerTileState createState() => _OrderPartnerTileState();
+}
+
+class _OrderPartnerTileState extends State<OrderPartnerTile> {
+  String firtstatus = "Aceitar Pedido";
+  String secondStatus = "Enviar";
+  String thirdStatus = "";
   @override
   Widget build(BuildContext context) {
     String month = '';
-    switch (orderData.createdAt.toDate().month) {
+    switch (widget.orderData.createdAt.toDate().month) {
       case 1:
         month = "Janeiro";
         break;
@@ -58,12 +67,14 @@ class OrderPartnerTile extends StatelessWidget {
             child: StreamBuilder<DocumentSnapshot>(
               stream: Firestore.instance
                   .collection("orders")
-                  .document(orderData.orderId)
+                  .document(widget.orderData.orderId)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
+                  return Container(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 } else {
                   int status = snapshot.data["status"];
@@ -74,7 +85,7 @@ class OrderPartnerTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                              "Código do pedido: ${orderData.orderId.substring(5)}",
+                              "Código do pedido: ${widget.orderData.orderId.substring(5)}",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -91,7 +102,7 @@ class OrderPartnerTile extends StatelessWidget {
                       SizedBox(
                         height: 4.0,
                       ),
-                      Text(_buildProductsText(orderData.doc)),
+                      Text(_buildProductsText(widget.orderData.doc)),
                       SizedBox(
                         height: 8.0,
                       ),
@@ -105,28 +116,65 @@ class OrderPartnerTile extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
-                          _buildCircle("1", "Preparação", status, 1),
+                          FlatButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () async {
+                              await Firestore.instance
+                                  .collection("orders")
+                                  .document(widget.orderData.orderId)
+                                  .updateData({
+                                "status": 2,
+                              });
+                              setState(() {
+                                firtstatus = "Pedido aceito";
+                              });
+                            },
+                            child: _buildCircle("1", firtstatus, status, 1),
+                          ),
                           Container(
                             height: 1.0,
                             width: 40.0,
                             color: Colors.red,
                           ),
-                          _buildCircle("1", "Transporte", status, 2),
+                          FlatButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () async {
+                              await Firestore.instance
+                                  .collection("orders")
+                                  .document(widget.orderData.orderId)
+                                  .updateData({
+                                "status": 3,
+                              });
+                              setState(() {
+                                secondStatus = "Pedido enviado";
+                              });
+                            },
+                            child: _buildCircle("2", secondStatus, status, 2),
+                          ),
                           Container(
                             height: 1.0,
                             width: 40.0,
                             color: Colors.red,
                           ),
-                          _buildCircle("1", "Entrega", status, 3)
+                          _buildCircle("3", "Entrega", status, 3)
                         ],
                       ),
-                      Text(
-                        "Data: " +
-                            orderData.createdAt.toDate().day.toString() +
-                            " de " +
-                            month +
-                            " de " +
-                            orderData.createdAt.toDate().year.toString(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Data: " +
+                              widget.orderData.createdAt
+                                  .toDate()
+                                  .day
+                                  .toString() +
+                              " de " +
+                              month +
+                              " de " +
+                              widget.orderData.createdAt
+                                  .toDate()
+                                  .year
+                                  .toString(),
+                        ),
                       ),
                     ],
                   );

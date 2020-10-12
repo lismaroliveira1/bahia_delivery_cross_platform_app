@@ -846,6 +846,7 @@ class UserModel extends Model {
   void getUserOrder() async {
     if (firebaseUser == null) firebaseUser = await _auth.currentUser();
     if (firebaseUser != null) {
+      listUserOrders.clear();
       QuerySnapshot query =
           await Firestore.instance.collection("orders").getDocuments();
 
@@ -868,6 +869,7 @@ class UserModel extends Model {
           .document(firebaseUser.uid)
           .get();
       if (partnerDocument.data["storeId"] != null) {
+        listPartnerOders.clear();
         DocumentSnapshot storeDocument = await Firestore.instance
             .collection("stores")
             .document(partnerDocument.data["storeId"])

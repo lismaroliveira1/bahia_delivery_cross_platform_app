@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:bahia_delivery/data/cart_product.dart';
 import 'package:bahia_delivery/data/credit_debit_card_data.dart';
-import 'package:bahia_delivery/data/store_with_cpf_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';

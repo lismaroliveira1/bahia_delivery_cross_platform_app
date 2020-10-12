@@ -120,13 +120,16 @@ class OrderTile extends StatelessWidget {
                           _buildCircle("1", "Entrega", status, 3)
                         ],
                       ),
-                      Text(
-                        "Data: " +
-                            orderData.createdAt.toDate().day.toString() +
-                            " de " +
-                            month +
-                            " de " +
-                            orderData.createdAt.toDate().year.toString(),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Data: " +
+                              orderData.createdAt.toDate().day.toString() +
+                              " de " +
+                              month +
+                              " de " +
+                              orderData.createdAt.toDate().year.toString(),
+                        ),
                       ),
                     ],
                   );

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/cart_screen.dart';
 import 'package:bahia_delivery/screens/favorite_screen.dart';
 import 'package:bahia_delivery/screens/profile_screen.dart';
@@ -43,12 +44,18 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     fcm.configure(
       onLaunch: (Map<String, dynamic> message) async {
+        UserModel.of(context).updatePartnerData();
+        UserModel.of(context).getUserOrder();
         print("onLaunc: $message");
       },
       onResume: (Map<String, dynamic> message) async {
+        UserModel.of(context).updatePartnerData();
+        UserModel.of(context).getUserOrder();
         print("onResume: $message");
       },
       onMessage: (Map<String, dynamic> message) async {
+        UserModel.of(context).updatePartnerData();
+        UserModel.of(context).getUserOrder();
         print("onMessage: $message");
         showNotification(
           message['notification']['title'] as String,
