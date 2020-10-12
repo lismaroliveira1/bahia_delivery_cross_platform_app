@@ -1,10 +1,8 @@
 import 'package:bahia_delivery/blocs/login_bloc.dart';
 import 'package:bahia_delivery/models/user.dart';
 import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/home_screen.dart';
 import 'package:bahia_delivery/screens/register_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -219,11 +217,6 @@ class _LoginScreenState extends State<LoginScreen> {
       backgroundColor: Colors.red,
       duration: Duration(seconds: 2),
     ));
-    Future.delayed(Duration(seconds: 2)).then((_) {
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => HomeScreen(),
-      ));
-    });
   }
 
   void _onFail() {

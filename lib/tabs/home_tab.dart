@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/location_screen.dart';
 import 'package:bahia_delivery/themes/theme.dart';
@@ -20,7 +18,6 @@ class _HomeTabState extends State<HomeTab> {
   @override
   void initState() {
     super.initState();
-    Permission.locationWhenInUse.serviceStatus.isEnabled.then(_updateStatus);
   }
 
   bool isStoresLengthVerified = false;
@@ -40,6 +37,9 @@ class _HomeTabState extends State<HomeTab> {
           ),
         );
       } else {
+        if (!model.hasStories) {
+          model.updateStories();
+        }
         return Stack(
           children: <Widget>[
             Container(
@@ -164,11 +164,5 @@ class _HomeTabState extends State<HomeTab> {
         );
       }
     });
-  }
-
-  FutureOr _updateStatus(bool value) {
-    if (value == null) {
-      print("desconhecido");
-    }
   }
 }

@@ -1,7 +1,6 @@
 import 'package:bahia_delivery/blocs/address_bloc.dart';
 import 'package:bahia_delivery/models/adress.dart';
 import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/location_screen.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

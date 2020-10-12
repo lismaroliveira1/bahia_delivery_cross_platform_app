@@ -22,19 +22,19 @@ class MyApp extends StatelessWidget {
           return ScopedModel<StoreModel>(
               model: StoreModel(),
               child: ScopedModelDescendant<StoreModel>(
-                builder: (context, child, model) {
+                builder: (context, child, storeModel) {
                   return ScopedModel<FavoriteModel>(
                     model: FavoriteModel(userModel),
                     child: ScopedModelDescendant<FavoriteModel>(
-                      builder: (context, child, model) {
+                      builder: (context, child, favoriteModel) {
                         return ScopedModel<PaymmentModel>(
                           model: PaymmentModel(),
                           child: ScopedModelDescendant<PaymmentModel>(
-                            builder: (context, child, model) {
+                            builder: (context, child, paymentModel) {
                               return ScopedModel<CartModel>(
                                 model: CartModel(userModel),
                                 child: ScopedModelDescendant<CartModel>(
-                                  builder: (context, child, model) {
+                                  builder: (context, child, cartModel) {
                                     return MaterialApp(
                                       title: 'Bahia Delivery',
                                       theme: ThemeData(

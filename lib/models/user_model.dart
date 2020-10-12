@@ -73,7 +73,6 @@ class UserModel extends Model {
     _loadListCreditDebitCard();
     loadAddressItems();
     updateCategory();
-
     updateStories();
     updateStoreFavorites();
     updatePartnerData();
@@ -202,14 +201,7 @@ class UserModel extends Model {
       if (docUser.exists) {
         userName = authResult.user.displayName;
         userImage = authResult.user.photoUrl;
-        final user = User(
-            name: authResult.user.displayName,
-            email: authResult.user.email,
-            image: authResult.user.photoUrl,
-            isPartner: 3,
-            currentAddress: "");
         this.firebaseUser = authResult.user;
-        _saveUserData(user);
         isLogged = true;
         saveToken();
         isLoading = false;
@@ -698,7 +690,6 @@ class UserModel extends Model {
         if (imageFile == null) {
           url = "https://meuvidraceiro.com.br/images/sem-imagem.png";
         } else {
-          print("ok");
           StorageUploadTask task = FirebaseStorage.instance
               .ref()
               .child("images")
@@ -706,6 +697,7 @@ class UserModel extends Model {
               .putFile(imageFile);
           StorageTaskSnapshot taskSnapshot = await task.onComplete;
           url = await taskSnapshot.ref.getDownloadURL();
+          print("ok");
         }
         await Firestore.instance.collection("stores").add({
           "partnerId": firebaseUser.uid,
@@ -743,6 +735,7 @@ class UserModel extends Model {
         notifyListeners();
       }
     } catch (e) {
+      print(e);
       onFail();
       isLoading = false;
       notifyListeners();

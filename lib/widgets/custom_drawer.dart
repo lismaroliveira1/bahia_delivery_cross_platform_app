@@ -30,10 +30,12 @@ class CustomDrawer extends StatelessWidget {
               ScopedModelDescendant<UserModel>(
                   builder: (context, child, model) {
                 if (!model.isLoggedIn()) {
-                  Navigator.of(context).pop();
+                  return Container(height: 0);
                 } else if (model.isLoading) {
-                  Container(
-                    height: 0,
+                  return Container(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 } else {
                   return ListView(
