@@ -236,6 +236,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       backgroundColor: Colors.red,
       duration: Duration(seconds: 2),
     ));
+    Future.delayed(Duration(seconds: 2)).then((_) {
+      Navigator.of(context).pop();
+    });
   }
 
   void _onFail() {
