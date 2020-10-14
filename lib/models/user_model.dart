@@ -64,6 +64,8 @@ class UserModel extends Model {
   String userEmail;
   String storeName = "";
   String storeImage = "";
+  bool hasPartnerOrders = false;
+  OrderData chatOrderData;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -393,10 +395,6 @@ class UserModel extends Model {
 
   bool isLoggedIn() {
     return firebaseUser != null;
-  }
-
-  bool updateUser() {
-    return isPartner != null;
   }
 
   void _getCurrentLocation() async {
@@ -906,31 +904,42 @@ class UserModel extends Model {
   void updatePartnerData() async {
     if (firebaseUser == null) firebaseUser = await _auth.currentUser();
     if (firebaseUser != null) {
-      DocumentSnapshot partnerDocument = await Firestore.instance
-          .collection("users")
-          .document(firebaseUser.uid)
-          .get();
-      if (partnerDocument.data["storeId"] != null) {
-        listPartnerOders.clear();
-        DocumentSnapshot storeDocument = await Firestore.instance
-            .collection("stores")
-            .document(partnerDocument.data["storeId"])
+      try {
+        DocumentSnapshot partnerDocument = await Firestore.instance
+            .collection("users")
+            .document(firebaseUser.uid)
             .get();
-        storeName = storeDocument.data["title"];
-        storeImage = storeDocument.data["image"];
-        print(storeImage);
-        storeData = StoreData.fromDocument(storeDocument);
-        QuerySnapshot querySnapshot =
-            await Firestore.instance.collection("orders").getDocuments();
-        querySnapshot.documents.map((doc) {
-          if (doc.data["storeId"] == storeData.id) {
-            listPartnerOders.add(
-              OrderData.fromDocument(doc),
-            );
+        if (partnerDocument.data["storeId"] != null) {
+          listPartnerOders.clear();
+          DocumentSnapshot storeDocument = await Firestore.instance
+              .collection("stores")
+              .document(partnerDocument.data["storeId"])
+              .get();
+          storeName = storeDocument.data["title"];
+          storeImage = storeDocument.data["image"];
+          storeData = StoreData.fromDocument(storeDocument);
+          QuerySnapshot querySnapshot =
+              await Firestore.instance.collection("orders").getDocuments();
+          querySnapshot.documents.map((doc) {
+            if (doc.data["storeId"] == storeData.id) {
+              listPartnerOders.add(
+                OrderData.fromDocument(doc),
+              );
+            }
+          }).toList();
+          if (listPartnerOders.length > 0) {
+            hasPartnerOrders = true;
           }
-        }).toList();
-      }
+        }
+      } catch (e) {}
+
       notifyListeners();
     }
+  }
+
+  void setChatData(OrderData orderData) {
+    chatOrderData = orderData;
+    print(chatOrderData.orderId);
+    notifyListeners();
   }
 }

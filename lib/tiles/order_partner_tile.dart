@@ -1,6 +1,8 @@
 import 'dart:collection';
 
 import 'package:bahia_delivery/data/order_data.dart';
+import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/chat_screnn.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -396,7 +398,14 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                   color: Colors.red[300],
                   padding: EdgeInsets.only(left: 12.0),
                   icon: Icon(Icons.message),
-                  onPressed: () {}),
+                  onPressed: () {
+                    UserModel.of(context).setChatData(widget.orderData);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ChatScreen(),
+                      ),
+                    );
+                  }),
               Text(
                 "Entre em contato com a loja",
                 style: TextStyle(

@@ -21,10 +21,8 @@ class _OrderScreenState extends State<OrderScreen> {
           model.updatePartnerData();
           isVerifiedListStoreOrders = true;
         }
-        if (!isVerifiedListUserOrders) {
-          model.getUserOrder();
-          isVerifiedListUserOrders = true;
-        }
+        if (!isVerifiedListUserOrders) {}
+
         if (model.isLoading) {
           return Container(
             child: Center(
@@ -73,7 +71,8 @@ class _OrderScreenState extends State<OrderScreen> {
             ],
           );
         } else {
-          if (model.listPartnerOders.length > 0) {
+          var listPartnerOders = model.listPartnerOders;
+          if (listPartnerOders.length > 0) {
             return DefaultTabController(
                 length: 2,
                 child: Scaffold(
