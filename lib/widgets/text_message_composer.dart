@@ -1,7 +1,11 @@
+import 'dart:io';
+
+import 'package:bahia_delivery/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class TextMessageComposer extends StatefulWidget {
-  Function(String) sendMessage;
+  final Function(String) sendMessage;
   TextMessageComposer(this.sendMessage);
   @override
   _TextMessageComposerState createState() => _TextMessageComposerState();
@@ -9,6 +13,8 @@ class TextMessageComposer extends StatefulWidget {
 
 class _TextMessageComposerState extends State<TextMessageComposer> {
   bool isComposing = false;
+  final picker = ImagePicker();
+  File imageFile;
   TextEditingController _textMessageController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -20,7 +26,16 @@ class _TextMessageComposerState extends State<TextMessageComposer> {
               Icons.photo_camera,
               color: Colors.black45,
             ),
-            onPressed: () {},
+            onPressed: () async {
+              final _pickedFile = await picker.getImage(
+                source: ImageSource.gallery,
+                maxHeight: 500,
+                maxWidth: 500,
+              );
+              if (_pickedFile == null) return;
+              imageFile = File(_pickedFile.path);
+              UserModel.of(context).sendImageMessage(imageFile);
+            },
           ),
           Expanded(
             child: TextField(

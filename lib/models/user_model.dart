@@ -948,6 +948,29 @@ class UserModel extends Model {
         .collection("orders")
         .document(chatOrderData.orderId)
         .collection("chat")
-        .add({"text": text});
+        .add({
+      "text": text,
+    });
+  }
+
+  void sendImageMessage(File imageFile) async {
+    if (imageFile == null) return;
+    StorageUploadTask task = FirebaseStorage.instance
+        .ref()
+        .child("images")
+        .child("chat")
+        .child(
+          DateTime.now().millisecondsSinceEpoch.toString(),
+        )
+        .putFile(imageFile);
+    StorageTaskSnapshot taskSnapshot = await task.onComplete;
+    String urlImage = await taskSnapshot.ref.getDownloadURL();
+    await Firestore.instance
+        .collection("orders")
+        .document(chatOrderData.orderId)
+        .collection("chat")
+        .add({
+      "image": urlImage,
+    });
   }
 }
