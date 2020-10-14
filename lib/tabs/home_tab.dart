@@ -24,12 +24,15 @@ class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
+      if (!isStoresLengthVerified) {
+        model.updateStories();
+        isStoresLengthVerified = true;
+      }
       if (!model.isLoggedIn()) {
         return Container(
           height: 0,
         );
-      }
-      if (model.isLoading) {
+      } else if (model.isLoading) {
         return Container(
           color: Colors.white,
           child: Center(
@@ -37,9 +40,6 @@ class _HomeTabState extends State<HomeTab> {
           ),
         );
       } else {
-        if (!model.hasStories) {
-          model.updateStories();
-        }
         return Stack(
           children: <Widget>[
             Container(

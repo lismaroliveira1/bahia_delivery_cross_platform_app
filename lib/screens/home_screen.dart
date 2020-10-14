@@ -49,13 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
         print("onLaunc: $message");
       },
       onResume: (Map<String, dynamic> message) async {
-        UserModel.of(context).updatePartnerData();
-        UserModel.of(context).getUserOrder();
         print("onResume: $message");
       },
       onMessage: (Map<String, dynamic> message) async {
-        UserModel.of(context).updatePartnerData();
-        UserModel.of(context).getUserOrder();
         print("onMessage: $message");
         showNotification(
           message['notification']['title'] as String,

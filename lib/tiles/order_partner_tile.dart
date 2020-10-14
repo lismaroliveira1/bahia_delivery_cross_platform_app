@@ -118,99 +118,108 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                       SizedBox(
                         height: 4.0,
                       ),
-                      Text(
-                        "Cliente",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0),
+                          Center(
                             child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12)),
                               height: MediaQuery.of(context).size.height / 15,
                               width: MediaQuery.of(context).size.height / 15,
-                              child: FadeInImage.memoryNetwork(
-                                  placeholder: kTransparentImage,
-                                  image: snapshot.data["clientImage"]),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: FadeInImage.memoryNetwork(
+                                    placeholder: kTransparentImage,
+                                    image: snapshot.data["clientImage"]),
+                              ),
                             ),
                           ),
+                        ],
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
                           Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 4.0,
-                                    vertical: 2.0,
-                                  ),
-                                  child: Text(
-                                    snapshot.data["clientName"],
-                                  ),
-                                ),
-                              ],
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 0.0,
+                              vertical: 4.0,
                             ),
-                          )
+                            child: Text(
+                              snapshot.data["clientName"],
+                            ),
+                          ),
                         ],
                       ),
                       SizedBox(
                         height: 4.0,
                       ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Text(
+                              "Endereço",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 4.0,
+                          horizontal: 0.0,
                           vertical: 2.0,
                         ),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Rua: ",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 11,
-                              ),
-                            ),
-                            Text(
-                              snapshot.data["clientAddress"]["street"] + ",",
+                              snapshot.data["clientAddress"]["street"]
+                                  .toString(),
                               overflow: TextOverflow.clip,
                               maxLines: 3,
-                              style: TextStyle(fontSize: 11),
                             ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 0.0,
+                          vertical: 2.0,
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
                             Text(
-                              "  Nº: ",
+                              "Nº: ",
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
-                                fontSize: 11,
                               ),
                             ),
                             Text(
                               snapshot.data["clientAddress"]["number"],
                               overflow: TextOverflow.clip,
                               maxLines: 3,
-                              style: TextStyle(fontSize: 11),
                             ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 4.0,
-                          vertical: 2.0,
-                        ),
-                        child: Row(
-                          children: [
+                            SizedBox(
+                              width: 4.0,
+                            ),
                             Text(
                               "Complemento: ",
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
-                                fontSize: 11,
                               ),
                             ),
                             Text(
                               snapshot.data["clientAddress"]["complement"],
                               overflow: TextOverflow.clip,
                               maxLines: 3,
-                              style: TextStyle(fontSize: 11),
                             ),
                             SizedBox(
                               width: 4.0,
@@ -220,23 +229,23 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 4.0,
+                          horizontal: 0.0,
                           vertical: 2.0,
                         ),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               "Bairro: ",
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
-                                fontSize: 11,
                               ),
                             ),
                             Text(
                               snapshot.data["clientAddress"]["district"],
                               overflow: TextOverflow.clip,
                               maxLines: 3,
-                              style: TextStyle(fontSize: 11),
                             ),
                             SizedBox(
                               width: 4.0,
@@ -246,23 +255,23 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 4.0,
+                          horizontal: 0.0,
                           vertical: 2.0,
                         ),
                         child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
                               "Cidade: ",
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
-                                fontSize: 11,
                               ),
                             ),
                             Text(
                               snapshot.data["clientAddress"]["city"],
                               overflow: TextOverflow.clip,
                               maxLines: 3,
-                              style: TextStyle(fontSize: 11),
                             ),
                             SizedBox(
                               width: 4.0,
@@ -271,32 +280,46 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                               "Estado: ",
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
-                                fontSize: 11,
                               ),
                             ),
                             Text(
                               snapshot.data["clientAddress"]["state"],
                               overflow: TextOverflow.clip,
                               maxLines: 3,
-                              style: TextStyle(fontSize: 11),
                             ),
                           ],
                         ),
                       ),
-                      Text(
-                        "Descrição",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Itens",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(
                         height: 4.0,
                       ),
-                      Text(_buildProductsText(widget.orderData.doc)),
+                      Center(
+                          child: Text(
+                        _buildProductsText(widget.orderData.doc),
+                        textAlign: TextAlign.center,
+                      )),
                       SizedBox(
                         height: 8.0,
                       ),
-                      Text(
-                        "Status",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      Center(
+                        child: Text(
+                          "Status",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                       SizedBox(
                         height: 8.0,

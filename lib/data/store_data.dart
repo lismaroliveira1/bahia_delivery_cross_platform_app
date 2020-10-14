@@ -9,7 +9,7 @@ class StoreData {
 
   StoreData.fromDocument(DocumentSnapshot documentSnapshot) {
     id = documentSnapshot.documentID;
-    name = documentSnapshot.data["title"];
+    name = documentSnapshot.data["name"];
     image = documentSnapshot.data["image"];
     description = documentSnapshot.data["description"];
     storeSnapshot = documentSnapshot;

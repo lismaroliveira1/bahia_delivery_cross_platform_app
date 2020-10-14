@@ -4,6 +4,7 @@ import 'package:bahia_delivery/screens/financial_screen.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class StoreHomeTab extends StatefulWidget {
   @override
@@ -11,6 +12,7 @@ class StoreHomeTab extends StatefulWidget {
 }
 
 class _StoreHomeTabState extends State<StoreHomeTab> {
+  bool isVerifiedStore = false;
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(
@@ -27,7 +29,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
             slivers: <Widget>[
               SliverAppBar(
                 title: Text(
-                  model.storeData.name,
+                  model.storeName,
                   style: TextStyle(
                     color: Colors.white,
                   ),
@@ -38,7 +40,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                     bottomRight: Radius.circular(25),
                   ),
                 ),
-                expandedHeight: MediaQuery.of(context).size.height / 6,
+                expandedHeight: MediaQuery.of(context).size.height / 5.5,
                 flexibleSpace: FlexibleSpaceBar(
                   background: Container(
                     decoration: BoxDecoration(
@@ -48,7 +50,17 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                       ),
                       color: Colors.black,
                     ),
-                    child: Image.network(model.storeData.image),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(25),
+                        bottomRight: Radius.circular(25),
+                      ),
+                      child: FadeInImage.memoryNetwork(
+                        placeholder: kTransparentImage,
+                        image: model.storeImage,
+                        fit: BoxFit.fill,
+                      ),
+                    ),
                   ),
                 ),
               ),

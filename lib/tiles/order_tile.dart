@@ -29,7 +29,6 @@ class OrderTile extends StatelessWidget {
       case 6:
         month = "Junho";
         break;
-
       case 7:
         month = "julho";
         break;

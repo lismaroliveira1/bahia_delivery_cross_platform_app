@@ -62,6 +62,8 @@ class UserModel extends Model {
   String userImage;
   String userPhoneNumber = '';
   String userEmail;
+  String storeName = "";
+  String storeImage = "";
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -347,13 +349,6 @@ class UserModel extends Model {
           email: user.email, password: user.password);
       this.firebaseUser = result.user;
       await _saveUserData(user);
-      addresses.clear();
-      creditDebitCardList.clear();
-      categoryDataList.clear();
-      storeDataList.clear();
-      storeListFavorites.clear();
-      listUserOrders.clear();
-      listPartnerOders.clear();
       onSuccess();
       isLogged = true;
       saveToken();
@@ -372,6 +367,13 @@ class UserModel extends Model {
     notifyListeners();
     await _auth.signOut();
     userData = Map();
+    addresses.clear();
+    creditDebitCardList.clear();
+    categoryDataList.clear();
+    storeDataList.clear();
+    storeListFavorites.clear();
+    listUserOrders.clear();
+    listPartnerOders.clear();
     firebaseUser = null;
     isLogged = false;
     isLoading = false;
@@ -816,8 +818,6 @@ class UserModel extends Model {
   }
 
   void updateStories() async {
-    isLoading = true;
-    notifyListeners();
     try {
       if (firebaseUser == null) await _auth.currentUser();
       if (firebaseUser != null) {
@@ -829,7 +829,6 @@ class UserModel extends Model {
       }
     } catch (e) {}
     if (storeDataList.length > 0) hasStories = true;
-    isLoading = false;
     notifyListeners();
   }
 
@@ -917,6 +916,9 @@ class UserModel extends Model {
             .collection("stores")
             .document(partnerDocument.data["storeId"])
             .get();
+        storeName = storeDocument.data["title"];
+        storeImage = storeDocument.data["image"];
+        print(storeImage);
         storeData = StoreData.fromDocument(storeDocument);
         QuerySnapshot querySnapshot =
             await Firestore.instance.collection("orders").getDocuments();
@@ -928,7 +930,7 @@ class UserModel extends Model {
           }
         }).toList();
       }
+      notifyListeners();
     }
-    notifyListeners();
   }
 }
