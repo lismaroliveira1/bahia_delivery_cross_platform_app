@@ -74,7 +74,7 @@ class OrderTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                              "Código do pedido: ${orderData.orderId.substring(5)}",
+                              "Código do pedido: ${orderData.orderId.substring(0, 6)}",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,

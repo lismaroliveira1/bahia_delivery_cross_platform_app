@@ -445,18 +445,19 @@ class _PartnerRegisterScreenState extends State<PartnerRegisterScreen> {
                                           if (isJuridicPerson) {
                                           } else {
                                             final storeCPF = StoreCPF(
-                                                name: nameController.text,
-                                                description:
-                                                    descriptionController.text,
-                                                cpf: cpfController.text,
-                                                zipCode: zipCodeController.text,
-                                                street: streetController.text,
-                                                district:
-                                                    districtController.text,
-                                                number: numberController.text,
-                                                city: cityController.text,
-                                                state: stateController.text,
-                                                image: imageUrl);
+                                              name: nameController.text,
+                                              description:
+                                                  descriptionController.text,
+                                              cpf: cpfController.text,
+                                              zipCode: zipCodeController.text,
+                                              street: streetController.text,
+                                              district: districtController.text,
+                                              number: numberController.text,
+                                              city: cityController.text,
+                                              state: stateController.text,
+                                              image: imageUrl,
+                                            );
+
                                             await UserModel.of(context)
                                                 .createNewStoreWithCPF(
                                               imageFile: imageFile,

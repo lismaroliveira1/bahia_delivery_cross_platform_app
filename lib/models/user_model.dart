@@ -347,6 +347,13 @@ class UserModel extends Model {
           email: user.email, password: user.password);
       this.firebaseUser = result.user;
       await _saveUserData(user);
+      addresses.clear();
+      creditDebitCardList.clear();
+      categoryDataList.clear();
+      storeDataList.clear();
+      storeListFavorites.clear();
+      listUserOrders.clear();
+      listPartnerOders.clear();
       onSuccess();
       isLogged = true;
       saveToken();
@@ -693,7 +700,7 @@ class UserModel extends Model {
           StorageUploadTask task = FirebaseStorage.instance
               .ref()
               .child("images")
-              .child(storeData.id + DateTime.now().millisecond.toString())
+              .child(DateTime.now().millisecond.toString())
               .putFile(imageFile);
           StorageTaskSnapshot taskSnapshot = await task.onComplete;
           url = await taskSnapshot.ref.getDownloadURL();
@@ -888,8 +895,11 @@ class UserModel extends Model {
       listUserOrders.clear();
       QuerySnapshot query =
           await Firestore.instance.collection("orders").getDocuments();
-
-      query.documents.map((doc) {}).toList();
+      query.documents.map((doc) {
+        if (doc.data["client"] == firebaseUser.uid) {
+          listUserOrders.add(OrderData.fromDocument(doc));
+        }
+      }).toList();
     }
     notifyListeners();
   }

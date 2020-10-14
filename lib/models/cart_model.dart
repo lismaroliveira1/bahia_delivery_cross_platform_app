@@ -25,11 +25,11 @@ class CartModel extends Model {
   static CartModel of(BuildContext context) =>
       ScopedModel.of<CartModel>(context);
 
-  void addCartItem(
-      {@required CartProduct cartProduct,
-      @required VoidCallback onFail}) async {
-    if (currentStore == '') {
-      currentStore = cartProduct.storeId;
+  void addCartItem({
+    @required CartProduct cartProduct,
+    @required VoidCallback onFail,
+  }) async {
+    try {
       products.add(cartProduct);
       Firestore.instance
           .collection("users")
@@ -40,18 +40,8 @@ class CartModel extends Model {
         cartProduct.cId = doc.documentID;
       });
       notifyListeners();
-    } else if (currentStore == cartProduct.storeId) {
-      products.add(cartProduct);
-      Firestore.instance
-          .collection("users")
-          .document(user.firebaseUser.uid)
-          .collection("cart")
-          .add(cartProduct.toMap())
-          .then((doc) {
-        cartProduct.cId = doc.documentID;
-      });
-      notifyListeners();
-    } else {
+    } catch (e) {
+      print(e);
       onFail();
     }
   }
@@ -191,6 +181,7 @@ class CartModel extends Model {
           'platform': Platform.operatingSystem
         });
         products.clear();
+
         couponCode = null;
         isLoading = false;
         notifyListeners();
@@ -209,7 +200,6 @@ class CartModel extends Model {
   }
 
   Future<void> finishOrderWithPayOnDelivery() async {
-    print("payOnDelivery");
     if (products.length == 0) return null;
     isLoading = true;
     notifyListeners();
@@ -225,22 +215,54 @@ class CartModel extends Model {
     for (DocumentSnapshot doc in query.documents) {
       doc.reference.delete();
     }
+    DocumentSnapshot documentSnapshotStore = await Firestore.instance
+        .collection("stores")
+        .document(products[0].storeId)
+        .get();
+    DocumentSnapshot documentSnapshotUser = await Firestore.instance
+        .collection("users")
+        .document(user.firebaseUser.uid)
+        .get();
     await Firestore.instance.collection("orders").add({
       "client": user.firebaseUser.uid,
+      "clientName": documentSnapshotUser.data["name"],
+      "clientImage": user.firebaseUser.photoUrl,
+      "clientAddress": documentSnapshotUser.data["address"],
       "storeId": products[0].storeId,
       "products": products.map((cartProduct) => cartProduct.toMap()).toList(),
       "shipPrice": shipPrice,
-      "storeImage": "storeImage",
+      "StoreName": documentSnapshotStore.data["name"],
+      "storeImage": documentSnapshotStore.data["image"],
       "storeDescription": "storeDescrition",
       "discount": discountPrice,
       "totalPrice": totalPrice,
       "status": 1,
       'createdAt': FieldValue.serverTimestamp(),
       'platform': Platform.operatingSystem
-    });
+    }).then((value) {});
     products.clear();
     couponCode = null;
     isLoading = false;
     notifyListeners();
+  }
+
+  void verifyCurrentStore({
+    @required String storeId,
+    @required VoidCallback onSameStore,
+    @required VoidCallback onDifrentStore,
+  }) {
+    print("ok");
+    if (currentStore == '') {
+      print("same");
+      currentStore = storeId;
+      onSameStore();
+    } else {
+      if (currentStore == storeId) {
+        onSameStore();
+        print("same");
+      } else {
+        onDifrentStore();
+      }
+    }
   }
 }

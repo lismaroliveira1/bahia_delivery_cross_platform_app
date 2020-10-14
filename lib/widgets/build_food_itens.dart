@@ -110,19 +110,9 @@ class _FoodItemState extends State<FoodItem> {
                   cartProduct.pId = widget.snapshot.documentID;
                   cartProduct.category = widget.snapshot.data["category"];
                   cartProduct.storeId = widget.snapshot.data["storeID"];
-                  if (UserModel.of(context).isLoggedIn()) {
-                    model.verifyItemCart(cartProduct);
-                    if (model.itemExist) {
-                      print("item existe");
-                    }
-                    cartProduct.productData =
-                        ProductData.fromDocument(widget.snapshot);
-                    model.addCartItem(
-                        cartProduct: cartProduct, onFail: _onDifferentStore);
-                  } else {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => LoginScreen()));
-                  }
+                  cartProduct.productData =
+                      ProductData.fromDocument(widget.snapshot);
+                  model.addCartItem(cartProduct: cartProduct, onFail: _onFail);
                 },
               )
             ],
@@ -156,4 +146,6 @@ class _FoodItemState extends State<FoodItem> {
       },
     );
   }
+
+  void _onFail() {}
 }

@@ -68,9 +68,11 @@ class OrderTab extends StatelessWidget {
               },
             ).toList());
           } else {
+            model.getUserOrder();
             return Container(
+              color: Colors.white,
               child: Center(
-                child: CircularProgressIndicator(),
+                child: Text("Voce não tem pedidos"),
               ),
             );
           }

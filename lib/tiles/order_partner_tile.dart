@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:bahia_delivery/data/order_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class OrderPartnerTile extends StatefulWidget {
   final OrderData orderData;
@@ -38,7 +39,6 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
       case 6:
         month = "Junho";
         break;
-
       case 7:
         month = "julho";
         break;
@@ -78,6 +78,29 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                   );
                 } else {
                   int status = snapshot.data["status"];
+                  switch (status) {
+                    case 1:
+                      firtstatus = "Aceitar \n Pedido";
+                      secondStatus = "Enviar \n Pedido";
+                      thirdStatus = "Pedido \n não entregue";
+                      break;
+                    case 2:
+                      firtstatus = "Pedido \n Aceito";
+                      secondStatus = "Enviar \n Pedido";
+                      thirdStatus = "Pedido \n não entregue";
+                      break;
+                    case 3:
+                      firtstatus = "Pedido \n aceito";
+                      secondStatus = "Pedido \n enviado";
+                      thirdStatus = "Pedido \n não entregue";
+                      break;
+                    case 4:
+                      firtstatus = "Pedido \n Enviado";
+                      secondStatus = "Enviar \n Pedido";
+                      thirdStatus = "Pedido \n entregue";
+                      break;
+                  }
+
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -85,7 +108,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                              "Código do pedido: ${widget.orderData.orderId.substring(5)}",
+                              "Código do pedido: ${widget.orderData.orderId.substring(0, 6)}",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -94,6 +117,171 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                       ),
                       SizedBox(
                         height: 4.0,
+                      ),
+                      Text(
+                        "Cliente",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4.0),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height / 15,
+                              width: MediaQuery.of(context).size.height / 15,
+                              child: FadeInImage.memoryNetwork(
+                                  placeholder: kTransparentImage,
+                                  image: snapshot.data["clientImage"]),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 4.0,
+                                    vertical: 2.0,
+                                  ),
+                                  child: Text(
+                                    snapshot.data["clientName"],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 4.0,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4.0,
+                          vertical: 2.0,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Rua: ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 11,
+                              ),
+                            ),
+                            Text(
+                              snapshot.data["clientAddress"]["street"] + ",",
+                              overflow: TextOverflow.clip,
+                              maxLines: 3,
+                              style: TextStyle(fontSize: 11),
+                            ),
+                            Text(
+                              "  Nº: ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 11,
+                              ),
+                            ),
+                            Text(
+                              snapshot.data["clientAddress"]["number"],
+                              overflow: TextOverflow.clip,
+                              maxLines: 3,
+                              style: TextStyle(fontSize: 11),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4.0,
+                          vertical: 2.0,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Complemento: ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 11,
+                              ),
+                            ),
+                            Text(
+                              snapshot.data["clientAddress"]["complement"],
+                              overflow: TextOverflow.clip,
+                              maxLines: 3,
+                              style: TextStyle(fontSize: 11),
+                            ),
+                            SizedBox(
+                              width: 4.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4.0,
+                          vertical: 2.0,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Bairro: ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 11,
+                              ),
+                            ),
+                            Text(
+                              snapshot.data["clientAddress"]["district"],
+                              overflow: TextOverflow.clip,
+                              maxLines: 3,
+                              style: TextStyle(fontSize: 11),
+                            ),
+                            SizedBox(
+                              width: 4.0,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4.0,
+                          vertical: 2.0,
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Cidade: ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 11,
+                              ),
+                            ),
+                            Text(
+                              snapshot.data["clientAddress"]["city"],
+                              overflow: TextOverflow.clip,
+                              maxLines: 3,
+                              style: TextStyle(fontSize: 11),
+                            ),
+                            SizedBox(
+                              width: 4.0,
+                            ),
+                            Text(
+                              "Estado: ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 11,
+                              ),
+                            ),
+                            Text(
+                              snapshot.data["clientAddress"]["state"],
+                              overflow: TextOverflow.clip,
+                              maxLines: 3,
+                              style: TextStyle(fontSize: 11),
+                            ),
+                          ],
+                        ),
                       ),
                       Text(
                         "Descrição",
@@ -131,11 +319,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                             },
                             child: _buildCircle("1", firtstatus, status, 1),
                           ),
-                          Container(
-                            height: 1.0,
-                            width: 40.0,
-                            color: Colors.red,
-                          ),
+                          Spacer(),
                           FlatButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
@@ -151,12 +335,10 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                             },
                             child: _buildCircle("2", secondStatus, status, 2),
                           ),
-                          Container(
-                            height: 1.0,
-                            width: 40.0,
-                            color: Colors.red,
-                          ),
-                          _buildCircle("3", "Entrega", status, 3)
+                          Spacer(),
+                          FlatButton(
+                              onPressed: () {},
+                              child: _buildCircle("3", thirdStatus, status, 3))
                         ],
                       ),
                       Padding(
@@ -194,7 +376,10 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                   onPressed: () {}),
               Text(
                 "Entre em contato com a loja",
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 11,
+                ),
               ),
               IconButton(
                   color: Colors.red[300],
@@ -226,7 +411,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
       backColor = Colors.grey[500];
       child = Text(
         title,
-        style: TextStyle(color: Colors.white),
+        style: TextStyle(color: Colors.white, fontSize: 11),
       );
     } else if (status == thisStatus) {
       backColor = Colors.blue;
@@ -253,7 +438,11 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
           backgroundColor: backColor,
           child: child,
         ),
-        Text(subtitle)
+        Text(
+          subtitle,
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 9),
+        )
       ],
     );
   }

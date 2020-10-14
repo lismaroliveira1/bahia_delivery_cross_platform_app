@@ -7,6 +7,7 @@ class ProductData {
   String image;
   double price;
   String description;
+
   ProductData.fromDocument(DocumentSnapshot snapshot) {
     id = snapshot.documentID;
     title = snapshot.data["title"];

@@ -60,7 +60,7 @@ class OrderPartnerTab extends StatelessWidget {
             ),
           );
         } else {
-          if (model.listUserOrders.length > 0) {
+          if (model.listPartnerOders.length > 0) {
             return ListView(
                 children: model.listPartnerOders.map(
               (doc) {
@@ -68,6 +68,7 @@ class OrderPartnerTab extends StatelessWidget {
               },
             ).toList());
           } else {
+            model.updatePartnerData();
             return Container(
               child: Center(
                 child: CircularProgressIndicator(),

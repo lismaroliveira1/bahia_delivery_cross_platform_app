@@ -11,10 +11,20 @@ class OrderScreen extends StatefulWidget {
 }
 
 class _OrderScreenState extends State<OrderScreen> {
+  bool isVerifiedListStoreOrders = false;
+  bool isVerifiedListUserOrders = false;
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(
       builder: (context, child, model) {
+        if (!isVerifiedListStoreOrders) {
+          model.updatePartnerData();
+          isVerifiedListStoreOrders = true;
+        }
+        if (!isVerifiedListUserOrders) {
+          model.getUserOrder();
+          isVerifiedListUserOrders = true;
+        }
         if (model.isLoading) {
           return Container(
             child: Center(
