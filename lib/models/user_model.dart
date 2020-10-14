@@ -942,4 +942,12 @@ class UserModel extends Model {
     print(chatOrderData.orderId);
     notifyListeners();
   }
+
+  void sendtextMessage(String text) async {
+    await Firestore.instance
+        .collection("orders")
+        .document(chatOrderData.orderId)
+        .collection("chat")
+        .add({"text": text});
+  }
 }

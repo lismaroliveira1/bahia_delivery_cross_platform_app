@@ -1,3 +1,4 @@
+import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/widgets/text_message_composer.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class _ChatScreenState extends State<ChatScreen> {
         title: Text("Olá"),
       ),
       body: TextMessageComposer((text) {
-        print(text);
+        UserModel.of(context).sendtextMessage(text);
       }),
     );
   }
