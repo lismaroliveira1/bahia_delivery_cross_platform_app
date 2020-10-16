@@ -1,5 +1,5 @@
 import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/widgets/text_message_composer.dart';
+import 'package:bahia_delivery/widgets/text_message_composer_store.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -58,20 +58,35 @@ class _ChatScreenState extends State<ChatScreen> {
                               Timestamp dateTime =
                                   documents[index].data["createdAt"];
                               return ListTile(
-                                title: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0, vertical: 4.0),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Text(documents[index].data['text']),
-                                    ],
-                                  ),
+                                title: Row(
+                                  mainAxisAlignment:
+                                      documents[index].data["userId"] ==
+                                              model.storeId
+                                          ? MainAxisAlignment.start
+                                          : MainAxisAlignment.end,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0, vertical: 4.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Text(documents[index].data['text']),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 subtitle: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment:
+                                      documents[index].data["userId"] ==
+                                              model.storeId
+                                          ? MainAxisAlignment.start
+                                          : MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     dateTime != null
                                         ? Text(
@@ -81,6 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                     .toDate()
                                                     .minute
                                                     .toString(),
+                                            textAlign: TextAlign.start,
                                           )
                                         : Container(
                                             height: 0.0,
@@ -92,42 +108,62 @@ class _ChatScreenState extends State<ChatScreen> {
                             } else {
                               Timestamp dateTime =
                                   documents[index].data["createdAt"];
-                              return ListTile(
-                                title: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0,
-                                    vertical: 4.0,
-                                  ),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      FadeInImage.memoryNetwork(
-                                        placeholder: kTransparentImage,
-                                        image: documents[index].data["image"],
+                              return Row(
+                                mainAxisAlignment:
+                                    documents[index].data["userId"] ==
+                                            model.storeId
+                                        ? MainAxisAlignment.start
+                                        : MainAxisAlignment.end,
+                                children: [
+                                  ListTile(
+                                    title: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0,
+                                        vertical: 4.0,
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                subtitle: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    dateTime != null
-                                        ? Text(
-                                            dateTime.toDate().hour.toString() +
-                                                ":" +
-                                                dateTime
-                                                    .toDate()
-                                                    .minute
-                                                    .toString(),
-                                          )
-                                        : Container(
-                                            height: 0.0,
-                                            width: 0.0,
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          FadeInImage.memoryNetwork(
+                                            placeholder: kTransparentImage,
+                                            image:
+                                                documents[index].data["image"],
                                           ),
-                                  ],
-                                ),
+                                        ],
+                                      ),
+                                    ),
+                                    subtitle: Row(
+                                      mainAxisAlignment:
+                                          documents[index].data["userId"] ==
+                                                  model.storeId
+                                              ? MainAxisAlignment.start
+                                              : MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        dateTime != null
+                                            ? Text(
+                                                dateTime
+                                                        .toDate()
+                                                        .hour
+                                                        .toString() +
+                                                    ":" +
+                                                    dateTime
+                                                        .toDate()
+                                                        .minute
+                                                        .toString(),
+                                              )
+                                            : Container(
+                                                height: 0.0,
+                                                width: 0.0,
+                                              ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               );
                             }
                           },
@@ -138,7 +174,7 @@ class _ChatScreenState extends State<ChatScreen> {
               }
             },
           )),
-          TextMessageComposer((text) {
+          TextMessageStoreComposer((text) {
             UserModel.of(context).sendtextMessageByStore(text);
           }),
         ],

@@ -1,5 +1,5 @@
 import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/widgets/text_message_composer.dart';
+import 'package:bahia_delivery/widgets/tex_message_composer_user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -31,7 +31,9 @@ class _ChatUserScreenState extends State<ChatUserScreen> {
                 return StreamBuilder<QuerySnapshot>(
                   stream: Firestore.instance
                       .collection("orders")
-                      .document(UserModel.of(context).chatOrderData.client)
+                      .document(
+                        UserModel.of(context).chatOrderData.orderId,
+                      )
                       .collection("chat")
                       .orderBy(
                         'createdAt',
@@ -136,7 +138,7 @@ class _ChatUserScreenState extends State<ChatUserScreen> {
               }
             },
           )),
-          TextMessageComposer((text) {
+          TextMessageUserComposer((text) {
             UserModel.of(context).sendtextMessageByUser(text);
           }),
         ],

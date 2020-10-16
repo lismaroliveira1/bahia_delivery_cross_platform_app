@@ -4,14 +4,15 @@ import 'package:bahia_delivery/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class TextMessageComposer extends StatefulWidget {
+class TextMessageStoreComposer extends StatefulWidget {
   final Function(String) sendMessage;
-  TextMessageComposer(this.sendMessage);
+  TextMessageStoreComposer(this.sendMessage);
   @override
-  _TextMessageComposerState createState() => _TextMessageComposerState();
+  _TextMessageStoreComposerState createState() =>
+      _TextMessageStoreComposerState();
 }
 
-class _TextMessageComposerState extends State<TextMessageComposer> {
+class _TextMessageStoreComposerState extends State<TextMessageStoreComposer> {
   bool isComposing = false;
   final picker = ImagePicker();
   File imageFile;
@@ -34,7 +35,7 @@ class _TextMessageComposerState extends State<TextMessageComposer> {
               );
               if (_pickedFile == null) return;
               imageFile = File(_pickedFile.path);
-              UserModel.of(context).sendImageMessage(imageFile);
+              UserModel.of(context).sendImageMessageByStore(imageFile);
             },
           ),
           Expanded(

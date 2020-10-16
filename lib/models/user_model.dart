@@ -64,6 +64,7 @@ class UserModel extends Model {
   String userEmail;
   String storeName = "";
   String storeImage = "";
+  String storeId = "";
   bool hasPartnerOrders = false;
   OrderData chatOrderData;
 
@@ -704,7 +705,6 @@ class UserModel extends Model {
               .putFile(imageFile);
           StorageTaskSnapshot taskSnapshot = await task.onComplete;
           url = await taskSnapshot.ref.getDownloadURL();
-          print("ok");
         }
         await Firestore.instance.collection("stores").add({
           "partnerId": firebaseUser.uid,
@@ -917,6 +917,7 @@ class UserModel extends Model {
               .collection("stores")
               .document(partnerDocument.data["storeId"])
               .get();
+          storeId = storeDocument.documentID;
           storeName = storeDocument.data["title"];
           storeImage = storeDocument.data["image"];
           storeData = StoreData.fromDocument(storeDocument);
