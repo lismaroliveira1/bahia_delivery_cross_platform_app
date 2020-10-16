@@ -238,7 +238,8 @@ class CartModel extends Model {
       "totalPrice": totalPrice,
       "status": 1,
       'createdAt': FieldValue.serverTimestamp(),
-      'platform': Platform.operatingSystem
+      'platform': Platform.operatingSystem,
+      'paymentType': "Pagamento na Entrega"
     }).then((value) {});
     products.clear();
     couponCode = null;

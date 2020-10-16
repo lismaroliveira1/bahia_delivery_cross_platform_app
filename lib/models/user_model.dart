@@ -890,8 +890,10 @@ class UserModel extends Model {
     if (firebaseUser == null) firebaseUser = await _auth.currentUser();
     if (firebaseUser != null) {
       listUserOrders.clear();
-      QuerySnapshot query =
-          await Firestore.instance.collection("orders").getDocuments();
+      QuerySnapshot query = await Firestore.instance
+          .collection("orders")
+          .orderBy('createdAt', descending: true)
+          .getDocuments();
       query.documents.map((doc) {
         if (doc.data["client"] == firebaseUser.uid) {
           listUserOrders.add(OrderData.fromDocument(doc));
@@ -918,8 +920,10 @@ class UserModel extends Model {
           storeName = storeDocument.data["title"];
           storeImage = storeDocument.data["image"];
           storeData = StoreData.fromDocument(storeDocument);
-          QuerySnapshot querySnapshot =
-              await Firestore.instance.collection("orders").getDocuments();
+          QuerySnapshot querySnapshot = await Firestore.instance
+              .collection("orders")
+              .orderBy('createdAt', descending: true)
+              .getDocuments();
           querySnapshot.documents.map((doc) {
             if (doc.data["storeId"] == storeData.id) {
               listPartnerOders.add(
@@ -949,7 +953,9 @@ class UserModel extends Model {
         .document(chatOrderData.orderId)
         .collection("chat")
         .add({
+      "userId": firebaseUser.uid,
       "text": text,
+      'createdAt': FieldValue.serverTimestamp(),
     });
   }
 
@@ -970,7 +976,9 @@ class UserModel extends Model {
         .document(chatOrderData.orderId)
         .collection("chat")
         .add({
+      "userId": firebaseUser.uid,
       "image": urlImage,
+      'createdAt': FieldValue.serverTimestamp(),
     });
   }
 }

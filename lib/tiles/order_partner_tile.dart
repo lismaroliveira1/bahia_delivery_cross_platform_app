@@ -368,19 +368,35 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Data: " +
-                              widget.orderData.createdAt
-                                  .toDate()
-                                  .day
-                                  .toString() +
-                              " de " +
-                              month +
-                              " de " +
-                              widget.orderData.createdAt
-                                  .toDate()
-                                  .year
-                                  .toString(),
+                        child: Row(
+                          children: [
+                            Text(
+                              "Data: ",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                                widget.orderData.createdAt
+                                        .toDate()
+                                        .day
+                                        .toString() +
+                                    " de " +
+                                    month +
+                                    " de " +
+                                    widget.orderData.createdAt
+                                        .toDate()
+                                        .year
+                                        .toString() +
+                                    " as " +
+                                    widget.orderData.createdAt
+                                        .toDate()
+                                        .hour
+                                        .toString() +
+                                    ":" +
+                                    widget.orderData.createdAt
+                                        .toDate()
+                                        .minute
+                                        .toString()),
+                          ],
                         ),
                       ),
                     ],

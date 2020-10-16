@@ -32,6 +32,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       .collection("orders")
                       .document(UserModel.of(context).chatOrderData.orderId)
                       .collection("chat")
+                      .orderBy(
+                        'createdAt',
+                        descending: false,
+                      )
                       .snapshots(),
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
@@ -48,7 +52,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           reverse: true,
                           itemBuilder: (context, index) {
                             return ListTile(
-                                title: Text(documents[index].data['text']));
+                              title: Text(documents[index].data['text']),
+                            );
                           },
                         );
                     }
