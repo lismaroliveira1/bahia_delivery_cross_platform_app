@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:bahia_delivery/data/order_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class OrderTile extends StatelessWidget {
   final OrderData orderData;
@@ -83,6 +84,39 @@ class OrderTile extends StatelessWidget {
                       SizedBox(
                         height: 4.0,
                       ),
+                      Row(
+                        children: <Widget>[
+                          Center(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12)),
+                              height: MediaQuery.of(context).size.height / 15,
+                              width: MediaQuery.of(context).size.height / 15,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: FadeInImage.memoryNetwork(
+                                  placeholder: kTransparentImage,
+                                  image: snapshot.data["storeImage"],
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Center(
+                              child: Text(
+                                snapshot.data["StoreName"],
+                                style: TextStyle(
+                                    fontSize: 16, fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 4.0,
+                      ),
                       Text(
                         "Descrição",
                         style: TextStyle(fontWeight: FontWeight.bold),
@@ -110,13 +144,13 @@ class OrderTile extends StatelessWidget {
                             width: 40.0,
                             color: Colors.red,
                           ),
-                          _buildCircle("1", "Transporte", status, 2),
+                          _buildCircle("2", "Transporte", status, 2),
                           Container(
                             height: 1.0,
                             width: 40.0,
                             color: Colors.red,
                           ),
-                          _buildCircle("1", "Entrega", status, 3)
+                          _buildCircle("3", "Entrega", status, 3)
                         ],
                       ),
                       Padding(
@@ -154,7 +188,9 @@ class OrderTile extends StatelessWidget {
                   color: Colors.red[300],
                   padding: EdgeInsets.only(right: 12.0),
                   icon: Icon(Icons.phone),
-                  onPressed: () {})
+                  onPressed: () {
+                    //TODO CHAMAR O CALL COMO O NUMERO DA LOJA
+                  })
             ],
           ),
         )
