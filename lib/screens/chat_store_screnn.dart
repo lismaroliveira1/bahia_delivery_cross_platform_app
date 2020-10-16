@@ -108,62 +108,57 @@ class _ChatScreenState extends State<ChatScreen> {
                             } else {
                               Timestamp dateTime =
                                   documents[index].data["createdAt"];
-                              return Row(
-                                mainAxisAlignment:
-                                    documents[index].data["userId"] ==
-                                            model.storeId
-                                        ? MainAxisAlignment.start
-                                        : MainAxisAlignment.end,
-                                children: [
-                                  ListTile(
-                                    title: Padding(
+                              return ListTile(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      documents[index].data["userId"] ==
+                                              model.storeId
+                                          ? MainAxisAlignment.start
+                                          : MainAxisAlignment.end,
+                                  children: [
+                                    Padding(
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 8.0,
                                         vertical: 4.0,
                                       ),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          FadeInImage.memoryNetwork(
-                                            placeholder: kTransparentImage,
-                                            image:
-                                                documents[index].data["image"],
-                                          ),
-                                        ],
+                                      child: Container(
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                1.5,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                1.5,
+                                        child: FadeInImage.memoryNetwork(
+                                          placeholder: kTransparentImage,
+                                          image: documents[index].data["image"],
+                                        ),
                                       ),
                                     ),
-                                    subtitle: Row(
-                                      mainAxisAlignment:
-                                          documents[index].data["userId"] ==
-                                                  model.storeId
-                                              ? MainAxisAlignment.start
-                                              : MainAxisAlignment.end,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        dateTime != null
-                                            ? Text(
+                                  ],
+                                ),
+                                subtitle: Row(
+                                  mainAxisAlignment:
+                                      documents[index].data["userId"] ==
+                                              model.storeId
+                                          ? MainAxisAlignment.start
+                                          : MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    dateTime != null
+                                        ? Text(
+                                            dateTime.toDate().hour.toString() +
+                                                ":" +
                                                 dateTime
-                                                        .toDate()
-                                                        .hour
-                                                        .toString() +
-                                                    ":" +
-                                                    dateTime
-                                                        .toDate()
-                                                        .minute
-                                                        .toString(),
-                                              )
-                                            : Container(
-                                                height: 0.0,
-                                                width: 0.0,
-                                              ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
+                                                    .toDate()
+                                                    .minute
+                                                    .toString(),
+                                          )
+                                        : Container(
+                                            height: 0.0,
+                                            width: 0.0,
+                                          ),
+                                  ],
+                                ),
                               );
                             }
                           },

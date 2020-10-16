@@ -16,6 +16,9 @@ class OrderTile extends StatefulWidget {
 }
 
 class _OrderTileState extends State<OrderTile> {
+  String firtstatus = "Aceitar Pedido";
+  String secondStatus = "Enviar";
+  String thirdStatus = "";
   @override
   Widget build(BuildContext context) {
     String month = '';
@@ -75,6 +78,28 @@ class _OrderTileState extends State<OrderTile> {
                   );
                 } else {
                   int status = snapshot.data["status"];
+                  switch (status) {
+                    case 1:
+                      firtstatus = "Aceitar \n Pedido";
+                      secondStatus = "Enviar \n Pedido";
+                      thirdStatus = "Pedido \n não entregue";
+                      break;
+                    case 2:
+                      firtstatus = "Pedido \n Aceito";
+                      secondStatus = "Enviar \n Pedido";
+                      thirdStatus = "Pedido \n não entregue";
+                      break;
+                    case 3:
+                      firtstatus = "Pedido \n aceito";
+                      secondStatus = "Pedido \n enviado";
+                      thirdStatus = "Pedido \n não entregue";
+                      break;
+                    case 4:
+                      firtstatus = "Pedido \n Enviado";
+                      secondStatus = "Enviar \n Pedido";
+                      thirdStatus = "Pedido \n entregue";
+                      break;
+                  }
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[

@@ -889,16 +889,20 @@ class UserModel extends Model {
   void getUserOrder() async {
     if (firebaseUser == null) firebaseUser = await _auth.currentUser();
     if (firebaseUser != null) {
-      listUserOrders.clear();
-      QuerySnapshot query = await Firestore.instance
-          .collection("orders")
-          .orderBy('createdAt', descending: true)
-          .getDocuments();
-      query.documents.map((doc) {
-        if (doc.data["client"] == firebaseUser.uid) {
-          listUserOrders.add(OrderData.fromDocument(doc));
+      try {
+        QuerySnapshot query = await Firestore.instance
+            .collection("orders")
+            .orderBy('createdAt', descending: true)
+            .getDocuments();
+        query.documents.map((doc) {
+          if (doc.data["client"] == firebaseUser.uid) {
+            listUserOrders.add(OrderData.fromDocument(doc));
+          }
+        }).toList();
+        if (listUserOrders.length > 0) {
+          print(listUserOrders.length);
         }
-      }).toList();
+      } catch (e) {}
     }
     notifyListeners();
   }
@@ -937,7 +941,6 @@ class UserModel extends Model {
           }
         }
       } catch (e) {}
-
       notifyListeners();
     }
   }

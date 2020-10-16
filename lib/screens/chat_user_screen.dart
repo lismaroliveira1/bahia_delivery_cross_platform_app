@@ -58,20 +58,34 @@ class _ChatUserScreenState extends State<ChatUserScreen> {
                               Timestamp dateTime =
                                   documents[index].data["createdAt"];
                               return ListTile(
-                                title: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0, vertical: 4.0),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Text(documents[index].data['text']),
-                                    ],
-                                  ),
+                                title: Row(
+                                  mainAxisAlignment:
+                                      documents[index].data["userId"] ==
+                                              model.firebaseUser.uid
+                                          ? MainAxisAlignment.start
+                                          : MainAxisAlignment.end,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8.0, vertical: 4.0),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Text(documents[index].data['text']),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 subtitle: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment:
+                                      documents[index].data["userId"] ==
+                                              model.firebaseUser.uid
+                                          ? MainAxisAlignment.start
+                                          : MainAxisAlignment.end,
                                   children: [
                                     dateTime != null
                                         ? Text(
@@ -99,12 +113,23 @@ class _ChatUserScreenState extends State<ChatUserScreen> {
                                     vertical: 4.0,
                                   ),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisAlignment:
+                                        documents[index].data["userId"] ==
+                                                model.firebaseUser.uid
+                                            ? MainAxisAlignment.start
+                                            : MainAxisAlignment.end,
                                     children: [
-                                      FadeInImage.memoryNetwork(
-                                        placeholder: kTransparentImage,
-                                        image: documents[index].data["image"],
+                                      Container(
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                1.5,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                1.5,
+                                        child: FadeInImage.memoryNetwork(
+                                          placeholder: kTransparentImage,
+                                          image: documents[index].data["image"],
+                                        ),
                                       ),
                                     ],
                                   ),
