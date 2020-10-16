@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-class ChatScreen extends StatefulWidget {
+class ChatUserScreen extends StatefulWidget {
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _ChatUserScreenState createState() => _ChatUserScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _ChatUserScreenState extends State<ChatUserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,9 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 return StreamBuilder<QuerySnapshot>(
                   stream: Firestore.instance
                       .collection("orders")
-                      .document(
-                        UserModel.of(context).chatOrderData.orderId,
-                      )
+                      .document(UserModel.of(context).chatOrderData.client)
                       .collection("chat")
                       .orderBy(
                         'createdAt',
@@ -139,7 +137,7 @@ class _ChatScreenState extends State<ChatScreen> {
             },
           )),
           TextMessageComposer((text) {
-            UserModel.of(context).sendtextMessageByStore(text);
+            UserModel.of(context).sendtextMessageByUser(text);
           }),
         ],
       ),

@@ -1,17 +1,25 @@
 import 'dart:collection';
 
 import 'package:bahia_delivery/data/order_data.dart';
+import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/chat_user_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-class OrderTile extends StatelessWidget {
+class OrderTile extends StatefulWidget {
   final OrderData orderData;
   OrderTile(this.orderData);
+
+  @override
+  _OrderTileState createState() => _OrderTileState();
+}
+
+class _OrderTileState extends State<OrderTile> {
   @override
   Widget build(BuildContext context) {
     String month = '';
-    switch (orderData.createdAt.toDate().month) {
+    switch (widget.orderData.createdAt.toDate().month) {
       case 1:
         month = "Janeiro";
         break;
@@ -58,7 +66,7 @@ class OrderTile extends StatelessWidget {
             child: StreamBuilder<DocumentSnapshot>(
               stream: Firestore.instance
                   .collection("orders")
-                  .document(orderData.orderId)
+                  .document(widget.orderData.orderId)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -74,7 +82,7 @@ class OrderTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                              "Código do pedido: ${orderData.orderId.substring(0, 6)}",
+                              "Código do pedido: ${widget.orderData.orderId.substring(0, 6)}",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -124,7 +132,7 @@ class OrderTile extends StatelessWidget {
                       SizedBox(
                         height: 4.0,
                       ),
-                      Text(_buildProductsText(orderData.doc)),
+                      Text(_buildProductsText(widget.orderData.doc)),
                       SizedBox(
                         height: 8.0,
                       ),
@@ -157,11 +165,17 @@ class OrderTile extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
                           "Data: " +
-                              orderData.createdAt.toDate().day.toString() +
+                              widget.orderData.createdAt
+                                  .toDate()
+                                  .day
+                                  .toString() +
                               " de " +
                               month +
                               " de " +
-                              orderData.createdAt.toDate().year.toString(),
+                              widget.orderData.createdAt
+                                  .toDate()
+                                  .year
+                                  .toString(),
                         ),
                       ),
                     ],
@@ -179,7 +193,14 @@ class OrderTile extends StatelessWidget {
                   color: Colors.red[300],
                   padding: EdgeInsets.only(left: 12.0),
                   icon: Icon(Icons.message),
-                  onPressed: () {}),
+                  onPressed: () {
+                    UserModel.of(context).setChatData(widget.orderData);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ChatUserScreen(),
+                      ),
+                    );
+                  }),
               Text(
                 "Entre em contato com a loja",
                 style: TextStyle(color: Colors.grey),

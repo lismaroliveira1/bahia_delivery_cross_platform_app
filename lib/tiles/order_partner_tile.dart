@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:bahia_delivery/data/order_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/chat_screnn.dart';
+import 'package:bahia_delivery/screens/chat_store_screnn.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';

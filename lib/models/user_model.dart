@@ -947,7 +947,42 @@ class UserModel extends Model {
     notifyListeners();
   }
 
-  void sendtextMessage(String text) async {
+  void sendtextMessageByStore(String text) async {
+    await Firestore.instance
+        .collection("orders")
+        .document(chatOrderData.orderId)
+        .collection("chat")
+        .add({
+      "userId": chatOrderData.storeId,
+      "text": text,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  void sendImageMessageByStore(File imageFile) async {
+    if (imageFile == null) return;
+    StorageUploadTask task = FirebaseStorage.instance
+        .ref()
+        .child("images")
+        .child("chat")
+        .child(
+          DateTime.now().millisecondsSinceEpoch.toString(),
+        )
+        .putFile(imageFile);
+    StorageTaskSnapshot taskSnapshot = await task.onComplete;
+    String urlImage = await taskSnapshot.ref.getDownloadURL();
+    await Firestore.instance
+        .collection("orders")
+        .document(chatOrderData.orderId)
+        .collection("chat")
+        .add({
+      "userId": chatOrderData.storeId,
+      "image": urlImage,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
+
+  void sendtextMessageByUser(String text) async {
     await Firestore.instance
         .collection("orders")
         .document(chatOrderData.orderId)
@@ -959,7 +994,7 @@ class UserModel extends Model {
     });
   }
 
-  void sendImageMessage(File imageFile) async {
+  void sendImageMessageByUser(File imageFile) async {
     if (imageFile == null) return;
     StorageUploadTask task = FirebaseStorage.instance
         .ref()
