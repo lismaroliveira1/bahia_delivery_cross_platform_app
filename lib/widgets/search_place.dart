@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SearchPlace extends StatelessWidget {
+  final ValueChanged<String> onChanged;
+  SearchPlace({this.onChanged}) : super();
   @override
   Widget build(BuildContext context) {
     return Theme(
@@ -8,6 +10,7 @@ class SearchPlace extends StatelessWidget {
       child: Container(
         height: 42,
         child: TextField(
+          onChanged: onChanged,
           decoration: InputDecoration(
             hintText: "Search",
             hintStyle: TextStyle(

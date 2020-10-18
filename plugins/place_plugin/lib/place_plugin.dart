@@ -4,7 +4,7 @@ import 'package:place_plugin/place.dart';
 class PlacePlugin {
   static const MethodChannel _channel = const MethodChannel('place_plugin');
 
-  static void intialize(String apiKey) async {
+  static void initialize(String apiKey) async {
     await _channel.invokeMethod("initialize", <String, dynamic>{
       'apikey': apiKey,
     });
