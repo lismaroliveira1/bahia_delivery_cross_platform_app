@@ -2,6 +2,7 @@ import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/editer_address_screem.dart';
 import 'package:bahia_delivery/screens/login_screen.dart';
 import 'package:bahia_delivery/tiles/address_tile.dart';
+import 'package:bahia_delivery/widgets/search_place.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -79,6 +80,9 @@ class _LocationScreenState extends State<LocationScreen> {
       } else if (model.addresses == null || model.addresses.length == 0) {
         return Scaffold(
           key: homeScaffoldKey,
+          appBar: AppBar(
+            title: SearchPlace(),
+          ),
           body: Form(
             key: formKey,
             child: Stack(
@@ -149,20 +153,7 @@ class _LocationScreenState extends State<LocationScreen> {
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Colors.redAccent,
-            title: ClipRRect(
-              borderRadius: BorderRadius.circular(30),
-              child: Container(
-                padding: EdgeInsets.only(left: 18, right: 18),
-                color: Colors.white,
-                child: TextFormField(
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    labelText: 'CEP',
-                    hintText: '12345-678',
-                  ),
-                ),
-              ),
-            ),
+            title: SearchPlace(),
             centerTitle: true,
             actions: <Widget>[
               IconButton(
