@@ -19,9 +19,12 @@ class _OrderScreenState extends State<OrderScreen> {
       builder: (context, child, model) {
         if (!isVerifiedListStoreOrders) {
           model.updatePartnerData();
+          model.getUserOrder();
           isVerifiedListStoreOrders = true;
         }
-        if (!isVerifiedListUserOrders) {}
+        if (!isVerifiedListUserOrders) {
+          isVerifiedListUserOrders = true;
+        }
 
         if (model.isLoading) {
           return Container(

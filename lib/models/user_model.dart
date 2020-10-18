@@ -894,17 +894,15 @@ class UserModel extends Model {
             .collection("orders")
             .orderBy('createdAt', descending: true)
             .getDocuments();
+        listUserOrders.clear();
         query.documents.map((doc) {
           if (doc.data["client"] == firebaseUser.uid) {
             listUserOrders.add(OrderData.fromDocument(doc));
           }
         }).toList();
-        if (listUserOrders.length > 0) {
-          print(listUserOrders.length);
-        }
       } catch (e) {}
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   void updatePartnerData() async {
@@ -941,7 +939,6 @@ class UserModel extends Model {
           }
         }
       } catch (e) {}
-      notifyListeners();
     }
   }
 
