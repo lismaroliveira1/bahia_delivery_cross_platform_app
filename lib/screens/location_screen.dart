@@ -1,4 +1,3 @@
-import 'package:bahia_delivery/blocs/search_bloc.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/editer_address_screem.dart';
 import 'package:bahia_delivery/screens/login_screen.dart';
@@ -7,9 +6,8 @@ import 'package:bahia_delivery/widgets/search_place.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:place_plugin/place_plugin.dart';
+import 'package:google_place/google_place.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:place_plugin/place.dart';
 
 const kGoogleApiKey = "AIzaSyBavlFX_n6MlAxfIPohHqu9n4F7zCvNpvg";
 
@@ -21,6 +19,16 @@ class LocationScreen extends StatefulWidget {
 class _LocationScreenState extends State<LocationScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final homeScaffoldKey = GlobalKey<ScaffoldState>();
+  GooglePlace googlePlace;
+  List<AutocompletePrediction> predictions = [];
+
+  @override
+  void initState() {
+    String apiKEY =
+        'AIzaSyB9QAT4C-TwvJu8pmNMxbRnGp_am3j76xI'; //TODO Colocar essa chave no firebase
+    googlePlace = GooglePlace(apiKEY);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +43,123 @@ class _LocationScreenState extends State<LocationScreen> {
             child: CircularProgressIndicator(),
           ),
         );
+      } else if (!UserModel.of(context).isLoggedIn()) {
+        return Container(
+          color: Colors.white,
+          padding: EdgeInsets.only(right: 130, left: 130),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.location_on,
+                size: 80.0,
+                color: Colors.red,
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              Text(
+                "Faça login para adcionar seus endereços",
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  height: 55,
+                  child: RaisedButton(
+                    color: Colors.red,
+                    child: Text(
+                      "Entrar",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => LoginScreen(),
+                      ));
+                    },
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      } else if (model.addresses == null || model.addresses.length == 0) {
+        return Scaffold(
+          key: homeScaffoldKey,
+          appBar: AppBar(
+            title: SearchPlace(),
+          ),
+          body: Form(
+            key: formKey,
+            child: Stack(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.white,
+                  child: GoogleMap(
+                    initialCameraPosition: CameraPosition(
+                        target: LatLng(model.latitude, model.longittude),
+                        zoom: 16.0),
+                    zoomGesturesEnabled: true,
+                    myLocationEnabled: true,
+                  ),
+                ),
+                AlertDialog(
+                  title: Container(
+                    height: 80,
+                    width: 80,
+                    child: Image.asset('images/logo.png'),
+                  ),
+                  content: Text(
+                    "Gostaria utilizar a sua\n posição atual?",
+                    textAlign: TextAlign.center,
+                  ),
+                  actions: [
+                    FlatButton(
+                        onPressed: () {},
+                        child: Text(
+                          "Buscar pelo CEP",
+                          textAlign: TextAlign.center,
+                        )),
+                    FlatButton(
+                        onPressed: () async {
+                          await model.getAddressFromLatLng(
+                              lat: model.latitude, lng: model.longittude);
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => RegisterAdrressScreeen()));
+                        },
+                        child: Text("Ok"))
+                  ],
+                ),
+                Positioned(
+                  top: MediaQuery.of(context).size.height / 5,
+                  child: Center(
+                    child: Container(
+                        height: 42,
+                        width: MediaQuery.of(context).size.width,
+                        child: Align(
+                          alignment: Alignment(0.0, 0.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: 80,
+                              width: MediaQuery.of(context).size.width / 1.3,
+                            ),
+                          ),
+                        )),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
       } else {
-        var searchBloc = SearchBlock();
         return Scaffold(
           appBar: AppBar(
             elevation: 0,
@@ -45,45 +168,37 @@ class _LocationScreenState extends State<LocationScreen> {
               children: [
                 SearchPlace(
                   onChanged: (value) {
-                    searchBloc.searchPlace(value);
+                    if (value.isNotEmpty) {
+                      autoCompleteSearch(value);
+                    } else {
+                      if (predictions.length > 0 && mounted) {
+                        setState(() {
+                          predictions = [];
+                        });
+                      }
+                    }
                   },
                 ),
-                StreamBuilder(
-                    stream: searchBloc.searchStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.data != null) {
-                        if (snapshot.data == 'searching') {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
-                        List<Place> places = snapshot.data;
-                        return Container(
-                          child: ListView.separated(
-                              separatorBuilder:
-                                  (BuildContext context, int index) =>
-                                      Divider(),
-                              itemBuilder: (BuildContext context, int index) {
-                                Place place = places.elementAt(index);
-                                return ListTile(
-                                  title: Text(place.name),
-                                  subtitle: Text(place.address),
-                                  onTap: () {
-                                    PlacePlugin.getPlace(place).then((place) {
-                                      print(place.name);
-                                      print(place.formatedAddress);
-                                    });
-                                  },
-                                );
-                              },
-                              itemCount: places.length),
-                        );
-                      } else {
-                        return Container(
-                          height: 0,
-                        );
-                      }
-                    }),
+                SizedBox(
+                  height: 10.0,
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: predictions.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: CircleAvatar(
+                          child: Icon(
+                            Icons.pin_drop,
+                          ),
+                        ),
+                        title: Text(
+                          predictions[index].description,
+                        ),
+                      );
+                    },
+                  ),
+                )
               ],
             ),
             centerTitle: true,
@@ -119,5 +234,14 @@ class _LocationScreenState extends State<LocationScreen> {
         );
       }
     });
+  }
+
+  void autoCompleteSearch(String value) async {
+    var result = await googlePlace.autocomplete.get(value);
+    if (result != null && result.predictions != null && mounted) {
+      setState(() {
+        predictions = result.predictions;
+      });
+    }
   }
 }
