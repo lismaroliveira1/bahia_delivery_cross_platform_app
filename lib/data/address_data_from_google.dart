@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_place/google_place.dart';
 
 class AddressDataFromGoogle {
   String description;
@@ -11,6 +12,12 @@ class AddressDataFromGoogle {
     @required this.placeId,
     @required this.reference,
   });
+  AddressDataFromGoogle.fromPrediction(AutocompletePrediction prediction) {
+    description = prediction.description;
+    id = prediction.id;
+    placeId = prediction.placeId;
+    reference = prediction.reference;
+  }
   Map<String, dynamic> toMap() {
     return {
       "description": description,

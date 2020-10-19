@@ -1,3 +1,4 @@
+import 'package:bahia_delivery/models/address_model.dart';
 import 'package:bahia_delivery/models/cart_model.dart';
 import 'package:bahia_delivery/models/favorite_model.dart';
 import 'package:bahia_delivery/models/payment_model.dart';
@@ -35,18 +36,26 @@ class MyApp extends StatelessWidget {
                                 model: CartModel(userModel),
                                 child: ScopedModelDescendant<CartModel>(
                                   builder: (context, child, cartModel) {
-                                    return MaterialApp(
-                                      title: 'Bahia Delivery',
-                                      theme: ThemeData(
-                                          primarySwatch: Colors.blue,
-                                          visualDensity: VisualDensity
-                                              .adaptivePlatformDensity,
-                                          primaryColor: Color.fromARGB(
-                                              255, 216, 216, 216)),
-                                      debugShowCheckedModeBanner: false,
-                                      home: userModel.isLoggedIn()
-                                          ? HomeScreen()
-                                          : LoginScreen(),
+                                    return ScopedModel<AddressModel>(
+                                      model: AddressModel(),
+                                      child:
+                                          ScopedModelDescendant<AddressModel>(
+                                        builder: (context, child, model) {
+                                          return MaterialApp(
+                                            title: 'Bahia Delivery',
+                                            theme: ThemeData(
+                                                primarySwatch: Colors.blue,
+                                                visualDensity: VisualDensity
+                                                    .adaptivePlatformDensity,
+                                                primaryColor: Color.fromARGB(
+                                                    255, 216, 216, 216)),
+                                            debugShowCheckedModeBanner: false,
+                                            home: userModel.isLoggedIn()
+                                                ? HomeScreen()
+                                                : LoginScreen(),
+                                          );
+                                        },
+                                      ),
                                     );
                                   },
                                 ),
