@@ -9,7 +9,7 @@ import 'package:bahia_delivery/data/search_data.dart';
 import 'package:bahia_delivery/data/store_data.dart';
 import 'package:bahia_delivery/data/store_with_cpf_data.dart';
 import 'package:bahia_delivery/models/adress.dart';
-import 'package:bahia_delivery/models/user.dart';
+import 'package:bahia_delivery/data/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';

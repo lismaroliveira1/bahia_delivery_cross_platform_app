@@ -1,5 +1,5 @@
 import 'package:bahia_delivery/blocs/login_bloc.dart';
-import 'package:bahia_delivery/models/user.dart';
+import 'package:bahia_delivery/data/user.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:flutter/material.dart';
 

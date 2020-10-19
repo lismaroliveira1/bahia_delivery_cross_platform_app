@@ -1,5 +1,5 @@
 import 'package:bahia_delivery/data/credit_debit_card_data.dart';
-import 'package:bahia_delivery/models/user.dart';
+import 'package:bahia_delivery/data/user.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 
