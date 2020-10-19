@@ -1,15 +1,5 @@
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/editer_address_screem.dart';
-import 'package:bahia_delivery/screens/login_screen.dart';
-import 'package:bahia_delivery/tiles/address_tile.dart';
-import 'package:bahia_delivery/widgets/search_place.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_place/google_place.dart';
-import 'package:scoped_model/scoped_model.dart';
-
-const kGoogleApiKey = "AIzaSyBavlFX_n6MlAxfIPohHqu9n4F7zCvNpvg";
 
 class LocationScreen extends StatefulWidget {
   @override
@@ -17,227 +7,98 @@ class LocationScreen extends StatefulWidget {
 }
 
 class _LocationScreenState extends State<LocationScreen> {
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  final homeScaffoldKey = GlobalKey<ScaffoldState>();
   GooglePlace googlePlace;
   List<AutocompletePrediction> predictions = [];
 
   @override
   void initState() {
-    String apiKEY =
-        'AIzaSyB9QAT4C-TwvJu8pmNMxbRnGp_am3j76xI'; //TODO Colocar essa chave no firebase
-    googlePlace = GooglePlace(apiKEY);
     super.initState();
+    String apiKey = "AIzaSyB9QAT4C-TwvJu8pmNMxbRnGp_am3j76xI";
+    googlePlace = GooglePlace(apiKey);
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
-      model.loadAddressItems();
-      if (model.isLoading && UserModel.of(context).isLoggedIn() ||
-          model.latitude == null ||
-          model.longittude == null) {
-        return Container(
-          color: Colors.white,
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        );
-      } else if (!UserModel.of(context).isLoggedIn()) {
-        return Container(
-          color: Colors.white,
-          padding: EdgeInsets.only(right: 130, left: 130),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.location_on,
-                size: 80.0,
-                color: Colors.red,
-              ),
-              SizedBox(
-                height: 16.0,
-              ),
-              Text(
-                "Faça login para adcionar seus endereços",
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 16.0,
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  height: 55,
-                  child: RaisedButton(
-                    color: Colors.red,
-                    child: Text(
-                      "Entrar",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+    return Scaffold(
+      body: SafeArea(
+        child: Stack(
+          children: [
+            Container(
+              margin: EdgeInsets.only(right: 20, left: 20, top: 100),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: "Meu Local",
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Colors.grey[350],
+                          width: 2.0,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: Colors.black54,
+                          width: 2.0,
+                        ),
+                      ),
                     ),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => LoginScreen(),
-                      ));
+                    onChanged: (value) {
+                      if (value.isNotEmpty) {
+                        autoCompleteSearch(value);
+                      } else {
+                        if (predictions.length > 0 && mounted) {
+                          setState(() {
+                            predictions = [];
+                          });
+                        }
+                      }
                     },
                   ),
-                ),
-              )
-            ],
-          ),
-        );
-      } else if (model.addresses == null || model.addresses.length == 0) {
-        return Scaffold(
-          key: homeScaffoldKey,
-          appBar: AppBar(
-            title: SearchPlace(),
-          ),
-          body: Form(
-            key: formKey,
-            child: Stack(
-              children: [
-                Container(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.white,
-                  child: GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                        target: LatLng(model.latitude, model.longittude),
-                        zoom: 16.0),
-                    zoomGesturesEnabled: true,
-                    myLocationEnabled: true,
+                  SizedBox(
+                    height: 10,
                   ),
-                ),
-                AlertDialog(
-                  title: Container(
-                    height: 80,
-                    width: 80,
-                    child: Image.asset('images/logo.png'),
-                  ),
-                  content: Text(
-                    "Gostaria utilizar a sua\n posição atual?",
-                    textAlign: TextAlign.center,
-                  ),
-                  actions: [
-                    FlatButton(
-                        onPressed: () {},
-                        child: Text(
-                          "Buscar pelo CEP",
-                          textAlign: TextAlign.center,
-                        )),
-                    FlatButton(
-                        onPressed: () async {
-                          await model.getAddressFromLatLng(
-                              lat: model.latitude, lng: model.longittude);
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => RegisterAdrressScreeen()));
-                        },
-                        child: Text("Ok"))
-                  ],
-                ),
-                Positioned(
-                  top: MediaQuery.of(context).size.height / 5,
-                  child: Center(
-                    child: Container(
-                        height: 42,
-                        width: MediaQuery.of(context).size.width,
-                        child: Align(
-                          alignment: Alignment(0.0, 0.0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              height: 80,
-                              width: MediaQuery.of(context).size.width / 1.3,
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: predictions.length,
+                      itemBuilder: (context, index) {
+                        print(predictions[index].description);
+                        return ListTile(
+                          leading: CircleAvatar(
+                            child: Icon(
+                              Icons.pin_drop,
+                              color: Colors.white,
                             ),
                           ),
-                        )),
+                          title: Text(predictions[index]
+                              .description
+                              .replaceAll("State of", "")),
+                          onTap: () {
+                            debugPrint(predictions[index]
+                                .description
+                                .replaceAll("State of", ""));
+                          },
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
-        );
-      } else {
-        return Scaffold(
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: Colors.redAccent,
-            title: Column(
-              children: [
-                SearchPlace(
-                  onChanged: (value) {
-                    if (value.isNotEmpty) {
-                      autoCompleteSearch(value);
-                    } else {
-                      if (predictions.length > 0 && mounted) {
-                        setState(() {
-                          predictions = [];
-                        });
-                      }
-                    }
-                  },
-                ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: predictions.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: CircleAvatar(
-                          child: Icon(
-                            Icons.pin_drop,
-                          ),
-                        ),
-                        title: Text(
-                          predictions[index].description,
-                        ),
-                      );
-                    },
-                  ),
-                )
-              ],
-            ),
-            centerTitle: true,
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () async {
-                  await model.getAddressFromLatLng(
-                      lat: model.latitude, lng: model.longittude);
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => RegisterAdrressScreeen()));
-                },
-              )
-            ],
-          ),
-          body: Column(
-            children: <Widget>[
-              Container(
-                height: MediaQuery.of(context).size.height / 2.2,
-                color: Colors.white,
+                ],
               ),
-              SizedBox(
-                height: 20,
-              ),
-              Expanded(
-                  child: ListView(
-                children: model.addresses.map((address) {
-                  return AddressTile(address);
-                }).toList(),
-              ))
-            ],
-          ),
-        );
-      }
-    });
+            ),
+          ],
+        ),
+      ),
+    );
+    ;
   }
 
   void autoCompleteSearch(String value) async {
+    print(value);
     var result = await googlePlace.autocomplete.get(value);
+    print(result.status);
     if (result != null && result.predictions != null && mounted) {
       setState(() {
         predictions = result.predictions;
