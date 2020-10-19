@@ -17,9 +17,8 @@ class AddressModel extends Model {
   }
 
   List<AddressDataFromGoogle> addressFromGoogleList = [];
-  void getAddress(AutocompletePrediction predctionAddress) {
-    addressFromGoogleList
-        .add(AddressDataFromGoogle.fromPrediction(predctionAddress));
+  void getAddress(AddressDataFromGoogle addressDataFromGoogle) {
+    addressFromGoogleList.add(addressDataFromGoogle);
     notifyListeners();
   }
 
