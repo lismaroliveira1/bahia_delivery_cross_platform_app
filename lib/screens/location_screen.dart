@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart';
@@ -27,6 +25,13 @@ class _LocationScreenState extends State<LocationScreen> {
         child: Form(
           child: Stack(
             children: [
+              Container(
+                color: Colors.green,
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  children: <Widget>[Container()],
+                ),
+              ),
               Container(
                 margin: EdgeInsets.only(right: 20, left: 20, top: 100),
                 child: Column(
@@ -117,7 +122,6 @@ class _LocationScreenState extends State<LocationScreen> {
         ),
       ),
     );
-    ;
   }
 
   void autoCompleteSearch(String value) async {

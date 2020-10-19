@@ -411,7 +411,6 @@ class UserModel extends Model {
       if (postition.longitude != null) {
         longittude = postition.longitude;
       }
-      latitude = postition.latitude;
     }
     isLoading = false;
     notifyListeners();
