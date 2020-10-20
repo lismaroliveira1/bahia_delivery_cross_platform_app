@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:bahia_delivery/data/address_data.dart';
+import 'package:bahia_delivery/data/address_data_from_google.dart';
 import 'package:bahia_delivery/data/category_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_item.dart';
@@ -26,6 +27,7 @@ const token = '635289558f18ba4c749d6928e8cd0ba7';
 
 class UserModel extends Model {
   Map<String, dynamic> userData = Map();
+  List<AddressDataFromGoogle> addressDataFromGoogleList = [];
   FirebaseUser firebaseUser;
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = false;
@@ -67,6 +69,7 @@ class UserModel extends Model {
   String storeId = "";
   bool hasPartnerOrders = false;
   OrderData chatOrderData;
+  AddressDataFromGoogle currentAddressDataFromGoogle;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -76,6 +79,7 @@ class UserModel extends Model {
     _loadCurrentUser();
     _getCurrentLocation();
     _loadListCreditDebitCard();
+    _loadAddressFromGoogle();
     loadAddressItems();
     updateCategory();
     updateStories();
@@ -1015,5 +1019,103 @@ class UserModel extends Model {
       "image": urlImage,
       'createdAt': FieldValue.serverTimestamp(),
     });
+  }
+
+  void addNewAddress({
+    @required AddressDataFromGoogle addressDataFromGoogle,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    try {
+      await Firestore.instance
+          .collection("users")
+          .document(firebaseUser.uid)
+          .collection("addressFromGoogle")
+          .add({
+        "descripition": addressDataFromGoogle.description,
+        "placeId": addressDataFromGoogle.placeId,
+        "reference": addressDataFromGoogle.reference,
+        "isDefined": false,
+      });
+      addressDataFromGoogleList.add(addressDataFromGoogle);
+      setCurrentAddressFromGoolgle(addressDataFromGoogle);
+      onSuccess();
+      notifyListeners();
+    } catch (e) {
+      print(e.toString());
+      onFail();
+      notifyListeners();
+    }
+  }
+
+  setCurrentAddressFromGoolgle(
+      AddressDataFromGoogle addressDataFromGoogle) async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      try {
+        await Firestore.instance
+            .collection("users")
+            .document(firebaseUser.uid)
+            .collection("addressFromGoogle")
+            .getDocuments()
+            .then((query) {
+          query.documents.map((doc) async {
+            await Firestore.instance
+                .collection("users")
+                .document(firebaseUser.uid)
+                .collection("addressFromGoogle")
+                .document(doc.documentID)
+                .updateData({
+              "isDefined": false,
+            });
+          }).toList();
+        });
+        await Firestore.instance
+            .collection("users")
+            .document(firebaseUser.uid)
+            .collection("addressFromGoogle")
+            .document(addressDataFromGoogle.id)
+            .updateData({
+          "isDefined": true,
+        });
+        currentAddressDataFromGoogle = addressDataFromGoogle;
+      } catch (e) {
+        print(e);
+      }
+      notifyListeners();
+    }
+  }
+
+  void _loadAddressFromGoogle() async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      try {
+        addressDataFromGoogleList.clear();
+        QuerySnapshot addressQuery = await Firestore.instance
+            .collection("users")
+            .document(firebaseUser.uid)
+            .collection("addressFromGoogle")
+            .getDocuments();
+        addressQuery.documents.map((doc) {
+          final addressData = AddressDataFromGoogle(
+            id: doc.documentID,
+            description: doc.data["descripition"],
+            placeId: doc.data["placeId"],
+            reference: doc.data["reference"],
+            isDefined: doc.data["isDefined"],
+          );
+          if (doc.data["isDefined"]) {
+            currentAddressDataFromGoogle = addressData;
+            addressSeted = true;
+          }
+          addressDataFromGoogleList.add(addressData);
+        }).toList();
+        print(addressDataFromGoogleList.length);
+        notifyListeners();
+      } catch (e) {
+        print("erro");
+        print(e.toString());
+      }
+    }
   }
 }

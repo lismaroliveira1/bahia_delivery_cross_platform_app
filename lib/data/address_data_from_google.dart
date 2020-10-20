@@ -1,27 +1,35 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart';
 
 class AddressDataFromGoogle {
   String description;
-  String id;
   String placeId;
   String reference;
+  String id;
+  bool isDefined = false;
   AddressDataFromGoogle({
+    this.isDefined,
+    this.id,
     @required this.description,
-    @required this.id,
     @required this.placeId,
     @required this.reference,
   });
   AddressDataFromGoogle.fromPrediction(AutocompletePrediction prediction) {
     description = prediction.description;
-    id = prediction.id;
     placeId = prediction.placeId;
     reference = prediction.reference;
   }
+  AddressDataFromGoogle.fromDocument(DocumentSnapshot documentSnapshot) {
+    id = documentSnapshot.documentID;
+    description = documentSnapshot.data["descripition"];
+    placeId = documentSnapshot.data["placeId"];
+    reference = documentSnapshot.data["reference"];
+    isDefined = documentSnapshot.data["isDefined"];
+  }
   Map<String, dynamic> toMap() {
     return {
-      "description": description,
-      "id": id,
+      "descripition": description,
       "placeId": placeId,
       "reference": reference
     };

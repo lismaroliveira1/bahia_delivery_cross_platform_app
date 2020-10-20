@@ -13,9 +13,12 @@ class ShipCard extends StatelessWidget {
         child: ExpansionTile(
           title: model.addressSeted
               ? Text(
-                  model.currentUserAddress.street +
-                      ", nº " +
-                      model.currentUserAddress.number,
+                  model.currentAddressDataFromGoogle.description.length < 40
+                      ? model.currentAddressDataFromGoogle.description
+                      : model.currentAddressDataFromGoogle.description
+                              .substring(0, 40) +
+                          "..." +
+                          model.currentUserAddress.number,
                   style: TextStyle(
                       fontWeight: FontWeight.w500, color: Colors.grey[700]),
                 )

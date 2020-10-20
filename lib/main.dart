@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
                                       child:
                                           ScopedModelDescendant<AddressModel>(
                                         builder: (context, child, model) {
+                                          //TODO excluir a address model
                                           return MaterialApp(
                                             title: 'Bahia Delivery',
                                             theme: ThemeData(
