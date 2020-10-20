@@ -39,80 +39,78 @@ class _FoodItemState extends State<FoodItem> {
             horizontal: 8.0,
             vertical: 4.0,
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Container(
-                child: Row(
-                  children: [
-                    Hero(
-                        tag: widget.imgPath,
-                        child: Container(
-                          height: 75,
-                          width: 75,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: Image.network(
-                              widget.imgPath,
-                              fit: BoxFit.cover,
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    child: Row(
+                      children: [
+                        Hero(
+                          tag: widget.imgPath,
+                          child: Container(
+                            height: 60,
+                            width: 60,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Image.network(
+                                widget.imgPath,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                        )),
-                    SizedBox(
-                      width: 20.0,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          widget.foodName,
-                          style: TextStyle(
-                            fontFamily: 'MontSerrat',
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.bold,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 6.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.foodName,
+                                style: TextStyle(
+                                  fontFamily: 'MontSerrat',
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'R' + '\$' + widget.price.toString(),
+                                style: TextStyle(
+                                  fontFamily: 'MontSerrat',
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              Text(
+                                widget.description,
+                                style: TextStyle(
+                                  fontFamily: 'MontSerrat',
+                                  fontSize: 11,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          'R' + '\$' + widget.price.toString(),
-                          style: TextStyle(
-                            fontFamily: 'MontSerrat',
-                            fontSize: 15.0,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          widget.description,
-                          style: TextStyle(
-                            fontFamily: 'MontSerrat',
-                            fontSize: 11,
-                            color: Colors.grey,
-                          ),
-                        ),
+                        )
                       ],
-                    )
-                  ],
-                ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.add),
+                    color: Colors.black,
+                    onPressed: () {
+                      CartProduct cartProduct = CartProduct();
+                      cartProduct.quantify = 1;
+                      cartProduct.pId = widget.snapshot.documentID;
+                      cartProduct.category = widget.snapshot.data["category"];
+                      cartProduct.storeId = widget.snapshot.data["storeID"];
+                      cartProduct.productData =
+                          ProductData.fromDocument(widget.snapshot);
+                      model.addCartItem(
+                          cartProduct: cartProduct, onFail: _onFail);
+                    },
+                  )
+                ],
               ),
-              IconButton(
-                icon: Icon(Icons.add),
-                color: Colors.black,
-                onPressed: () {
-                  CartProduct cartProduct = CartProduct();
-                  cartProduct.quantify = 1;
-                  cartProduct.pId = widget.snapshot.documentID;
-                  cartProduct.category = widget.snapshot.data["category"];
-                  cartProduct.storeId = widget.snapshot.data["storeID"];
-                  cartProduct.productData =
-                      ProductData.fromDocument(widget.snapshot);
-                  model.addCartItem(cartProduct: cartProduct, onFail: _onFail);
-                },
-              )
             ],
           ),
         );

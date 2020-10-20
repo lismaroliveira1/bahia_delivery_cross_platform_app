@@ -1,6 +1,9 @@
+import 'package:bahia_delivery/data/product_data.dart';
+import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/register_new_product_screen.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class CreateEditProductTab extends StatefulWidget {
   @override
@@ -11,34 +14,82 @@ class _CreateEditProductTabState extends State<CreateEditProductTab> {
   final TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverList(
-          delegate: SliverChildListDelegate([
-            SizedBox(
-              height: 100,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: TextField(
-                controller: _searchController,
-                autocorrect: true,
-                decoration: InputDecoration(
-                  labelText: "Pesquisar",
-                  hintText: "Sanduíche",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: TextField(
+            controller: _searchController,
+            autocorrect: true,
+            decoration: InputDecoration(
+              labelText: "Pesquisar",
+              hintText: "Sanduíche",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
-            StoreHomeWigget(
-                icon: Icons.add_circle_outline_rounded,
-                name: "Novo Produto",
-                description: "Cadastre novos produtos na sua loja",
-                onPressed: _onNewProductWidgetPressed)
-          ]),
+          ),
         ),
+        StoreHomeWigget(
+          icon: Icons.add_circle_outline_rounded,
+          name: "Novo Produto",
+          description: "Cadastre novos produtos na sua loja",
+          onPressed: _onNewProductWidgetPressed,
+        ),
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            children: [
+              Text("Meus Produtos"),
+            ],
+          ),
+        ),
+        ScopedModelDescendant<UserModel>(builder: (context, child, model) {
+          if (model.isLoading) {
+            return Container(
+              color: Colors.white,
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          } else {
+            return Expanded(
+              child: ListView(
+                children: model.productsStore
+                    .map(
+                      (product) => Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              width: 2,
+                              color: Colors.grey[300],
+                            ),
+                          ),
+                          child: ListTile(
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: Image.network(
+                                product.image,
+                                fit: BoxFit.fill,
+                                height: 80,
+                                width: 60,
+                              ),
+                            ),
+                            trailing: Icon(Icons.edit),
+                            title: Text(product.title),
+                            subtitle: Text(product.description),
+                            onTap: () {},
+                          ),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            );
+          }
+        })
       ],
     );
   }

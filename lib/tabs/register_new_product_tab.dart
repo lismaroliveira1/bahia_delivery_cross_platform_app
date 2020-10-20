@@ -17,6 +17,7 @@ class _RegisterNewProductTabState extends State<RegisterNewProductTab> {
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController categgoryController = TextEditingController();
+  final TextEditingController productGroupController = TextEditingController();
   File imageFile;
   bool isImageChoosed = false;
   final picker = ImagePicker();
@@ -193,6 +194,12 @@ class _RegisterNewProductTabState extends State<RegisterNewProductTab> {
                   )
                 ],
               ),
+              InputNewProductWidget(
+                controller: productGroupController,
+                labelText: "Sessão",
+                hintText: "Pizzas",
+                maxLines: 1,
+              ),
               SizedBox(
                 height: 20,
               ),
@@ -217,6 +224,7 @@ class _RegisterNewProductTabState extends State<RegisterNewProductTab> {
                         return FlatButton(
                           onPressed: () {
                             model.createNewProduct(
+                              productGroup: productGroupController.text,
                               onFail: _onFail,
                               onSuccess: _onSuccess,
                               price: priceController.text,

@@ -17,24 +17,51 @@ class _ProductTabState extends State<ProductTab> {
       headerSliverBuilder: (BuildContext context, bool innerBoxScrolled) {
         return <Widget>[
           SliverAppBar(
-            expandedHeight: 300,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
+              ),
+            ),
+            expandedHeight: 200,
             floating: false,
             pinned: false,
             flexibleSpace: FlexibleSpaceBar(
               centerTitle: true,
-              title: Text(
-                snapshot.data["title"],
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              background: Image.network(
-                snapshot.data["image"],
-                fit: BoxFit.cover,
+              background: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
+                ),
+                child: Image.network(
+                  snapshot.data["image"],
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           )
         ];
       },
-      body: Container(color: Colors.white),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 18.0),
+            child: Text(
+              snapshot.data["title"],
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 12),
+            padding: EdgeInsets.all(8),
+            color: Colors.white,
+            child: Text(
+              snapshot.data["fullDescription"],
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

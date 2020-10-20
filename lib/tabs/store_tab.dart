@@ -1,8 +1,7 @@
-import 'package:bahia_delivery/data/cart_product.dart';
 import 'package:bahia_delivery/screens/product_screen.dart';
-import 'package:bahia_delivery/widgets/build_food_itens.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:grouped_list/grouped_list.dart';
 
 class StoreTab extends StatefulWidget {
   final DocumentSnapshot snapshot;
@@ -14,8 +13,6 @@ class StoreTab extends StatefulWidget {
 }
 
 class _StoreTabState extends State<StoreTab> {
-  CartProduct cartProduct = CartProduct();
-
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
@@ -28,7 +25,7 @@ class _StoreTabState extends State<StoreTab> {
                   bottomRight: Radius.circular(30),
                 ),
               ),
-              expandedHeight: 250.0,
+              expandedHeight: 200.0,
               floating: false,
               pinned: false,
               flexibleSpace: FlexibleSpaceBar(
@@ -59,29 +56,105 @@ class _StoreTabState extends State<StoreTab> {
                 );
               else {
                 return Container(
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius:
-                          BorderRadius.only(topLeft: Radius.circular(75.0))),
                   child: Column(
                     children: [
                       Expanded(
-                        child: ListView(
-                            children: snapshot.data.documents.map((doc) {
-                          return FlatButton(
-                              padding: EdgeInsets.all(0),
-                              onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => ProductScreen(doc)));
-                              },
-                              child: FoodItem(
-                                  storeId: widget.snapshot.documentID,
-                                  imgPath: doc.data["image"],
-                                  foodName: doc.data["title"],
-                                  price: doc.data["price"],
-                                  description: doc.data["description"],
-                                  snapshot: doc));
-                        }).toList()),
+                        child: GroupedListView<dynamic, String>(
+                          elements: snapshot.data.documents,
+                          groupBy: (doc) => doc.data["group"],
+                          useStickyGroupSeparators: false,
+                          groupSeparatorBuilder: (String value) => Container(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    10.0,
+                                    10.0,
+                                    2.0,
+                                    6.0,
+                                  ),
+                                  child: Text(
+                                    value,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          itemBuilder: (c, doc) {
+                            return Card(
+                              elevation: 8.0,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Container(
+                                  padding: EdgeInsets.only(top: 4, bottom: 4.0),
+                                  child: ListTile(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ProductScreen(doc),
+                                        ),
+                                      );
+                                    },
+                                    dense: false,
+                                    leading: Container(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(6),
+                                        child: Image.network(
+                                          doc.data["image"],
+                                          fit: BoxFit.fill,
+                                          height: 80,
+                                          width: 60,
+                                        ),
+                                      ),
+                                    ),
+                                    title: Text(doc.data["title"]),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          doc.data["description"]
+                                                      .toString()
+                                                      .length <
+                                                  40
+                                              ? doc.data["description"]
+                                              : doc.data["description"]
+                                                      .toString()
+                                                      .substring(0, 40) +
+                                                  "...",
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              'R' +
+                                                  '\$ ' +
+                                                  doc.data["price"]
+                                                      .toString()
+                                                      .replaceAll(".", ","),
+                                              style: TextStyle(
+                                                color: Colors.green,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),

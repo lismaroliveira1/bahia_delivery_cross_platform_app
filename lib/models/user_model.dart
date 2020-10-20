@@ -6,6 +6,7 @@ import 'package:bahia_delivery/data/credit_debit_card_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_item.dart';
 import 'package:bahia_delivery/data/order_data.dart';
 import 'package:bahia_delivery/data/payment_on_delivery_date.dart';
+import 'package:bahia_delivery/data/product_data.dart';
 import 'package:bahia_delivery/data/search_data.dart';
 import 'package:bahia_delivery/data/store_data.dart';
 import 'package:bahia_delivery/data/store_with_cpf_data.dart';
@@ -70,6 +71,7 @@ class UserModel extends Model {
   bool hasPartnerOrders = false;
   OrderData chatOrderData;
   AddressDataFromGoogle currentAddressDataFromGoogle;
+  List<ProductData> productsStore = [];
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -753,6 +755,7 @@ class UserModel extends Model {
   }
 
   void createNewProduct({
+    @required String productGroup,
     @required File imageFile,
     @required String title,
     @required String description,
@@ -781,6 +784,7 @@ class UserModel extends Model {
           .document(userData["storeId"])
           .collection("products")
           .add({
+        "group": productGroup,
         "title": title,
         "category": category,
         "description": description,
@@ -940,8 +944,19 @@ class UserModel extends Model {
           if (listPartnerOders.length > 0) {
             hasPartnerOrders = true;
           }
+          QuerySnapshot queryProductSnapshot = await Firestore.instance
+              .collection("stores")
+              .document(partnerDocument.data["storeId"])
+              .collection("products")
+              .getDocuments();
+          productsStore.clear();
+          queryProductSnapshot.documents.map((doc) {
+            productsStore.add(ProductData.fromDocument(doc));
+          }).toList();
         }
-      } catch (e) {}
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
