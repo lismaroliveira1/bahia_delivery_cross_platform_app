@@ -227,7 +227,9 @@ class CartModel extends Model {
       "client": user.firebaseUser.uid,
       "clientName": documentSnapshotUser.data["name"],
       "clientImage": user.firebaseUser.photoUrl,
-      "clientAddress": user.currentAddressDataFromGoogle.description,
+      "clientAddress": user.currentAddressDataFromGoogle.description
+          .replaceAll("State of ", "")
+          .replaceAll("Brazil", "Brasil"),
       "storeId": products[0].storeId,
       "products": products.map((cartProduct) => cartProduct.toMap()).toList(),
       "shipPrice": shipPrice,

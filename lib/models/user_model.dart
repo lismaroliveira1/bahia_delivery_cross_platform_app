@@ -1031,15 +1031,34 @@ class UserModel extends Model {
           .collection("users")
           .document(firebaseUser.uid)
           .collection("addressFromGoogle")
+          .getDocuments()
+          .then((query) {
+        query.documents.map((doc) async {
+          await Firestore.instance
+              .collection("users")
+              .document(firebaseUser.uid)
+              .collection("addressFromGoogle")
+              .document(doc.documentID)
+              .updateData({
+            "isDefined": false,
+          });
+        }).toList();
+      });
+      await Firestore.instance
+          .collection("users")
+          .document(firebaseUser.uid)
+          .collection("addressFromGoogle")
           .add({
         "descripition": addressDataFromGoogle.description,
         "placeId": addressDataFromGoogle.placeId,
         "reference": addressDataFromGoogle.reference,
-        "isDefined": false,
+        "isDefined": true,
       });
+      addressDataFromGoogle.isDefined = true;
       addressDataFromGoogleList.add(addressDataFromGoogle);
       setCurrentAddressFromGoolgle(addressDataFromGoogle);
       onSuccess();
+      _loadAddressFromGoogle();
       notifyListeners();
     } catch (e) {
       print(e.toString());
@@ -1115,6 +1134,7 @@ class UserModel extends Model {
       } catch (e) {
         print("erro");
         print(e.toString());
+        notifyListeners();
       }
     }
   }
