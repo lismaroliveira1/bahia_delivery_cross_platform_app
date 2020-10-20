@@ -164,9 +164,8 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(top: 4.0),
-                            child: Text(
-                              "Endereço",
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                            child: Icon(
+                              Icons.location_on,
                             ),
                           ),
                         ],
