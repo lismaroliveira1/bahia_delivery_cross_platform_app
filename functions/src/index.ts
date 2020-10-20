@@ -271,24 +271,18 @@ export const onParnerterStatusChanged = functions.firestore.document("/users/{is
 export const onOrderChatUpdated = functions.firestore.document("/orders/{orderId}/chat/{chatId}").onCreate(async (data, context) => {
     const orderId = context.params.orderId;
     const chatId = context.params.chatId;
-    console.log(orderId);
-    console.log(chatId);
     const orderChatSnapshot = await admin.firestore().collection("orders")
         .doc(orderId).get();
     const orderChatData = orderChatSnapshot.data() || {};
-    console.log(orderChatData.client);
-    console.log(orderChatData.storeId);
     const chatSnapshot = await admin.firestore().collection("orders")
         .doc(orderId).collection("chat").doc(chatId).get();
     const chatData = chatSnapshot.data() || {};
-    console.log(chatData.userId);
     if (chatData.userId === orderChatData.client) {
         const tokensChatUser = await admin.firestore().collection("users").
             doc(chatData.userId).collection("tokens").get();
         const partnerChatUserTokens = tokensChatUser.docs.map(doc => doc.id);
         await sendPushFCM(partnerChatUserTokens, 'Nova mensagem de ' + orderChatData.clientName,
             '' + chatData.text);
-        console.log("user");
     }
     if (chatData.userId === orderChatData.storeId) {
         const chatStoreSnapshot = await admin.firestore()
@@ -299,6 +293,5 @@ export const onOrderChatUpdated = functions.firestore.document("/orders/{orderId
         const partnerChatStoreTokens = tokensChatUserStore.docs.map(doc => doc.id);
         await sendPushFCM(partnerChatStoreTokens, 'Nova mensagem de ' + orderChatData.StoreName,
             '' + chatData.text);
-        console.log("store");
     }
  });
