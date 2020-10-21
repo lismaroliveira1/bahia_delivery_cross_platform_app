@@ -125,7 +125,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
   }
 
   void _onFinancialCashWidgetPressed() {
-    Navigator.of(context).push(
+    Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (context) => FinancialScrenn(),
       ),
@@ -133,7 +133,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
   }
 
   void _onProductWidgetPressed() {
-    Navigator.of(context).push(
+    Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (context) => CreateEditProductScreen(),
       ),

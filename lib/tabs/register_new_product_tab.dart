@@ -33,8 +33,8 @@ class _RegisterNewProductTabState extends State<RegisterNewProductTab> {
               ),
               Center(
                 child: Container(
-                  height: 120,
-                  width: 120,
+                  height: MediaQuery.of(context).size.width / 3,
+                  width: MediaQuery.of(context).size.width / 3,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -46,8 +46,8 @@ class _RegisterNewProductTabState extends State<RegisterNewProductTab> {
                             ? Image.file(
                                 imageFile,
                                 isAntiAlias: false,
-                                height: 120,
-                                width: 120,
+                                height: MediaQuery.of(context).size.width / 3,
+                                width: MediaQuery.of(context).size.width / 3,
                                 fit: BoxFit.fill,
                               )
                             : Image.network(

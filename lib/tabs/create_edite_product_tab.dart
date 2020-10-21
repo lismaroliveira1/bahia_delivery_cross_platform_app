@@ -1,5 +1,5 @@
-import 'package:bahia_delivery/data/product_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/edit_product_screen.dart';
 import 'package:bahia_delivery/screens/register_new_product_screen.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +80,13 @@ class _CreateEditProductTabState extends State<CreateEditProductTab> {
                             trailing: Icon(Icons.edit),
                             title: Text(product.title),
                             subtitle: Text(product.description),
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(
+                                  builder: (context) => EditProductScreen(),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       ),
