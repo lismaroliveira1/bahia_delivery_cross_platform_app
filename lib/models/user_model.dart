@@ -1154,5 +1154,86 @@ class UserModel extends Model {
     }
   }
 
-  void editProduct() {}
+  void editProduct({
+    @required ProductData productData,
+    @required File imageFile,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      isLoading = true;
+      notifyListeners();
+      try {
+        if (imageFile != null) {
+          StorageUploadTask task = FirebaseStorage.instance
+              .ref()
+              .child("images")
+              .child("chat")
+              .child(
+                DateTime.now().millisecondsSinceEpoch.toString(),
+              )
+              .putFile(imageFile);
+          StorageTaskSnapshot taskSnapshot = await task.onComplete;
+          String urlImage = await taskSnapshot.ref.getDownloadURL();
+          await Firestore.instance
+              .collection("stores")
+              .document(storeId)
+              .collection("products")
+              .document(productData.id)
+              .updateData({
+            "title": productData.title,
+            "image": urlImage,
+            "category": productData.category,
+            "description": productData.description,
+            "fullDescription": productData.fullDescription,
+            "group": productData.group,
+            "price": productData.price,
+          });
+          QuerySnapshot queryProductSnapshot = await Firestore.instance
+              .collection("stores")
+              .document(storeId)
+              .collection("products")
+              .getDocuments();
+          productsStore.clear();
+          queryProductSnapshot.documents.map((doc) {
+            productsStore.add(ProductData.fromDocument(doc));
+          }).toList();
+          onSuccess();
+          isLoading = false;
+          notifyListeners();
+        } else {
+          await Firestore.instance
+              .collection("stores")
+              .document(storeId)
+              .collection("products")
+              .document(productData.id)
+              .updateData({
+            "title": productData.title,
+            "category": productData.category,
+            "description": productData.description,
+            "fullDescription": productData.fullDescription,
+            "group": productData.group,
+            "price": productData.price,
+          });
+          QuerySnapshot queryProductSnapshot = await Firestore.instance
+              .collection("stores")
+              .document(storeId)
+              .collection("products")
+              .getDocuments();
+          productsStore.clear();
+          queryProductSnapshot.documents.map((doc) {
+            productsStore.add(ProductData.fromDocument(doc));
+          }).toList();
+          onSuccess();
+          isLoading = false;
+          notifyListeners();
+        }
+      } catch (e) {
+        onFail();
+        isLoading = false;
+        notifyListeners();
+      }
+    }
+  }
 }

@@ -73,7 +73,7 @@ class _CreateEditProductTabState extends State<CreateEditProductTab> {
                               borderRadius: BorderRadius.circular(6),
                               child: Image.network(
                                 product.image,
-                                fit: BoxFit.fill,
+                                fit: BoxFit.cover,
                                 height: 80,
                                 width: 60,
                               ),
@@ -90,6 +90,7 @@ class _CreateEditProductTabState extends State<CreateEditProductTab> {
                                 product.image,
                                 product.price,
                                 product.fullDescription,
+                                product.group,
                               );
                               Navigator.of(context).push(
                                 MaterialPageRoute(

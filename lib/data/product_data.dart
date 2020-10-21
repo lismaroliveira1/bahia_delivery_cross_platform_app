@@ -8,6 +8,7 @@ class ProductData {
   double price;
   String description;
   String fullDescription;
+  String group;
 
   ProductData(
     this.id,
@@ -17,6 +18,7 @@ class ProductData {
     this.image,
     this.price,
     this.fullDescription,
+    this.group,
   );
   ProductData.fromDocument(DocumentSnapshot snapshot) {
     id = snapshot.documentID;
@@ -26,6 +28,7 @@ class ProductData {
     price = snapshot.data["price"];
     description = snapshot.data["description"];
     fullDescription = snapshot.data["fullDescription"];
+    group = snapshot.data["group"];
   }
   Map<String, dynamic> toResumedMap() {
     return {"title": title, "description": description, "price": price};

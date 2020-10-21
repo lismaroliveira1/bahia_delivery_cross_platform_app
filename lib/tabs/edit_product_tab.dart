@@ -1,9 +1,12 @@
 import 'dart:io';
 
 import 'package:bahia_delivery/data/product_data.dart';
+import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/widgets/Input_product_parameters_widget.dart';
+import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class EditProductTab extends StatefulWidget {
   final ProductData productData;
@@ -34,7 +37,7 @@ class _EditProductTabState extends State<EditProductTab> {
         children: [
           Center(
             child: Container(
-              margin: EdgeInsets.only(top: 80),
+              margin: EdgeInsets.only(top: 50),
               height: MediaQuery.of(context).size.width / 3,
               width: MediaQuery.of(context).size.width / 3,
               decoration: BoxDecoration(
@@ -54,7 +57,7 @@ class _EditProductTabState extends State<EditProductTab> {
                           )
                         : Image.network(
                             widget.productData.image,
-                            fit: BoxFit.cover,
+                            fit: BoxFit.fill,
                           ),
                   ),
                   Positioned(
@@ -210,13 +213,19 @@ class _EditProductTabState extends State<EditProductTab> {
                   ),
                   EditProductParameters(
                     controller: sessionController,
-                    initialText: "Pizzas salgadas",
+                    initialText: widget.productData.group,
                     hintText: "Ex: pizzas salgadas",
                     labelText: "Sessão",
                   )
                 ],
               ),
             ),
+          ),
+          StoreHomeWigget(
+            icon: Icons.add_circle_outline_outlined,
+            name: "Complementos",
+            description: "Crie ou edite complementos",
+            onPressed: () {},
           ),
           Container(
             height: 50,
@@ -225,21 +234,61 @@ class _EditProductTabState extends State<EditProductTab> {
               borderRadius: BorderRadius.circular(12),
               color: Colors.red,
             ),
-            child: FlatButton(
-              onPressed: () {},
-              child: Center(
-                child: Text(
-                  "Atualizar",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+            child: ScopedModelDescendant<UserModel>(
+              builder: (context, child, model) {
+                if (model.isLoading) {
+                  return Container(
+                    child: Center(
+                      child: Container(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  );
+                } else {
+                  return FlatButton(
+                    onPressed: () {
+                      double doublePrice = double.parse(priceController.text);
+                      final productData = ProductData(
+                        widget.productData.id,
+                        titleController.text,
+                        categoryControler.text,
+                        shortDescriptionController.text,
+                        "image",
+                        doublePrice,
+                        longDescriptionController.text,
+                        sessionController.text,
+                      );
+                      model.editProduct(
+                        productData: productData,
+                        imageFile: _imageFile,
+                        onSuccess: _onsSuccess,
+                        onFail: _onFail,
+                      );
+                    },
+                    child: Center(
+                      child: Text(
+                        "Atualizar",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+              },
             ),
-          )
+          ),
         ],
       ),
     );
   }
+
+  void _onsSuccess() {
+    Navigator.of(context).pop();
+  }
+
+  void _onFail() {}
 }
