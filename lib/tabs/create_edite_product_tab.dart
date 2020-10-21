@@ -1,3 +1,4 @@
+import 'package:bahia_delivery/data/product_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/edit_product_screen.dart';
 import 'package:bahia_delivery/screens/register_new_product_screen.dart';
@@ -81,9 +82,19 @@ class _CreateEditProductTabState extends State<CreateEditProductTab> {
                             title: Text(product.title),
                             subtitle: Text(product.description),
                             onTap: () {
-                              Navigator.of(context).pushReplacement(
+                              final productData = ProductData(
+                                product.id,
+                                product.title,
+                                product.category,
+                                product.description,
+                                product.image,
+                                product.price,
+                                product.fullDescription,
+                              );
+                              Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => EditProductScreen(),
+                                  builder: (context) =>
+                                      EditProductScreen(productData),
                                 ),
                               );
                             },

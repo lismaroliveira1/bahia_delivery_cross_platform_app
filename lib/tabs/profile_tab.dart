@@ -79,7 +79,7 @@ class ProfileTab extends StatelessWidget {
                                 icon: Icons.scatter_plot,
                               ),
                               onPressed: () {
-                                Navigator.of(context).pushReplacement(
+                                Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) => StoreHomeScreen(),
                                   ),

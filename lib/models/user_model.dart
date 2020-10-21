@@ -1153,4 +1153,6 @@ class UserModel extends Model {
       }
     }
   }
+
+  void editProduct() {}
 }
