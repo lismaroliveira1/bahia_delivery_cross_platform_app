@@ -1238,10 +1238,11 @@ class UserModel extends Model {
     }
   }
 
-  void insertOptPayment({
+  void insertOptIncrement({
+    @required File imageFile,
     @required IncrementalOptData incrementalOptData,
     @required VoidCallback onSuccess,
-    @required onFail,
+    @required VoidCallback onFail,
   }) async {
     if (firebaseUser == null) await _auth.currentUser();
     if (firebaseUser != null) {

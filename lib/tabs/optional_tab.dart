@@ -1,4 +1,5 @@
 import 'package:bahia_delivery/data/product_data.dart';
+import 'package:bahia_delivery/screens/register_new_opt_increment_screen.dart';
 import 'package:bahia_delivery/tabs/register_new_opt_increment_tab.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
@@ -26,10 +27,10 @@ class _OptionalTabState extends State<OptionalTab> {
                 name: "Incrementais",
                 description: "teste",
                 onPressed: () {
-                  Navigator.of(context).push(
+                  Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (context) =>
-                          RegisterNewOptIncrementTab(widget.productData),
+                          RegisterNewOptIncrementScreen(widget.productData),
                     ),
                   );
                 },

@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'package:bahia_delivery/data/incremental_optional_data.dart';
 import 'package:bahia_delivery/data/product_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/widgets/input_new_product_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class RegisterNewOptIncrementTab extends StatefulWidget {
@@ -15,7 +18,7 @@ class RegisterNewOptIncrementTab extends StatefulWidget {
 
 class _RegisterNewOptIncrementTabState
     extends State<RegisterNewOptIncrementTab> {
-  final bool isImageChoosed = false;
+  bool isImageChoosed = false;
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
@@ -24,7 +27,7 @@ class _RegisterNewOptIncrementTabState
   final TextEditingController sessionController = TextEditingController();
   final String imageUrl =
       "https://www.meuvidraceiro.com.br/images/sem-imagem.png";
-
+  final picker = ImagePicker();
   File imageFile;
 
   @override
@@ -62,6 +65,107 @@ class _RegisterNewOptIncrementTabState
                                 height: MediaQuery.of(context).size.width / 3,
                                 width: MediaQuery.of(context).size.width / 3,
                               ),
+                      ),
+                      Positioned(
+                        bottom: 4.0,
+                        right: 4.0,
+                        child: IconButton(
+                          icon: Icon(Icons.camera_alt),
+                          onPressed: () {
+                            Scaffold.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.redAccent,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(12),
+                                    topRight: Radius.circular(12),
+                                  ),
+                                ),
+                                content: Container(
+                                  height:
+                                      MediaQuery.of(context).size.height / 12,
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      FlatButton(
+                                        padding: EdgeInsets.only(
+                                          left: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              18,
+                                        ),
+                                        onPressed: () async {
+                                          try {
+                                            final _pickedFile =
+                                                await picker.getImage(
+                                              source: ImageSource.gallery,
+                                              maxHeight: 500,
+                                              maxWidth: 500,
+                                            );
+                                            if (_pickedFile == null) return;
+                                            imageFile = File(_pickedFile.path);
+                                            if (imageFile == null) return;
+                                            setState(() {
+                                              isImageChoosed = true;
+                                            });
+                                          } catch (e) {
+                                            setState(() {
+                                              isImageChoosed = false;
+                                            });
+                                          }
+                                        },
+                                        child: Container(
+                                          child: Image.asset(
+                                            "images/gallery_image.png",
+                                          ),
+                                          height: 50,
+                                          width: 50,
+                                        ),
+                                      ),
+                                      FlatButton(
+                                        padding: EdgeInsets.only(
+                                          left: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              18,
+                                        ),
+                                        onPressed: () async {
+                                          try {
+                                            final _pickedFile =
+                                                await picker.getImage(
+                                              source: ImageSource.camera,
+                                              maxHeight: 500,
+                                              maxWidth: 500,
+                                            );
+                                            if (_pickedFile == null) return;
+                                            imageFile = File(_pickedFile.path);
+                                            if (imageFile == null) return;
+                                            setState(() {
+                                              isImageChoosed = true;
+                                            });
+                                          } catch (e) {
+                                            setState(() {
+                                              isImageChoosed = false;
+                                            });
+                                          }
+                                        },
+                                        child: Container(
+                                          child: Image.asset(
+                                            "images/camera_image.png",
+                                          ),
+                                          height: 50,
+                                          width: 50,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -141,7 +245,28 @@ class _RegisterNewOptIncrementTabState
                           );
                         } else {
                           return FlatButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              final int maxQuantity =
+                                  int.parse(maxQuantityController.text);
+                              final int minQuantity =
+                                  int.parse(minQuantityController.text);
+                              final double price =
+                                  double.parse(priceController.text);
+                              final incrementalOptData = IncrementalOptData(
+                                image: isImageChoosed ? null : imageUrl,
+                                title: titleController.text,
+                                description: descriptionController.text,
+                                maxQuantity: maxQuantity,
+                                minQuantity: minQuantity,
+                                price: price,
+                              );
+                              model.insertOptIncrement(
+                                imageFile: isImageChoosed ? imageFile : null,
+                                incrementalOptData: incrementalOptData,
+                                onSuccess: _onSuccess,
+                                onFail: _onFail,
+                              );
+                            },
                             child: Text(
                               "Inserir",
                               style: TextStyle(
@@ -163,4 +288,7 @@ class _RegisterNewOptIncrementTabState
       ),
     );
   }
+
+  void _onSuccess() {}
+  void _onFail() {}
 }

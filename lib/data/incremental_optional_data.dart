@@ -5,15 +5,16 @@ class IncrementalOptData {
   String image;
   String title;
   String description;
-  String price;
-  int maxnQuantity;
+  double price;
+  String type;
+  int maxQuantity;
   int minQuantity;
 
   IncrementalOptData({
     @required this.image,
     @required this.title,
     @required this.description,
-    @required this.maxnQuantity,
+    @required this.maxQuantity,
     @required this.minQuantity,
     @required this.price,
   });
@@ -22,7 +23,7 @@ class IncrementalOptData {
     title = documentSnapshot.data["title"];
     description = documentSnapshot.data["description"];
     price = documentSnapshot.data["price"];
-    maxnQuantity = documentSnapshot.data["maxQuantity"];
+    maxQuantity = documentSnapshot.data["maxQuantity"];
     minQuantity = documentSnapshot.data["minQuantity"];
   }
   Map<String, dynamic> toIncrementalMap() {
@@ -31,7 +32,7 @@ class IncrementalOptData {
       "title": title,
       "description": description,
       "price": price,
-      "maxQuantity": maxnQuantity,
+      "maxQuantity": maxQuantity,
       "minQuantity": minQuantity,
     };
   }
