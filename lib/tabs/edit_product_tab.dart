@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:bahia_delivery/data/product_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/optional_scren.dart';
 import 'package:bahia_delivery/widgets/Input_product_parameters_widget.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
@@ -223,9 +224,15 @@ class _EditProductTabState extends State<EditProductTab> {
           ),
           StoreHomeWigget(
             icon: Icons.add_circle_outline_outlined,
-            name: "Complementos",
-            description: "Crie ou edite complementos",
-            onPressed: () {},
+            name: "Opcionais",
+            description: "Crie ou edite complementos ou opções de compra",
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => OptionalScrenn(),
+                ),
+              );
+            },
           ),
           Container(
             height: 50,
