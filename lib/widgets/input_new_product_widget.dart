@@ -15,15 +15,19 @@ class InputNewProductWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 6),
-      child: TextField(
-        autocorrect: true,
-        controller: controller,
-        maxLines: maxLines,
-        decoration: InputDecoration(
-          labelText: labelText,
-          hintText: hintText,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+      child: Card(
+        elevation: 0,
+        child: TextField(
+          autocorrect: true,
+          controller: controller,
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            labelText: labelText,
+            hintText: hintText,
+            labelStyle: TextStyle(fontSize: 12),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
           ),
         ),
       ),

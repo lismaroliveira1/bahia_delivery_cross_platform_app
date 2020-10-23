@@ -1,7 +1,11 @@
+import 'package:bahia_delivery/data/product_data.dart';
+import 'package:bahia_delivery/tabs/register_new_opt_increment_tab.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
 
 class OptionalTab extends StatefulWidget {
+  final ProductData productData;
+  OptionalTab(this.productData);
   @override
   _OptionalTabState createState() => _OptionalTabState();
 }
@@ -21,7 +25,14 @@ class _OptionalTabState extends State<OptionalTab> {
                 icon: Icons.add_circle_outline_outlined,
                 name: "Incrementais",
                 description: "teste",
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          RegisterNewOptIncrementTab(widget.productData),
+                    ),
+                  );
+                },
               ),
             ),
             StoreHomeWigget(

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/widgets/input_new_product_widget.dart';
 import 'package:flutter/material.dart';
@@ -60,15 +59,16 @@ class _RegisterNewProductTabState extends State<RegisterNewProductTab> {
                         right: 4.0,
                         child: IconButton(
                           onPressed: () {
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                              backgroundColor: Colors.redAccent,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(12),
-                                  topRight: Radius.circular(12),
+                            Scaffold.of(context).showSnackBar(
+                              SnackBar(
+                                backgroundColor: Colors.redAccent,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(12),
+                                    topRight: Radius.circular(12),
+                                  ),
                                 ),
-                              ),
-                              content: Container(
+                                content: Container(
                                   width: MediaQuery.of(context).size.width,
                                   height:
                                       MediaQuery.of(context).size.height / 12,
@@ -147,8 +147,10 @@ class _RegisterNewProductTabState extends State<RegisterNewProductTab> {
                                         ),
                                       )
                                     ],
-                                  )),
-                            ));
+                                  ),
+                                ),
+                              ),
+                            );
                           },
                           icon: Icon(Icons.camera_alt),
                         ),

@@ -4,6 +4,7 @@ import 'package:bahia_delivery/data/address_data_from_google.dart';
 import 'package:bahia_delivery/data/category_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_item.dart';
+import 'package:bahia_delivery/data/incremental_optional_data.dart';
 import 'package:bahia_delivery/data/order_data.dart';
 import 'package:bahia_delivery/data/payment_on_delivery_date.dart';
 import 'package:bahia_delivery/data/product_data.dart';
@@ -1229,6 +1230,36 @@ class UserModel extends Model {
           isLoading = false;
           notifyListeners();
         }
+      } catch (e) {
+        onFail();
+        isLoading = false;
+        notifyListeners();
+      }
+    }
+  }
+
+  void insertOptPayment({
+    @required IncrementalOptData incrementalOptData,
+    @required VoidCallback onSuccess,
+    @required onFail,
+  }) async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      isLoading = true;
+      notifyListeners();
+      try {
+        await Firestore.instance
+            .collection("stores")
+            .document(storeId)
+            .collection("products")
+            .document()
+            .collection("IncrementalOptions")
+            .add(
+              incrementalOptData.toIncrementalMap(),
+            );
+        onSuccess();
+        isLoading = false;
+        notifyListeners();
       } catch (e) {
         onFail();
         isLoading = false;
