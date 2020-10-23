@@ -13,12 +13,23 @@ class _OptionalTabState extends State<OptionalTab> {
       slivers: <Widget>[
         SliverList(
           delegate: SliverChildListDelegate([
+            Container(
+              margin: EdgeInsets.only(
+                top: 10,
+              ),
+              child: StoreHomeWigget(
+                icon: Icons.add_circle_outline_outlined,
+                name: "Incrementais",
+                description: "teste",
+                onPressed: () {},
+              ),
+            ),
             StoreHomeWigget(
-              icon: Icons.plumbing,
-              name: "teste",
-              description: "teste",
+              icon: Icons.add_circle_outline,
+              name: "Única escolha",
+              description: "Adcione opcionais únicos por tipo",
               onPressed: () {},
-            )
+            ),
           ]),
         ),
       ],
