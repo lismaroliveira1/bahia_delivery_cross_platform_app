@@ -44,6 +44,7 @@ class UserModel extends Model {
   List<StoreData> storeListFavorites = [];
   List<OrderData> listUserOrders = [];
   List<OrderData> listPartnerOders = [];
+  List<IncrementalOptData> incrementalOptDataList = [];
   String street;
   String state;
   String zipCode;
@@ -1253,12 +1254,13 @@ class UserModel extends Model {
             .collection("stores")
             .document(storeId)
             .collection("products")
-            .document()
-            .collection("IncrementalOptions")
+            .document(incrementalOptData.productId)
+            .collection("incrementalOptions")
             .add(
               incrementalOptData.toIncrementalMap(),
             );
         onSuccess();
+        updateIncrementalProductOptions();
         isLoading = false;
         notifyListeners();
       } catch (e) {
@@ -1266,6 +1268,32 @@ class UserModel extends Model {
         isLoading = false;
         notifyListeners();
       }
+    }
+  }
+
+  void updateIncrementalProductOptions() async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      try {
+        QuerySnapshot querySnapshot = await Firestore.instance
+            .collection("stores")
+            .document(storeId)
+            .collection("products")
+            .getDocuments();
+        incrementalOptDataList.clear();
+        querySnapshot.documents.map((doc) async {
+          QuerySnapshot queryIncrementalSnapshot = await Firestore.instance
+              .collection("stores")
+              .document(storeId)
+              .collection("products")
+              .document(doc.documentID)
+              .collection("incrempentalOptions")
+              .getDocuments();
+          queryIncrementalSnapshot.documents.map((doc) {
+            incrementalOptDataList.add(IncrementalOptData.fromDocument(doc));
+          }).toList();
+        }).toList();
+      } catch (e) {}
     }
   }
 }

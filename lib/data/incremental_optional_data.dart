@@ -9,14 +9,19 @@ class IncrementalOptData {
   String type;
   int maxQuantity;
   int minQuantity;
+  String productId;
+  String session;
 
   IncrementalOptData({
+    @required this.productId,
+    @required this.type,
     @required this.image,
     @required this.title,
     @required this.description,
     @required this.maxQuantity,
     @required this.minQuantity,
     @required this.price,
+    @required this.session,
   });
   IncrementalOptData.fromDocument(DocumentSnapshot documentSnapshot) {
     image = documentSnapshot.data["image"];
@@ -25,6 +30,9 @@ class IncrementalOptData {
     price = documentSnapshot.data["price"];
     maxQuantity = documentSnapshot.data["maxQuantity"];
     minQuantity = documentSnapshot.data["minQuantity"];
+    productId = documentSnapshot.data["productId"];
+    type = documentSnapshot.data["type"];
+    session = documentSnapshot.data["session"];
   }
   Map<String, dynamic> toIncrementalMap() {
     return {
@@ -34,6 +42,10 @@ class IncrementalOptData {
       "price": price,
       "maxQuantity": maxQuantity,
       "minQuantity": minQuantity,
+      "type": type,
+      "productId": productId,
+      "session": session,
+      'updateAt': FieldValue.serverTimestamp(),
     };
   }
 }

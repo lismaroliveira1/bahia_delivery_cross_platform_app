@@ -4,7 +4,6 @@ import 'package:bahia_delivery/data/product_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/widgets/input_new_product_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -53,17 +52,17 @@ class _RegisterNewOptIncrementTabState
                       ClipRRect(
                         borderRadius: BorderRadius.circular(12),
                         child: isImageChoosed
-                            ? Image.file(
-                                imageFile,
+                            ? Image.file(imageFile,
                                 isAntiAlias: false,
                                 height: MediaQuery.of(context).size.width / 3,
                                 width: MediaQuery.of(context).size.width / 3,
-                              )
+                                fit: BoxFit.fill)
                             : Image.network(
                                 imageUrl,
                                 isAntiAlias: false,
                                 height: MediaQuery.of(context).size.width / 3,
                                 width: MediaQuery.of(context).size.width / 3,
+                                fit: BoxFit.fill,
                               ),
                       ),
                       Positioned(
@@ -252,13 +251,16 @@ class _RegisterNewOptIncrementTabState
                                   int.parse(minQuantityController.text);
                               final double price =
                                   double.parse(priceController.text);
-                              final incrementalOptData = IncrementalOptData(
-                                image: isImageChoosed ? null : imageUrl,
+                              final incrementalOptData = new IncrementalOptData(
+                                productId: widget.productData.id,
+                                image: imageUrl,
                                 title: titleController.text,
                                 description: descriptionController.text,
                                 maxQuantity: maxQuantity,
                                 minQuantity: minQuantity,
                                 price: price,
+                                type: "incremental",
+                                session: sessionController.text,
                               );
                               model.insertOptIncrement(
                                 imageFile: isImageChoosed ? imageFile : null,
@@ -289,6 +291,9 @@ class _RegisterNewOptIncrementTabState
     );
   }
 
-  void _onSuccess() {}
+  void _onSuccess() {
+    Navigator.of(context).pop();
+  }
+
   void _onFail() {}
 }

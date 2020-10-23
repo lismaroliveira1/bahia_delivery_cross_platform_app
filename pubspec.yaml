@@ -35,7 +35,7 @@ dependencies:
   carousel_pro: ^1.0.0
   transparent_image: ^1.0.0
   scoped_model: ^1.0.1
-  path_provider: ^1.6.11
+  path_provider: ^1.6.21
   firebase_auth: ^0.16.1
   image_picker: ^0.6.7+4
   menu_button: ^1.2.1
@@ -55,7 +55,7 @@ dependencies:
   flappy_search_bar: ^1.7.2
   dio: ^3.0.10
   brasil_fields: ^0.4.0
-  google_sign_in: ^4.5.3
+  google_sign_in: ^4.5.5
   flutter_facebook_login: ^3.0.0
   change_app_package_name: ^0.1.2
   flip_card: ^0.4.4

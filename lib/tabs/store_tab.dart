@@ -99,7 +99,10 @@ class _StoreTabState extends State<StoreTab> {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              ProductScreen(doc),
+                                              new ProductScreen(
+                                            doc,
+                                            widget.snapshot.documentID,
+                                          ),
                                         ),
                                       );
                                     },
