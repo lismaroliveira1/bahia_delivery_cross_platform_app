@@ -43,7 +43,8 @@ class _OptionalTabState extends State<OptionalTab> {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => RegisterNewOptOnlyChooseScreen(),
+                    builder: (context) =>
+                        RegisterNewOptOnlyChooseScreen(widget.productData),
                   ),
                 );
               },

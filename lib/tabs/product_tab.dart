@@ -152,7 +152,33 @@ class _ProductTabState extends State<ProductTab> {
                 );
               }
             },
-          )
+          ),
+          FutureBuilder<QuerySnapshot>(
+            future: Firestore.instance
+                .collection("stores")
+                .document(storeId)
+                .collection("products")
+                .document(snapshot.documentID)
+                .collection("onlyChooseOptions")
+                .getDocuments(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Container(
+                  height: 0,
+                );
+              } else {
+                return Expanded(
+                  child: Column(
+                    children: snapshot.data.documents.map((doc) {
+                      return Container(
+                        height: 0,
+                      );
+                    }).toList(),
+                  ),
+                );
+              }
+            },
+          ),
         ],
       ),
     );

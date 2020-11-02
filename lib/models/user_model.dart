@@ -1296,4 +1296,36 @@ class UserModel extends Model {
       } catch (e) {}
     }
   }
+
+  void insertNewOptOnlyChoose({
+    @required IncrementalOptData incrementalOptData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      isLoading = true;
+      notifyListeners();
+      try {
+        await Firestore.instance
+            .collection("stores")
+            .document(storeId)
+            .collection("products")
+            .document(incrementalOptData.productId)
+            .collection("onlyChooseOptions")
+            .document()
+            .collection("itens")
+            .add(
+              incrementalOptData.toIncrementalMap(),
+            );
+        onSuccess();
+        isLoading = false;
+        notifyListeners();
+      } catch (e) {
+        onFail();
+        isLoading = false;
+        notifyListeners();
+      }
+    }
+  }
 }
