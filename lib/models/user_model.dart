@@ -1317,11 +1317,24 @@ class UserModel extends Model {
             .collection("itens")
             .add(
               incrementalOptData.toIncrementalMap(),
-            );
+            )
+            .then((doc) async {
+          await Firestore.instance
+              .collection("stores")
+              .document(storeId)
+              .collection("products")
+              .document(incrementalOptData.productId)
+              .collection("onlyChooseOptions")
+              .document(doc.documentID)
+              .updateData({
+            "id": doc.documentID,
+          });
+        });
         onSuccess();
         isLoading = false;
         notifyListeners();
       } catch (e) {
+        print(e);
         onFail();
         isLoading = false;
         notifyListeners();

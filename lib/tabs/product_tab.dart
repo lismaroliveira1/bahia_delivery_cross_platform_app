@@ -153,13 +153,61 @@ class _ProductTabState extends State<ProductTab> {
               }
             },
           ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                SizedBox(
+                  width: 4.0,
+                ),
+                Text("1 Item"),
+                Text(" | "),
+                Text("R\$ ${snapshot.data["price"]}"),
+                Container(
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.remove),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
+                ),
+                FlatButton(
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: Center(
+                        child: Text(
+                          "Adcioonar ao \ncarrinho",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                  onPressed: () {},
+                )
+              ],
+            ),
+          ),
           FutureBuilder<QuerySnapshot>(
             future: Firestore.instance
                 .collection("stores")
                 .document(storeId)
                 .collection("products")
                 .document(snapshot.documentID)
-                .collection("onlyChooseOptions")
+                .collection('"onlyChooseOptions"')
                 .getDocuments(),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
