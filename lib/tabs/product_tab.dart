@@ -1,5 +1,4 @@
 import 'package:bahia_delivery/data/cart_product.dart';
-import 'package:bahia_delivery/data/incremental_optional_data.dart';
 import 'package:bahia_delivery/data/product_data.dart';
 import 'package:bahia_delivery/data/product_optional_data.dart';
 import 'package:bahia_delivery/models/cart_model.dart';
@@ -83,6 +82,7 @@ class _ProductTabState extends State<ProductTab> {
               if (!snapshot.hasData) {
                 return Container(height: 0);
               } else {
+                int quantity = 0;
                 return Expanded(
                   child: GroupedListView<dynamic, String>(
                     elements: snapshot.data.documents,
@@ -136,12 +136,14 @@ class _ProductTabState extends State<ProductTab> {
                                   onPressed: () {
                                     final optionalProductData =
                                         OptionalProductData.fromDocument(doc);
+
                                     decrementComplement(optionalProductData);
                                   },
                                   icon: Icon(
                                     Icons.remove,
                                   ),
                                 ),
+                                Text(quantity.toString()),
                                 IconButton(
                                   icon: Icon(
                                     Icons.add,
@@ -149,7 +151,12 @@ class _ProductTabState extends State<ProductTab> {
                                   onPressed: () {
                                     final optionalProductData =
                                         OptionalProductData.fromDocument(doc);
-                                    incrementComplement(optionalProductData);
+
+                                    int a = incrementComplement(
+                                        optionalProductData);
+                                    setState(() {
+                                      quantity = 50;
+                                    });
                                   },
                                 )
                               ],
@@ -279,12 +286,30 @@ class _ProductTabState extends State<ProductTab> {
     print("erro");
   }
 
-  void incrementComplement(OptionalProductData optionalProductData) {
-    for (var i = 0; i < optionals.length; i++) {}
+  int incrementComplement(OptionalProductData optionalProductData) {
+    int quantity;
     setState(() {
-      optionals.add(optionalProductData);
+      if (optionals.length == 0) {
+        optionals.add(optionalProductData);
+        quantity = 1;
+      } else {
+        for (var i = 0; i < optionals.length; i++) {
+          if (optionals[i].id == optionalProductData.id) {
+            if (optionals[i].quantity < optionalProductData.maxQuantity) {
+              optionals[i].quantity++;
+              quantity = optionals[i].quantity;
+            } else {
+              _onFailIncrementProduct();
+              quantity = optionalProductData.maxQuantity;
+            }
+          } else {
+            optionals.add(optionalProductData);
+            quantity = 1;
+          }
+        }
+      }
     });
-    print(optionals.length);
+    return quantity;
   }
 
   void decrementComplement(OptionalProductData optionalProductData) {
@@ -297,5 +322,9 @@ class _ProductTabState extends State<ProductTab> {
       }
     }
     print(optionals.length);
+  }
+
+  void _onFailIncrementProduct() {
+    print("maxQuantity");
   }
 }
