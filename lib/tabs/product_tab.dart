@@ -1,6 +1,12 @@
+import 'package:bahia_delivery/data/cart_product.dart';
+import 'package:bahia_delivery/data/incremental_optional_data.dart';
+import 'package:bahia_delivery/data/product_data.dart';
+import 'package:bahia_delivery/data/product_optional_data.dart';
+import 'package:bahia_delivery/models/cart_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class ProductTab extends StatefulWidget {
   final DocumentSnapshot snapshot;
@@ -13,8 +19,9 @@ class ProductTab extends StatefulWidget {
 class _ProductTabState extends State<ProductTab> {
   final DocumentSnapshot snapshot;
   final String storeId;
+  bool hasitem = false;
+  List<OptionalProductData> optionals = [];
   _ProductTabState(this.snapshot, this.storeId);
-
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
@@ -108,15 +115,29 @@ class _ProductTabState extends State<ProductTab> {
                         padding: const EdgeInsets.symmetric(vertical: 2.0),
                         child: Container(
                           child: ListTile(
-                            onTap: () {},
                             dense: true,
                             title: Text(doc.data["title"]),
-                            subtitle: Text(doc.data["description"]),
+                            subtitle: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(doc.data["description"]),
+                                Text(
+                                  "R\$ ${doc.data["price"]}",
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                  ),
+                                )
+                              ],
+                            ),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    final optionalProductData =
+                                        OptionalProductData.fromDocument(doc);
+                                    decrementComplement(optionalProductData);
+                                  },
                                   icon: Icon(
                                     Icons.remove,
                                   ),
@@ -125,7 +146,11 @@ class _ProductTabState extends State<ProductTab> {
                                   icon: Icon(
                                     Icons.add,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    final optionalProductData =
+                                        OptionalProductData.fromDocument(doc);
+                                    incrementComplement(optionalProductData);
+                                  },
                                 )
                               ],
                             ),
@@ -188,15 +213,33 @@ class _ProductTabState extends State<ProductTab> {
                     child: Padding(
                       padding: const EdgeInsets.all(4.0),
                       child: Center(
-                        child: Text(
-                          "Adcioonar ao \ncarrinho",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: Colors.white),
+                        child: ScopedModelDescendant<CartModel>(
+                          builder: (context, child, model) {
+                            if (model.isLoading) {
+                              return CircularProgressIndicator();
+                            } else {
+                              return Text(
+                                "Adcioonar ao \ncarrinho",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: Colors.white),
+                              );
+                            }
+                          },
                         ),
                       ),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    CartProduct cartProduct = CartProduct();
+                    cartProduct.category = snapshot.data["category"];
+                    cartProduct.pId = snapshot.documentID;
+                    cartProduct.productData =
+                        ProductData.fromDocument(snapshot);
+                    cartProduct.quantify = 1;
+                    cartProduct.storeId = snapshot.data["storeID"];
+                    CartModel.of(context)
+                        .addCartItem(cartProduct: cartProduct, onFail: _onFail);
+                  },
                 )
               ],
             ),
@@ -230,5 +273,29 @@ class _ProductTabState extends State<ProductTab> {
         ],
       ),
     );
+  }
+
+  void _onFail() {
+    print("erro");
+  }
+
+  void incrementComplement(OptionalProductData optionalProductData) {
+    for (var i = 0; i < optionals.length; i++) {}
+    setState(() {
+      optionals.add(optionalProductData);
+    });
+    print(optionals.length);
+  }
+
+  void decrementComplement(OptionalProductData optionalProductData) {
+    for (var i = 0; i < optionals.length; i++) {
+      if (optionals[i].id == optionalProductData.id) {
+        setState(() {
+          optionals.removeAt(i);
+        });
+        break;
+      }
+    }
+    print(optionals.length);
   }
 }

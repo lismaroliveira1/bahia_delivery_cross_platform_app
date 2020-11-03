@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 
 class IncrementalOptData {
+  String id;
   String image;
   String title;
   String description;
@@ -24,6 +25,7 @@ class IncrementalOptData {
     @required this.session,
   });
   IncrementalOptData.fromDocument(DocumentSnapshot documentSnapshot) {
+    id = documentSnapshot.documentID;
     image = documentSnapshot.data["image"];
     title = documentSnapshot.data["title"];
     description = documentSnapshot.data["description"];

@@ -1313,8 +1313,6 @@ class UserModel extends Model {
             .collection("products")
             .document(incrementalOptData.productId)
             .collection("onlyChooseOptions")
-            .document()
-            .collection("itens")
             .add(
               incrementalOptData.toIncrementalMap(),
             )
