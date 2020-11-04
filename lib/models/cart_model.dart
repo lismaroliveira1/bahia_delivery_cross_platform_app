@@ -19,6 +19,7 @@ class CartModel extends Model {
   bool isLoading = false;
   bool itemExist = false;
   String currentStore = '';
+  int quantity = 1;
   CartModel(this.user) {
     if (user.isLoggedIn()) _loadCartItems();
   }
@@ -267,5 +268,10 @@ class CartModel extends Model {
         onDifrentStore();
       }
     }
+  }
+
+  void setQuantity(int productQuantitt) {
+    quantity = productQuantitt;
+    notifyListeners();
   }
 }

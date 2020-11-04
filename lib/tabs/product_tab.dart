@@ -1,4 +1,5 @@
 import 'package:bahia_delivery/data/cart_product.dart';
+import 'package:bahia_delivery/data/incremental_optional_data.dart';
 import 'package:bahia_delivery/data/product_data.dart';
 import 'package:bahia_delivery/data/product_optional_data.dart';
 import 'package:bahia_delivery/models/cart_model.dart';
@@ -18,6 +19,7 @@ class ProductTab extends StatefulWidget {
 class _ProductTabState extends State<ProductTab> {
   final DocumentSnapshot snapshot;
   final String storeId;
+  var quantityState = 1;
   bool hasitem = false;
   List<OptionalProductData> optionals = [];
   _ProductTabState(this.snapshot, this.storeId);
@@ -54,6 +56,7 @@ class _ProductTabState extends State<ProductTab> {
       },
       body: Column(
         children: [
+          Text("$quantityState"),
           Padding(
             padding: const EdgeInsets.only(top: 18.0),
             child: Text(
@@ -82,7 +85,7 @@ class _ProductTabState extends State<ProductTab> {
               if (!snapshot.hasData) {
                 return Container(height: 0);
               } else {
-                int quantity = 0;
+                var quantity = 0;
                 return Expanded(
                   child: GroupedListView<dynamic, String>(
                     elements: snapshot.data.documents,
@@ -143,22 +146,28 @@ class _ProductTabState extends State<ProductTab> {
                                     Icons.remove,
                                   ),
                                 ),
-                                Text(quantity.toString()),
+                                ScopedModelDescendant<CartModel>(
+                                    builder: (context, child, model) {
+                                  if (model.isLoading) {
+                                    return Center(
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  } else {
+                                    return Text("${model.quantity}");
+                                  }
+                                }),
                                 IconButton(
                                   icon: Icon(
                                     Icons.add,
                                   ),
                                   onPressed: () {
-                                    final optionalProductData =
-                                        OptionalProductData.fromDocument(doc);
-
-                                    int a = incrementComplement(
-                                        optionalProductData);
+                                    CartModel.of(context).setQuantity(5);
                                     setState(() {
-                                      quantity = 50;
+                                      quantity++;
                                     });
+                                    print("ok");
                                   },
-                                )
+                                ),
                               ],
                             ),
                             leading: Container(
