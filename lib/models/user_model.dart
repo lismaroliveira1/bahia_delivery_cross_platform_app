@@ -1146,7 +1146,6 @@ class UserModel extends Model {
           }
           addressDataFromGoogleList.add(addressData);
         }).toList();
-        print(addressDataFromGoogleList.length);
         notifyListeners();
       } catch (e) {
         print("erro");

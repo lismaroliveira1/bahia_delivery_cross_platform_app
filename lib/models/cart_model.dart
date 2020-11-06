@@ -22,9 +22,12 @@ class CartModel extends Model {
   String currentStore = '';
   int quantity = 1;
   List<IncrementalOptData> productOptionals = [];
+  double complementPrice = 0;
+
   CartModel(this.user) {
     if (user.isLoggedIn()) _loadCartItems();
   }
+
   static CartModel of(BuildContext context) =>
       ScopedModel.of<CartModel>(context);
 
@@ -277,7 +280,9 @@ class CartModel extends Model {
     notifyListeners();
   }
 
-  void listOptionals(DocumentSnapshot documentSnapshot, String storeId) async {
+  Future<void> listOptionals(
+      DocumentSnapshot documentSnapshot, String storeId) async {
+    productOptionals.clear();
     try {
       QuerySnapshot query = await Firestore.instance
           .collection("stores")
@@ -286,6 +291,7 @@ class CartModel extends Model {
           .document(documentSnapshot.documentID)
           .collection("incrementalOptions")
           .getDocuments();
+
       query.documents.map(
         (doc) {
           productOptionals.add(IncrementalOptData.fromDocument(doc));
@@ -296,5 +302,37 @@ class CartModel extends Model {
       print(erro);
       notifyListeners();
     }
+  }
+
+  void incrementComplement({
+    @required IncrementalOptData incrementalOptData,
+    @required VoidCallback onFail,
+  }) {
+    for (var i = 0; i < productOptionals.length; i++) {
+      if (productOptionals[i].id == incrementalOptData.id) {
+        productOptionals[i].quantity++;
+        computeComplimentPrice();
+        notifyListeners();
+      }
+    }
+  }
+
+  void decrementComplement(IncrementalOptData incrementalOptData) {
+    for (var i = 0; i < productOptionals.length; i++) {
+      if (productOptionals[i].id == incrementalOptData.id) {
+        productOptionals[i].quantity--;
+        computeComplimentPrice();
+        notifyListeners();
+      } else {}
+    }
+  }
+
+  void computeComplimentPrice() {
+    complementPrice = 0;
+    for (var i = 0; i < productOptionals.length; i++) {
+      complementPrice +=
+          (productOptionals[i].price * productOptionals[i].quantity);
+    }
+    print(complementPrice.toString());
   }
 }

@@ -12,6 +12,7 @@ class IncrementalOptData {
   int minQuantity;
   String productId;
   String session;
+  int quantity = 0;
 
   IncrementalOptData({
     @required this.productId,

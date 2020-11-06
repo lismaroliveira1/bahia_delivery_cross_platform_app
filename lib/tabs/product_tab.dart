@@ -5,7 +5,6 @@ import 'package:bahia_delivery/data/product_optional_data.dart';
 import 'package:bahia_delivery/models/cart_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_place/google_place.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -20,17 +19,22 @@ class ProductTab extends StatefulWidget {
 class _ProductTabState extends State<ProductTab> {
   final DocumentSnapshot snapshot;
   final String storeId;
-  var quantityState = 1;
   bool hasitem = false;
+  int quantity = 1;
   List<OptionalProductData> optionals = [];
   List<IncrementalOptData> productOptionals = [];
+  bool isOptionalLoaded = false;
 
   _ProductTabState(this.snapshot, this.storeId);
   @override
   Widget build(BuildContext context) {
+    if (!isOptionalLoaded) {
+      CartModel.of(context).listOptionals(widget.snapshot, storeId);
+      productOptionals = CartModel.of(context).productOptionals;
+      isOptionalLoaded = true;
+    }
     return ScopedModelDescendant<CartModel>(
       builder: (context, child, model) {
-        model.listOptionals(widget.snapshot, storeId);
         if (model.isLoading) {
           return Center(
             child: CircularProgressIndicator(),
@@ -67,7 +71,6 @@ class _ProductTabState extends State<ProductTab> {
             },
             body: Column(
               children: [
-                Text("$quantityState"),
                 Padding(
                   padding: const EdgeInsets.only(top: 18.0),
                   child: Text(
@@ -111,130 +114,70 @@ class _ProductTabState extends State<ProductTab> {
                         ],
                       ),
                     ),
-                  ),
-                ),
-                FutureBuilder<QuerySnapshot>(
-                  future: Firestore.instance
-                      .collection("stores")
-                      .document(storeId)
-                      .collection("products")
-                      .document(snapshot.documentID)
-                      .collection("incrementalOptions")
-                      .getDocuments(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container(height: 0);
-                    } else {
-                      return Expanded(
-                        child: GroupedListView<dynamic, String>(
-                          elements: snapshot.data.documents,
-                          groupBy: (doc) => doc.data["session"],
-                          useStickyGroupSeparators: false,
-                          groupSeparatorBuilder: (String value) => Container(
-                            padding: EdgeInsets.only(top: 5),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                    itemBuilder: (c, incremental) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 2.0),
+                        child: Container(
+                          child: ListTile(
+                            dense: true,
+                            title: Text(incremental.title),
+                            subtitle: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(
-                                    10.0,
-                                    5.0,
-                                    2.0,
-                                    6.0,
+                                Text(incremental.description),
+                                Text(
+                                  "R\$ ${incremental.price}",
+                                  style: TextStyle(
+                                    color: Colors.green,
                                   ),
-                                  child: Text(
-                                    value,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold),
+                                )
+                              ],
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    model.decrementComplement(incremental);
+                                  },
+                                  icon: Icon(
+                                    Icons.remove,
                                   ),
+                                ),
+                                Text("${incremental.quantity}"),
+                                IconButton(
+                                  icon: Icon(
+                                    Icons.add,
+                                  ),
+                                  onPressed: () {
+                                    model.incrementComplement(
+                                      incrementalOptData: incremental,
+                                      onFail: _onFailIncrementProduct,
+                                    );
+                                  },
                                 ),
                               ],
                             ),
-                          ),
-                          itemBuilder: (c, doc) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 2.0),
-                              child: Container(
-                                child: ListTile(
-                                  dense: true,
-                                  title: Text(doc.data["title"]),
-                                  subtitle: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(doc.data["description"]),
-                                      Text(
-                                        "R\$ ${doc.data["price"]}",
-                                        style: TextStyle(
-                                          color: Colors.green,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        onPressed: () {
-                                          final optionalProductData =
-                                              OptionalProductData.fromDocument(
-                                                  doc);
-
-                                          decrementComplement(
-                                              optionalProductData);
-                                        },
-                                        icon: Icon(
-                                          Icons.remove,
-                                        ),
-                                      ),
-                                      ScopedModelDescendant<CartModel>(
-                                          builder: (context, child, model) {
-                                        if (model.isLoading) {
-                                          return Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        } else {
-                                          return Text("${model.quantity}");
-                                        }
-                                      }),
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.add,
-                                        ),
-                                        onPressed: () {
-                                          CartModel.of(context).setQuantity(5);
-                                          setState(() {});
-                                          print("ok");
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                  leading: Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(6),
-                                      child: Image.network(
-                                        doc.data["image"],
-                                        fit: BoxFit.fill,
-                                        height: 40,
-                                        width: 40,
-                                        isAntiAlias: true,
-                                      ),
-                                    ),
-                                  ),
+                            leading: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: Image.network(
+                                  incremental.image,
+                                  fit: BoxFit.fill,
+                                  height: 40,
+                                  width: 40,
+                                  isAntiAlias: true,
                                 ),
                               ),
-                            );
-                          },
+                            ),
+                          ),
                         ),
                       );
-                    }
-                  },
+                    },
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -244,19 +187,23 @@ class _ProductTabState extends State<ProductTab> {
                       SizedBox(
                         width: 4.0,
                       ),
-                      Text("1 Item"),
+                      Text("$quantity Item"),
                       Text(" | "),
-                      Text("R\$ ${snapshot.data["price"]}"),
+                      Text("R\$ ${snapshot.data["price"] * quantity}"),
                       Container(
                         child: Row(
                           children: [
                             IconButton(
                               icon: Icon(Icons.remove),
-                              onPressed: () {},
+                              onPressed: () {
+                                decrementProduct();
+                              },
                             ),
                             IconButton(
                               icon: Icon(Icons.add),
-                              onPressed: () {},
+                              onPressed: () {
+                                incrementProduct();
+                              },
                             ),
                           ],
                         ),
@@ -301,32 +248,6 @@ class _ProductTabState extends State<ProductTab> {
                       )
                     ],
                   ),
-                ),
-                FutureBuilder<QuerySnapshot>(
-                  future: Firestore.instance
-                      .collection("stores")
-                      .document(storeId)
-                      .collection("products")
-                      .document(snapshot.documentID)
-                      .collection('"onlyChooseOptions"')
-                      .getDocuments(),
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return Container(
-                        height: 0,
-                      );
-                    } else {
-                      return Expanded(
-                        child: Column(
-                          children: snapshot.data.documents.map((doc) {
-                            return Container(
-                              height: 0,
-                            );
-                          }).toList(),
-                        ),
-                      );
-                    }
-                  },
                 ),
               ],
             ),
@@ -381,4 +302,18 @@ class _ProductTabState extends State<ProductTab> {
   void _onFailIncrementProduct() {
     print("maxQuantity");
   }
+
+  void incrementProduct() {
+    setState(() {
+      quantity++;
+    });
+  }
+
+  void decrementProduct() {
+    setState(() {
+      quantity--;
+    });
+  }
+
+  void computePriceComplement() {}
 }
