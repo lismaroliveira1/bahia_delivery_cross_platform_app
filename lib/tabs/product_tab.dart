@@ -194,10 +194,11 @@ class _ProductTabState extends State<ProductTab> {
                       SizedBox(
                         width: 4.0,
                       ),
-                      Text("$quantity Item"),
+                      Text("$quantity"),
+                      Text(quantity > 1 ? "itens" : "item"),
                       Text(" | "),
                       Text(
-                          "R\$ ${snapshot.data["price"] * quantity + model.complementPrice}"),
+                          "R\$ ${(snapshot.data["price"] + model.complementPrice) * quantity}"),
                       Container(
                         child: Row(
                           children: [
@@ -251,10 +252,15 @@ class _ProductTabState extends State<ProductTab> {
                           cartProduct.productData =
                               ProductData.fromDocument(snapshot);
                           cartProduct.quantify = quantity;
+                          cartProduct.price =
+                              (snapshot.data["price"] + model.complementPrice) *
+                                  quantity;
                           cartProduct.productOptionals = model.productOptionals;
                           cartProduct.storeId = snapshot.data["storeID"];
                           CartModel.of(context).addCartItem(
-                              cartProduct: cartProduct, onFail: _onFail);
+                            cartProduct: cartProduct,
+                            onFail: _onFail,
+                          );
                         },
                       )
                     ],

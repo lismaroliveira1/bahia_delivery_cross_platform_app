@@ -283,6 +283,7 @@ class CartModel extends Model {
   Future<void> listOptionals(
       DocumentSnapshot documentSnapshot, String storeId) async {
     productOptionals.clear();
+    complementPrice = 0;
     try {
       QuerySnapshot query = await Firestore.instance
           .collection("stores")
