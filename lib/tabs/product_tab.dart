@@ -88,6 +88,29 @@ class _ProductTabState extends State<ProductTab> {
                   child: GroupedListView<dynamic, String>(
                     elements: model.productOptionals,
                     groupBy: (incremental) => incremental.session,
+                    useStickyGroupSeparators: false,
+                    groupSeparatorBuilder: (String value) => Container(
+                      padding: EdgeInsets.only(top: 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(
+                              10.0,
+                              5.0,
+                              2.0,
+                              6.0,
+                            ),
+                            child: Text(
+                              value,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 13, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
                 FutureBuilder<QuerySnapshot>(
