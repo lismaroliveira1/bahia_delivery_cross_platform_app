@@ -23,7 +23,7 @@ class CartModel extends Model {
   int quantity = 1;
   List<IncrementalOptData> productOptionals = [];
   double complementPrice = 0;
-
+  bool isAddingItemCart = false;
   CartModel(this.user) {
     if (user.isLoggedIn()) _loadCartItems();
   }
@@ -33,8 +33,10 @@ class CartModel extends Model {
 
   void addCartItem({
     @required CartProduct cartProduct,
+    @required VoidCallback onSuccess,
     @required VoidCallback onFail,
   }) async {
+    isAddingItemCart = true;
     try {
       products.add(cartProduct);
       Firestore.instance
@@ -45,10 +47,14 @@ class CartModel extends Model {
           .then((doc) {
         cartProduct.cId = doc.documentID;
       });
+      onSuccess();
+      isAddingItemCart = false;
       notifyListeners();
     } catch (e) {
       print(e);
+      isAddingItemCart = false;
       onFail();
+      notifyListeners();
     }
   }
 

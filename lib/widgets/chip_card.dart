@@ -17,8 +17,7 @@ class ShipCard extends StatelessWidget {
                       ? model.currentAddressDataFromGoogle.description
                       : model.currentAddressDataFromGoogle.description
                               .substring(0, 40) +
-                          "..." +
-                          model.currentUserAddress.number,
+                          "...",
                   style: TextStyle(
                       fontWeight: FontWeight.w500, color: Colors.grey[700]),
                 )

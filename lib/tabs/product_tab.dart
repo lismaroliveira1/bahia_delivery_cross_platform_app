@@ -221,7 +221,6 @@ class _ProductTabState extends State<ProductTab> {
                       ),
                       FlatButton(
                         child: Container(
-                          height: 40,
                           decoration: BoxDecoration(
                             color: Colors.red,
                             borderRadius: BorderRadius.circular(6),
@@ -234,10 +233,14 @@ class _ProductTabState extends State<ProductTab> {
                                   if (model.isLoading) {
                                     return CircularProgressIndicator();
                                   } else {
-                                    return Text(
-                                      "Adcioonar ao \ncarrinho",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(color: Colors.white),
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 3.5, horizontal: 9),
+                                      child: Text(
+                                        "Adcioonar ao \ncarrinho",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(color: Colors.white),
+                                      ),
                                     );
                                   }
                                 },
@@ -259,6 +262,7 @@ class _ProductTabState extends State<ProductTab> {
                           cartProduct.storeId = snapshot.data["storeID"];
                           CartModel.of(context).addCartItem(
                             cartProduct: cartProduct,
+                            onSuccess: _onSuccess,
                             onFail: _onFail,
                           );
                         },
@@ -332,5 +336,7 @@ class _ProductTabState extends State<ProductTab> {
     });
   }
 
-  void computePriceComplement() {}
+  void _onSuccess() {
+    Navigator.of(context).pop();
+  }
 }
