@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:bahia_delivery/data/cart_product.dart';
 import 'package:bahia_delivery/data/credit_debit_card_data.dart';
+import 'package:bahia_delivery/data/incremental_optional_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -20,6 +21,7 @@ class CartModel extends Model {
   bool itemExist = false;
   String currentStore = '';
   int quantity = 1;
+  List<IncrementalOptData> productOptionals = [];
   CartModel(this.user) {
     if (user.isLoggedIn()) _loadCartItems();
   }
@@ -273,5 +275,26 @@ class CartModel extends Model {
   void setQuantity(int productQuantitt) {
     quantity = productQuantitt;
     notifyListeners();
+  }
+
+  void listOptionals(DocumentSnapshot documentSnapshot, String storeId) async {
+    try {
+      QuerySnapshot query = await Firestore.instance
+          .collection("stores")
+          .document(storeId)
+          .collection("products")
+          .document(documentSnapshot.documentID)
+          .collection("incrementalOptions")
+          .getDocuments();
+      query.documents.map(
+        (doc) {
+          productOptionals.add(IncrementalOptData.fromDocument(doc));
+        },
+      ).toList();
+      notifyListeners();
+    } catch (erro) {
+      print(erro);
+      notifyListeners();
+    }
   }
 }
