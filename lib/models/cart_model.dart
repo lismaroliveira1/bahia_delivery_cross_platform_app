@@ -333,6 +333,5 @@ class CartModel extends Model {
       complementPrice +=
           (productOptionals[i].price * productOptionals[i].quantity);
     }
-    print(complementPrice.toString());
   }
 }

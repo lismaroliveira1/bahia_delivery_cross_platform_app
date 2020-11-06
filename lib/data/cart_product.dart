@@ -1,3 +1,4 @@
+import 'package:bahia_delivery/data/incremental_optional_data.dart';
 import 'package:bahia_delivery/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -7,6 +8,7 @@ class CartProduct {
   String pId;
   int quantify;
   String storeId;
+  List<IncrementalOptData> productOptionals = [];
 
   ProductData productData;
   CartProduct();

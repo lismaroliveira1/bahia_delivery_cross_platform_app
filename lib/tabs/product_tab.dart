@@ -137,17 +137,24 @@ class _ProductTabState extends State<ProductTab> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  onPressed: () {
-                                    model.decrementComplement(incremental);
-                                  },
+                                  onPressed: incremental.quantity > 0
+                                      ? () {
+                                          model
+                                              .decrementComplement(incremental);
+                                        }
+                                      : null,
                                   icon: Icon(
                                     Icons.remove,
+                                    color: incremental.quantity > 0
+                                        ? Colors.black
+                                        : Colors.grey,
                                   ),
                                 ),
                                 Text("${incremental.quantity}"),
                                 IconButton(
                                   icon: Icon(
                                     Icons.add,
+                                    color: Colors.black,
                                   ),
                                   onPressed: () {
                                     model.incrementComplement(
@@ -189,15 +196,18 @@ class _ProductTabState extends State<ProductTab> {
                       ),
                       Text("$quantity Item"),
                       Text(" | "),
-                      Text("R\$ ${snapshot.data["price"] * quantity}"),
+                      Text(
+                          "R\$ ${snapshot.data["price"] * quantity + model.complementPrice}"),
                       Container(
                         child: Row(
                           children: [
                             IconButton(
                               icon: Icon(Icons.remove),
-                              onPressed: () {
-                                decrementProduct();
-                              },
+                              onPressed: quantity > 1
+                                  ? () {
+                                      decrementProduct();
+                                    }
+                                  : null,
                             ),
                             IconButton(
                               icon: Icon(Icons.add),
@@ -240,7 +250,8 @@ class _ProductTabState extends State<ProductTab> {
                           cartProduct.pId = snapshot.documentID;
                           cartProduct.productData =
                               ProductData.fromDocument(snapshot);
-                          cartProduct.quantify = 1;
+                          cartProduct.quantify = quantity;
+                          cartProduct.productOptionals = model.productOptionals;
                           cartProduct.storeId = snapshot.data["storeID"];
                           CartModel.of(context).addCartItem(
                               cartProduct: cartProduct, onFail: _onFail);
