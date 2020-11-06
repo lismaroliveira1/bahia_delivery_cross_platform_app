@@ -252,9 +252,13 @@ class _ProductTabState extends State<ProductTab> {
                           CartProduct cartProduct = CartProduct();
                           cartProduct.category = snapshot.data["category"];
                           cartProduct.pId = snapshot.documentID;
-                          cartProduct.productData =
-                              ProductData.fromDocument(snapshot);
                           cartProduct.quantify = quantity;
+                          cartProduct.productDescription =
+                              widget.snapshot.data["description"];
+                          cartProduct.productTitle =
+                              widget.snapshot.data["title"];
+                          cartProduct.productPrice =
+                              widget.snapshot.data["price"];
                           cartProduct.price =
                               (snapshot.data["price"] + model.complementPrice) *
                                   quantity;

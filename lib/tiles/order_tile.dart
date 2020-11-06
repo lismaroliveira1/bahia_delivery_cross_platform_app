@@ -157,7 +157,7 @@ class _OrderTileState extends State<OrderTile> {
                       SizedBox(
                         height: 4.0,
                       ),
-                      Text(_buildProductsText(widget.orderData.doc)),
+                      //Text(_buildProductsText(widget.orderData.doc)),
                       SizedBox(
                         height: 8.0,
                       ),

@@ -9,6 +9,9 @@ class CartProduct {
   int quantify;
   String storeId;
   double price;
+  String productTitle;
+  String productDescription;
+  double productPrice;
   List<IncrementalOptData> productOptionals = [];
 
   ProductData productData;
@@ -34,24 +37,30 @@ class CartProduct {
   Map<String, dynamic> toMap() {
     List complementMap = [];
     for (var i = 0; i < productOptionals.length; i++) {
-      complementMap.add({
-        "id": productOptionals[i].id,
-        "image": productOptionals[i].image,
-        "title": productOptionals[i].title,
-        "price": productOptionals[i].price,
-        "description": productOptionals[i].description,
-        "productId": productOptionals[i].productId,
-        "quantity": productOptionals[i].quantity,
-      });
+      if (productOptionals[i].quantity > 0) {
+        complementMap.add({
+          "id": productOptionals[i].id,
+          "image": productOptionals[i].image,
+          "title": productOptionals[i].title,
+          "price": productOptionals[i].price,
+          "description": productOptionals[i].description,
+          "productId": productOptionals[i].productId,
+          "quantity": productOptionals[i].quantity,
+        });
+      }
     }
     return {
       "storeId": storeId,
+      "productTitle": productTitle,
       "category": category,
       "pid": pId,
       "quantity": quantify,
-      "price": price,
-      "product": productData.toResumedMap(),
-      "complement": FieldValue.arrayUnion(complementMap),
+      "productPrice": productPrice,
+      "productDescription": productDescription,
+      "totalPrice": price,
+      "complement": complementMap.length == 0
+          ? "noComplement"
+          : FieldValue.arrayUnion(complementMap),
     };
   }
 }

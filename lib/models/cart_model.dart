@@ -238,7 +238,9 @@ class CartModel extends Model {
     await Firestore.instance.collection("orders").add({
       "client": user.firebaseUser.uid,
       "clientName": documentSnapshotUser.data["name"],
-      "clientImage": user.firebaseUser.photoUrl,
+      "clientImage": user.firebaseUser.photoUrl == null
+          ? user.userImage
+          : user.firebaseUser.photoUrl,
       "clientAddress": user.currentAddressDataFromGoogle.description
           .replaceAll("State of ", "")
           .replaceAll("Brazil", "Brasil"),
