@@ -1,6 +1,5 @@
 import 'package:bahia_delivery/data/cart_product.dart';
 import 'package:bahia_delivery/data/incremental_optional_data.dart';
-import 'package:bahia_delivery/data/product_data.dart';
 import 'package:bahia_delivery/data/product_optional_data.dart';
 import 'package:bahia_delivery/models/cart_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -253,6 +252,7 @@ class _ProductTabState extends State<ProductTab> {
                           cartProduct.category = snapshot.data["category"];
                           cartProduct.pId = snapshot.documentID;
                           cartProduct.quantify = quantity;
+                          cartProduct.storeId = storeId;
                           cartProduct.productDescription =
                               widget.snapshot.data["description"];
                           cartProduct.productTitle =
@@ -268,6 +268,7 @@ class _ProductTabState extends State<ProductTab> {
                             cartProduct: cartProduct,
                             onSuccess: _onSuccess,
                             onFail: _onFail,
+                            onDifferentStore: _onDifferentStore,
                           );
                         },
                       )
@@ -342,5 +343,10 @@ class _ProductTabState extends State<ProductTab> {
 
   void _onSuccess() {
     Navigator.of(context).pop();
+  }
+
+  void _onDifferentStore() {
+    //TODO Adcionar o Widget para lojas deferentes
+    print("Loja Diferente");
   }
 }

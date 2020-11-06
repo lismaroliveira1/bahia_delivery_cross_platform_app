@@ -16,8 +16,8 @@ class CartTile extends StatelessWidget {
         Container(
           padding: EdgeInsets.all(8.0),
           child: SizedBox(
-            height: 80,
-            width: 80,
+            height: MediaQuery.of(context).size.width / 6,
+            width: MediaQuery.of(context).size.width / 6,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12.0),
               child: Image.network(

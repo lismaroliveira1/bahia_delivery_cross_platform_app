@@ -19,6 +19,7 @@ class CartModel extends Model {
   int discountPercentage = 0;
   bool isLoading = false;
   bool itemExist = false;
+  bool isSameStore = false;
   String currentStore = '';
   int quantity = 1;
   List<IncrementalOptData> productOptionals = [];
@@ -35,27 +36,65 @@ class CartModel extends Model {
     @required CartProduct cartProduct,
     @required VoidCallback onSuccess,
     @required VoidCallback onFail,
+    @required VoidCallback onDifferentStore,
   }) async {
     isAddingItemCart = true;
-    try {
-      products.add(cartProduct);
-      Firestore.instance
-          .collection("users")
-          .document(user.firebaseUser.uid)
-          .collection("cart")
-          .add(cartProduct.toMap())
-          .then((doc) {
-        cartProduct.cId = doc.documentID;
-      });
-      onSuccess();
-      isAddingItemCart = false;
-      notifyListeners();
-    } catch (e) {
-      print(e);
-      isAddingItemCart = false;
-      onFail();
-      notifyListeners();
+    notifyListeners();
+    if (products.length == 0) {
+      print("zero");
+      try {
+        products.add(cartProduct);
+        Firestore.instance
+            .collection("users")
+            .document(user.firebaseUser.uid)
+            .collection("cart")
+            .add(cartProduct.toMap())
+            .then((doc) {
+          cartProduct.cId = doc.documentID;
+        });
+        onSuccess();
+        isAddingItemCart = false;
+        notifyListeners();
+      } catch (e) {
+        print(e);
+        isAddingItemCart = false;
+        onFail();
+        notifyListeners();
+      }
+    } else {
+      for (var i = 0; i < products.length; i++) {
+        if (products[i].storeId == cartProduct.storeId) {
+          print(products[i].storeId);
+          print(cartProduct.storeId);
+          try {
+            products.add(cartProduct);
+            Firestore.instance
+                .collection("users")
+                .document(user.firebaseUser.uid)
+                .collection("cart")
+                .add(cartProduct.toMap())
+                .then((doc) {
+              cartProduct.cId = doc.documentID;
+            });
+            onSuccess();
+            isAddingItemCart = false;
+            isLoading = false;
+            notifyListeners();
+            break;
+          } catch (e) {
+            print(e);
+            isAddingItemCart = false;
+            isSameStore = false;
+            onFail();
+            notifyListeners();
+            break;
+          }
+        } else {
+          onDifferentStore();
+        }
+      }
     }
+    isSameStore = false;
   }
 
   void verifyItemCart(CartProduct cartProduct) async {

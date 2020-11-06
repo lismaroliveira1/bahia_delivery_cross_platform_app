@@ -105,8 +105,6 @@ class _FoodItemState extends State<FoodItem> {
                       cartProduct.storeId = widget.snapshot.data["storeID"];
                       cartProduct.productData =
                           ProductData.fromDocument(widget.snapshot);
-                      model.addCartItem(
-                          cartProduct: cartProduct, onFail: _onFail);
                     },
                   )
                 ],
