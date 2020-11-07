@@ -108,6 +108,7 @@ class UserModel extends Model {
       _loadCurrentUser();
       onSuccess();
       saveToken();
+      updatePartnerData();
       isLoading = false;
       isLogged = true;
       notifyListeners();
@@ -172,6 +173,7 @@ class UserModel extends Model {
         isLogged = true;
         saveToken();
         onSuccess();
+        updatePartnerData();
         isLoading = false;
         notifyListeners();
       }
@@ -215,6 +217,7 @@ class UserModel extends Model {
         userName = authResult.user.displayName;
         userImage = authResult.user.photoUrl;
         this.firebaseUser = authResult.user;
+        updatePartnerData();
         isLogged = true;
         saveToken();
         isLoading = false;
@@ -255,6 +258,7 @@ class UserModel extends Model {
               .get();
           if (docUser.exists) {
             this.firebaseUser = authResult.user;
+            updatePartnerData();
             isLogged = true;
             saveToken();
             isLoading = false;
@@ -320,6 +324,7 @@ class UserModel extends Model {
                   currentAddress: "");
               this.firebaseUser = authResult.user;
               _saveUserData(user);
+              updatePartnerData();
               isLogged = true;
               saveToken();
               onSuccess();
@@ -361,6 +366,7 @@ class UserModel extends Model {
       this.firebaseUser = result.user;
       await _saveUserData(user);
       onSuccess();
+      updatePartnerData();
       isLogged = true;
       saveToken();
       isLoading = false;
@@ -388,6 +394,7 @@ class UserModel extends Model {
     firebaseUser = null;
     isLogged = false;
     isLoading = false;
+    updatePartnerData();
     notifyListeners();
   }
 

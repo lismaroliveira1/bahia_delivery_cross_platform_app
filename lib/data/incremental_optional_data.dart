@@ -24,6 +24,7 @@ class IncrementalOptData {
     @required this.minQuantity,
     @required this.price,
     @required this.session,
+    this.quantity,
   });
   IncrementalOptData.fromDocument(DocumentSnapshot documentSnapshot) {
     id = documentSnapshot.documentID;

@@ -262,6 +262,7 @@ class _RegisterNewOptOnlyChooseTabState
                                 price: price,
                                 type: "onlyChoose",
                                 session: sessionController.text,
+                                quantity: 0,
                               );
                               model.insertNewOptOnlyChoose(
                                 incrementalOptData: incrementalOptData,

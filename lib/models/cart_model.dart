@@ -254,50 +254,55 @@ class CartModel extends Model {
     if (products.length == 0) return null;
     isLoading = true;
     notifyListeners();
-    double productPrice = getProductsPrice();
-    double shipPrice = getShipPrice();
-    double discountPrice = getDiscountPrice();
-    double totalPrice = productPrice - discountPrice + shipPrice;
-    QuerySnapshot query = await Firestore.instance
-        .collection("users")
-        .document(user.firebaseUser.uid)
-        .collection("cart")
-        .getDocuments();
-    for (DocumentSnapshot doc in query.documents) {
-      doc.reference.delete();
+    try {
+      double productPrice = getProductsPrice();
+      double shipPrice = getShipPrice();
+      double discountPrice = getDiscountPrice();
+      double totalPrice = productPrice - discountPrice + shipPrice;
+      QuerySnapshot query = await Firestore.instance
+          .collection("users")
+          .document(user.firebaseUser.uid)
+          .collection("cart")
+          .getDocuments();
+      for (DocumentSnapshot doc in query.documents) {
+        doc.reference.delete();
+      }
+      DocumentSnapshot documentSnapshotStore = await Firestore.instance
+          .collection("stores")
+          .document(products[0].storeId)
+          .get();
+      DocumentSnapshot documentSnapshotUser = await Firestore.instance
+          .collection("users")
+          .document(user.firebaseUser.uid)
+          .get();
+      await Firestore.instance.collection("orders").add({
+        "client": user.firebaseUser.uid,
+        "clientName": documentSnapshotUser.data["name"],
+        "clientImage": user.firebaseUser.photoUrl == null
+            ? user.userImage
+            : user.firebaseUser.photoUrl,
+        "clientAddress": user.currentAddressDataFromGoogle.description
+            .replaceAll("State of ", "")
+            .replaceAll("Brazil", "Brasil"),
+        "storeId": products[0].storeId,
+        "products": products.map((cartProduct) => cartProduct.toMap()).toList(),
+        "shipPrice": shipPrice,
+        "StoreName": documentSnapshotStore.data["name"],
+        "storeImage": documentSnapshotStore.data["image"],
+        "storeDescription": "storeDescrition",
+        "discount": discountPrice,
+        "totalPrice": totalPrice,
+        "status": 1,
+        'createdAt': FieldValue.serverTimestamp(),
+        'platform': Platform.operatingSystem,
+        'paymentType': "Pagamento na Entrega"
+      }).then((value) {});
+      products.clear();
+      couponCode = null;
+    } catch (e) {
+      print(e);
     }
-    DocumentSnapshot documentSnapshotStore = await Firestore.instance
-        .collection("stores")
-        .document(products[0].storeId)
-        .get();
-    DocumentSnapshot documentSnapshotUser = await Firestore.instance
-        .collection("users")
-        .document(user.firebaseUser.uid)
-        .get();
-    await Firestore.instance.collection("orders").add({
-      "client": user.firebaseUser.uid,
-      "clientName": documentSnapshotUser.data["name"],
-      "clientImage": user.firebaseUser.photoUrl == null
-          ? user.userImage
-          : user.firebaseUser.photoUrl,
-      "clientAddress": user.currentAddressDataFromGoogle.description
-          .replaceAll("State of ", "")
-          .replaceAll("Brazil", "Brasil"),
-      "storeId": products[0].storeId,
-      "products": products.map((cartProduct) => cartProduct.toMap()).toList(),
-      "shipPrice": shipPrice,
-      "StoreName": documentSnapshotStore.data["name"],
-      "storeImage": documentSnapshotStore.data["image"],
-      "storeDescription": "storeDescrition",
-      "discount": discountPrice,
-      "totalPrice": totalPrice,
-      "status": 1,
-      'createdAt': FieldValue.serverTimestamp(),
-      'platform': Platform.operatingSystem,
-      'paymentType': "Pagamento na Entrega"
-    }).then((value) {});
-    products.clear();
-    couponCode = null;
+
     isLoading = false;
     notifyListeners();
   }

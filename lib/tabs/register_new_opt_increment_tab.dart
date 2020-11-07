@@ -261,6 +261,7 @@ class _RegisterNewOptIncrementTabState
                                 price: price,
                                 type: "incremental",
                                 session: sessionController.text,
+                                quantity: 0,
                               );
                               model.insertOptIncrement(
                                 imageFile: isImageChoosed ? imageFile : null,

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 class CartTile extends StatelessWidget {
   final CartProduct cartProduct;
-
   CartTile(this.cartProduct);
   Widget _buildContent(BuildContext context) {
     CartModel.of(context).updatePrices();
@@ -14,10 +13,9 @@ class CartTile extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Container(
-          padding: EdgeInsets.all(8.0),
           child: SizedBox(
-            height: MediaQuery.of(context).size.width / 6,
-            width: MediaQuery.of(context).size.width / 6,
+            height: MediaQuery.of(context).size.width / 7,
+            width: MediaQuery.of(context).size.width / 7,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(12.0),
               child: Image.network(
@@ -29,7 +27,7 @@ class CartTile extends StatelessWidget {
         ),
         Expanded(
           child: Container(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(4.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -37,6 +35,17 @@ class CartTile extends StatelessWidget {
                 Text(
                   cartProduct.productData.title,
                   style: TextStyle(fontWeight: FontWeight.w500, fontSize: 17.0),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: cartProduct.productOptionals
+                      .map(
+                        (e) => Text(
+                          e.quantity.toString() + " x " + e.title,
+                        ),
+                      )
+                      .toList(),
                 ),
                 Text(
                   "R\$ ${cartProduct.productData.price.toStringAsFixed(2)}",
