@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:bahia_delivery/data/order_data.dart';
+import 'package:bahia_delivery/data/product_order_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/chat_store_screnn.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,6 +20,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
   String firtstatus = "Aceitar Pedido";
   String secondStatus = "Enviar";
   String thirdStatus = "";
+  List<ProductOrderData> products = [];
   @override
   Widget build(BuildContext context) {
     String month = '';
@@ -195,16 +197,23 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                           ],
                         ),
                       ),
+                      _buildProductsAndComplements(widget.orderData.doc),
                       SizedBox(
                         height: 4.0,
                       ),
-                      Center(
-                          child: Text(
-                        _buildProductsText(widget.orderData.doc),
-                        textAlign: TextAlign.center,
-                      )),
-                      SizedBox(
-                        height: 8.0,
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Total: ",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text("R\$ " +
+                                snapshot.data["totalPrice"].toString()),
+                          ],
+                        ),
                       ),
                       Center(
                         child: Text(
@@ -331,14 +340,78 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
     );
   }
 
-  String _buildProductsText(DocumentSnapshot snapshot) {
-    String text = "";
-    for (LinkedHashMap p in snapshot.data["products"]) {
-      text +=
-          "${p["quantity"]} x ${p["product"]["title"]} (R\$ ${p["product"]["price"].toStringAsFixed(2)})\n";
+  Widget _buildProductsAndComplements(DocumentSnapshot doc) {
+    products.clear();
+    for (LinkedHashMap p in doc.data["products"]) {
+      products.add(ProductOrderData.fromDynamicDocument(p));
     }
-    text += "Total: R\$ ${snapshot.data["totalPrice"]}";
-    return text;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: products.map((product) {
+        return ListTile(
+          dense: true,
+          title: Text(
+            product.quantity.toString() +
+                " x " +
+                product.productTitle +
+                " (R\$ ${product.productPrice})",
+            textAlign: TextAlign.center,
+          ),
+          subtitle: product.optnalsComplement.length > 0
+              ? Column(
+                  children: [
+                    Text(
+                      "Complementos:",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: product.optnalsComplement.map((complement) {
+                        return Text(
+                          complement.quantity.toString() +
+                              " x " +
+                              complement.title +
+                              " (R\$ ${complement.price})",
+                        );
+                      }).toList(),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Total: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text("R\$ ${product.totalPrice}"),
+                      ],
+                    ),
+                  ],
+                )
+              : Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Total: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text("R\$ ${product.totalPrice}"),
+                      ],
+                    ),
+                  ],
+                ),
+        );
+      }).toList(),
+    );
   }
 
   Widget _buildCircle(
