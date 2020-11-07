@@ -15,6 +15,7 @@ class IncrementalOptData {
   int quantity = 0;
 
   IncrementalOptData({
+    this.id,
     @required this.productId,
     @required this.type,
     @required this.image,
