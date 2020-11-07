@@ -154,8 +154,15 @@ class _OrderTileState extends State<OrderTile> {
                         height: 4.0,
                       ),
                       _buildProductsAndComplements(widget.orderData.doc),
-                      SizedBox(
-                        height: 8.0,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Entrega: ",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text("R\$ " + snapshot.data["shipPrice"].toString()),
+                        ],
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -198,19 +205,36 @@ class _OrderTileState extends State<OrderTile> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Data: " +
-                              widget.orderData.createdAt
-                                  .toDate()
-                                  .day
-                                  .toString() +
-                              " de " +
-                              month +
-                              " de " +
-                              widget.orderData.createdAt
-                                  .toDate()
-                                  .year
-                                  .toString(),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Data: ",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                                widget.orderData.createdAt
+                                        .toDate()
+                                        .day
+                                        .toString() +
+                                    " de " +
+                                    month +
+                                    " de " +
+                                    widget.orderData.createdAt
+                                        .toDate()
+                                        .year
+                                        .toString() +
+                                    " as " +
+                                    widget.orderData.createdAt
+                                        .toDate()
+                                        .hour
+                                        .toString() +
+                                    ":" +
+                                    widget.orderData.createdAt
+                                        .toDate()
+                                        .minute
+                                        .toString()),
+                          ],
                         ),
                       ),
                     ],
@@ -274,6 +298,7 @@ class _OrderTileState extends State<OrderTile> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: products.map((product) {
         return ListTile(
+          contentPadding: EdgeInsets.zero,
           dense: true,
           title: Text(
             product.quantity.toString() +

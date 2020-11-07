@@ -364,6 +364,7 @@ class UserModel extends Model {
       final AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: user.email, password: user.password);
       this.firebaseUser = result.user;
+      _loadCurrentUser();
       await _saveUserData(user);
       onSuccess();
       updatePartnerData();
@@ -402,6 +403,7 @@ class UserModel extends Model {
     userData["name"] = user.name;
     userData["email"] = user.email;
     userData["isPartner"] = 3;
+    userData["image"] = "https://meuvidraceiro.com.br/images/sem-imagem.png";
     await Firestore.instance
         .collection("users")
         .document(firebaseUser.uid)

@@ -76,7 +76,7 @@ class _FavoriteTabState extends State<FavoriteTab> {
                   size: 140,
                   color: Colors.red,
                 ),
-                Text("Você ainda n]ao tem lojas favoritas")
+                Text("Você ainda não têm lojas favoritas")
               ],
             ),
           ),

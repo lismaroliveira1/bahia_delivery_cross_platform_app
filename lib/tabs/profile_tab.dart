@@ -300,133 +300,22 @@ class ProfileTab extends StatelessWidget {
                 ));
               },
               child: ProfileTile(
-                  title: "Pedidos",
-                  description: "Aconpanhe seus pedidos",
-                  icon: Icons.list),
+                title: "Pedidos",
+                description: "Acompanhe seus pedidos",
+                icon: Icons.list,
+              ),
             ),
             FlatButton(
               onPressed: () {},
               padding: EdgeInsets.zero,
               child: FlatButton(
                 padding: EdgeInsets.zero,
-                onPressed: () {
-                  return showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Dialog(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0)),
-                          child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                  color: Colors.white),
-                              height: 400,
-                              child: Column(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: Colors.red[50]),
-                                    height: 150,
-                                    child: Container(
-                                      padding: EdgeInsets.all(12),
-                                      child: Center(
-                                        child: Image.asset("images/logo.png"),
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                      padding: EdgeInsets.all(8),
-                                      child: Center(
-                                        child: Text(
-                                          "Bem vindo ao Bahia Delivery Partners",
-                                          style: TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      )),
-                                  SizedBox(
-                                    height: 20,
-                                  ),
-                                  Text(
-                                    "Algumas informações a mais serão requeridas.",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.black45,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    height: 60,
-                                  ),
-                                  Container(
-                                    padding:
-                                        EdgeInsets.only(left: 20, right: 20),
-                                    child: Row(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          child: Container(
-                                            height: 50,
-                                            width: 140,
-                                            child: RaisedButton(
-                                              padding: EdgeInsets.zero,
-                                              color: Colors.red,
-                                              child: Text(
-                                                "Voltar",
-                                                style: TextStyle(fontSize: 18),
-                                              ),
-                                              textColor: Colors.white,
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              disabledColor: Colors.grey,
-                                              disabledTextColor: Colors.black,
-                                            ),
-                                          ),
-                                        ),
-                                        Spacer(),
-                                        ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                            child: Container(
-                                              height: 50,
-                                              width: 140,
-                                              child: RaisedButton(
-                                                padding: EdgeInsets.zero,
-                                                color: Colors.red,
-                                                child: Text(
-                                                  "Ok, vamos lá!",
-                                                  style:
-                                                      TextStyle(fontSize: 18),
-                                                ),
-                                                textColor: Colors.white,
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                  Navigator.of(context)
-                                                      .push(MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        BeAParterScreen(),
-                                                  ));
-                                                },
-                                                disabledColor: Colors.grey,
-                                                disabledTextColor: Colors.black,
-                                              ),
-                                            ))
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              )),
-                        );
-                      });
-                },
+                onPressed: () {},
                 child: ProfileTile(
-                    title: "Minha Conta",
-                    description: "Aconpanhe seus pedidos",
-                    icon: Icons.list),
+                  title: "Minha Conta",
+                  description: "Edite seu peril",
+                  icon: Icons.list,
+                ),
               ),
             ),
             FlatButton(
@@ -434,7 +323,7 @@ class ProfileTab extends StatelessWidget {
               onPressed: () {},
               child: ProfileTile(
                 title: "Configurações",
-                description: "Configure o app do seu jeito",
+                description: "Configure o apicativo do seu jeito",
                 icon: Icons.phonelink_setup,
               ),
             ),

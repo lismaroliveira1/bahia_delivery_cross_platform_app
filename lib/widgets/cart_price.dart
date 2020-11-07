@@ -11,9 +11,8 @@ class CartPrice extends StatelessWidget {
     return ScopedModelDescendant<UserModel>(
         builder: (context, child, userModel) {
       return Padding(
-        padding: const EdgeInsets.only(bottom: 6.0),
+        padding: EdgeInsets.zero,
         child: Card(
-          margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           child: Container(
             padding: EdgeInsets.all(16.0),
             child: ScopedModelDescendant<CartModel>(
