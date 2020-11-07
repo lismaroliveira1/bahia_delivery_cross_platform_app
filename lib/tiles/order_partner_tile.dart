@@ -345,7 +345,6 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
     for (LinkedHashMap p in doc.data["products"]) {
       products.add(ProductOrderData.fromDynamicDocument(p));
     }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,

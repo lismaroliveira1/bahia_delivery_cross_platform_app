@@ -9,6 +9,7 @@ class CartProduct {
   String category;
   String pId;
   int quantify;
+  String productImage;
   String storeId;
   double price;
   String productTitle;
@@ -20,6 +21,7 @@ class CartProduct {
   CartProduct.fromDocument(DocumentSnapshot document) {
     //Colocar um laço para verficar de já existe o produto no carrinho
     storeId = document.data["storeId"];
+    productImage = document.data["productImage"];
     cId = document.documentID;
     category = document.data["category"];
     pId = document.data["pid"];
@@ -120,6 +122,7 @@ class CartProduct {
       }
     }
     return {
+      "productImage": productImage,
       "storeId": storeId,
       "productTitle": productTitle,
       "category": category,

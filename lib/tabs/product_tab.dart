@@ -236,7 +236,7 @@ class _ProductTabState extends State<ProductTab> {
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 3.5, horizontal: 9),
                                       child: Text(
-                                        "Adcioonar ao \ncarrinho",
+                                        "Adcionar ao \ncarrinho",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(color: Colors.white),
                                       ),
@@ -250,6 +250,7 @@ class _ProductTabState extends State<ProductTab> {
                         onPressed: () {
                           CartProduct cartProduct = CartProduct();
                           cartProduct.category = snapshot.data["category"];
+                          cartProduct.productImage = snapshot.data["image"];
                           cartProduct.pId = snapshot.documentID;
                           cartProduct.quantify = quantity;
                           cartProduct.storeId = storeId;
@@ -346,7 +347,159 @@ class _ProductTabState extends State<ProductTab> {
   }
 
   void _onDifferentStore() {
-    //TODO Adcionar o Widget para lojas deferentes
+    Scaffold.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.grey[100],
+      duration: Duration(minutes: 2),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      content: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
+        ),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(12),
+            ),
+          ),
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: Column(
+            children: [
+              Text(
+                "Voce tem produtos no carrinho",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              ScopedModelDescendant<CartModel>(
+                  builder: (context, child, model) {
+                if (model.isLoading) {
+                  return Container(
+                    height: 0,
+                    width: 0,
+                  );
+                } else {
+                  return Expanded(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ListView(
+                            children: model.products.map((product) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                  vertical: 0,
+                                ),
+                                child: ListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  title: Text(
+                                    product.productTitle,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  subtitle: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "R\$ ${product.quantify} x ${product.productPrice}",
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      Text(
+                                        "R\$ " + product.price.toString(),
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  leading: Container(
+                                    child: Container(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(6),
+                                        child: Image.network(
+                                          product.productImage,
+                                          fit: BoxFit.cover,
+                                          height: 60,
+                                          width: 60,
+                                          isAntiAlias: false,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            FlatButton(
+                              onPressed: () {
+                                model.clearCartProduct();
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  color: Colors.red,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 3.5, horizontal: 9),
+                                  child: Text(
+                                    "Limpar \ncarrinho",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            FlatButton(
+                              onPressed: () {
+                                model.finishOrderWithPayOnDelivery();
+                                Navigator.of(context).pop();
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  color: Colors.red,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 3.5, horizontal: 9),
+                                  child: Text(
+                                    "Finalizar \ncompra",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              })
+            ],
+          ),
+        ),
+      ),
+    ));
     print("Loja Diferente");
   }
 }

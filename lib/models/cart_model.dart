@@ -64,8 +64,6 @@ class CartModel extends Model {
     } else {
       for (var i = 0; i < products.length; i++) {
         if (products[i].storeId == cartProduct.storeId) {
-          print(products[i].storeId);
-          print(cartProduct.storeId);
           try {
             products.add(cartProduct);
             Firestore.instance
@@ -91,6 +89,7 @@ class CartModel extends Model {
           }
         } else {
           onDifferentStore();
+          break;
         }
       }
     }
@@ -160,10 +159,15 @@ class CartModel extends Model {
 
   double getProductsPrice() {
     double price = 0.0;
+    double priceOptionals = 0.0;
     for (CartProduct c in products) {
-      if (c.productData != null) price += c.quantify * c.productData.price;
+      for (var i = 0; i < c.productOptionals.length; i++) {
+        priceOptionals +=
+            c.productOptionals[i].quantity * c.productOptionals[i].price;
+      }
+      price += c.quantify * c.productPrice;
     }
-    return price;
+    return price + priceOptionals;
   }
 
   double getDiscountPrice() {
@@ -386,5 +390,17 @@ class CartModel extends Model {
       complementPrice +=
           (productOptionals[i].price * productOptionals[i].quantity);
     }
+  }
+
+  void clearCartProduct() async {
+    QuerySnapshot query = await Firestore.instance
+        .collection("users")
+        .document(user.firebaseUser.uid)
+        .collection("cart")
+        .getDocuments();
+    for (DocumentSnapshot doc in query.documents) {
+      doc.reference.delete();
+    }
+    products.clear();
   }
 }
