@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:bahia_delivery/data/order_data.dart';
+import 'package:bahia_delivery/data/product_order_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/chat_user_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,6 +20,7 @@ class _OrderTileState extends State<OrderTile> {
   String firtstatus = "Aceitar Pedido";
   String secondStatus = "Enviar";
   String thirdStatus = "";
+  List<ProductOrderData> products = [];
   @override
   Widget build(BuildContext context) {
     String month = '';
@@ -101,7 +103,6 @@ class _OrderTileState extends State<OrderTile> {
                       break;
                   }
                   return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -117,49 +118,58 @@ class _OrderTileState extends State<OrderTile> {
                       SizedBox(
                         height: 4.0,
                       ),
-                      Row(
-                        children: <Widget>[
-                          Center(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12)),
-                              height: MediaQuery.of(context).size.height / 15,
-                              width: MediaQuery.of(context).size.height / 15,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(12),
-                                child: FadeInImage.memoryNetwork(
-                                  placeholder: kTransparentImage,
-                                  image: snapshot.data["storeImage"],
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
+                      Center(
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12)),
+                          height: MediaQuery.of(context).size.height / 15,
+                          width: MediaQuery.of(context).size.height / 15,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: FadeInImage.memoryNetwork(
+                              placeholder: kTransparentImage,
+                              image: snapshot.data["storeImage"],
+                              fit: BoxFit.cover,
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Center(
-                              child: Text(
-                                snapshot.data["StoreName"],
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          )
-                        ],
+                        ),
+                      ),
+                      Center(
+                        child: Text(
+                          snapshot.data["StoreName"],
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500),
+                        ),
                       ),
                       SizedBox(
                         height: 4.0,
                       ),
-                      Text(
-                        "Descrição",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      Center(
+                        child: Text(
+                          "Itens",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                       SizedBox(
                         height: 4.0,
                       ),
-                      //Text(_buildProductsText(widget.orderData.doc)),
+                      _buildProductsAndComplements(widget.orderData.doc),
                       SizedBox(
                         height: 8.0,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Total: ",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text("R\$ " +
+                                snapshot.data["totalPrice"].toString()),
+                          ],
+                        ),
                       ),
                       Text(
                         "Status",
@@ -252,6 +262,79 @@ class _OrderTileState extends State<OrderTile> {
     }
     text += "Total: R\$ ${snapshot.data["totalPrice"]}";
     return text;
+  }
+
+  Widget _buildProductsAndComplements(DocumentSnapshot doc) {
+    products.clear();
+    for (LinkedHashMap p in doc.data["products"]) {
+      products.add(ProductOrderData.fromDynamicDocument(p));
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: products.map((product) {
+        return ListTile(
+          dense: true,
+          title: Text(
+            product.quantity.toString() +
+                " x " +
+                product.productTitle +
+                " (R\$ ${product.productPrice})",
+            textAlign: TextAlign.center,
+          ),
+          subtitle: product.optnalsComplement.length > 0
+              ? Column(
+                  children: [
+                    Text(
+                      "Complementos:",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: product.optnalsComplement.map((complement) {
+                        return Text(
+                          complement.quantity.toString() +
+                              " x " +
+                              complement.title +
+                              " (R\$ ${complement.price})",
+                        );
+                      }).toList(),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Total: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text("R\$ ${product.totalPrice}"),
+                      ],
+                    ),
+                  ],
+                )
+              : Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Total: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text("R\$ ${product.totalPrice}"),
+                      ],
+                    ),
+                  ],
+                ),
+        );
+      }).toList(),
+    );
   }
 
   Widget _buildCircle(
