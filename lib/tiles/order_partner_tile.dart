@@ -390,6 +390,18 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                         Text("R\$ ${product.totalPrice}"),
                       ],
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Delivery: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text("R\$ ${doc.data["shipPrice"]}"),
+                      ],
+                    ),
                   ],
                 )
               : Column(
@@ -404,6 +416,18 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                           ),
                         ),
                         Text("R\$ ${product.totalPrice}"),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Delivery: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text("R\$ ${doc.data["shipPrice"]}"),
                       ],
                     ),
                   ],

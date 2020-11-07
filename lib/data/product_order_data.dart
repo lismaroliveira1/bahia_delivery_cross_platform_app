@@ -32,6 +32,7 @@ class ProductOrderData {
     storeId = documentSnapshot["storeId"];
     quantity = documentSnapshot["quantity"];
     totalPrice = documentSnapshot["totalPrice"];
+
     if (documentSnapshot["complement"] == "noComplements") {
       optnalsComplement.clear();
     } else if (documentSnapshot["complement"] == []) {

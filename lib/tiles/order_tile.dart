@@ -154,16 +154,6 @@ class _OrderTileState extends State<OrderTile> {
                         height: 4.0,
                       ),
                       _buildProductsAndComplements(widget.orderData.doc),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Entrega: ",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Text("R\$ " + snapshot.data["shipPrice"].toString()),
-                        ],
-                      ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
@@ -339,6 +329,18 @@ class _OrderTileState extends State<OrderTile> {
                         Text("R\$ ${product.totalPrice}"),
                       ],
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Delivery: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text("R\$ ${doc.data["shipPrice"]}"),
+                      ],
+                    ),
                   ],
                 )
               : Column(
@@ -353,6 +355,18 @@ class _OrderTileState extends State<OrderTile> {
                           ),
                         ),
                         Text("R\$ ${product.totalPrice}"),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Delivery: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text("R\$ ${doc.data["shipPrice"]}"),
                       ],
                     ),
                   ],
