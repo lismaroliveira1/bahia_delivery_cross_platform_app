@@ -26,6 +26,7 @@ class CartProduct {
     quantify = document.data["quantity"];
     productDescription = document.data["productDescription"];
     productPrice = document.data["productPrice"];
+    productTitle = document.data["productTitle"];
     price = document.data["totalPrice"];
     if (document.data["complement"] == "noComplements") {
       productOptionals.clear();
@@ -34,6 +35,7 @@ class CartProduct {
     } else {
       List<IncrementalOptData> productOptionalsDocuement = [];
       for (LinkedHashMap p in document.data["complement"]) {
+        String id;
         String image;
         String title;
         String description;
@@ -46,6 +48,9 @@ class CartProduct {
         int quantity = 0;
         p.forEach((key, value) {
           switch (key) {
+            case "id":
+              id = value;
+              break;
             case "title":
               title = value;
               break;
@@ -81,6 +86,7 @@ class CartProduct {
         });
         productOptionalsDocuement.add(
           IncrementalOptData(
+            id: id,
             productId: productId,
             type: type,
             image: image,
@@ -106,7 +112,7 @@ class CartProduct {
           "id": productOptionals[i].id,
           "image": productOptionals[i].image,
           "title": productOptionals[i].title,
-          "price": 2.0, //productOptionals[i].price,
+          "price": productOptionals[i].price,
           "description": productOptionals[i].description,
           "productId": productOptionals[i].productId,
           "quantity": productOptionals[i].quantity,
