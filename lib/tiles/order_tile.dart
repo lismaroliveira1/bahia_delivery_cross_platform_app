@@ -80,6 +80,7 @@ class _OrderTileState extends State<OrderTile> {
                   );
                 } else {
                   int status = snapshot.data["status"];
+                  double totalPrice = snapshot.data["totalPrice"];
                   switch (status) {
                     case 1:
                       firtstatus = "Aceitar \n Pedido";
@@ -163,8 +164,7 @@ class _OrderTileState extends State<OrderTile> {
                               "Total: ",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            Text("R\$ " +
-                                snapshot.data["totalPrice"].toString()),
+                            Text("R\$ " + totalPrice.toStringAsFixed(2)),
                           ],
                         ),
                       ),
@@ -268,17 +268,8 @@ class _OrderTileState extends State<OrderTile> {
     );
   }
 
-  String _buildProductsText(DocumentSnapshot snapshot) {
-    String text = "";
-    for (LinkedHashMap p in snapshot.data["products"]) {
-      text +=
-          "${p["quantity"]} x ${p["product"]["title"]} (R\$ ${p["product"]["price"].toStringAsFixed(2)})\n";
-    }
-    text += "Total: R\$ ${snapshot.data["totalPrice"]}";
-    return text;
-  }
-
   Widget _buildProductsAndComplements(DocumentSnapshot doc) {
+    double shipPrice = doc.data["shipPrice"];
     products.clear();
     for (LinkedHashMap p in doc.data["products"]) {
       products.add(ProductOrderData.fromDynamicDocument(p));
@@ -313,7 +304,7 @@ class _OrderTileState extends State<OrderTile> {
                           complement.quantity.toString() +
                               " x " +
                               complement.title +
-                              " (R\$ ${complement.price})",
+                              " (R\$ ${complement.price.toStringAsFixed(2)})",
                         );
                       }).toList(),
                     ),
@@ -326,7 +317,7 @@ class _OrderTileState extends State<OrderTile> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text("R\$ ${product.totalPrice}"),
+                        Text("R\$ ${product.totalPrice.toStringAsFixed(2)}"),
                       ],
                     ),
                     Row(
@@ -338,7 +329,7 @@ class _OrderTileState extends State<OrderTile> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text("R\$ ${doc.data["shipPrice"]}"),
+                        Text("R\$ ${shipPrice.toStringAsFixed(2)}"),
                       ],
                     ),
                   ],
@@ -354,7 +345,7 @@ class _OrderTileState extends State<OrderTile> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text("R\$ ${product.totalPrice}"),
+                        Text("R\$ ${product.totalPrice.toStringAsFixed(2)}"),
                       ],
                     ),
                     Row(
@@ -366,7 +357,7 @@ class _OrderTileState extends State<OrderTile> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text("R\$ ${doc.data["shipPrice"]}"),
+                        Text("R\$ ${shipPrice.toStringAsFixed(2)}"),
                       ],
                     ),
                   ],

@@ -82,6 +82,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                   );
                 } else {
                   int status = snapshot.data["status"];
+                  double totalPrice = snapshot.data["totalPrice"];
                   switch (status) {
                     case 1:
                       firtstatus = "Aceitar \n Pedido";
@@ -210,8 +211,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                               "Total: ",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                            Text("R\$ " +
-                                snapshot.data["totalPrice"].toString()),
+                            Text("R\$ " + totalPrice.toStringAsFixed(2)),
                           ],
                         ),
                       ),
@@ -342,6 +342,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
 
   Widget _buildProductsAndComplements(DocumentSnapshot doc) {
     products.clear();
+    double shipPrice = doc.data["shipPrice"];
     for (LinkedHashMap p in doc.data["products"]) {
       products.add(ProductOrderData.fromDynamicDocument(p));
     }
@@ -399,7 +400,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text("R\$ ${doc.data["shipPrice"]}"),
+                        Text("R\$ ${shipPrice.toStringAsFixed(2)}"),
                       ],
                     ),
                   ],
@@ -427,7 +428,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text("R\$ ${doc.data["shipPrice"]}"),
+                        Text("R\$ ${shipPrice.toStringAsFixed(2)}"),
                       ],
                     ),
                   ],
