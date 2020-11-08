@@ -806,6 +806,7 @@ class UserModel extends Model {
         "storeID": userData["storeId"]
       }).then((value) {});
       onSuccess();
+      updatePartnerData();
       isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -964,6 +965,7 @@ class UserModel extends Model {
           queryProductSnapshot.documents.map((doc) {
             productsStore.add(ProductData.fromDocument(doc));
           }).toList();
+          notifyListeners();
         }
       } catch (e) {
         print(e);
@@ -1093,7 +1095,7 @@ class UserModel extends Model {
     }
   }
 
-  setCurrentAddressFromGoolgle(
+  void setCurrentAddressFromGoolgle(
       AddressDataFromGoogle addressDataFromGoogle) async {
     if (firebaseUser == null) await _auth.currentUser();
     if (firebaseUser != null) {
