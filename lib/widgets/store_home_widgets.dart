@@ -14,7 +14,7 @@ class StoreHomeWigget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 12.0,
+        horizontal: 14.0,
         vertical: 6.0,
       ),
       child: Container(

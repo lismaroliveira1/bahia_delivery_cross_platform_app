@@ -15,6 +15,8 @@ import '../tabs/home_tab.dart';
 import 'package:flushbar/flushbar.dart';
 
 class HomeScreen extends StatefulWidget {
+  final int page;
+  HomeScreen(this.page);
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -34,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     configFCM();
+    goTothePage();
   }
 
   void configFCM() {
@@ -91,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return _profileScreen;
         break;
       default:
-        return _homeTab;
+        return _favoriteScreen;
         break;
     }
   }
@@ -156,5 +159,19 @@ class _HomeScreenState extends State<HomeScreen> {
         )
       ],
     );
+  }
+
+  void goTothePage() {
+    switch (widget.page) {
+      case 0:
+        setState(() {
+          _showPage = _pageChooser(0);
+        });
+        break;
+      case 1:
+        setState(() {
+          _showPage = _pageChooser(1);
+        });
+    }
   }
 }

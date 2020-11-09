@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
                                                     255, 216, 216, 216)),
                                             debugShowCheckedModeBanner: false,
                                             home: userModel.isLoggedIn()
-                                                ? HomeScreen()
+                                                ? HomeScreen(0)
                                                 : LoginScreen(),
                                           );
                                         },

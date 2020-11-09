@@ -45,6 +45,7 @@ class UserModel extends Model {
   List<OrderData> listUserOrders = [];
   List<OrderData> listPartnerOders = [];
   List<IncrementalOptData> incrementalOptDataList = [];
+  List<IncrementalOptData> productIncrementals = [];
   String street;
   String state;
   String zipCode;
@@ -1271,6 +1272,7 @@ class UserModel extends Model {
             );
         onSuccess();
         updateIncrementalProductOptions();
+        getIncrementalsFromProduct(incrementalOptData.productId);
         isLoading = false;
         notifyListeners();
       } catch (e) {
@@ -1344,6 +1346,32 @@ class UserModel extends Model {
       } catch (e) {
         print(e);
         onFail();
+        isLoading = false;
+        notifyListeners();
+      }
+    }
+  }
+
+  void getIncrementalsFromProduct(String productID) async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      isLoading = true;
+      notifyListeners();
+      try {
+        QuerySnapshot query = await Firestore.instance
+            .collection("stores")
+            .document(storeId)
+            .collection("products")
+            .document(productID)
+            .collection("incrementalOptions")
+            .getDocuments();
+        productIncrementals.clear();
+        query.documents.map((doc) {
+          productIncrementals.add(IncrementalOptData.fromDocument(doc));
+        }).toList();
+        isLoading = false;
+        notifyListeners();
+      } catch (e) {
         isLoading = false;
         notifyListeners();
       }

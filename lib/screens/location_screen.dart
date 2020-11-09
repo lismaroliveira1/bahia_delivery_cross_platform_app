@@ -1,11 +1,15 @@
 import 'package:bahia_delivery/data/address_data_from_google.dart';
 import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/cart_screen.dart';
+import 'package:bahia_delivery/screens/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_place/google_place.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class LocationScreen extends StatefulWidget {
+  final int page;
+  LocationScreen(this.page);
   @override
   _LocationScreenState createState() => _LocationScreenState();
 }
@@ -91,7 +95,7 @@ class _LocationScreenState extends State<LocationScreen> {
                                                       .setCurrentAddressFromGoolgle(
                                                     address,
                                                   );
-                                                  Navigator.of(context).pop();
+                                                  goTothePage();
                                                 },
                                               ),
                                             ),
@@ -240,6 +244,24 @@ class _LocationScreenState extends State<LocationScreen> {
       setState(() {
         predictions = result.predictions;
       });
+    }
+  }
+
+  void goTothePage() {
+    switch (widget.page) {
+      case 0:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(0),
+          ),
+        );
+        break;
+      case 1:
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => CartScreen(),
+          ),
+        );
     }
   }
 

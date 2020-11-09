@@ -28,7 +28,7 @@ class ShipCard extends StatelessWidget {
             icon: Icon(Icons.add),
             onPressed: () async {
               Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LocationScreen()));
+                  MaterialPageRoute(builder: (context) => LocationScreen(1)));
             },
           ),
           children: <Widget>[

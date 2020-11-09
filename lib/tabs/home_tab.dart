@@ -110,7 +110,7 @@ class _HomeTabState extends State<HomeTab> {
                                   //TODO Inplement GO to the settings function
                                 } else if (status.isGranted) {
                                   Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => LocationScreen(),
+                                    builder: (context) => LocationScreen(0),
                                   ));
                                 } else if (status.isRestricted) {
                                 } else if (status.isUndetermined) {

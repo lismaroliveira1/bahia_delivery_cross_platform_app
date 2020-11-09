@@ -244,7 +244,7 @@ export const onOrderStatusChanged = functions
 });
 
 const partnerStatus = new Map([
-    [1, "Parabéns!! Seja bem vindo! Você agora é um Parceiro Bahia Delivery!!"],
+    [1, "Parabéns!! Seja bem vindo! Agora você é um Parceiro Bahia Delivery!!"],
     [2, "Agora é so esperar, sua proposta está em análise"],
     [3, "Você está na modalidade somente usuário"],
     [4, "Sua conta Parceiro Bahia Delivey está temporariamente suspensa."]

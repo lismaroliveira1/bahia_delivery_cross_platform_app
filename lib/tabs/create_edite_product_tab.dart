@@ -92,6 +92,7 @@ class _CreateEditProductTabState extends State<CreateEditProductTab> {
                                 product.fullDescription,
                                 product.group,
                               );
+                              model.getIncrementalsFromProduct(productData.id);
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) =>
