@@ -771,6 +771,7 @@ class UserModel extends Model {
     @required File imageFile,
     @required String title,
     @required String description,
+    @required String fullDescription,
     @required String price,
     @required String category,
     @required VoidCallback onSuccess,
@@ -800,6 +801,7 @@ class UserModel extends Model {
         "title": title,
         "category": category,
         "description": description,
+        "fullDescription": fullDescription,
         "image": url,
         "price": double.parse(
           price.replaceAll(",", "."),

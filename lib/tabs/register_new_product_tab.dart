@@ -17,6 +17,8 @@ class _RegisterNewProductTabState extends State<RegisterNewProductTab> {
   final TextEditingController priceController = TextEditingController();
   final TextEditingController categgoryController = TextEditingController();
   final TextEditingController productGroupController = TextEditingController();
+  final TextEditingController longDescriptionController =
+      TextEditingController();
   File imageFile;
   bool isImageChoosed = false;
   final picker = ImagePicker();
@@ -165,12 +167,18 @@ class _RegisterNewProductTabState extends State<RegisterNewProductTab> {
               InputNewProductWidget(
                 controller: nameController,
                 labelText: "Nome",
-                hintText: "Ex.: Sandíche da casa",
+                hintText: "Ex.: Sanduíche da casa",
                 maxLines: 1,
               ),
               InputNewProductWidget(
                 controller: descriptionController,
-                labelText: "Descrição",
+                labelText: "Descrição curta",
+                hintText: "",
+                maxLines: 1,
+              ),
+              InputNewProductWidget(
+                controller: longDescriptionController,
+                labelText: "Descrição longa",
                 hintText: "",
                 maxLines: 3,
               ),
@@ -234,6 +242,7 @@ class _RegisterNewProductTabState extends State<RegisterNewProductTab> {
                               imageFile: imageFile,
                               title: nameController.text,
                               description: descriptionController.text,
+                              fullDescription: longDescriptionController.text,
                             );
                           },
                           child: Center(
