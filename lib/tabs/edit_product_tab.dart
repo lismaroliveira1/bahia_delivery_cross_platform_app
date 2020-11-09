@@ -289,6 +289,9 @@ class _EditProductTabState extends State<EditProductTab> {
                                   trailing: Icon(Icons.edit),
                                   title: Text(incremental.title),
                                   subtitle: Text(incremental.description),
+                                  onTap: () {
+                                    print("ok");
+                                  },
                                 ),
                               ),
                             );

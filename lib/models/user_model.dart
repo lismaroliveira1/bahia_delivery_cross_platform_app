@@ -1314,32 +1314,77 @@ class UserModel extends Model {
     @required VoidCallback onSuccess,
     @required VoidCallback onFail,
   }) async {
+    print("ok");
+    bool alereadySeccion = false;
+    List<DocumentSnapshot> productDocs = [];
     if (firebaseUser == null) await _auth.currentUser();
     if (firebaseUser != null) {
       isLoading = true;
       notifyListeners();
+      print("1");
       try {
-        await Firestore.instance
+        QuerySnapshot querySnapshot = await Firestore.instance
             .collection("stores")
             .document(storeId)
             .collection("products")
             .document(incrementalOptData.productId)
             .collection("onlyChooseOptions")
-            .add(
-              incrementalOptData.toIncrementalMap(),
-            )
-            .then((doc) async {
+            .getDocuments();
+        productDocs.clear();
+        querySnapshot.documents.map((doc) {
+          productDocs.add(doc);
+        }).toList();
+        print(productDocs.length);
+        for (DocumentSnapshot doc in productDocs) {
+          if (doc.data["secao"] == incrementalOptData.session) {
+            await Firestore.instance
+                .collection("stores")
+                .document(storeId)
+                .collection("products")
+                .document(incrementalOptData.productId)
+                .collection("onlyChooseOptions")
+                .document(doc.documentID)
+                .collection("itens")
+                .add(
+                  incrementalOptData.toIncrementalMap(),
+                );
+
+            alereadySeccion = true;
+          }
+        }
+        if (!alereadySeccion) {
           await Firestore.instance
               .collection("stores")
               .document(storeId)
               .collection("products")
               .document(incrementalOptData.productId)
               .collection("onlyChooseOptions")
-              .document(doc.documentID)
-              .updateData({
-            "id": doc.documentID,
+              .add({
+            "secao": incrementalOptData.session,
+          }).then((doc) async {
+            await Firestore.instance
+                .collection("stores")
+                .document(storeId)
+                .collection("products")
+                .document(incrementalOptData.productId)
+                .collection("onlyChooseOptions")
+                .document(doc.documentID)
+                .updateData({
+              "id": doc.documentID,
+            });
+            await Firestore.instance
+                .collection("stores")
+                .document(storeId)
+                .collection("products")
+                .document(incrementalOptData.productId)
+                .collection("onlyChooseOptions")
+                .document(doc.documentID)
+                .collection("itens")
+                .add(
+                  incrementalOptData.toIncrementalMap(),
+                );
           });
-        });
+        }
         onSuccess();
         isLoading = false;
         notifyListeners();
