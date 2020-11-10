@@ -86,13 +86,14 @@ class _ProductTabState extends State<ProductTab> {
                     textAlign: TextAlign.center,
                   ),
                 ),
+                _buildListOptOnlyChoose(),
                 Expanded(
                   child: GroupedListView<dynamic, String>(
+                    padding: EdgeInsets.symmetric(vertical: 5),
                     elements: model.productOptionals,
                     groupBy: (incremental) => incremental.session,
                     useStickyGroupSeparators: false,
                     groupSeparatorBuilder: (String value) => Container(
-                      padding: EdgeInsets.only(top: 5),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -501,5 +502,12 @@ class _ProductTabState extends State<ProductTab> {
       ),
     ));
     print("Loja Diferente");
+  }
+
+  Widget _buildListOptOnlyChoose() {
+    return Container(
+      color: Colors.blue,
+      height: 10,
+    );
   }
 }

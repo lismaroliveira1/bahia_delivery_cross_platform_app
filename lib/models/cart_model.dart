@@ -23,6 +23,7 @@ class CartModel extends Model {
   String currentStore = '';
   int quantity = 1;
   List<IncrementalOptData> productOptionals = [];
+  Map optionalsOnlyChooseMap = {};
   double complementPrice = 0;
   bool isAddingItemCart = false;
   CartModel(this.user) {
@@ -351,9 +352,53 @@ class CartModel extends Model {
 
       query.documents.map(
         (doc) {
+          print(doc.documentID);
           productOptionals.add(IncrementalOptData.fromDocument(doc));
         },
       ).toList();
+      QuerySnapshot querySnapshot = await Firestore.instance
+          .collection("stores")
+          .document(storeId)
+          .collection("products")
+          .document(documentSnapshot.documentID)
+          .collection("onlyChooseOptions")
+          .getDocuments();
+      print("aqui");
+      querySnapshot.documents.map((doc) async {
+        if (doc.exists) {
+          print("existe");
+        }
+        optionalsOnlyChooseMap.addAll({
+          "id": doc.data["id"],
+          "secao": doc.data["secao"],
+        });
+        Map itens = {};
+        QuerySnapshot query = await Firestore.instance
+            .collection("stores")
+            .document(storeId)
+            .collection("products")
+            .document(documentSnapshot.documentID)
+            .collection("onlyChooseOptions")
+            .document(doc.documentID)
+            .collection("itens")
+            .getDocuments();
+        query.documents.map((itemDoc) {
+          print(itemDoc.documentID);
+
+          itens.addAll({
+            "description": itemDoc.data["description"],
+            "image": itemDoc.data["image"],
+            "maxQuantity": itemDoc.data["maxQuantity"],
+            "minQuantity": itemDoc.data["minQuantity"],
+            "price": itemDoc.data["price"],
+            "productId": itemDoc.data["productId"],
+            "session": itemDoc.data["session"],
+            "title": itemDoc.data["title"],
+            "type": itemDoc.data["type"],
+          });
+          print(itens);
+        }).toList();
+      }).toList();
       notifyListeners();
     } catch (erro) {
       print(erro);
