@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bahia_delivery/data/store_categore_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/widgets/input_new_product_widget.dart';
 import 'package:flutter/material.dart';
@@ -178,7 +179,18 @@ class _RegisterNewCategoryTabState extends State<RegisterNewCategoryTab> {
                   );
                 } else {
                   return FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      final categoreData = StoreCategoreData(
+                        title: _nameController.text,
+                        description: _descriptionController.text,
+                        image: imageUrl,
+                        imageFile: imageFile,
+                      );
+                      model.registerNewCategory(
+                          storeCategoreData: categoreData,
+                          onSuccess: _onSuccess,
+                          onFail: _onFail);
+                    },
                     child: Center(
                       child: Text(
                         "Enviar",
@@ -201,4 +213,18 @@ class _RegisterNewCategoryTabState extends State<RegisterNewCategoryTab> {
       ],
     );
   }
+
+  void _onSuccess() {
+    Scaffold.of(context).showSnackBar(SnackBar(
+      content: Text(
+        "Categoria criada com sucesso!",
+        textAlign: TextAlign.center,
+      ),
+      backgroundColor: Colors.red,
+      duration: Duration(seconds: 2),
+    ));
+    Navigator.of(context).pop();
+  }
+
+  void _onFail() {}
 }

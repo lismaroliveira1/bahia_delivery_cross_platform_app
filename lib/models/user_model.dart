@@ -9,6 +9,7 @@ import 'package:bahia_delivery/data/order_data.dart';
 import 'package:bahia_delivery/data/payment_on_delivery_date.dart';
 import 'package:bahia_delivery/data/product_data.dart';
 import 'package:bahia_delivery/data/search_data.dart';
+import 'package:bahia_delivery/data/store_categore_data.dart';
 import 'package:bahia_delivery/data/store_data.dart';
 import 'package:bahia_delivery/data/store_with_cpf_data.dart';
 import 'package:bahia_delivery/models/adress.dart';
@@ -1425,20 +1426,45 @@ class UserModel extends Model {
     }
   }
 
-  void registerNewCategory() async {
+  void registerNewCategory({
+    @required StoreCategoreData storeCategoreData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
     if (firebaseUser == null) await _auth.currentUser();
     if (firebaseUser != null) {
       isLoading = true;
       notifyListeners();
+      String url;
       try {
+        if (storeCategoreData.imageFile != null) {
+          StorageUploadTask task = FirebaseStorage.instance
+              .ref()
+              .child("images")
+              .child(storeData.id + DateTime.now().millisecond.toString())
+              .putFile(storeCategoreData.imageFile);
+          StorageTaskSnapshot taskSnapshot = await task.onComplete;
+          url = await taskSnapshot.ref.getDownloadURL();
+        } else {
+          url = storeCategoreData.image;
+        }
         await Firestore.instance
             .collection("stores")
             .document(storeId)
             .collection("categories")
             .add({
-          "oad": "teste",
+          "title": storeCategoreData.title,
+          "description": storeCategoreData.description,
+          "image": url,
         });
-      } catch (e) {}
+        isLoading = false;
+        onSuccess();
+        notifyListeners();
+      } catch (e) {
+        isLoading = false;
+        notifyListeners();
+        onFail();
+      }
     }
   }
 }
