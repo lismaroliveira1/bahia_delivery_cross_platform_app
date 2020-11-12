@@ -1,5 +1,6 @@
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/store_screen.dart';
+import 'package:bahia_delivery/screens/welcome_store_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -52,7 +53,7 @@ class _ListStoriesState extends State<ListStories> {
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        StoreScreen(doc.storeSnapshot),
+                                        WelcomeStoreScreenn(doc.storeSnapshot),
                                   ),
                                 );
                               },

@@ -29,17 +29,18 @@ class _StoreTabState extends State<StoreTab> {
             floating: false,
             pinned: false,
             flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: Text(widget.snapshot.data["title"]),
-                background: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30)),
-                  child: Image.network(
-                    widget.snapshot.data["image"],
-                    fit: BoxFit.cover,
-                  ),
-                )),
+              centerTitle: true,
+              title: Text(widget.snapshot.data["title"]),
+              background: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30)),
+                child: Image.network(
+                  widget.snapshot.data["image"],
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
           )
         ];
       },

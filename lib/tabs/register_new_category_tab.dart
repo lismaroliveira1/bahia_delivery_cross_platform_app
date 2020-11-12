@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bahia_delivery/data/store_categore_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/widgets/input_new_product_widget.dart';
+import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -160,6 +161,18 @@ class _RegisterNewCategoryTabState extends State<RegisterNewCategoryTab> {
           hintText: "",
           maxLines: 3,
         ),
+        StoreHomeWigget(
+          icon: Icons.photo_size_select_large,
+          name: "Tamanho",
+          description: "Configure que esta categoria aparecerá na sua loja",
+          onPressed: _onPositionPressed,
+        ),
+        StoreHomeWigget(
+          icon: Icons.format_list_numbered,
+          name: "Posição",
+          description: "Configure a posição desta categoria na sua loja",
+          onPressed: _onSizeSetupPressed,
+        ),
         Center(
           child: Container(
             margin: EdgeInsets.only(top: 16),
@@ -227,4 +240,6 @@ class _RegisterNewCategoryTabState extends State<RegisterNewCategoryTab> {
   }
 
   void _onFail() {}
+  void _onPositionPressed() {}
+  void _onSizeSetupPressed() {}
 }
