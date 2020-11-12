@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class StoreCategoreData {
+  String id;
   String title;
   String description;
   String image;
@@ -13,8 +14,10 @@ class StoreCategoreData {
     @required this.description,
     @required this.image,
     this.imageFile,
+    this.id,
   });
   StoreCategoreData.fromDocument(DocumentSnapshot doc) {
+    id = doc.documentID;
     title = doc.data["title"];
     description = doc.data["description"];
     image = doc.data["image"];

@@ -970,6 +970,7 @@ class UserModel extends Model {
           queryProductSnapshot.documents.map((doc) {
             productsStore.add(ProductData.fromDocument(doc));
           }).toList();
+          storesCategoresList.clear();
           QuerySnapshot queryCategories = await Firestore.instance
               .collection("stores")
               .document(storeId)
@@ -1466,14 +1467,76 @@ class UserModel extends Model {
           "description": storeCategoreData.description,
           "image": url,
         });
+        storesCategoresList.clear();
+        QuerySnapshot queryCategories = await Firestore.instance
+            .collection("stores")
+            .document(storeId)
+            .collection("categories")
+            .getDocuments();
+        queryCategories.documents.map((doc) {
+          storesCategoresList.add(StoreCategoreData.fromDocument(doc));
+        }).toList();
         isLoading = false;
-        updatePartnerData();
         onSuccess();
         notifyListeners();
       } catch (e) {
         isLoading = false;
         notifyListeners();
         onFail();
+      }
+    }
+  }
+
+  void updateStoreCategore({
+    @required StoreCategoreData storeCategoreData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      String url;
+      isLoading = true;
+      notifyListeners();
+      try {
+        if (storeCategoreData.imageFile != null) {
+          StorageUploadTask task = FirebaseStorage.instance
+              .ref()
+              .child("images")
+              .child(storeData.id + DateTime.now().millisecond.toString())
+              .putFile(storeCategoreData.imageFile);
+          StorageTaskSnapshot taskSnapshot = await task.onComplete;
+          url = await taskSnapshot.ref.getDownloadURL();
+        } else {
+          url = storeCategoreData.image;
+        }
+        print("id ${storeCategoreData.id}");
+        await Firestore.instance
+            .collection("stores")
+            .document(storeId)
+            .collection("categories")
+            .document(storeCategoreData.id)
+            .updateData({
+          "description": storeCategoreData.description,
+          "title": storeCategoreData.title,
+          "image": url,
+        });
+        storesCategoresList.clear();
+        QuerySnapshot queryCategories = await Firestore.instance
+            .collection("stores")
+            .document(storeId)
+            .collection("categories")
+            .getDocuments();
+        queryCategories.documents.map((doc) {
+          storesCategoresList.add(StoreCategoreData.fromDocument(doc));
+        }).toList();
+        onSuccess();
+        isLoading = false;
+        notifyListeners();
+      } catch (erro) {
+        onFail();
+        print(erro);
+        isLoading = false;
+        notifyListeners();
       }
     }
   }
