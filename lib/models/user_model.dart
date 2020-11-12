@@ -1424,4 +1424,21 @@ class UserModel extends Model {
       }
     }
   }
+
+  void registerNewCategory() async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      isLoading = true;
+      notifyListeners();
+      try {
+        await Firestore.instance
+            .collection("stores")
+            .document(storeId)
+            .collection("categories")
+            .add({
+          "oad": "teste",
+        });
+      } catch (e) {}
+    }
+  }
 }
