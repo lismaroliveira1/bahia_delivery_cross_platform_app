@@ -76,6 +76,7 @@ class UserModel extends Model {
   OrderData chatOrderData;
   AddressDataFromGoogle currentAddressDataFromGoogle;
   List<ProductData> productsStore = [];
+  List<StoreCategoreData> storesCategoresList = [];
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -969,6 +970,15 @@ class UserModel extends Model {
           queryProductSnapshot.documents.map((doc) {
             productsStore.add(ProductData.fromDocument(doc));
           }).toList();
+          QuerySnapshot queryCategories = await Firestore.instance
+              .collection("stores")
+              .document(storeId)
+              .collection("categories")
+              .getDocuments();
+          queryCategories.documents.map((doc) {
+            storesCategoresList.add(StoreCategoreData.fromDocument(doc));
+          }).toList();
+          print(storesCategoresList.length);
           notifyListeners();
         }
       } catch (e) {

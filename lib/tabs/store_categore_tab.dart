@@ -44,6 +44,26 @@ class _CategoryStoreTabState extends State<CategoryStoreTab> {
                 description: "Cadastre novas categorias na sua loja",
                 onPressed: _onNewCategoryPressed,
               ),
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Row(
+                  children: [
+                    Text("Categorias"),
+                  ],
+                ),
+              ),
+              ScopedModelDescendant<UserModel>(
+                  builder: (context, child, model) {
+                if (model.isLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  return Container(
+                    height: 0,
+                  );
+                }
+              })
             ],
           );
         }
