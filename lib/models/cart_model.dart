@@ -411,35 +411,39 @@ class CartModel extends Model {
     String storeId,
   ) async {
     List<IncrementalOptData> itens = [];
-    QuerySnapshot querySnapshot = await Firestore.instance
-        .collection("stores")
-        .document(storeId)
-        .collection("products")
-        .document(documentSnapshot.documentID)
-        .collection("onlyChooseOptions")
-        .getDocuments();
-    for (DocumentSnapshot doc in querySnapshot.documents) {
-      QuerySnapshot query = await Firestore.instance
+    try {
+      QuerySnapshot querySnapshot = await Firestore.instance
           .collection("stores")
           .document(storeId)
           .collection("products")
           .document(documentSnapshot.documentID)
           .collection("onlyChooseOptions")
-          .document(doc.documentID)
-          .collection("itens")
           .getDocuments();
-      query.documents.map((itemDoc) {
-        itens.add(IncrementalOptData.fromDocument(itemDoc));
-      }).toList();
-      var incrementalOnlyChooseData = IncrementalOnlyChooseData.getAll(
-        doc.data["id"],
-        doc.data["secaoo"],
-        itens,
-      );
-      optionalsOnlyChooseList.add(
-        incrementalOnlyChooseData,
-      );
-    }
-    print(optionalsOnlyChooseList.length);
+      for (DocumentSnapshot doc in querySnapshot.documents) {
+        QuerySnapshot query = await Firestore.instance
+            .collection("stores")
+            .document(storeId)
+            .collection("products")
+            .document(documentSnapshot.documentID)
+            .collection("onlyChooseOptions")
+            .document(doc.documentID)
+            .collection("itens")
+            .getDocuments();
+        query.documents.map((itemDoc) {
+          itens.add(IncrementalOptData.fromDocument(itemDoc));
+        }).toList();
+        var incrementalOnlyChooseData = IncrementalOnlyChooseData.getAll(
+          doc.data["id"],
+          doc.data["secao"],
+          itens,
+        );
+        print(incrementalOnlyChooseData.secao);
+        optionalsOnlyChooseList.add(
+          incrementalOnlyChooseData,
+        );
+      }
+      print(optionalsOnlyChooseList.length);
+      notifyListeners();
+    } catch (e) {}
   }
 }

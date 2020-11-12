@@ -23,7 +23,7 @@ class _ProductTabState extends State<ProductTab> {
   int quantity = 1;
   List<OptionalProductData> optionals = [];
   List<IncrementalOptData> productOptionals = [];
-  List<IncrementalOnlyChooseData> optionalsOnlyChooseList = [];
+
   bool isOptionalLoaded = false;
 
   _ProductTabState(this.snapshot, this.storeId);
@@ -33,7 +33,6 @@ class _ProductTabState extends State<ProductTab> {
       CartModel.of(context).listOptionals(widget.snapshot, storeId);
       productOptionals = CartModel.of(context).productOptionals;
       CartModel.of(context).getOnlyChooseOptionals(widget.snapshot, storeId);
-      optionalsOnlyChooseList = CartModel.of(context).optionalsOnlyChooseList;
       isOptionalLoaded = true;
     }
     return ScopedModelDescendant<CartModel>(
@@ -90,7 +89,39 @@ class _ProductTabState extends State<ProductTab> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                _buildListOptOnlyChoose(),
+                model.optionalsOnlyChooseList.length > 0
+                    ? Column(
+                        children: model.optionalsOnlyChooseList
+                            .map((incrementalOnlyChoose) {
+                          bool _checked = false;
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                  vertical: 2.0,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      incrementalOnlyChoose.secao == null
+                                          ? ""
+                                          : incrementalOnlyChoose.secao,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          );
+                        }).toList(),
+                      )
+                    : Container(
+                        height: 0,
+                      ),
                 Expanded(
                   child: GroupedListView<dynamic, String>(
                     padding: EdgeInsets.symmetric(vertical: 5),
@@ -112,7 +143,9 @@ class _ProductTabState extends State<ProductTab> {
                               value,
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: 13, fontWeight: FontWeight.bold),
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ],
