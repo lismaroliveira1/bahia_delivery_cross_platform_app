@@ -978,7 +978,6 @@ class UserModel extends Model {
           queryCategories.documents.map((doc) {
             storesCategoresList.add(StoreCategoreData.fromDocument(doc));
           }).toList();
-
           notifyListeners();
         }
       } catch (e) {
@@ -1468,6 +1467,7 @@ class UserModel extends Model {
           "image": url,
         });
         isLoading = false;
+        updatePartnerData();
         onSuccess();
         notifyListeners();
       } catch (e) {
