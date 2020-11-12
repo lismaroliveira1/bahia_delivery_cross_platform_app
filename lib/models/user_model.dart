@@ -978,7 +978,7 @@ class UserModel extends Model {
           queryCategories.documents.map((doc) {
             storesCategoresList.add(StoreCategoreData.fromDocument(doc));
           }).toList();
-          print(storesCategoresList.length);
+
           notifyListeners();
         }
       } catch (e) {
