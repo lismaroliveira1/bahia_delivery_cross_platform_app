@@ -1,4 +1,5 @@
 import 'package:bahia_delivery/data/cart_product.dart';
+import 'package:bahia_delivery/data/incremental_only_choose.dart';
 import 'package:bahia_delivery/data/incremental_optional_data.dart';
 import 'package:bahia_delivery/data/product_optional_data.dart';
 import 'package:bahia_delivery/models/cart_model.dart';
@@ -22,6 +23,7 @@ class _ProductTabState extends State<ProductTab> {
   int quantity = 1;
   List<OptionalProductData> optionals = [];
   List<IncrementalOptData> productOptionals = [];
+  List<IncrementalOnlyChooseData> optionalsOnlyChooseList = [];
   bool isOptionalLoaded = false;
 
   _ProductTabState(this.snapshot, this.storeId);
@@ -30,6 +32,8 @@ class _ProductTabState extends State<ProductTab> {
     if (!isOptionalLoaded) {
       CartModel.of(context).listOptionals(widget.snapshot, storeId);
       productOptionals = CartModel.of(context).productOptionals;
+      CartModel.of(context).getOnlyChooseOptionals(widget.snapshot, storeId);
+      optionalsOnlyChooseList = CartModel.of(context).optionalsOnlyChooseList;
       isOptionalLoaded = true;
     }
     return ScopedModelDescendant<CartModel>(

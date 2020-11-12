@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:bahia_delivery/data/cart_product.dart';
 import 'package:bahia_delivery/data/credit_debit_card_data.dart';
+import 'package:bahia_delivery/data/incremental_only_choose.dart';
 import 'package:bahia_delivery/data/incremental_optional_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,7 +24,8 @@ class CartModel extends Model {
   String currentStore = '';
   int quantity = 1;
   List<IncrementalOptData> productOptionals = [];
-  Map optionalsOnlyChooseMap = {};
+  List<IncrementalOnlyChooseData> optionalsOnlyChooseList = [];
+  IncrementalOnlyChooseData incrementalOnlyChooseData;
   double complementPrice = 0;
   bool isAddingItemCart = false;
   CartModel(this.user) {
@@ -340,7 +342,7 @@ class CartModel extends Model {
   Future<void> listOptionals(
       DocumentSnapshot documentSnapshot, String storeId) async {
     productOptionals.clear();
-    complementPrice = 0;
+    optionalsOnlyChooseList.clear();
     try {
       QuerySnapshot query = await Firestore.instance
           .collection("stores")
@@ -349,56 +351,11 @@ class CartModel extends Model {
           .document(documentSnapshot.documentID)
           .collection("incrementalOptions")
           .getDocuments();
-
       query.documents.map(
         (doc) {
-          print(doc.documentID);
           productOptionals.add(IncrementalOptData.fromDocument(doc));
         },
       ).toList();
-      QuerySnapshot querySnapshot = await Firestore.instance
-          .collection("stores")
-          .document(storeId)
-          .collection("products")
-          .document(documentSnapshot.documentID)
-          .collection("onlyChooseOptions")
-          .getDocuments();
-      print("aqui");
-      querySnapshot.documents.map((doc) async {
-        if (doc.exists) {
-          print("existe");
-        }
-        optionalsOnlyChooseMap.addAll({
-          "id": doc.data["id"],
-          "secao": doc.data["secao"],
-        });
-        Map itens = {};
-        QuerySnapshot query = await Firestore.instance
-            .collection("stores")
-            .document(storeId)
-            .collection("products")
-            .document(documentSnapshot.documentID)
-            .collection("onlyChooseOptions")
-            .document(doc.documentID)
-            .collection("itens")
-            .getDocuments();
-        query.documents.map((itemDoc) {
-          print(itemDoc.documentID);
-
-          itens.addAll({
-            "description": itemDoc.data["description"],
-            "image": itemDoc.data["image"],
-            "maxQuantity": itemDoc.data["maxQuantity"],
-            "minQuantity": itemDoc.data["minQuantity"],
-            "price": itemDoc.data["price"],
-            "productId": itemDoc.data["productId"],
-            "session": itemDoc.data["session"],
-            "title": itemDoc.data["title"],
-            "type": itemDoc.data["type"],
-          });
-          print(itens);
-        }).toList();
-      }).toList();
       notifyListeners();
     } catch (erro) {
       print(erro);
@@ -447,5 +404,42 @@ class CartModel extends Model {
       doc.reference.delete();
     }
     products.clear();
+  }
+
+  void getOnlyChooseOptionals(
+    DocumentSnapshot documentSnapshot,
+    String storeId,
+  ) async {
+    List<IncrementalOptData> itens = [];
+    QuerySnapshot querySnapshot = await Firestore.instance
+        .collection("stores")
+        .document(storeId)
+        .collection("products")
+        .document(documentSnapshot.documentID)
+        .collection("onlyChooseOptions")
+        .getDocuments();
+    for (DocumentSnapshot doc in querySnapshot.documents) {
+      QuerySnapshot query = await Firestore.instance
+          .collection("stores")
+          .document(storeId)
+          .collection("products")
+          .document(documentSnapshot.documentID)
+          .collection("onlyChooseOptions")
+          .document(doc.documentID)
+          .collection("itens")
+          .getDocuments();
+      query.documents.map((itemDoc) {
+        itens.add(IncrementalOptData.fromDocument(itemDoc));
+      }).toList();
+      var incrementalOnlyChooseData = IncrementalOnlyChooseData.getAll(
+        doc.data["id"],
+        doc.data["secaoo"],
+        itens,
+      );
+      optionalsOnlyChooseList.add(
+        incrementalOnlyChooseData,
+      );
+    }
+    print(optionalsOnlyChooseList.length);
   }
 }
