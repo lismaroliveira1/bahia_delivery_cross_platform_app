@@ -1,4 +1,4 @@
-import 'package:bahia_delivery/tabs/store_categore_screen.dart';
+import 'package:bahia_delivery/tabs/store_categore_tab.dart';
 import 'package:flutter/material.dart';
 
 class CategoryStoreScreen extends StatelessWidget {
