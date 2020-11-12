@@ -20,6 +20,7 @@ class _LocationScreenState extends State<LocationScreen> {
   bool isSeted = false;
   List<AutocompletePrediction> predictions = [];
   final TextEditingController addressController = TextEditingController();
+  bool close = false;
 
   @override
   void initState() {
@@ -29,7 +30,10 @@ class _LocationScreenState extends State<LocationScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext buildContext) {
+    if (close) {
+      Navigator.of(buildContext).pop();
+    }
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
       if (model.isLoading == true) {
         return Container(
@@ -95,7 +99,9 @@ class _LocationScreenState extends State<LocationScreen> {
                                                       .setCurrentAddressFromGoolgle(
                                                     address,
                                                   );
-                                                  goTothePage();
+                                                  setState(() {
+                                                    close = true;
+                                                  });
                                                 },
                                               ),
                                             ),
@@ -244,24 +250,6 @@ class _LocationScreenState extends State<LocationScreen> {
       setState(() {
         predictions = result.predictions;
       });
-    }
-  }
-
-  void goTothePage() {
-    switch (widget.page) {
-      case 0:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => HomeScreen(0),
-          ),
-        );
-        break;
-      case 1:
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => CartScreen(),
-          ),
-        );
     }
   }
 

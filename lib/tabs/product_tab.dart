@@ -1,5 +1,4 @@
 import 'package:bahia_delivery/data/cart_product.dart';
-import 'package:bahia_delivery/data/incremental_only_choose.dart';
 import 'package:bahia_delivery/data/incremental_optional_data.dart';
 import 'package:bahia_delivery/data/product_optional_data.dart';
 import 'package:bahia_delivery/models/cart_model.dart';
@@ -89,39 +88,6 @@ class _ProductTabState extends State<ProductTab> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                model.optionalsOnlyChooseList.length > 0
-                    ? Column(
-                        children: model.optionalsOnlyChooseList
-                            .map((incrementalOnlyChoose) {
-                          bool _checked = false;
-                          return Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 8.0,
-                                  vertical: 2.0,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      incrementalOnlyChoose.secao == null
-                                          ? ""
-                                          : incrementalOnlyChoose.secao,
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          );
-                        }).toList(),
-                      )
-                    : Container(
-                        height: 0,
-                      ),
                 Expanded(
                   child: GroupedListView<dynamic, String>(
                     padding: EdgeInsets.symmetric(vertical: 5),

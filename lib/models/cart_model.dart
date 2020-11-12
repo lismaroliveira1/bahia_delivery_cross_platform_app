@@ -26,6 +26,7 @@ class CartModel extends Model {
   List<IncrementalOptData> productOptionals = [];
   List<IncrementalOnlyChooseData> optionalsOnlyChooseList = [];
   IncrementalOnlyChooseData incrementalOnlyChooseData;
+  List<IncrementalOptData> itens = [];
   double complementPrice = 0;
   bool isAddingItemCart = false;
   CartModel(this.user) {
@@ -410,8 +411,9 @@ class CartModel extends Model {
     DocumentSnapshot documentSnapshot,
     String storeId,
   ) async {
-    List<IncrementalOptData> itens = [];
     try {
+      optionalsOnlyChooseList.clear();
+      itens.clear();
       QuerySnapshot querySnapshot = await Firestore.instance
           .collection("stores")
           .document(storeId)
@@ -419,6 +421,7 @@ class CartModel extends Model {
           .document(documentSnapshot.documentID)
           .collection("onlyChooseOptions")
           .getDocuments();
+
       for (DocumentSnapshot doc in querySnapshot.documents) {
         QuerySnapshot query = await Firestore.instance
             .collection("stores")
@@ -429,6 +432,7 @@ class CartModel extends Model {
             .document(doc.documentID)
             .collection("itens")
             .getDocuments();
+
         query.documents.map((itemDoc) {
           itens.add(IncrementalOptData.fromDocument(itemDoc));
         }).toList();
@@ -442,7 +446,7 @@ class CartModel extends Model {
           incrementalOnlyChooseData,
         );
       }
-      print(optionalsOnlyChooseList.length);
+
       notifyListeners();
     } catch (e) {}
   }

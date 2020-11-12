@@ -1,6 +1,7 @@
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/create_edit_product_screen.dart';
 import 'package:bahia_delivery/screens/financial_screen.dart';
+import 'package:bahia_delivery/screens/store_category_screen.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -89,6 +90,13 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                       description: "Adcione ou edite produtos",
                     ),
                     StoreHomeWigget(
+                      onPressed: _onCategoryStorePressed,
+                      icon: Icons.attach_money,
+                      name: "Categorias",
+                      description:
+                          "Adcione categorias e organize os prodrutos nelas",
+                    ),
+                    StoreHomeWigget(
                       onPressed: () {},
                       icon: Icons.bolt,
                       name: "Promoções",
@@ -136,6 +144,14 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => CreateEditProductScreen(),
+      ),
+    );
+  }
+
+  void _onCategoryStorePressed() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => CategoryStoreScreen(),
       ),
     );
   }
