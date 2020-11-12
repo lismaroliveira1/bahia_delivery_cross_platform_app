@@ -1,4 +1,5 @@
 import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/register_new_category_screnn.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -41,12 +42,18 @@ class _CategoryStoreTabState extends State<CategoryStoreTab> {
                 icon: Icons.add_circle_outline_rounded,
                 name: "Nova Categoria",
                 description: "Cadastre novas categorias na sua loja",
-                onPressed: () {},
+                onPressed: _onNewCategoryPressed,
               ),
             ],
           );
         }
       })
     ]);
+  }
+
+  void _onNewCategoryPressed() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => RegisterNewCategoryScreen(),
+    ));
   }
 }
