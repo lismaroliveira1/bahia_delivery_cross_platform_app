@@ -19,10 +19,19 @@ class _RegisterNewCategoryTabState extends State<RegisterNewCategoryTab> {
   final String imageUrl = "https://meuvidraceiro.com.br/images/sem-imagem.png";
   File imageFile;
   bool isImageChoosed = false;
+  int x;
+  int y;
+  int order;
   final picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
+    int listLength = UserModel.of(context).storesCategoresList.length;
+    if (listLength == 0) {
+      setState(() {
+        order = 0;
+      });
+    }
     return Column(
       children: [
         Container(
@@ -161,18 +170,6 @@ class _RegisterNewCategoryTabState extends State<RegisterNewCategoryTab> {
           hintText: "",
           maxLines: 3,
         ),
-        StoreHomeWigget(
-          icon: Icons.photo_size_select_large,
-          name: "Tamanho",
-          description: "Configure que esta categoria aparecerá na sua loja",
-          onPressed: _onPositionPressed,
-        ),
-        StoreHomeWigget(
-          icon: Icons.format_list_numbered,
-          name: "Posição",
-          description: "Configure a posição desta categoria na sua loja",
-          onPressed: _onSizeSetupPressed,
-        ),
         Center(
           child: Container(
             margin: EdgeInsets.only(top: 16),
@@ -200,9 +197,14 @@ class _RegisterNewCategoryTabState extends State<RegisterNewCategoryTab> {
                         imageFile: imageFile,
                       );
                       model.registerNewCategory(
-                          storeCategoreData: categoreData,
-                          onSuccess: _onSuccess,
-                          onFail: _onFail);
+                        storeCategoreData: categoreData,
+                        onSuccess: _onSuccess,
+                        onFail: _onFail,
+                        x: x,
+                        y: y,
+                        noSize: _onPositionPressed,
+                        order: order,
+                      );
                     },
                     child: Center(
                       child: Text(
@@ -241,6 +243,7 @@ class _RegisterNewCategoryTabState extends State<RegisterNewCategoryTab> {
 
   void _onFail() {}
   void _onPositionPressed() {
+    Scaffold.of(context).hideCurrentSnackBar();
     Scaffold.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.white,
@@ -261,6 +264,13 @@ class _RegisterNewCategoryTabState extends State<RegisterNewCategoryTab> {
                     color: Colors.black,
                   ),
                   ListTile(
+                    onTap: () {
+                      setState(() {
+                        x = 2;
+                        y = 2;
+                      });
+                      Scaffold.of(context).hideCurrentSnackBar();
+                    },
                     dense: true,
                     contentPadding: EdgeInsets.zero,
                     title: Row(
@@ -277,6 +287,13 @@ class _RegisterNewCategoryTabState extends State<RegisterNewCategoryTab> {
                     color: Colors.black,
                   ),
                   ListTile(
+                    onTap: () {
+                      setState(() {
+                        x = 2;
+                        y = 1;
+                      });
+                      Scaffold.of(context).hideCurrentSnackBar();
+                    },
                     contentPadding: EdgeInsets.zero,
                     dense: true,
                     title: Row(
@@ -293,6 +310,13 @@ class _RegisterNewCategoryTabState extends State<RegisterNewCategoryTab> {
                     color: Colors.black,
                   ),
                   ListTile(
+                    onTap: () {
+                      setState(() {
+                        x = 1;
+                        y = 2;
+                      });
+                      Scaffold.of(context).hideCurrentSnackBar();
+                    },
                     contentPadding: EdgeInsets.zero,
                     dense: true,
                     title: Row(
@@ -309,6 +333,13 @@ class _RegisterNewCategoryTabState extends State<RegisterNewCategoryTab> {
                     color: Colors.black,
                   ),
                   ListTile(
+                    onTap: () {
+                      setState(() {
+                        x = 1;
+                        y = 1;
+                      });
+                      Scaffold.of(context).hideCurrentSnackBar();
+                    },
                     contentPadding: EdgeInsets.zero,
                     dense: true,
                     title: Row(
@@ -333,5 +364,95 @@ class _RegisterNewCategoryTabState extends State<RegisterNewCategoryTab> {
     );
   }
 
-  void _onSizeSetupPressed() {}
+  void _onSizeSetupPressed() {
+    int listLenght = UserModel.of(context).storesCategoresList.length;
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
+        ),
+      ),
+      content: Container(
+          height: 200,
+          child: ListView.builder(
+            itemCount: listLenght,
+            itemBuilder: (context, index) {
+              int position = index + 1;
+              return Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      border:
+                          order == index ? Border.all(color: Colors.red) : null,
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        "$position" + "º",
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      onTap: () {
+                        setState(() {
+                          order = index;
+                        });
+                        Scaffold.of(context).hideCurrentSnackBar();
+                      },
+                    ),
+                  ),
+                  listLenght == index + 1
+                      ? Container(
+                          decoration: BoxDecoration(
+                            border: order == index + 1
+                                ? Border.all(color: Colors.red)
+                                : null,
+                          ),
+                          child: ListTile(
+                            title: Text(
+                              "${listLenght + 1}º",
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            onTap: () {
+                              setState(() {
+                                order = index + 1;
+                              });
+                              Scaffold.of(context).hideCurrentSnackBar();
+                            },
+                          ),
+                        )
+                      : Container(
+                          height: 0,
+                        )
+                ],
+              );
+            },
+          )),
+    ));
+  }
+
+  void _onPositionPressedListLengthNull() {
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.red,
+        content: Container(
+          height: 20,
+          child: Text(
+            "Posição já definida",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+    );
+  }
 }

@@ -1440,7 +1440,15 @@ class UserModel extends Model {
     @required StoreCategoreData storeCategoreData,
     @required VoidCallback onSuccess,
     @required VoidCallback onFail,
+    @required VoidCallback noSize,
+    @required int x,
+    @required int y,
+    @required int order,
   }) async {
+    if (x == null || y == null) {
+      noSize();
+      return;
+    }
     if (firebaseUser == null) await _auth.currentUser();
     if (firebaseUser != null) {
       isLoading = true;
@@ -1466,12 +1474,19 @@ class UserModel extends Model {
           "title": storeCategoreData.title,
           "description": storeCategoreData.description,
           "image": url,
+          "x": x,
+          "y": y,
+          "order": order,
         });
         storesCategoresList.clear();
         QuerySnapshot queryCategories = await Firestore.instance
             .collection("stores")
             .document(storeId)
             .collection("categories")
+            .orderBy(
+              "order",
+              descending: false,
+            )
             .getDocuments();
         queryCategories.documents.map((doc) {
           storesCategoresList.add(StoreCategoreData.fromDocument(doc));

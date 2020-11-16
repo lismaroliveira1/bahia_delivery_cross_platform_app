@@ -5,11 +5,14 @@ class StoreHomeWigget extends StatelessWidget {
   final String name;
   final String description;
   final VoidCallback onPressed;
-  StoreHomeWigget(
-      {@required this.icon,
-      @required this.name,
-      @required this.description,
-      @required this.onPressed});
+  final Widget trailing;
+  StoreHomeWigget({
+    @required this.icon,
+    @required this.name,
+    @required this.description,
+    @required this.onPressed,
+    this.trailing,
+  });
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -43,6 +46,7 @@ class StoreHomeWigget extends StatelessWidget {
                   color: Colors.black54,
                 ),
               ),
+              trailing: trailing,
               subtitle: Text(
                 description,
                 style: TextStyle(color: Colors.black45),
