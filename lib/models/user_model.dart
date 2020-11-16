@@ -975,6 +975,10 @@ class UserModel extends Model {
               .collection("stores")
               .document(storeId)
               .collection("categories")
+              .orderBy(
+                "order",
+                descending: false,
+              )
               .getDocuments();
           queryCategories.documents.map((doc) {
             storesCategoresList.add(StoreCategoreData.fromDocument(doc));
@@ -1540,6 +1544,10 @@ class UserModel extends Model {
             .collection("stores")
             .document(storeId)
             .collection("categories")
+            .orderBy(
+              "order",
+              descending: false,
+            )
             .getDocuments();
         queryCategories.documents.map((doc) {
           storesCategoresList.add(StoreCategoreData.fromDocument(doc));

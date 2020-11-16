@@ -23,9 +23,14 @@ class _EditStoreCategoreTabState extends State<EditStoreCategoreTab> {
   File imageFile;
   bool isImageChoosed = false;
   final picker = ImagePicker();
-
+  int x;
+  int y;
+  int order;
   @override
   Widget build(BuildContext context) {
+    x = widget.storeCategoreData.x;
+    y = widget.storeCategoreData.y;
+    order = widget.storeCategoreData.order;
     return Column(
       children: [
         Container(
@@ -170,13 +175,15 @@ class _EditStoreCategoreTabState extends State<EditStoreCategoreTab> {
           icon: Icons.photo_size_select_large,
           name: "Tamanho",
           description: "Configure que esta categoria aparecerá na sua loja",
-          onPressed: () {},
+          onPressed: _onSizeSetupPressed,
+          trailing: x != null || y != null ? Text("$x:$y") : null,
         ),
         StoreHomeWigget(
           icon: Icons.format_list_numbered,
           name: "Posição",
           description: "Configure a posição desta categoria na sua loja",
           onPressed: () {},
+          trailing: Text("${order + 1}º"),
         ),
         Center(
           child: Container(
@@ -249,4 +256,204 @@ class _EditStoreCategoreTabState extends State<EditStoreCategoreTab> {
   }
 
   void _onFail() {}
+
+  void _onSizeSetupPressed() {
+    int listLenght = UserModel.of(context).storesCategoresList.length;
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
+        ),
+        content: Container(
+          height: 200,
+          child: ListView.builder(
+            itemCount: listLenght,
+            itemBuilder: (context, index) {
+              int position = index + 1;
+              return Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      border:
+                          order == index ? Border.all(color: Colors.red) : null,
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        "$position" + "º",
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      onTap: () {
+                        setState(() {
+                          order = index;
+                        });
+                        Scaffold.of(context).hideCurrentSnackBar();
+                      },
+                    ),
+                  ),
+                  listLenght == index + 1
+                      ? Container(
+                          decoration: BoxDecoration(
+                            border: order == index + 1
+                                ? Border.all(color: Colors.red)
+                                : null,
+                          ),
+                          child: ListTile(
+                            title: Text(
+                              "${listLenght + 1}º",
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            onTap: () {
+                              setState(
+                                () {
+                                  order = index + 1;
+                                },
+                              );
+                              Scaffold.of(context).hideCurrentSnackBar();
+                            },
+                          ),
+                        )
+                      : Container(
+                          height: 0,
+                        )
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _onPositionPressed() {
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
+        ),
+        content: Container(
+          height: MediaQuery.of(context).size.height / 4,
+          child: Expanded(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: ListView(
+                children: [
+                  Divider(
+                    color: Colors.black,
+                  ),
+                  ListTile(
+                    onTap: () {
+                      setState(() {
+                        x = 2;
+                        y = 2;
+                      });
+                      Scaffold.of(context).hideCurrentSnackBar();
+                    },
+                    dense: true,
+                    contentPadding: EdgeInsets.zero,
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "2:2",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.black,
+                  ),
+                  ListTile(
+                    onTap: () {
+                      setState(() {
+                        x = 2;
+                        y = 1;
+                      });
+                      Scaffold.of(context).hideCurrentSnackBar();
+                    },
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "2:1",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.black,
+                  ),
+                  ListTile(
+                    onTap: () {
+                      setState(() {
+                        x = 1;
+                        y = 2;
+                      });
+                      Scaffold.of(context).hideCurrentSnackBar();
+                    },
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "1:2",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.black,
+                  ),
+                  ListTile(
+                    onTap: () {
+                      setState(() {
+                        x = 1;
+                        y = 1;
+                      });
+                      Scaffold.of(context).hideCurrentSnackBar();
+                    },
+                    contentPadding: EdgeInsets.zero,
+                    dense: true,
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "1:1",
+                          style: TextStyle(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.black,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
