@@ -26,11 +26,16 @@ class _EditStoreCategoreTabState extends State<EditStoreCategoreTab> {
   int x;
   int y;
   int order;
+  bool isOrderSeted = false;
   @override
   Widget build(BuildContext context) {
     x = widget.storeCategoreData.x;
     y = widget.storeCategoreData.y;
-    order = widget.storeCategoreData.order;
+    print(isOrderSeted);
+    if (!isOrderSeted) {
+      order = widget.storeCategoreData.order;
+      isOrderSeted = true;
+    }
     return Column(
       children: [
         Container(
@@ -175,14 +180,14 @@ class _EditStoreCategoreTabState extends State<EditStoreCategoreTab> {
           icon: Icons.photo_size_select_large,
           name: "Tamanho",
           description: "Configure que esta categoria aparecerá na sua loja",
-          onPressed: _onSizeSetupPressed,
+          onPressed: _onSizePressed,
           trailing: x != null || y != null ? Text("$x:$y") : null,
         ),
         StoreHomeWigget(
           icon: Icons.format_list_numbered,
           name: "Posição",
           description: "Configure a posição desta categoria na sua loja",
-          onPressed: () {},
+          onPressed: _onPositionPressed,
           trailing: Text("${order + 1}º"),
         ),
         Center(
@@ -257,7 +262,7 @@ class _EditStoreCategoreTabState extends State<EditStoreCategoreTab> {
 
   void _onFail() {}
 
-  void _onSizeSetupPressed() {
+  void _onPositionPressed() {
     int listLenght = UserModel.of(context).storesCategoresList.length;
     Scaffold.of(context).hideCurrentSnackBar();
     Scaffold.of(context).showSnackBar(
@@ -298,34 +303,6 @@ class _EditStoreCategoreTabState extends State<EditStoreCategoreTab> {
                       },
                     ),
                   ),
-                  listLenght == index + 1
-                      ? Container(
-                          decoration: BoxDecoration(
-                            border: order == index + 1
-                                ? Border.all(color: Colors.red)
-                                : null,
-                          ),
-                          child: ListTile(
-                            title: Text(
-                              "${listLenght + 1}º",
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            onTap: () {
-                              setState(
-                                () {
-                                  order = index + 1;
-                                },
-                              );
-                              Scaffold.of(context).hideCurrentSnackBar();
-                            },
-                          ),
-                        )
-                      : Container(
-                          height: 0,
-                        )
                 ],
               );
             },
@@ -335,7 +312,7 @@ class _EditStoreCategoreTabState extends State<EditStoreCategoreTab> {
     );
   }
 
-  void _onPositionPressed() {
+  void _onSizePressed() {
     Scaffold.of(context).hideCurrentSnackBar();
     Scaffold.of(context).showSnackBar(
       SnackBar(
