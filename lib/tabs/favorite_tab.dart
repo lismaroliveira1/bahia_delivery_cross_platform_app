@@ -2,6 +2,7 @@ import 'package:bahia_delivery/data/store_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/login_screen.dart';
 import 'package:bahia_delivery/screens/store_screen.dart';
+import 'package:bahia_delivery/screens/welcome_store_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -102,7 +103,7 @@ class _FavoriteTabState extends State<FavoriteTab> {
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) =>
-                                  StoreScreen(storeData.storeSnapshot),
+                                  WelcomeStoreScreenn(storeData.storeSnapshot),
                             ),
                           );
                         },
@@ -147,7 +148,7 @@ class _FavoriteTabState extends State<FavoriteTab> {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (cnotext) =>
-                                StoreScreen(storeData.storeSnapshot),
+                                WelcomeStoreScreenn(storeData.storeSnapshot),
                           ),
                         );
                       },

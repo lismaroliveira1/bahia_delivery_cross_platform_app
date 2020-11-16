@@ -5,7 +5,11 @@ import 'package:flutter/material.dart';
 
 class StoreScreen extends StatefulWidget {
   final DocumentSnapshot snapshot;
-  StoreScreen(this.snapshot);
+  final String categoryId;
+  StoreScreen({
+    @required this.snapshot,
+    @required this.categoryId,
+  });
   @override
   _StoreScreenState createState() => _StoreScreenState(snapshot);
 }
@@ -18,7 +22,10 @@ class _StoreScreenState extends State<StoreScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: StoreTab(snapshot),
+      body: StoreTab(
+        snapshot: snapshot,
+        categoryId: widget.categoryId,
+      ),
     );
   }
 }

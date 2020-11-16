@@ -5,8 +5,11 @@ import 'package:grouped_list/grouped_list.dart';
 
 class StoreTab extends StatefulWidget {
   final DocumentSnapshot snapshot;
-
-  StoreTab(this.snapshot);
+  final String categoryId;
+  StoreTab({
+    @required this.snapshot,
+    @required this.categoryId,
+  });
 
   @override
   _StoreTabState createState() => _StoreTabState();
@@ -61,7 +64,12 @@ class _StoreTabState extends State<StoreTab> {
                 children: [
                   Expanded(
                     child: GroupedListView<dynamic, String>(
-                      elements: snapshot.data.documents,
+                      elements: snapshot.data.documents
+                          .where(
+                            (doc) =>
+                                doc.data["categoryId"] == widget.categoryId,
+                          )
+                          .toList(),
                       groupBy: (doc) => doc.data["group"],
                       useStickyGroupSeparators: false,
                       groupSeparatorBuilder: (String value) => Container(
@@ -93,62 +101,70 @@ class _StoreTabState extends State<StoreTab> {
                             padding: const EdgeInsets.symmetric(vertical: 8.0),
                             child: Container(
                               padding: EdgeInsets.only(top: 4, bottom: 4.0),
-                              child: ListTile(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => new ProductScreen(
-                                        doc,
-                                        widget.snapshot.documentID,
-                                      ),
-                                    ),
-                                  );
-                                },
-                                dense: false,
-                                leading: Container(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(6),
-                                    child: Image.network(
-                                      doc.data["image"],
-                                      fit: BoxFit.fill,
-                                      height: 80,
-                                      width: 60,
-                                    ),
-                                  ),
-                                ),
-                                title: Text(doc.data["title"]),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      doc.data["description"]
-                                                  .toString()
-                                                  .length <
-                                              40
-                                          ? doc.data["description"]
-                                          : doc.data["description"]
-                                                  .toString()
-                                                  .substring(0, 40) +
-                                              "...",
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          'R' +
-                                              '\$ ' +
-                                              doc.data["price"]
-                                                  .toString()
-                                                  .replaceAll(".", ","),
-                                          style: TextStyle(
-                                            color: Colors.green,
+                              child: doc.data["categoryId"] == widget.categoryId
+                                  ? ListTile(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                new ProductScreen(
+                                              doc,
+                                              widget.snapshot.documentID,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      dense: false,
+                                      leading: Container(
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                          child: Image.network(
+                                            doc.data["image"],
+                                            fit: BoxFit.fill,
+                                            height: 80,
+                                            width: 60,
                                           ),
                                         ),
-                                      ],
+                                      ),
+                                      title: Text(doc.data["title"]),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            doc.data["description"]
+                                                        .toString()
+                                                        .length <
+                                                    40
+                                                ? doc.data["description"]
+                                                : doc.data["description"]
+                                                        .toString()
+                                                        .substring(0, 40) +
+                                                    "...",
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                'R' +
+                                                    '\$ ' +
+                                                    doc.data["price"]
+                                                        .toString()
+                                                        .replaceAll(".", ","),
+                                                style: TextStyle(
+                                                  color: Colors.green,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
                                     )
-                                  ],
-                                ),
-                              ),
+                                  : Container(
+                                      height: 0,
+                                    ),
                             ),
                           ),
                         );

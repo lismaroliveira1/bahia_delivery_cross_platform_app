@@ -1,4 +1,5 @@
 import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/store_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -82,7 +83,16 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                 return Card(
                   elevation: 4,
                   child: FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => StoreScreen(
+                            snapshot: widget.documentSnapshot,
+                            categoryId: doc.documentID,
+                          ),
+                        ),
+                      );
+                    },
                     padding: EdgeInsets.zero,
                     child: Column(
                       children: [
