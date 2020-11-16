@@ -26,15 +26,14 @@ class _EditStoreCategoreTabState extends State<EditStoreCategoreTab> {
   int x;
   int y;
   int order;
-  bool isOrderSeted = false;
+  bool isParametersSeted = false;
   @override
   Widget build(BuildContext context) {
-    x = widget.storeCategoreData.x;
-    y = widget.storeCategoreData.y;
-    print(isOrderSeted);
-    if (!isOrderSeted) {
+    if (!isParametersSeted) {
       order = widget.storeCategoreData.order;
-      isOrderSeted = true;
+      x = widget.storeCategoreData.x;
+      y = widget.storeCategoreData.y;
+      isParametersSeted = true;
     }
     return Column(
       children: [
