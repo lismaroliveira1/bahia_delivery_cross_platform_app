@@ -1189,7 +1189,13 @@ class UserModel extends Model {
     @required File imageFile,
     @required VoidCallback onSuccess,
     @required VoidCallback onFail,
+    @required String categoryId,
+    @required callOnCategoryNull,
   }) async {
+    if (categoryId == null) {
+      callOnCategoryNull();
+      return;
+    }
     if (firebaseUser == null) await _auth.currentUser();
     if (firebaseUser != null) {
       isLoading = true;
@@ -1214,7 +1220,7 @@ class UserModel extends Model {
               .updateData({
             "title": productData.title,
             "image": urlImage,
-            "category": productData.category,
+            "categoryId": productData.categoryId,
             "description": productData.description,
             "fullDescription": productData.fullDescription,
             "group": productData.group,
@@ -1240,7 +1246,7 @@ class UserModel extends Model {
               .document(productData.id)
               .updateData({
             "title": productData.title,
-            "category": productData.category,
+            "categoryId": productData.categoryId,
             "description": productData.description,
             "fullDescription": productData.fullDescription,
             "group": productData.group,

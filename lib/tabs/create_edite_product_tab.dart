@@ -83,15 +83,16 @@ class _CreateEditProductTabState extends State<CreateEditProductTab> {
                             subtitle: Text(product.description),
                             onTap: () {
                               final productData = ProductData(
-                                product.id,
-                                product.title,
-                                product.category,
-                                product.description,
-                                product.image,
-                                product.price,
-                                product.fullDescription,
-                                product.group,
+                                id: product.id,
+                                title: product.title,
+                                categoryId: product.categoryId,
+                                description: product.description,
+                                image: product.image,
+                                price: product.price,
+                                fullDescription: product.fullDescription,
+                                group: product.group,
                               );
+
                               model.getIncrementalsFromProduct(productData.id);
                               Navigator.of(context).push(
                                 MaterialPageRoute(

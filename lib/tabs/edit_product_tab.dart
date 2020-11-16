@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bahia_delivery/data/product_data.dart';
+import 'package:bahia_delivery/data/store_categore_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/optional_scren.dart';
 import 'package:bahia_delivery/widgets/Input_product_parameters_widget.dart';
@@ -25,13 +26,29 @@ class _EditProductTabState extends State<EditProductTab> {
   final TextEditingController shortDescriptionController =
       TextEditingController();
   final TextEditingController priceController = TextEditingController();
-  final TextEditingController categoryControler = TextEditingController();
   final TextEditingController sessionController = TextEditingController();
   final TextEditingController longDescriptionController =
       TextEditingController();
+  String categoryId;
+  StoreCategoreData categoreData;
+  bool isCategorySet = false;
 
   @override
   Widget build(BuildContext context) {
+    if (!isCategorySet) {
+      final List<StoreCategoreData> categoritList =
+          UserModel.of(context).storesCategoresList;
+      for (StoreCategoreData category in categoritList) {
+        if (category.id == widget.productData.categoryId) {
+          setState(() {
+            categoreData = category;
+            categoryId = category.id;
+          });
+          break;
+        }
+      }
+      isCategorySet = true;
+    }
     return Form(
       key: _formKey,
       child: CustomScrollView(
@@ -215,20 +232,14 @@ class _EditProductTabState extends State<EditProductTab> {
                             Expanded(
                               flex: 7,
                               child: EditProductParameters(
-                                controller: categoryControler,
-                                initialText: widget.productData.category,
-                                hintText: "Ex: pizzas",
-                                labelText: "Categoria",
+                                controller: sessionController,
+                                initialText: widget.productData.group,
+                                hintText: "Ex: pizzas salgadas",
+                                labelText: "Sessão",
                               ),
                             )
                           ],
                         ),
-                        EditProductParameters(
-                          controller: sessionController,
-                          initialText: widget.productData.group,
-                          hintText: "Ex: pizzas salgadas",
-                          labelText: "Sessão",
-                        )
                       ],
                     ),
                   ),
@@ -315,6 +326,13 @@ class _EditProductTabState extends State<EditProductTab> {
                     );
                   },
                 ),
+                StoreHomeWigget(
+                  icon: Icons.add_circle_outline_outlined,
+                  name: "Categoria",
+                  description:
+                      "Indique a categoria a que esse produto pertence",
+                  onPressed: _onCategorySetupPressed,
+                ),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Container(
@@ -339,23 +357,27 @@ class _EditProductTabState extends State<EditProductTab> {
                         } else {
                           return FlatButton(
                             onPressed: () {
-                              double doublePrice =
-                                  double.parse(priceController.text);
-                              final productData = ProductData(
-                                widget.productData.id,
-                                titleController.text,
-                                categoryControler.text,
-                                shortDescriptionController.text,
-                                "image",
-                                doublePrice,
-                                longDescriptionController.text,
-                                sessionController.text,
+                              double doublePrice = double.parse(
+                                priceController.text,
                               );
+                              final productData = ProductData(
+                                id: widget.productData.id,
+                                title: titleController.text,
+                                categoryId: categoryId,
+                                description: shortDescriptionController.text,
+                                image: "image",
+                                price: doublePrice,
+                                fullDescription: longDescriptionController.text,
+                                group: sessionController.text,
+                              );
+
                               model.editProduct(
                                 productData: productData,
                                 imageFile: _imageFile,
                                 onSuccess: _onsSuccess,
                                 onFail: _onFail,
+                                categoryId: categoryId,
+                                callOnCategoryNull: _onCategorySetupPressed,
                               );
                             },
                             child: Center(
@@ -383,6 +405,74 @@ class _EditProductTabState extends State<EditProductTab> {
 
   void _onsSuccess() {
     Navigator.of(context).pop();
+  }
+
+  void _onCategorySetupPressed() {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
+        ),
+        content: Container(
+          height: 300,
+          child: Expanded(
+            child: ListView(
+                children:
+                    UserModel.of(context).storesCategoresList.map((category) {
+              return Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: categoryId == category.id
+                            ? Colors.red
+                            : Colors.white,
+                      ),
+                    ),
+                    child: ListTile(
+                      onTap: () {
+                        setState(() {
+                          categoryId = category.id;
+                        });
+                        Scaffold.of(context).hideCurrentSnackBar();
+                      },
+                      dense: true,
+                      title: Text(
+                        category.title,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      subtitle: Text(
+                        category.description,
+                        style: TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          category.image,
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Divider(color: Colors.grey),
+                ],
+              );
+            }).toList()),
+          ),
+        ),
+      ),
+    );
   }
 
   void _onFail() {}
