@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bahia_delivery/data/store_categore_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/widgets/Input_product_parameters_widget.dart';
+import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -164,6 +165,18 @@ class _EditStoreCategoreTabState extends State<EditStoreCategoreTab> {
           labelText: "Nome da Categoria",
           minLines: 3,
           maxLines: 4,
+        ),
+        StoreHomeWigget(
+          icon: Icons.photo_size_select_large,
+          name: "Tamanho",
+          description: "Configure que esta categoria aparecerá na sua loja",
+          onPressed: () {},
+        ),
+        StoreHomeWigget(
+          icon: Icons.format_list_numbered,
+          name: "Posição",
+          description: "Configure a posição desta categoria na sua loja",
+          onPressed: () {},
         ),
         Center(
           child: Container(
