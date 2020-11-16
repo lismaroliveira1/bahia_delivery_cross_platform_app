@@ -170,6 +170,26 @@ class _RegisterNewCategoryTabState extends State<RegisterNewCategoryTab> {
           hintText: "",
           maxLines: 3,
         ),
+        StoreHomeWigget(
+          icon: Icons.photo_size_select_large,
+          name: "Tamanho",
+          description: "Configure que esta categoria aparecerá na sua loja",
+          onPressed: _onPositionPressed,
+          trailing: x != null ? Text("$x : $y") : null,
+        ),
+        StoreHomeWigget(
+          icon: Icons.format_list_numbered,
+          name: "Posição",
+          description: "Configure a posição desta categoria na sua loja",
+          onPressed: listLength > 0
+              ? _onSizeSetupPressed
+              : _onPositionPressedListLengthNull,
+          trailing: order != null
+              ? Text(
+                  "${order + 1}º",
+                )
+              : null,
+        ),
         Center(
           child: Container(
             margin: EdgeInsets.only(top: 16),
