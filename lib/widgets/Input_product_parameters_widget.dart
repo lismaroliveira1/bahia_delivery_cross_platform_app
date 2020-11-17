@@ -7,6 +7,7 @@ class EditProductParameters extends StatefulWidget {
   final String labelText;
   final int minLines;
   final int maxLines;
+
   EditProductParameters({
     @required this.controller,
     @required this.initialText,

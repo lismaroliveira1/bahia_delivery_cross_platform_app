@@ -970,6 +970,7 @@ class UserModel extends Model {
           queryProductSnapshot.documents.map((doc) {
             productsStore.add(ProductData.fromDocument(doc));
           }).toList();
+
           storesCategoresList.clear();
           QuerySnapshot queryCategories = await Firestore.instance
               .collection("stores")
@@ -1620,4 +1621,6 @@ class UserModel extends Model {
       }
     }
   }
+
+  void insertNewOffSale() {}
 }
