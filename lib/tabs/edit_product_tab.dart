@@ -38,8 +38,10 @@ class _EditProductTabState extends State<EditProductTab> {
     if (!isCategorySet) {
       final List<StoreCategoreData> categoritList =
           UserModel.of(context).storesCategoresList;
+      print(categoritList.length);
       for (StoreCategoreData category in categoritList) {
         if (category.id == widget.productData.categoryId) {
+          print(category.id);
           setState(() {
             categoreData = category;
             categoryId = category.id;
@@ -244,74 +246,6 @@ class _EditProductTabState extends State<EditProductTab> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ScopedModelDescendant<UserModel>(
-                      builder: (context, child, model) {
-                    if (model.isLoading) {
-                      return Container(
-                        height: 0,
-                      );
-                    } else {
-                      return Column(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 4,
-                              horizontal: 8,
-                            ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  model.productIncrementals.length > 0
-                                      ? "Opcionais para ${widget.productData.title}"
-                                      : "${widget.productData.title} não tem complementos",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.left,
-                                ),
-                              ],
-                            ),
-                          ),
-                          Column(
-                              children:
-                                  model.productIncrementals.map((incremental) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 8),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                    width: 2,
-                                    color: Colors.grey[300],
-                                  ),
-                                ),
-                                child: ListTile(
-                                  leading: ClipRRect(
-                                    borderRadius: BorderRadius.circular(6),
-                                    child: Image.network(
-                                      incremental.image,
-                                      fit: BoxFit.cover,
-                                      height: 80,
-                                      width: 60,
-                                    ),
-                                  ),
-                                  dense: true,
-                                  trailing: Icon(Icons.edit),
-                                  title: Text(incremental.title),
-                                  subtitle: Text(incremental.description),
-                                  onTap: () {
-                                    print("ok");
-                                  },
-                                ),
-                              ),
-                            );
-                          }).toList()),
-                        ],
-                      );
-                    }
-                  }),
-                ),
                 StoreHomeWigget(
                   icon: Icons.add_circle_outline_outlined,
                   name: "Opcionais",
@@ -332,6 +266,27 @@ class _EditProductTabState extends State<EditProductTab> {
                   description:
                       "Indique a categoria a que esse produto pertence",
                   onPressed: _onCategorySetupPressed,
+                  trailing: categoreData != null
+                      ? Container(
+                          height: 50,
+                          width: 50,
+                          child: Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: Image.network(
+                                categoreData.image,
+                                width: 40,
+                                height: 40,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          height: 0,
+                          width: 0,
+                        ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(12.0),
@@ -437,6 +392,7 @@ class _EditProductTabState extends State<EditProductTab> {
                       onTap: () {
                         setState(() {
                           categoryId = category.id;
+                          categoreData = category;
                         });
                         Scaffold.of(context).hideCurrentSnackBar();
                       },
