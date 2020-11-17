@@ -1455,6 +1455,8 @@ class UserModel extends Model {
     @required int y,
     @required int order,
   }) async {
+    print(order);
+    print(storesCategoresList.length);
     if (x == null || y == null) {
       noSize();
       return;
@@ -1488,6 +1490,17 @@ class UserModel extends Model {
           "y": y,
           "order": order,
         });
+        for (var i = order; i < storesCategoresList.length; i++) {
+          int pos = i + 1;
+          await Firestore.instance
+              .collection("stores")
+              .document(storeId)
+              .collection("categories")
+              .document(storesCategoresList[i].id)
+              .updateData({
+            "order": pos,
+          });
+        }
         storesCategoresList.clear();
         QuerySnapshot queryCategories = await Firestore.instance
             .collection("stores")
@@ -1505,6 +1518,7 @@ class UserModel extends Model {
         onSuccess();
         notifyListeners();
       } catch (e) {
+        print(e);
         isLoading = false;
         notifyListeners();
         onFail();
@@ -1534,7 +1548,20 @@ class UserModel extends Model {
         } else {
           url = storeCategoreData.image;
         }
-        print("id ${storeCategoreData.id}");
+        for (var i = storeCategoreData.order;
+            i < storesCategoresList.length;
+            i++) {
+          int pos = i + 1;
+          print(storesCategoresList[i].id);
+          await Firestore.instance
+              .collection("stores")
+              .document(storeId)
+              .collection("categories")
+              .document(storesCategoresList[i].id)
+              .updateData({
+            "order": pos,
+          });
+        }
         await Firestore.instance
             .collection("stores")
             .document(storeId)
@@ -1544,7 +1571,11 @@ class UserModel extends Model {
           "description": storeCategoreData.description,
           "title": storeCategoreData.title,
           "image": url,
+          "x": storeCategoreData.x,
+          "y": storeCategoreData.y,
+          "order": storeCategoreData.order,
         });
+
         storesCategoresList.clear();
         QuerySnapshot queryCategories = await Firestore.instance
             .collection("stores")

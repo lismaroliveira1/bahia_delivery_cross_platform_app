@@ -209,8 +209,10 @@ class _EditStoreCategoreTabState extends State<EditStoreCategoreTab> {
                 } else {
                   return FlatButton(
                     onPressed: () {
-                      print(widget.storeCategoreData.id);
                       final storeCategoreData = StoreCategoreData(
+                        x: x,
+                        y: y,
+                        order: order,
                         id: widget.storeCategoreData.id,
                         title: _nameController.text,
                         description: _descriptionController.text,
@@ -256,7 +258,6 @@ class _EditStoreCategoreTabState extends State<EditStoreCategoreTab> {
       duration: Duration(seconds: 2),
     ));
     Navigator.of(context).pop();
-    print("ok");
   }
 
   void _onFail() {}
