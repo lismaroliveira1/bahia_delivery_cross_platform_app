@@ -1600,4 +1600,24 @@ class UserModel extends Model {
       }
     }
   }
+
+  void insertNewPromotion({
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      isLoading = true;
+      notifyListeners();
+      try {
+        onSuccess();
+        isLoading = false;
+        notifyListeners();
+      } catch (erro) {
+        onFail();
+        isLoading = false;
+        notifyListeners();
+      }
+    }
+  }
 }

@@ -33,7 +33,7 @@ class _CreateEditProductTabState extends State<CreateEditProductTab> {
         ),
         StoreHomeWigget(
           icon: Icons.add_circle_outline_rounded,
-          name: "Novo Produto",
+          name: "Nova Promoção",
           description: "Cadastre novos produtos na sua loja",
           onPressed: _onNewProductWidgetPressed,
         ),
