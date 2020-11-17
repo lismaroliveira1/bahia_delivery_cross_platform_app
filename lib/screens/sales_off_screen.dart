@@ -1,15 +1,15 @@
-import 'package:bahia_delivery/tabs/orderPartnerTab.dart';
+import 'package:bahia_delivery/tabs/sales_off_tab.dart';
 import 'package:flutter/material.dart';
 
-class OrderStoreScreen extends StatelessWidget {
+class SalesOffScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text("Pedidos"),
+        title: Text("Promoções"),
       ),
-      body: OrderPartnerTab(),
+      body: SalesOffTab(),
     );
   }
 }

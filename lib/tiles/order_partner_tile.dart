@@ -20,6 +20,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
   String firtstatus = "Aceitar Pedido";
   String secondStatus = "Enviar";
   String thirdStatus = "";
+  String noImage = "https://meuvidraceiro.com.br/images/sem-imagem.png";
   List<ProductOrderData> products = [];
   @override
   Widget build(BuildContext context) {
@@ -136,8 +137,11 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
                                 child: FadeInImage.memoryNetwork(
-                                    placeholder: kTransparentImage,
-                                    image: snapshot.data["clientImage"]),
+                                  placeholder: kTransparentImage,
+                                  image: snapshot.data["clientImage"] != null
+                                      ? snapshot.data["clientImage"]
+                                      : noImage,
+                                ),
                               ),
                             ),
                           ),

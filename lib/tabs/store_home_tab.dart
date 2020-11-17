@@ -2,6 +2,7 @@ import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/create_edit_product_screen.dart';
 import 'package:bahia_delivery/screens/order_store_screen.dart';
 import 'package:bahia_delivery/screens/report_screen.dart';
+import 'package:bahia_delivery/screens/sales_off_screen.dart';
 import 'package:bahia_delivery/screens/store_category_screen.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +100,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                           "Adcione ou edite categorias e organize os prodrutos",
                     ),
                     StoreHomeWigget(
-                      onPressed: () {},
+                      onPressed: _onSalesOffStorePressed,
                       icon: Icons.bolt,
                       name: "Promoções",
                       description: "Adicione ou edite promoções",
@@ -110,13 +111,6 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                       name: "Pedidos",
                       description:
                           "Consulte os andamentos e detalhes de seus pedidos",
-                    ),
-                    StoreHomeWigget(
-                      onPressed: () {},
-                      icon: Icons.message_outlined,
-                      name: "Chats",
-                      description:
-                          "Consulte o histórico de chats com os clientes",
                     ),
                     StoreHomeWigget(
                       onPressed: () {},
@@ -162,6 +156,14 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => OrderStoreScreen(),
+      ),
+    );
+  }
+
+  void _onSalesOffStorePressed() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => SalesOffScreen(),
       ),
     );
   }
