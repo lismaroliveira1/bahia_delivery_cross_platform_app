@@ -1,6 +1,6 @@
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/create_edit_product_screen.dart';
-import 'package:bahia_delivery/screens/financial_screen.dart';
+import 'package:bahia_delivery/screens/report_screen.dart';
 import 'package:bahia_delivery/screens/store_category_screen.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
@@ -79,22 +79,23 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                   [
                     StoreHomeWigget(
                       onPressed: _onFinancialCashWidgetPressed,
-                      icon: Icons.attach_money,
-                      name: "Caixa",
-                      description: "Acesso ao financeiro da loja",
+                      icon: Icons.article,
+                      name: "Relatórios",
+                      description:
+                          "Visualize as movimentaçãoes realizadas na sua loja",
                     ),
                     StoreHomeWigget(
                       onPressed: _onProductWidgetPressed,
                       icon: Icons.add_circle_outline,
                       name: "Produtos",
-                      description: "Adcione ou edite produtos",
+                      description: "Adcione ou edite produtos na sua loja",
                     ),
                     StoreHomeWigget(
                       onPressed: _onCategoryStorePressed,
-                      icon: Icons.attach_money,
+                      icon: Icons.category,
                       name: "Categorias",
                       description:
-                          "Adcione categorias e organize os prodrutos nelas",
+                          "Adcione ou edite categorias e organize os prodrutos",
                     ),
                     StoreHomeWigget(
                       onPressed: () {},
@@ -135,7 +136,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
   void _onFinancialCashWidgetPressed() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => FinancialScrenn(),
+        builder: (context) => ReportScrenn(),
       ),
     );
   }
