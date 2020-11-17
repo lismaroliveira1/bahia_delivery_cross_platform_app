@@ -1,5 +1,6 @@
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/create_edit_product_screen.dart';
+import 'package:bahia_delivery/screens/order_store_screen.dart';
 import 'package:bahia_delivery/screens/report_screen.dart';
 import 'package:bahia_delivery/screens/store_category_screen.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
@@ -104,7 +105,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                       description: "Adicione ou edite promoções",
                     ),
                     StoreHomeWigget(
-                      onPressed: () {},
+                      onPressed: _onOrderStoredScreenPressed,
                       icon: Icons.list_alt_rounded,
                       name: "Pedidos",
                       description:
@@ -153,6 +154,14 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => CategoryStoreScreen(),
+      ),
+    );
+  }
+
+  void _onOrderStoredScreenPressed() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => OrderStoreScreen(),
       ),
     );
   }
