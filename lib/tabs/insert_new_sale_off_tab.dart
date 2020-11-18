@@ -352,7 +352,10 @@ class _InsertNewSaleOffTabState extends State<InsertNewSaleOffTab> {
                 } else {
                   return FlatButton(
                     onPressed: () {
-                      model.insertNewOffSale();
+                      model.insertNewOffSale(
+                        onSuccess: _onSuccess,
+                        onFail: _onFail,
+                      );
                     },
                     child: Center(
                       child: Text(
@@ -466,4 +469,7 @@ class _InsertNewSaleOffTabState extends State<InsertNewSaleOffTab> {
       totalPrice = -(subTotalPrice * discountPrice) + subTotalPrice;
     });
   }
+
+  void _onSuccess() {}
+  void _onFail() {}
 }

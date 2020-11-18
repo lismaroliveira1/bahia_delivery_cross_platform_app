@@ -1602,7 +1602,7 @@ class UserModel extends Model {
     }
   }
 
-  void insertNewPromotion({
+  void insertNewOffSale({
     @required VoidCallback onSuccess,
     @required VoidCallback onFail,
   }) async {
@@ -1610,6 +1610,7 @@ class UserModel extends Model {
     if (firebaseUser != null) {
       isLoading = true;
       notifyListeners();
+
       try {
         onSuccess();
         isLoading = false;
@@ -1621,6 +1622,4 @@ class UserModel extends Model {
       }
     }
   }
-
-  void insertNewOffSale() {}
 }
