@@ -45,18 +45,6 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
           ),
           SliverList(
             delegate: SliverChildListDelegate([
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 20, 8, 10),
-                child: Text(
-                  hasSaleOffs ? "Promoções" : "",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontStyle: FontStyle.italic,
-                    color: Colors.grey[700],
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
               FutureBuilder<QuerySnapshot>(
                 future: Firestore.instance
                     .collection("stores")
@@ -65,69 +53,96 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                     .getDocuments(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    hasSaleOffs = false;
                     return Container(
                       height: 0,
                       width: 0,
                     );
                   } else {
-                    hasSaleOffs = true;
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: 200,
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: snapshot.data.documents.map((doc) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 3,
-                              ),
-                              child: Container(
-                                child: FlatButton(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            SalesOffStoreScreen(),
-                                      ),
-                                    );
-                                  },
-                                  child: Card(
-                                    child: Column(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(4.0),
-                                            child: FadeInImage.memoryNetwork(
-                                              placeholder: kTransparentImage,
-                                              image: doc.data["image"],
-                                              height: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  4,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  4,
-                                            ),
-                                          ),
-                                        ),
-                                        Text(doc.data["title"]),
-                                        Text(doc.data["description"]),
-                                        Text(doc.data["price"].toString()),
-                                      ],
-                                    ),
-                                  ),
+                    return Column(
+                      children: [
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                              child: Text(
+                                "Promoções",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
-                            );
-                          }).toList(),
+                            ),
+                          ],
                         ),
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(8, 2, 8, 6),
+                          child: Container(
+                            height: MediaQuery.of(context).size.width / 2,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: snapshot.data.documents.map((doc) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 3,
+                                  ),
+                                  child: Container(
+                                    child: FlatButton(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                SalesOffStoreScreen(
+                                                    widget.documentSnapshot),
+                                          ),
+                                        );
+                                      },
+                                      child: Card(
+                                        elevation: 2.0,
+                                        shape: new RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(16)),
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(16),
+                                                child:
+                                                    FadeInImage.memoryNetwork(
+                                                  placeholder:
+                                                      kTransparentImage,
+                                                  image: doc.data["image"],
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      3,
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width /
+                                                      3,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                              ),
+                                            ),
+                                            Text(doc.data["title"]),
+                                            Text(doc.data["description"]),
+                                            Text(doc.data["price"].toString()),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ),
+                      ],
                     );
                   }
                 },

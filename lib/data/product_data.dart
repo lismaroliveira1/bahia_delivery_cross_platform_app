@@ -10,6 +10,7 @@ class ProductData {
   String description;
   String fullDescription;
   String group;
+  String storeId;
 
   ProductData({
     @required this.id,
@@ -20,6 +21,7 @@ class ProductData {
     @required this.price,
     @required this.fullDescription,
     @required this.group,
+    this.storeId,
   });
   ProductData.fromDocument(DocumentSnapshot snapshot) {
     id = snapshot.documentID;

@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 import 'package:bahia_delivery/data/address_data.dart';
 import 'package:bahia_delivery/data/address_data_from_google.dart';
@@ -79,6 +80,7 @@ class UserModel extends Model {
   List<ProductData> productsStore = [];
   List<StoreCategoreData> storesCategoresList = [];
   List<SalesOffData> salesOffList = [];
+  List<ProductData> purchasedsProducts = [];
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -921,13 +923,46 @@ class UserModel extends Model {
             .orderBy('createdAt', descending: true)
             .getDocuments();
         listUserOrders.clear();
+        purchasedsProducts.clear();
         query.documents.map((doc) {
           if (doc.data["client"] == firebaseUser.uid) {
             listUserOrders.add(OrderData.fromDocument(doc));
+            updatedPurchasedProducts(doc);
           }
         }).toList();
+        print(purchasedsProducts.length);
       } catch (e) {}
       notifyListeners();
+    }
+  }
+
+  void updatedPurchasedProducts(DocumentSnapshot snapshot) {
+    for (LinkedHashMap product in snapshot.data["products"]) {
+      bool hasProduct = false;
+      final purchasedProduct = ProductData(
+        id: product["pid"],
+        title: product["productTitle"],
+        categoryId: null,
+        description: null,
+        image: null,
+        price: null,
+        fullDescription: null,
+        group: null,
+        storeId: product["storeId"],
+      );
+      if (purchasedsProducts.length == 0) {
+        purchasedsProducts.add(purchasedProduct);
+      } else {
+        for (ProductData productPurchased in purchasedsProducts) {
+          if (purchasedProduct.id == productPurchased.id) {
+            hasProduct = true;
+            break;
+          }
+        }
+        if (!hasProduct) {
+          purchasedsProducts.add(purchasedProduct);
+        }
+      }
     }
   }
 
