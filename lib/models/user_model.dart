@@ -8,6 +8,7 @@ import 'package:bahia_delivery/data/incremental_optional_data.dart';
 import 'package:bahia_delivery/data/order_data.dart';
 import 'package:bahia_delivery/data/payment_on_delivery_date.dart';
 import 'package:bahia_delivery/data/product_data.dart';
+import 'package:bahia_delivery/data/sales_off_data.dart';
 import 'package:bahia_delivery/data/search_data.dart';
 import 'package:bahia_delivery/data/store_categore_data.dart';
 import 'package:bahia_delivery/data/store_data.dart';
@@ -77,6 +78,7 @@ class UserModel extends Model {
   AddressDataFromGoogle currentAddressDataFromGoogle;
   List<ProductData> productsStore = [];
   List<StoreCategoreData> storesCategoresList = [];
+  List<SalesOffData> salesOffList = [];
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -1605,12 +1607,42 @@ class UserModel extends Model {
   void insertNewOffSale({
     @required VoidCallback onSuccess,
     @required VoidCallback onFail,
+    @required SalesOffData salesOffData,
   }) async {
     if (firebaseUser == null) await _auth.currentUser();
     if (firebaseUser != null) {
+      String url;
+      if (salesOffData.imageFile != null) {
+        StorageUploadTask task = FirebaseStorage.instance
+            .ref()
+            .child("images")
+            .child(storeData.id + DateTime.now().millisecond.toString())
+            .putFile(salesOffData.imageFile);
+        StorageTaskSnapshot taskSnapshot = await task.onComplete;
+        url = await taskSnapshot.ref.getDownloadURL();
+      } else {
+        url = "https://meuvidraceiro.com.br/images/sem-imagem.png";
+      }
+      await Firestore.instance
+          .collection("stores")
+          .document(storeId)
+          .collection("off")
+          .add({
+        "title": salesOffData.title,
+        "image": url,
+        "description": salesOffData.description,
+        "products": salesOffData.products.map((product) {
+          return {
+            "title": product.title,
+            "description": product.description,
+            "id": product.id,
+            "price": product.price,
+            "image": product.image,
+          };
+        }).toList()
+      });
       isLoading = true;
       notifyListeners();
-
       try {
         onSuccess();
         isLoading = false;
@@ -1620,6 +1652,20 @@ class UserModel extends Model {
         isLoading = false;
         notifyListeners();
       }
+    }
+  }
+
+  void updateSalesOffList() async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      try {
+        salesOffList.clear();
+        QuerySnapshot querySnapshot = await Firestore.instance
+            .collection("stores")
+            .document(storeId)
+            .collection("off")
+            .getDocuments();
+      } catch (e) {}
     }
   }
 }

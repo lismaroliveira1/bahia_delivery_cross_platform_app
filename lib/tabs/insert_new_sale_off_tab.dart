@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bahia_delivery/data/product_data.dart';
+import 'package:bahia_delivery/data/sales_off_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/widgets/Input_product_parameters_widget.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
@@ -352,9 +353,18 @@ class _InsertNewSaleOffTabState extends State<InsertNewSaleOffTab> {
                 } else {
                   return FlatButton(
                     onPressed: () {
+                      final saleOff = SalesOffData();
+                      saleOff.title = _titleController.text;
+                      saleOff.description = _descriptionController.text;
+                      saleOff.products = products;
+                      saleOff.discount = double.parse(
+                        _discountController.text.replaceAll(",", "."),
+                      );
+                      saleOff.imageFile = imageFile;
                       model.insertNewOffSale(
                         onSuccess: _onSuccess,
                         onFail: _onFail,
+                        salesOffData: saleOff,
                       );
                     },
                     child: Center(
@@ -470,6 +480,9 @@ class _InsertNewSaleOffTabState extends State<InsertNewSaleOffTab> {
     });
   }
 
-  void _onSuccess() {}
+  void _onSuccess() {
+    Navigator.of(context).pop();
+  }
+
   void _onFail() {}
 }

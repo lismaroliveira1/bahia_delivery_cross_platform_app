@@ -11,15 +11,17 @@ class SalesOffData {
   String description;
   int quantity;
   List<ProductData> products = [];
+  double discount;
 
-  SalesOffData(
+  SalesOffData({
     this.id,
     this.title,
     this.image,
     this.imageFile,
     this.description,
     this.quantity,
-  );
+    this.discount,
+  });
 
   SalesOffData.fromDocument(DocumentSnapshot doc) {
     id = doc.documentID;
@@ -27,5 +29,6 @@ class SalesOffData {
     image = doc.data["image"];
     description = doc.data["description"];
     quantity = doc.data["quantity"];
+    discount = doc.data["discount"];
   }
 }
