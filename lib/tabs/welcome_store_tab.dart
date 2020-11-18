@@ -1,8 +1,11 @@
+import 'package:bahia_delivery/data/product_data.dart';
+import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/sale_off_store_screen.dart';
 import 'package:bahia_delivery/screens/store_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class WelcomeStoreTab extends StatefulWidget {
@@ -13,7 +16,7 @@ class WelcomeStoreTab extends StatefulWidget {
 }
 
 class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
-  bool hasSaleOffs = false;
+  bool hasProductData = false;
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
@@ -43,7 +46,7 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
               ),
             ),
           ),
-          SliverList(
+          new SliverList(
             delegate: SliverChildListDelegate([
               FutureBuilder<QuerySnapshot>(
                 future: Firestore.instance
@@ -58,95 +61,208 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                       width: 0,
                     );
                   } else {
-                    return Column(
-                      children: [
-                        Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-                              child: Text(
-                                "Promoções",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.grey[700],
-                                  fontWeight: FontWeight.w600,
+                    if (snapshot.data.documents.length > 0) {
+                      return Column(
+                        children: [
+                          Row(
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                                child: Text(
+                                  "Promoções",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.grey[700],
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(8, 2, 8, 6),
-                          child: Container(
-                            height: MediaQuery.of(context).size.width / 2,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: snapshot.data.documents.map((doc) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 3,
-                                  ),
-                                  child: Container(
-                                    child: FlatButton(
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                SalesOffStoreScreen(
-                                                    widget.documentSnapshot),
-                                          ),
-                                        );
-                                      },
-                                      child: Card(
-                                        elevation: 2.0,
-                                        shape: new RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(16)),
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(4.0),
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(16),
-                                                child:
-                                                    FadeInImage.memoryNetwork(
-                                                  placeholder:
-                                                      kTransparentImage,
-                                                  image: doc.data["image"],
-                                                  height: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      3,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      3,
-                                                  fit: BoxFit.fill,
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(8, 2, 8, 6),
+                            child: Container(
+                              height: MediaQuery.of(context).size.width / 2,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children: snapshot.data.documents.map((doc) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 3,
+                                    ),
+                                    child: Container(
+                                      child: FlatButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SalesOffStoreScreen(
+                                                      widget.documentSnapshot),
+                                            ),
+                                          );
+                                        },
+                                        child: Card(
+                                          elevation: 2.0,
+                                          shape: new RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(16)),
+                                          child: Column(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(4.0),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(16),
+                                                  child:
+                                                      FadeInImage.memoryNetwork(
+                                                    placeholder:
+                                                        kTransparentImage,
+                                                    image: doc.data["image"],
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            3,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            3,
+                                                    fit: BoxFit.fill,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            Text(doc.data["title"]),
-                                            Text(doc.data["description"]),
-                                            Text(doc.data["price"].toString()),
-                                          ],
+                                              Text(doc.data["title"]),
+                                              Text(doc.data["description"]),
+                                              Text(
+                                                  doc.data["price"].toString()),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              }).toList(),
+                                  );
+                                }).toList(),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
+                        ],
+                      );
+                    } else {
+                      return Container(
+                        height: 0,
+                        width: 0,
+                      );
+                    }
                   }
                 },
               ),
+              ScopedModelDescendant<UserModel>(
+                  builder: (context, child, model) {
+                if (model.isLoading) {
+                  return Container(
+                    height: 0,
+                    width: 0,
+                  );
+                } else {
+                  return FutureBuilder<QuerySnapshot>(
+                    future: Firestore.instance
+                        .collection("stores")
+                        .document(widget.documentSnapshot.documentID)
+                        .collection("products")
+                        .getDocuments(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return Container(
+                          height: 0,
+                          width: 0,
+                        );
+                      } else {
+                        if (snapshot.data.documents.length > 0) {
+                          for (var i = 0;
+                              i < snapshot.data.documents.length;
+                              i++) {
+                            if (snapshot.data.documents[i].data["storeID"] ==
+                                widget.documentSnapshot.documentID) {
+                              hasProductData = true;
+                              break;
+                            }
+                          }
+                        } else {
+                          hasProductData = false;
+                        }
+                        if (hasProductData) {
+                          return Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        10, 20, 10, 0),
+                                    child: Text(
+                                      "Compre Novamente",
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontStyle: FontStyle.italic,
+                                        color: Colors.grey[700],
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                height: 120,
+                                padding: const EdgeInsets.all(8.0),
+                                child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: snapshot.data.documents
+                                      .map((productPurchased) {
+                                    if (productPurchased.data["storeID"] ==
+                                        widget.documentSnapshot.documentID) {
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6.0,
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              height: 100,
+                                              width: 100,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    } else {
+                                      return Container(
+                                        height: 0,
+                                        width: 0,
+                                      );
+                                    }
+                                  }).toList(),
+                                ),
+                              )
+                            ],
+                          );
+                        } else {
+                          return Container(
+                            height: 0,
+                            width: 0,
+                          );
+                        }
+                      }
+                    },
+                  );
+                }
+              })
             ]),
           )
         ];
