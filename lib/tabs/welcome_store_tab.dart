@@ -1,7 +1,9 @@
+import 'package:bahia_delivery/screens/sale_off_store_screen.dart';
 import 'package:bahia_delivery/screens/store_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class WelcomeStoreTab extends StatefulWidget {
   final DocumentSnapshot documentSnapshot;
@@ -11,6 +13,7 @@ class WelcomeStoreTab extends StatefulWidget {
 }
 
 class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
+  bool hasSaleOffs = false;
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
@@ -39,106 +42,202 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                 ),
               ),
             ),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 20, 8, 10),
+                child: Text(
+                  hasSaleOffs ? "Promoções" : "",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontStyle: FontStyle.italic,
+                    color: Colors.grey[700],
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              FutureBuilder<QuerySnapshot>(
+                future: Firestore.instance
+                    .collection("stores")
+                    .document(widget.documentSnapshot.documentID)
+                    .collection("off")
+                    .getDocuments(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    hasSaleOffs = false;
+                    return Container(
+                      height: 0,
+                      width: 0,
+                    );
+                  } else {
+                    hasSaleOffs = true;
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        height: 200,
+                        child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: snapshot.data.documents.map((doc) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 3,
+                              ),
+                              child: Container(
+                                child: FlatButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            SalesOffStoreScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Card(
+                                    child: Column(
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: FadeInImage.memoryNetwork(
+                                              placeholder: kTransparentImage,
+                                              image: doc.data["image"],
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  4,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  4,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(doc.data["title"]),
+                                        Text(doc.data["description"]),
+                                        Text(doc.data["price"].toString()),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ]),
           )
         ];
       },
-      body: FutureBuilder<QuerySnapshot>(
-        future: Firestore.instance
-            .collection("stores")
-            .document(widget.documentSnapshot.documentID)
-            .collection("categories")
-            .orderBy(
-              "order",
-              descending: false,
-            )
-            .getDocuments(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Container(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          } else {
-            return StaggeredGridView.count(
-              crossAxisCount: 2,
-              mainAxisSpacing: 2.0,
-              crossAxisSpacing: 3.0,
-              staggeredTiles: snapshot.data.documents.map((doc) {
-                return StaggeredTile.count(
-                  doc.data["x"],
-                  doc.data["y"] + 0.3,
-                );
-              }).toList(),
-              children: snapshot.data.documents.map((doc) {
-                double width;
-                double height;
-                height = (MediaQuery.of(context).size.width * 0.95 * 0.5) *
-                    doc.data["y"];
-                width = (MediaQuery.of(context).size.width * 0.95 * 0.5) *
-                    doc.data["x"];
-                return Card(
-                  elevation: 4,
-                  child: FlatButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => StoreScreen(
-                            snapshot: widget.documentSnapshot,
-                            categoryId: doc.documentID,
-                          ),
-                        ),
-                      );
-                    },
-                    padding: EdgeInsets.zero,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 4.0,
-                            vertical: 2.0,
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                            child: Image.network(
-                              doc.data["image"],
-                              fit: BoxFit.cover,
-                              height: height,
-                              width: width,
+      body: Container(
+        child: FutureBuilder<QuerySnapshot>(
+          future: Firestore.instance
+              .collection("stores")
+              .document(widget.documentSnapshot.documentID)
+              .collection("categories")
+              .orderBy(
+                "order",
+                descending: false,
+              )
+              .getDocuments(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Container(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            } else {
+              return StaggeredGridView.count(
+                padding: EdgeInsets.zero,
+                crossAxisCount: 2,
+                mainAxisSpacing: 2.0,
+                crossAxisSpacing: 3.0,
+                staggeredTiles: snapshot.data.documents.map((doc) {
+                  return StaggeredTile.count(
+                    doc.data["x"],
+                    doc.data["y"] + 0.3,
+                  );
+                }).toList(),
+                children: snapshot.data.documents.map((doc) {
+                  double width;
+                  double height;
+                  height = (MediaQuery.of(context).size.width * 0.95 * 0.5) *
+                      doc.data["y"];
+                  width = (MediaQuery.of(context).size.width * 0.95 * 0.5) *
+                      doc.data["x"];
+                  return Card(
+                    elevation: 4,
+                    child: FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => StoreScreen(
+                              snapshot: widget.documentSnapshot,
+                              categoryId: doc.documentID,
                             ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 4.0,
-                            vertical: 2.0,
-                          ),
-                          child: Text(
-                            doc.data["title"],
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.italic,
-                              fontSize: 16,
+                        );
+                      },
+                      padding: EdgeInsets.zero,
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4.0,
+                                vertical: 2.0,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: Image.network(
+                                  doc.data["image"],
+                                  fit: BoxFit.cover,
+                                  height: height,
+                                  width: width,
+                                ),
+                              ),
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4.0,
+                                vertical: 2.0,
+                              ),
+                              child: Text(
+                                doc.data["title"],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4.0,
+                                vertical: 2.0,
+                              ),
+                              child: Text(
+                                doc.data["description"],
+                              ),
+                            )
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 4.0,
-                            vertical: 2.0,
-                          ),
-                          child: Text(
-                            doc.data["description"],
-                          ),
-                        )
-                      ],
+                      ),
                     ),
-                  ),
-                );
-              }).toList(),
-            );
-          }
-        },
+                  );
+                }).toList(),
+              );
+            }
+          },
+        ),
       ),
     );
   }

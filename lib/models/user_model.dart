@@ -1612,38 +1612,39 @@ class UserModel extends Model {
     if (firebaseUser == null) await _auth.currentUser();
     if (firebaseUser != null) {
       String url;
-      if (salesOffData.imageFile != null) {
-        StorageUploadTask task = FirebaseStorage.instance
-            .ref()
-            .child("images")
-            .child(storeData.id + DateTime.now().millisecond.toString())
-            .putFile(salesOffData.imageFile);
-        StorageTaskSnapshot taskSnapshot = await task.onComplete;
-        url = await taskSnapshot.ref.getDownloadURL();
-      } else {
-        url = "https://meuvidraceiro.com.br/images/sem-imagem.png";
-      }
-      await Firestore.instance
-          .collection("stores")
-          .document(storeId)
-          .collection("off")
-          .add({
-        "title": salesOffData.title,
-        "image": url,
-        "description": salesOffData.description,
-        "products": salesOffData.products.map((product) {
-          return {
-            "title": product.title,
-            "description": product.description,
-            "id": product.id,
-            "price": product.price,
-            "image": product.image,
-          };
-        }).toList()
-      });
       isLoading = true;
       notifyListeners();
       try {
+        if (salesOffData.imageFile != null) {
+          StorageUploadTask task = FirebaseStorage.instance
+              .ref()
+              .child("images")
+              .child(storeData.id + DateTime.now().millisecond.toString())
+              .putFile(salesOffData.imageFile);
+          StorageTaskSnapshot taskSnapshot = await task.onComplete;
+          url = await taskSnapshot.ref.getDownloadURL();
+        } else {
+          url = "https://meuvidraceiro.com.br/images/sem-imagem.png";
+        }
+        await Firestore.instance
+            .collection("stores")
+            .document(storeId)
+            .collection("off")
+            .add({
+          "title": salesOffData.title,
+          "image": url,
+          "description": salesOffData.description,
+          "products": salesOffData.products.map((product) {
+            return {
+              "title": product.title,
+              "description": product.description,
+              "id": product.id,
+              "price": product.price,
+              "image": product.image,
+            };
+          }).toList()
+        });
+        updateSalesOffList();
         onSuccess();
         isLoading = false;
         notifyListeners();
@@ -1665,6 +1666,9 @@ class UserModel extends Model {
             .document(storeId)
             .collection("off")
             .getDocuments();
+        querySnapshot.documents.map((doc) {
+          salesOffList.add(SalesOffData.fromDocument(doc));
+        }).toList();
       } catch (e) {}
     }
   }
