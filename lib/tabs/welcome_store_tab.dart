@@ -1,4 +1,3 @@
-import 'package:bahia_delivery/data/product_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/sale_off_store_screen.dart';
 import 'package:bahia_delivery/screens/store_screen.dart';
@@ -11,14 +10,23 @@ import 'package:transparent_image/transparent_image.dart';
 class WelcomeStoreTab extends StatefulWidget {
   final DocumentSnapshot documentSnapshot;
   WelcomeStoreTab(this.documentSnapshot);
+
   @override
   _WelcomeStoreTabState createState() => _WelcomeStoreTabState();
 }
 
 class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
   bool hasProductData = false;
+  bool isReadPurchasedProducts = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!isReadPurchasedProducts) {
+      UserModel.of(context).getPurchasedProductsListByStore(
+        widget.documentSnapshot.documentID,
+      );
+      isReadPurchasedProducts = true;
+    }
     return NestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return <Widget>[
@@ -169,97 +177,26 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                     width: 0,
                   );
                 } else {
-                  return FutureBuilder<QuerySnapshot>(
-                    future: Firestore.instance
-                        .collection("stores")
-                        .document(widget.documentSnapshot.documentID)
-                        .collection("products")
-                        .getDocuments(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container(
-                          height: 0,
-                          width: 0,
-                        );
-                      } else {
-                        if (snapshot.data.documents.length > 0) {
-                          for (var i = 0;
-                              i < snapshot.data.documents.length;
-                              i++) {
-                            if (snapshot.data.documents[i].data["storeID"] ==
-                                widget.documentSnapshot.documentID) {
-                              hasProductData = true;
-                              break;
-                            }
-                          }
-                        } else {
-                          hasProductData = false;
-                        }
-                        if (hasProductData) {
-                          return Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        10, 20, 10, 0),
-                                    child: Text(
-                                      "Compre Novamente",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontStyle: FontStyle.italic,
-                                        color: Colors.grey[700],
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                  return Container(
+                    height: 200,
+                    child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: model.purchasedProductsByStore.map((doc) {
+                        print(model.purchasedProductsByStore.length);
+                        return Column(
+                          children: [
+                            Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
                               ),
-                              Container(
-                                height: 120,
-                                padding: const EdgeInsets.all(8.0),
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  children: snapshot.data.documents
-                                      .map((productPurchased) {
-                                    if (productPurchased.data["storeID"] ==
-                                        widget.documentSnapshot.documentID) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6.0,
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              height: 100,
-                                              width: 100,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    } else {
-                                      return Container(
-                                        height: 0,
-                                        width: 0,
-                                      );
-                                    }
-                                  }).toList(),
-                                ),
-                              )
-                            ],
-                          );
-                        } else {
-                          return Container(
-                            height: 0,
-                            width: 0,
-                          );
-                        }
-                      }
-                    },
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
                   );
                 }
               })

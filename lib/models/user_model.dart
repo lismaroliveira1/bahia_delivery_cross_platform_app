@@ -81,6 +81,7 @@ class UserModel extends Model {
   List<StoreCategoreData> storesCategoresList = [];
   List<SalesOffData> salesOffList = [];
   List<ProductData> purchasedsProducts = [];
+  List<DocumentSnapshot> purchasedProductsByStore = [];
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -1706,5 +1707,26 @@ class UserModel extends Model {
         }).toList();
       } catch (e) {}
     }
+  }
+
+  void getPurchasedProductsListByStore(String purchasedStoreId) async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      print(purchasedStoreId);
+      purchasedProductsByStore.clear();
+      QuerySnapshot querySnapshot = await Firestore.instance
+          .collection("stores")
+          .document(purchasedStoreId)
+          .collection("products")
+          .getDocuments();
+      querySnapshot.documents.map((doc) {
+        for (ProductData purchasedProduct in purchasedsProducts) {
+          if (doc.documentID == purchasedProduct.id) {
+            purchasedProductsByStore.add(doc);
+          }
+        }
+      }).toList();
+    }
+    notifyListeners();
   }
 }
