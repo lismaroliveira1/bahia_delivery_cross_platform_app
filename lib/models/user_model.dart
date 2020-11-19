@@ -2,6 +2,7 @@ import 'dart:collection';
 import 'dart:io';
 import 'package:bahia_delivery/data/address_data.dart';
 import 'package:bahia_delivery/data/address_data_from_google.dart';
+import 'package:bahia_delivery/data/cart_product.dart';
 import 'package:bahia_delivery/data/category_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_data.dart';
 import 'package:bahia_delivery/data/credit_debit_card_item.dart';
@@ -83,6 +84,8 @@ class UserModel extends Model {
   List<ProductData> purchasedsProducts = [];
   List<DocumentSnapshot> purchasedProductsByStore = [];
   bool hasSalesOff = false;
+  bool hasProductInCart = false;
+  List<CartProduct> productsInCart = [];
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -1744,6 +1747,27 @@ class UserModel extends Model {
         hasSalesOff = false;
       }
     }
+    notifyListeners();
+  }
+
+  void veryIfExistsProducts() async {
+    try {
+      productsInCart.clear();
+      QuerySnapshot querySnapshot = await Firestore.instance
+          .collection("users")
+          .document(firebaseUser.uid)
+          .collection("cart")
+          .getDocuments();
+      if (querySnapshot.documents.length > 0) {
+        querySnapshot.documents.map((doc) {
+          productsInCart.add(CartProduct.fromDocument(doc));
+        }).toList();
+        hasProductInCart = true;
+      } else {
+        productsInCart = [];
+        hasProductInCart = false;
+      }
+    } catch (e) {}
     notifyListeners();
   }
 }

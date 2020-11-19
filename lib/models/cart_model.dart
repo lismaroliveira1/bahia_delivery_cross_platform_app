@@ -19,7 +19,7 @@ class CartModel extends Model {
   Map<String, dynamic> dataSale = {};
   int discountPercentage = 0;
   bool isLoading = false;
-  bool itemExist = false;
+  bool itemExist = true;
   bool isSameStore = false;
   String currentStore = '';
   int quantity = 1;
@@ -29,6 +29,7 @@ class CartModel extends Model {
   List<IncrementalOptData> itens = [];
   double complementPrice = 0;
   bool isAddingItemCart = false;
+  bool hasProductInCart = true;
   CartModel(this.user) {
     if (user.isLoggedIn()) _loadCartItems();
   }
@@ -45,7 +46,6 @@ class CartModel extends Model {
     isAddingItemCart = true;
     notifyListeners();
     if (products.length == 0) {
-      print("zero");
       try {
         products.add(cartProduct);
         Firestore.instance
@@ -57,6 +57,7 @@ class CartModel extends Model {
           cartProduct.cId = doc.documentID;
         });
         onSuccess();
+        hasProductInCart = true;
         isAddingItemCart = false;
         notifyListeners();
       } catch (e) {
@@ -79,6 +80,7 @@ class CartModel extends Model {
               cartProduct.cId = doc.documentID;
             });
             onSuccess();
+            hasProductInCart = true;
             isAddingItemCart = false;
             isLoading = false;
             notifyListeners();
@@ -449,5 +451,25 @@ class CartModel extends Model {
 
       notifyListeners();
     } catch (e) {}
+  }
+
+  void veryIfExistsProducts() async {
+    bool isReady = false;
+    if (!isReady) {
+      try {
+        products.clear();
+        QuerySnapshot querySnapshot = await Firestore.instance
+            .collection("users")
+            .document(user.firebaseUser.uid)
+            .collection("cart")
+            .getDocuments();
+        querySnapshot.documents.map((doc) {
+          products.add(CartProduct.fromDocument(doc));
+        }).toList();
+      } catch (e) {}
+      isReady = true;
+    }
+    print(products.length);
+    notifyListeners();
   }
 }
