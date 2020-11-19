@@ -277,6 +277,8 @@ class _ProductTabState extends State<ProductTab> {
                             onFail: _onFail,
                             onDifferentStore: _onDifferentStore,
                           );
+                          UserModel.of(context).veryIfExistsProducts();
+                          CartModel.of(context).veryIfExistsProducts();
                         },
                       )
                     ],
@@ -550,12 +552,5 @@ class _ProductTabState extends State<ProductTab> {
       ),
     ));
     print("Loja Diferente");
-  }
-
-  Widget _buildListOptOnlyChoose() {
-    return Container(
-      color: Colors.blue,
-      height: 10,
-    );
   }
 }
