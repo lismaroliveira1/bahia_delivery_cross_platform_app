@@ -25,8 +25,6 @@ class _SalesOffStoreTabState extends State<SalesOffStoreTab> {
             floating: false,
             pinned: false,
             flexibleSpace: FlexibleSpaceBar(
-              centerTitle: true,
-              title: Text(widget.snapshot.data["title"]),
               background: ClipRRect(
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(30),
@@ -37,6 +35,25 @@ class _SalesOffStoreTabState extends State<SalesOffStoreTab> {
                 ),
               ),
             ),
+          ),
+          new SliverList(
+            delegate: SliverChildListDelegate([
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 10,
+                  bottom: 2.0,
+                ),
+                child: Text(
+                  widget.snapshot.data["title"],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                  ),
+                ),
+              ),
+            ]),
           ),
         ];
       },

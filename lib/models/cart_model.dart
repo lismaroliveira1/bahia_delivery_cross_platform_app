@@ -36,6 +36,11 @@ class CartModel extends Model {
 
   static CartModel of(BuildContext context) =>
       ScopedModel.of<CartModel>(context);
+  @override
+  void addListener(VoidCallback listener) {
+    super.addListener(listener);
+    veryIfExistsProducts();
+  }
 
   void addCartItem({
     @required CartProduct cartProduct,

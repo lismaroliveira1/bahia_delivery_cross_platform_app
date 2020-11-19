@@ -102,6 +102,7 @@ class UserModel extends Model {
     updateStoreFavorites();
     updatePartnerData();
     getUserOrder();
+    veryIfExistsProducts();
   }
 
   Future<void> signIn({
@@ -1751,23 +1752,26 @@ class UserModel extends Model {
   }
 
   void veryIfExistsProducts() async {
-    try {
-      productsInCart.clear();
-      QuerySnapshot querySnapshot = await Firestore.instance
-          .collection("users")
-          .document(firebaseUser.uid)
-          .collection("cart")
-          .getDocuments();
-      if (querySnapshot.documents.length > 0) {
-        querySnapshot.documents.map((doc) {
-          productsInCart.add(CartProduct.fromDocument(doc));
-        }).toList();
-        hasProductInCart = true;
-      } else {
-        productsInCart = [];
-        hasProductInCart = false;
-      }
-    } catch (e) {}
-    notifyListeners();
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      try {
+        productsInCart.clear();
+        QuerySnapshot querySnapshot = await Firestore.instance
+            .collection("users")
+            .document(firebaseUser.uid)
+            .collection("cart")
+            .getDocuments();
+        if (querySnapshot.documents.length > 0) {
+          querySnapshot.documents.map((doc) {
+            productsInCart.add(CartProduct.fromDocument(doc));
+          }).toList();
+          hasProductInCart = true;
+        } else {
+          productsInCart = [];
+          hasProductInCart = false;
+        }
+      } catch (e) {}
+      notifyListeners();
+    }
   }
 }

@@ -32,8 +32,6 @@ class _StoreTabState extends State<StoreTab> {
             floating: false,
             pinned: false,
             flexibleSpace: FlexibleSpaceBar(
-              centerTitle: true,
-              title: Text(widget.snapshot.data["title"]),
               background: ClipRRect(
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(30),
@@ -44,7 +42,26 @@ class _StoreTabState extends State<StoreTab> {
                 ),
               ),
             ),
-          )
+          ),
+          new SliverList(
+            delegate: SliverChildListDelegate([
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 10,
+                  bottom: 2.0,
+                ),
+                child: Text(
+                  widget.snapshot.data["title"],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                  ),
+                ),
+              ),
+            ]),
+          ),
         ];
       },
       body: FutureBuilder<QuerySnapshot>(
@@ -64,6 +81,7 @@ class _StoreTabState extends State<StoreTab> {
                 children: [
                   Expanded(
                     child: GroupedListView<dynamic, String>(
+                      padding: EdgeInsets.zero,
                       elements: snapshot.data.documents
                           .where(
                             (doc) =>

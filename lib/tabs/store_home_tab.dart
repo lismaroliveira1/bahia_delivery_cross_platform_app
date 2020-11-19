@@ -3,6 +3,7 @@ import 'package:bahia_delivery/screens/create_edit_product_screen.dart';
 import 'package:bahia_delivery/screens/order_store_screen.dart';
 import 'package:bahia_delivery/screens/report_screen.dart';
 import 'package:bahia_delivery/screens/sales_off_screen.dart';
+import 'package:bahia_delivery/screens/setup_store_screnn.dart';
 import 'package:bahia_delivery/screens/store_category_screen.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +114,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                           "Consulte os andamentos e detalhes de seus pedidos",
                     ),
                     StoreHomeWigget(
-                      onPressed: () {},
+                      onPressed: _onSetupStoreScreenPressed,
                       icon: Icons.settings,
                       name: "Configurações",
                       description: "Personalize sua loja",
@@ -164,6 +165,14 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => SalesOffScreen(),
+      ),
+    );
+  }
+
+  void _onSetupStoreScreenPressed() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => SetupStoreScreen(),
       ),
     );
   }
