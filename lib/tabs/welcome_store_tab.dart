@@ -1,4 +1,5 @@
 import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/screens/product_screen.dart';
 import 'package:bahia_delivery/screens/sale_off_store_screen.dart';
 import 'package:bahia_delivery/screens/store_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,6 +26,7 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
       UserModel.of(context).getPurchasedProductsListByStore(
         widget.documentSnapshot.documentID,
       );
+      UserModel.of(context).verifyOffSales(widget.documentSnapshot.documentID);
       isReadPurchasedProducts = true;
     }
     return NestedScrollView(
@@ -177,27 +179,124 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                     width: 0,
                   );
                 } else {
-                  return Container(
-                    height: 200,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: model.purchasedProductsByStore.map((doc) {
-                        print(model.purchasedProductsByStore.length);
-                        return Column(
+                  return model.purchasedProductsByStore.length > 0
+                      ? Column(
                           children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                                  child: Text(
+                                    "Compre novamente",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.grey[700],
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                             Container(
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.red,
+                              height: 140,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children:
+                                    model.purchasedProductsByStore.map((doc) {
+                                  double price = doc.data["price"];
+                                  return Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 4,
+                                      horizontal: 0,
+                                    ),
+                                    child: FlatButton(
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => ProductScreen(
+                                              doc,
+                                              widget
+                                                  .documentSnapshot.documentID,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            height: 100,
+                                            width: 100,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              image: new DecorationImage(
+                                                image: new NetworkImage(
+                                                    doc.data["image"]),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 2),
+                                            child: Text(
+                                              doc.data["title"],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(top: 2),
+                                            child: Text(
+                                              price.toStringAsFixed(2),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
                               ),
                             ),
                           ],
+                        )
+                      : Container(
+                          height: 0.0,
+                          width: 0.0,
                         );
-                      }).toList(),
-                    ),
+                }
+              }),
+              ScopedModelDescendant<UserModel>(
+                  builder: (context, child, model) {
+                if (model.isLoading) {
+                  return Container(
+                    height: 0,
+                    width: 0,
                   );
+                } else {
+                  if (model.hasSalesOff) {
+                    return Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                          child: Text(
+                            "Seções",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontStyle: FontStyle.italic,
+                              color: Colors.grey[700],
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Container(
+                      height: 0,
+                      width: 0,
+                    );
+                  }
                 }
               })
             ]),

@@ -82,6 +82,7 @@ class UserModel extends Model {
   List<SalesOffData> salesOffList = [];
   List<ProductData> purchasedsProducts = [];
   List<DocumentSnapshot> purchasedProductsByStore = [];
+  bool hasSalesOff = false;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -1712,7 +1713,6 @@ class UserModel extends Model {
   void getPurchasedProductsListByStore(String purchasedStoreId) async {
     if (firebaseUser == null) await _auth.currentUser();
     if (firebaseUser != null) {
-      print(purchasedStoreId);
       purchasedProductsByStore.clear();
       QuerySnapshot querySnapshot = await Firestore.instance
           .collection("stores")
@@ -1726,6 +1726,23 @@ class UserModel extends Model {
           }
         }
       }).toList();
+    }
+    notifyListeners();
+  }
+
+  void verifyOffSales(String storeIdtoVerifyt) async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      QuerySnapshot querySnapshot = await Firestore.instance
+          .collection("stores")
+          .document(storeIdtoVerifyt)
+          .collection("off")
+          .getDocuments();
+      if (querySnapshot.documents.length > 0) {
+        hasSalesOff = true;
+      } else {
+        hasSalesOff = false;
+      }
     }
     notifyListeners();
   }
