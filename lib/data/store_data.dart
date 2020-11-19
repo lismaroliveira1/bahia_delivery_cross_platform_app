@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class StoreData {
@@ -6,6 +8,10 @@ class StoreData {
   String image;
   String description;
   DocumentSnapshot storeSnapshot;
+  int openingTimeHour;
+  int openingTimeMinute;
+  int closingTimeHour;
+  int closingTimeMinute;
 
   StoreData.fromDocument(DocumentSnapshot documentSnapshot) {
     id = documentSnapshot.documentID;

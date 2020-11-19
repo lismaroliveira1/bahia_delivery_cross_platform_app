@@ -936,7 +936,6 @@ class UserModel extends Model {
             updatedPurchasedProducts(doc);
           }
         }).toList();
-        print(purchasedsProducts.length);
       } catch (e) {}
       notifyListeners();
     }
@@ -1772,6 +1771,32 @@ class UserModel extends Model {
         }
       } catch (e) {}
       notifyListeners();
+    }
+  }
+
+  void updateStoreHours({
+    @required int openingTimeHour,
+    @required int openingTimeMinute,
+    @required int closingTimeHour,
+    @required int closingTimeMinute,
+  }) async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      try {
+        await Firestore.instance
+            .collection("stores")
+            .document(storeId)
+            .updateData({
+          "openingTime": {
+            "hour": openingTimeHour,
+            "minute": openingTimeMinute,
+          },
+          "closingTime": {
+            "hour": closingTimeHour,
+            "minute": closingTimeMinute,
+          },
+        });
+      } catch (e) {}
     }
   }
 }

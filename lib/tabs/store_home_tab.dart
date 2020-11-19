@@ -62,7 +62,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                       child: FadeInImage.memoryNetwork(
                         placeholder: kTransparentImage,
                         image: model.storeImage,
-                        fit: BoxFit.fill,
+                        fit: BoxFit.cover,
                       ),
                     ),
                   ),

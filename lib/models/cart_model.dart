@@ -474,7 +474,6 @@ class CartModel extends Model {
       } catch (e) {}
       isReady = true;
     }
-    print(products.length);
     notifyListeners();
   }
 }
