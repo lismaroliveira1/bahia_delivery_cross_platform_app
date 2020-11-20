@@ -87,6 +87,7 @@ class UserModel extends Model {
   bool hasProductInCart = false;
   List<CartProduct> productsInCart = [];
   bool isStoreHourConfigurated = false;
+  List<StoreData> lastPurchasedStores = [];
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -956,6 +957,7 @@ class UserModel extends Model {
         group: null,
         storeId: product["storeId"],
       );
+
       if (purchasedsProducts.length == 0) {
         purchasedsProducts.add(purchasedProduct);
       } else {
@@ -972,6 +974,7 @@ class UserModel extends Model {
     }
   }
 
+  void getListPurchasedStores() {}
   void updatePartnerData() async {
     if (firebaseUser == null) firebaseUser = await _auth.currentUser();
     if (firebaseUser != null) {
@@ -1734,6 +1737,21 @@ class UserModel extends Model {
       }).toList();
     }
     notifyListeners();
+  }
+
+  void getListPurchasedByStores() async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      try {
+        QuerySnapshot querySnapshot =
+            await Firestore.instance.collection("stores").getDocuments();
+        querySnapshot.documents.map((doc) {
+          for (ProductData productData in purchasedsProducts) {
+            if (productData.storeId == doc.documentID) {}
+          }
+        }).toList();
+      } catch (e) {}
+    }
   }
 
   void verifyOffSales(String storeIdtoVerifyt) async {

@@ -2,6 +2,7 @@ import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/location_screen.dart';
 import 'package:bahia_delivery/themes/theme.dart';
 import 'package:bahia_delivery/tiles/category_tile.dart';
+import 'package:bahia_delivery/tiles/purchased_stores_tile.dart';
 import 'package:bahia_delivery/tiles/stores_tile.dart';
 
 import 'package:flutter/material.dart';
@@ -166,6 +167,7 @@ class _HomeTabState extends State<HomeTab> {
                         ),
                       ),
                       ListCategory(),
+                      PurchasesStores(),
                     ]),
                   ),
                   ListStories(),

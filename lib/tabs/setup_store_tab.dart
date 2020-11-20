@@ -1,9 +1,12 @@
+import 'package:bahia_delivery/data/store_data.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/tiles/credit_card_imput_formater.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class SetupStoreTab extends StatefulWidget {
+  final StoreData storeData;
+  SetupStoreTab(this.storeData);
   @override
   _SetupStoreTabState createState() => _SetupStoreTabState();
 }

@@ -193,9 +193,10 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
   }
 
   void _onSetupStoreScreenPressed() {
+    final storeData = UserModel.of(context).storeData;
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => SetupStoreScreen(),
+        builder: (context) => SetupStoreScreen(storeData),
       ),
     );
   }
@@ -250,10 +251,12 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                             ),
                           ),
                           onTap: () {
+                            final storeData = UserModel.of(context).storeData;
                             Scaffold.of(context).hideCurrentSnackBar();
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => SetupStoreScreen(),
+                                builder: (context) =>
+                                    SetupStoreScreen(storeData),
                               ),
                             );
                           },

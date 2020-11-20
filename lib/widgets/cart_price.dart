@@ -83,6 +83,7 @@ class CartPrice extends StatelessWidget {
                             } else {
                               await model.finishOrderWithPayOnDelivery();
                               UserModel.of(context).veryIfExistsProducts();
+                              UserModel.of(context).getListPurchasedByStores();
                             }
                           },
                           child: Text("Finalizar Pedido"),

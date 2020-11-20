@@ -22,7 +22,6 @@ class ListCategory extends StatelessWidget {
           );
         } else {
           return Container(
-            margin: EdgeInsets.all(8),
             height: 120.0,
             child: ListView(
               scrollDirection: Axis.horizontal,

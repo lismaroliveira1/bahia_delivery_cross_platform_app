@@ -37,7 +37,6 @@ class _ListStoriesState extends State<ListStories> {
                 children: [
                   Column(
                       children: model.storeDataList.map((doc) {
-                    print(doc.isStoreOpen);
                     return doc.ishourSeted
                         ? Padding(
                             padding: const EdgeInsets.symmetric(
