@@ -7,6 +7,7 @@ import 'package:bahia_delivery/screens/setup_store_screnn.dart';
 import 'package:bahia_delivery/screens/store_category_screen.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -71,8 +72,31 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
               SliverList(
                 delegate: SliverChildListDelegate(
                   [
-                    SizedBox(
-                      height: 100,
+                    Stack(
+                      children: [
+                        Container(
+                          height: 100,
+                        ),
+                        !model.isStoreHourConfigurated
+                            ? Positioned(
+                                top: 14,
+                                right: 14,
+                                child: Container(
+                                  height: 40,
+                                  width: 40,
+                                  child: FlatButton(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {
+                                        _onAttentionButtonPressed();
+                                      },
+                                      child: Image.asset(
+                                          'images/attention_icon.png')),
+                                ))
+                            : Container(
+                                height: 0,
+                                width: 0,
+                              ),
+                      ],
                     )
                   ],
                 ),
@@ -175,5 +199,87 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
         builder: (context) => SetupStoreScreen(),
       ),
     );
+  }
+
+  void _onAttentionButtonPressed() {
+    double imageSide = MediaQuery.of(context).size.width / 8;
+    Scaffold.of(context).showSnackBar(SnackBar(
+      elevation: 12,
+      backgroundColor: Colors.grey[200],
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      content: Container(
+        height: 600,
+        child: Stack(
+          children: [
+            Center(
+              child: Column(
+                children: [
+                  Center(
+                    child: Container(
+                      height: imageSide,
+                      width: imageSide,
+                      child: Image.asset(
+                        'images/logo.png',
+                        height: imageSide,
+                        width: imageSide,
+                      ),
+                    ),
+                  ),
+                  !UserModel.of(context).isStoreHourConfigurated
+                      ? ListTile(
+                          leading: Icon(
+                            Icons.ac_unit,
+                            size: 20,
+                            color: Colors.black,
+                          ),
+                          title: Text(
+                            "Horário de funcionamento",
+                            style: TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                          subtitle: Text(
+                            "Configure o horário de funcionamento da loja para que possa ser vista pelos clientes",
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
+                          ),
+                          onTap: () {
+                            Scaffold.of(context).hideCurrentSnackBar();
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => SetupStoreScreen(),
+                              ),
+                            );
+                          },
+                        )
+                      : Container(
+                          height: 0,
+                          width: 0,
+                        ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 4,
+              right: 4,
+              child: IconButton(
+                  icon: Icon(
+                    Icons.close_outlined,
+                    color: Colors.redAccent,
+                  ),
+                  onPressed: () {
+                    Scaffold.of(context).hideCurrentSnackBar();
+                  }),
+            )
+          ],
+        ),
+      ),
+    ));
   }
 }

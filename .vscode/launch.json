@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         
+        
         {
             "name": "bahia_delivery_cross_platform_app",
             "request": "launch",

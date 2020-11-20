@@ -1,4 +1,5 @@
 import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bahia_delivery/tiles/credit_card_imput_formater.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -10,8 +11,11 @@ class SetupStoreTab extends StatefulWidget {
 class _SetupStoreTabState extends State<SetupStoreTab> {
   final TextEditingController _openHourController = TextEditingController();
   final TextEditingController _closeHourController = TextEditingController();
+  final FocusNode _openFocus = FocusNode();
+  final FocusNode _closeFocus = FocusNode();
   @override
   Widget build(BuildContext context) {
+    _openHourController.value = TextEditingValue();
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -39,13 +43,48 @@ class _SetupStoreTabState extends State<SetupStoreTab> {
                 Container(
                   width: 120,
                   child: TextField(
+                    onChanged: (text) {
+                      if (text.length == 5) {
+                        _fieldFocusChange(
+                          context,
+                          _openFocus,
+                          _closeFocus,
+                        );
+                      }
+                    },
+                    focusNode: _openFocus,
+                    textInputAction: TextInputAction.next,
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.characters,
+                    keyboardType: TextInputType.number,
                     controller: _openHourController,
+                    decoration: InputDecoration(
+                      labelText: "Horário de\n abertura",
+                      hintText: "hh:mm",
+                      border: OutlineInputBorder(),
+                    ),
+                    inputFormatters: [
+                      MaskedTextInputFormatter(mask: 'xx:xx', separator: ':'),
+                    ],
                   ),
                 ),
                 Text("Fecha:"),
                 Container(
                   width: 120,
                   child: TextField(
+                    focusNode: _closeFocus,
+                    textInputAction: TextInputAction.next,
+                    autocorrect: false,
+                    textCapitalization: TextCapitalization.characters,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Horário de\n fechamento',
+                      hintText: 'hh:mm',
+                      border: OutlineInputBorder(),
+                    ),
+                    inputFormatters: [
+                      MaskedTextInputFormatter(mask: 'xx:xx', separator: ':'),
+                    ],
                     controller: _closeHourController,
                   ),
                 ),
@@ -112,5 +151,11 @@ class _SetupStoreTabState extends State<SetupStoreTab> {
         ],
       ),
     );
+  }
+
+  void _fieldFocusChange(
+      BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
   }
 }

@@ -86,6 +86,7 @@ class UserModel extends Model {
   bool hasSalesOff = false;
   bool hasProductInCart = false;
   List<CartProduct> productsInCart = [];
+  bool isStoreHourConfigurated = false;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -989,6 +990,8 @@ class UserModel extends Model {
           storeName = storeDocument.data["title"];
           storeImage = storeDocument.data["image"];
           storeData = StoreData.fromDocument(storeDocument);
+          isStoreHourConfigurated = storeData.ishourSeted;
+          print(isStoreHourConfigurated);
           QuerySnapshot querySnapshot = await Firestore.instance
               .collection("orders")
               .orderBy('createdAt', descending: true)
@@ -1796,7 +1799,9 @@ class UserModel extends Model {
             "minute": closingTimeMinute,
           },
         });
-      } catch (e) {}
+      } catch (e) {
+        print(e.toString());
+      }
     }
   }
 }
