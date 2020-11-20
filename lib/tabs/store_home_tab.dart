@@ -7,7 +7,6 @@ import 'package:bahia_delivery/screens/setup_store_screnn.dart';
 import 'package:bahia_delivery/screens/store_category_screen.dart';
 import 'package:bahia_delivery/widgets/store_home_widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 

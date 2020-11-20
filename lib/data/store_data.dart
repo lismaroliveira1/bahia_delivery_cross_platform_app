@@ -48,7 +48,7 @@ class StoreData {
           isStoreOpen = false;
         }
       } else if (DateTime.now().hour == closingTimeHour) {
-        if (DateTime.now().minute >= closingTimeMinute) {
+        if (DateTime.now().minute <= closingTimeMinute) {
           isStoreOpen = true;
         } else {
           isStoreOpen = false;

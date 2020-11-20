@@ -83,16 +83,19 @@ class _ListStoriesState extends State<ListStories> {
                                                     height: 75,
                                                     fit: BoxFit.cover,
                                                   ),
-                                                  Positioned(
-                                                    bottom: 2,
-                                                    right: 2,
-                                                    child: Image.asset(
-                                                      'images/fechado.png',
-                                                      width: 20,
-                                                      height: 6,
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                  )
+                                                  !doc.isStoreOpen
+                                                      ? Center(
+                                                          child: Image.asset(
+                                                            'images/fechado.png',
+                                                            width: 50 * 1.2,
+                                                            height: 35 * 1.2,
+                                                            fit: BoxFit.fill,
+                                                          ),
+                                                        )
+                                                      : Container(
+                                                          height: 0.0,
+                                                          width: 0.0,
+                                                        ),
                                                 ],
                                               ),
                                             ),
