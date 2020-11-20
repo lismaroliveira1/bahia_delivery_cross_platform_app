@@ -62,12 +62,6 @@ class _PurchasesStoresState extends State<PurchasesStores> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Colors.blueGrey,
-                                image: new DecorationImage(
-                                  image: new NetworkImage(
-                                    doc.image,
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
                               ),
                             ),
                           ),

@@ -16,17 +16,19 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
+  bool isStoresLengthVerified;
   @override
   void initState() {
     super.initState();
+    isStoresLengthVerified = false;
   }
 
-  bool isStoresLengthVerified = false;
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
       if (!isStoresLengthVerified) {
         model.updateStories();
+        model.getAllUserData();
         isStoresLengthVerified = true;
       }
       if (!model.isLoggedIn()) {

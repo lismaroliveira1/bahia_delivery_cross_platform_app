@@ -4,8 +4,14 @@ import 'package:bahia_delivery/services/cielo_payment.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class CartPrice extends StatelessWidget {
+class CartPrice extends StatefulWidget {
+  @override
+  _CartPriceState createState() => _CartPriceState();
+}
+
+class _CartPriceState extends State<CartPrice> {
   final CieloPayment cieloPayment = CieloPayment();
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(
@@ -81,9 +87,9 @@ class CartPrice extends StatelessWidget {
                             if (userModel.payOnApp) {
                               print("payOnApp");
                             } else {
-                              await model.finishOrderWithPayOnDelivery();
-                              UserModel.of(context).veryIfExistsProducts();
-                              UserModel.of(context).getListPurchasedByStores();
+                              await model.finishOrderWithPayOnDelivery(
+                                onSucces: _onSuccess,
+                              );
                             }
                           },
                           child: Text("Finalizar Pedido"),
@@ -100,5 +106,9 @@ class CartPrice extends StatelessWidget {
         ),
       );
     });
+  }
+
+  void _onSuccess() {
+    UserModel.of(context).getAllUserData();
   }
 }

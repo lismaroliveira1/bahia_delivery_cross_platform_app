@@ -88,6 +88,7 @@ class UserModel extends Model {
   List<CartProduct> productsInCart = [];
   bool isStoreHourConfigurated = false;
   List<StoreData> lastPurchasedStores = [];
+  List<OrderData> allOrders = [];
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -103,8 +104,8 @@ class UserModel extends Model {
     updateStories();
     updateStoreFavorites();
     updatePartnerData();
-    getUserOrder();
     veryIfExistsProducts();
+    getAllUserData();
   }
 
   Future<void> signIn({
@@ -119,10 +120,9 @@ class UserModel extends Model {
       final AuthResult result =
           await _auth.signInWithEmailAndPassword(email: email, password: pass);
       this.firebaseUser = result.user;
-
-      _loadCurrentUser();
       onSuccess();
       saveToken();
+      getAllUserData();
       updatePartnerData();
       isLoading = false;
       isLogged = true;
@@ -186,6 +186,7 @@ class UserModel extends Model {
         this.firebaseUser = authResult.user;
         _saveUserData(user);
         isLogged = true;
+        getAllUserData();
         saveToken();
         onSuccess();
         updatePartnerData();
@@ -233,6 +234,7 @@ class UserModel extends Model {
         userImage = authResult.user.photoUrl;
         this.firebaseUser = authResult.user;
         updatePartnerData();
+        getAllUserData();
         isLogged = true;
         saveToken();
         isLoading = false;
@@ -274,6 +276,7 @@ class UserModel extends Model {
           if (docUser.exists) {
             this.firebaseUser = authResult.user;
             updatePartnerData();
+            getAllUserData();
             isLogged = true;
             saveToken();
             isLoading = false;
@@ -339,6 +342,7 @@ class UserModel extends Model {
                   currentAddress: "");
               this.firebaseUser = authResult.user;
               _saveUserData(user);
+              getAllUserData();
               updatePartnerData();
               isLogged = true;
               saveToken();
@@ -379,10 +383,10 @@ class UserModel extends Model {
       final AuthResult result = await _auth.createUserWithEmailAndPassword(
           email: user.email, password: user.password);
       this.firebaseUser = result.user;
-      _loadCurrentUser();
       await _saveUserData(user);
       onSuccess();
       updatePartnerData();
+      getAllUserData();
       isLogged = true;
       saveToken();
       isLoading = false;
@@ -407,6 +411,7 @@ class UserModel extends Model {
     storeListFavorites.clear();
     listUserOrders.clear();
     listPartnerOders.clear();
+    lastPurchasedStores.clear();
     firebaseUser = null;
     isLogged = false;
     isLoading = false;
@@ -498,20 +503,125 @@ class UserModel extends Model {
           } catch (e) {}
         } else {}
       }
-    }
-    try {
-      if (firebaseUser == null) await _auth.currentUser();
-      if (firebaseUser != null) {
+      try {
         QuerySnapshot querySnapshot =
             await Firestore.instance.collection("stores").getDocuments();
         storeDataList = querySnapshot.documents
             .map((doc) => StoreData.fromDocument(doc))
             .toList();
-      }
-    } catch (e) {}
-    if (storeDataList.length > 0) hasStories = true;
+      } catch (e) {}
+      if (storeDataList.length > 0) hasStories = true;
+      try {
+        QuerySnapshot query = await Firestore.instance
+            .collection("orders")
+            .orderBy('createdAt', descending: true)
+            .getDocuments();
+        listUserOrders.clear();
+        purchasedsProducts.clear();
+        query.documents.map((doc) {
+          if (doc.data["client"] == firebaseUser.uid) {
+            listUserOrders.add(OrderData.fromDocument(doc));
+            updatedPurchasedProducts(doc);
+          }
+        }).toList();
+        lastPurchasedStores.clear();
+        for (OrderData order in listUserOrders) {
+          bool hasStoreinList = false;
+          if (lastPurchasedStores.length == 0) {
+            for (StoreData storesVeryfication in storeDataList) {
+              if (storesVeryfication.id == order.storeId) {
+                lastPurchasedStores.add(
+                    StoreData.fromDocument(storesVeryfication.storeSnapshot));
+              }
+            }
+          } else {
+            for (StoreData storeFlagVeryFicatrion in lastPurchasedStores) {
+              if (storeFlagVeryFicatrion.id == order.storeId) {
+                hasStoreinList = true;
+
+                break;
+              }
+            }
+            if (!hasStoreinList) {
+              for (StoreData storesVeryfication in storeDataList) {
+                if (storesVeryfication.id == order.storeId) {
+                  if (storesVeryfication.id == order.storeId) {
+                    lastPurchasedStores.add(StoreData.fromDocument(
+                        storesVeryfication.storeSnapshot));
+                  }
+                }
+              }
+            }
+          }
+        }
+      } catch (erro) {}
+    }
+
     isLoading = false;
     notifyListeners();
+  }
+
+  void getAllUserData() async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      try {
+        QuerySnapshot querySnapshot =
+            await Firestore.instance.collection("stores").getDocuments();
+        storeDataList = querySnapshot.documents
+            .map((doc) => StoreData.fromDocument(doc))
+            .toList();
+      } catch (e) {}
+      if (storeDataList.length > 0) hasStories = true;
+      try {
+        QuerySnapshot query = await Firestore.instance
+            .collection("orders")
+            .orderBy('createdAt', descending: true)
+            .getDocuments();
+        listUserOrders.clear();
+        purchasedsProducts.clear();
+        query.documents.map((doc) {
+          if (doc.data["client"] == firebaseUser.uid) {
+            listUserOrders.add(OrderData.fromDocument(doc));
+            updatedPurchasedProducts(doc);
+          }
+        }).toList();
+      } catch (erro) {}
+      try {
+        lastPurchasedStores.clear();
+        for (OrderData order in listUserOrders) {
+          bool hasStoreinList = false;
+          if (lastPurchasedStores.length == 0) {
+            for (StoreData storesVeryfication in storeDataList) {
+              if (storesVeryfication.id == order.storeId) {
+                lastPurchasedStores.add(
+                    StoreData.fromDocument(storesVeryfication.storeSnapshot));
+              }
+            }
+          } else {
+            for (StoreData storeFlagVeryFicatrion in lastPurchasedStores) {
+              if (storeFlagVeryFicatrion.id == order.storeId) {
+                hasStoreinList = true;
+
+                break;
+              }
+            }
+            if (!hasStoreinList) {
+              for (StoreData storesVeryfication in storeDataList) {
+                if (storesVeryfication.id == order.storeId) {
+                  if (storesVeryfication.id == order.storeId) {
+                    lastPurchasedStores.add(StoreData.fromDocument(
+                        storesVeryfication.storeSnapshot));
+                  }
+                }
+              }
+            }
+          }
+        }
+        notifyListeners();
+      } catch (erro) {
+        notifyListeners();
+      }
+    }
   }
 
   Future<void> getAddressFromZipCode(String zipCode) async {
@@ -925,20 +1035,8 @@ class UserModel extends Model {
   void getUserOrder() async {
     if (firebaseUser == null) firebaseUser = await _auth.currentUser();
     if (firebaseUser != null) {
-      try {
-        QuerySnapshot query = await Firestore.instance
-            .collection("orders")
-            .orderBy('createdAt', descending: true)
-            .getDocuments();
-        listUserOrders.clear();
-        purchasedsProducts.clear();
-        query.documents.map((doc) {
-          if (doc.data["client"] == firebaseUser.uid) {
-            listUserOrders.add(OrderData.fromDocument(doc));
-            updatedPurchasedProducts(doc);
-          }
-        }).toList();
-      } catch (e) {}
+      bool hasStore = false;
+      try {} catch (e) {}
       notifyListeners();
     }
   }
@@ -1737,21 +1835,6 @@ class UserModel extends Model {
       }).toList();
     }
     notifyListeners();
-  }
-
-  void getListPurchasedByStores() async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      try {
-        QuerySnapshot querySnapshot =
-            await Firestore.instance.collection("stores").getDocuments();
-        querySnapshot.documents.map((doc) {
-          for (ProductData productData in purchasedsProducts) {
-            if (productData.storeId == doc.documentID) {}
-          }
-        }).toList();
-      } catch (e) {}
-    }
   }
 
   void verifyOffSales(String storeIdtoVerifyt) async {

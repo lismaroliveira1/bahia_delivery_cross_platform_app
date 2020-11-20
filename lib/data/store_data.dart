@@ -14,7 +14,6 @@ class StoreData {
   int closingTimeMinute;
   bool ishourSeted = false;
   bool isStoreOpen = false;
-
   StoreData.fromDocument(DocumentSnapshot documentSnapshot) {
     bool isClosingTimeSeted = false;
     bool isOpeningTimeConfigurated = false;

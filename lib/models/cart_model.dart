@@ -265,7 +265,9 @@ class CartModel extends Model {
     }
   }
 
-  Future<void> finishOrderWithPayOnDelivery() async {
+  Future<void> finishOrderWithPayOnDelivery({
+    @required VoidCallback onSucces,
+  }) async {
     if (products.length == 0) return null;
     isLoading = true;
     notifyListeners();
@@ -312,8 +314,10 @@ class CartModel extends Model {
         'platform': Platform.operatingSystem,
         'paymentType': "Pagamento na Entrega"
       }).then((value) {});
+
       products.clear();
       couponCode = null;
+      onSucces();
     } catch (e) {
       print(e);
     }

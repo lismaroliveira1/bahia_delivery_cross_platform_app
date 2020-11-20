@@ -520,7 +520,9 @@ class _ProductTabState extends State<ProductTab> {
                             ),
                             FlatButton(
                               onPressed: () {
-                                model.finishOrderWithPayOnDelivery();
+                                model.finishOrderWithPayOnDelivery(
+                                  onSucces: _onSuccessOrder,
+                                );
                                 Navigator.of(context).pop();
                               },
                               child: Container(
@@ -552,5 +554,9 @@ class _ProductTabState extends State<ProductTab> {
       ),
     ));
     print("Loja Diferente");
+  }
+
+  void _onSuccessOrder() {
+    UserModel.of(context).getAllUserData();
   }
 }
