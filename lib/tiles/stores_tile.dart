@@ -37,6 +37,7 @@ class _ListStoriesState extends State<ListStories> {
                 children: [
                   Column(
                       children: model.storeDataList.map((doc) {
+                    print(doc.isStoreOpen);
                     return doc.ishourSeted
                         ? Padding(
                             padding: const EdgeInsets.symmetric(
@@ -72,10 +73,27 @@ class _ListStoriesState extends State<ListStories> {
                                             child: ClipRRect(
                                               borderRadius:
                                                   BorderRadius.circular(10),
-                                              child: FadeInImage.memoryNetwork(
-                                                placeholder: kTransparentImage,
-                                                image: doc.image,
-                                                fit: BoxFit.cover,
+                                              child: Stack(
+                                                children: [
+                                                  FadeInImage.memoryNetwork(
+                                                    placeholder:
+                                                        kTransparentImage,
+                                                    image: doc.image,
+                                                    width: 75,
+                                                    height: 75,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                  Positioned(
+                                                    bottom: 2,
+                                                    right: 2,
+                                                    child: Image.asset(
+                                                      'images/fechado.png',
+                                                      width: 20,
+                                                      height: 6,
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                  )
+                                                ],
                                               ),
                                             ),
                                           ),
@@ -123,7 +141,6 @@ class _ListStoriesState extends State<ListStories> {
                                   right: 3.0,
                                   child: IconButton(
                                     onPressed: () {
-                                      print("ok");
                                       model.addFavoriteStore(doc);
                                     },
                                     icon: Icon(

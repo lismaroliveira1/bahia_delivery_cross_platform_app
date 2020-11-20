@@ -13,6 +13,7 @@ class StoreData {
   int closingTimeHour;
   int closingTimeMinute;
   bool ishourSeted = false;
+  bool isStoreOpen = false;
 
   StoreData.fromDocument(DocumentSnapshot documentSnapshot) {
     bool isClosingTimeSeted = false;
@@ -35,6 +36,27 @@ class StoreData {
       isOpeningTimeConfigurated = true;
     }
     if (isClosingTimeSeted && isOpeningTimeConfigurated) ishourSeted = true;
+
+    if (ishourSeted) {
+      if (DateTime.now().hour > openingTimeHour &&
+          DateTime.now().hour < closingTimeHour) {
+        isStoreOpen = true;
+      } else if (DateTime.now().hour == openingTimeHour) {
+        if (DateTime.now().minute >= openingTimeMinute) {
+          isStoreOpen = true;
+        } else {
+          isStoreOpen = false;
+        }
+      } else if (DateTime.now().hour == closingTimeHour) {
+        if (DateTime.now().minute >= closingTimeMinute) {
+          isStoreOpen = true;
+        } else {
+          isStoreOpen = false;
+        }
+      } else {
+        isStoreOpen = false;
+      }
+    }
   }
 
   Map<String, dynamic> toMap() {

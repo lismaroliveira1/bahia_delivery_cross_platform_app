@@ -1782,6 +1782,8 @@ class UserModel extends Model {
     @required int openingTimeMinute,
     @required int closingTimeHour,
     @required int closingTimeMinute,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
   }) async {
     if (firebaseUser == null) await _auth.currentUser();
     if (firebaseUser != null) {
@@ -1799,7 +1801,11 @@ class UserModel extends Model {
             "minute": closingTimeMinute,
           },
         });
+        isStoreHourConfigurated = true;
+        onSuccess();
+        notifyListeners();
       } catch (e) {
+        onFail();
         print(e.toString());
       }
     }

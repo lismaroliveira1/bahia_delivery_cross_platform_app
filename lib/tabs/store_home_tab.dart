@@ -205,6 +205,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
     double imageSide = MediaQuery.of(context).size.width / 8;
     Scaffold.of(context).showSnackBar(SnackBar(
       elevation: 12,
+      duration: Duration(minutes: 1),
       backgroundColor: Colors.grey[200],
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(

@@ -145,6 +145,8 @@ class _SetupStoreTabState extends State<SetupStoreTab> {
                 openingTimeMinute: openingMinute,
                 closingTimeHour: closingHour,
                 closingTimeMinute: closingMinute,
+                onFail: _onfail,
+                onSuccess: _onSuccess,
               );
             },
           ),
@@ -158,4 +160,10 @@ class _SetupStoreTabState extends State<SetupStoreTab> {
     currentFocus.unfocus();
     FocusScope.of(context).requestFocus(nextFocus);
   }
+
+  void _onSuccess() {
+    Navigator.of(context).pop();
+  }
+
+  void _onfail() {}
 }
