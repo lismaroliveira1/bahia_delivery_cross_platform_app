@@ -26,7 +26,12 @@ class CreditDebitCardTileNB extends StatelessWidget {
             width: 20,
           ),
           Text(
-              "*** *** *** " + creditDebitCardData.cardNumber.substring(15, 19))
+            "*** *** *** " + creditDebitCardData.cardNumber.substring(15, 19),
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Colors.grey[700],
+            ),
+          )
         ],
       ),
     );

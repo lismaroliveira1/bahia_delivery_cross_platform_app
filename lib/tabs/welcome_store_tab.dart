@@ -5,6 +5,9 @@ import 'package:bahia_delivery/screens/product_screen.dart';
 import 'package:bahia_delivery/screens/sale_off_store_screen.dart';
 import 'package:bahia_delivery/screens/store_screen.dart';
 import 'package:bahia_delivery/tiles/cart_tile.dart';
+import 'package:bahia_delivery/widgets/chip_card.dart';
+import 'package:bahia_delivery/widgets/discount_card.dart';
+import 'package:bahia_delivery/widgets/payment_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -475,60 +478,82 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
             topRight: Radius.circular(12),
           ),
         ),
-        content: Container(
-          color: Colors.white,
-          height: MediaQuery.of(context).size.height * 0.8,
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  top: 10,
-                  bottom: 2.0,
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      "Carrinho",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
-                      ),
+        content: Stack(
+          children: [
+            Container(
+              color: Colors.white,
+              height: MediaQuery.of(context).size.height * 0.8,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 10,
+                      bottom: 2.0,
                     ),
-                    SizedBox(
-                      height: 20,
+                    child: Column(
+                      children: [
+                        Text(
+                          "Carrinho",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.grey[600],
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Divider(
+                          color: Colors.black,
+                        ),
+                      ],
                     ),
-                    Divider(
-                      color: Colors.black,
-                    ),
-                  ],
+                  ),
+                  ScopedModelDescendant<UserModel>(
+                      builder: (context, cart, model) {
+                    if (model.isLoading) {
+                      return Container(
+                        height: 0,
+                        width: 0,
+                      );
+                    } else {
+                      return Expanded(
+                        child: Container(
+                          color: Colors.white,
+                          child: ListView(
+                            children: model.productsInCart.map((product) {
+                              return CartTile(
+                                cartProduct: product,
+                                noProduct: _noProductInCart,
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      );
+                    }
+                  }),
+                  Spacer(),
+                  DiscountCard(),
+                  ShipCard(),
+                  PaymentCard(),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 2,
+              right: 5,
+              child: IconButton(
+                onPressed: () {
+                  Scaffold.of(context).hideCurrentSnackBar();
+                },
+                icon: Icon(
+                  Icons.close_rounded,
+                  color: Colors.grey,
                 ),
               ),
-              ScopedModelDescendant<UserModel>(builder: (context, cart, model) {
-                if (model.isLoading) {
-                  return Container(
-                    height: 0,
-                    width: 0,
-                  );
-                } else {
-                  return Expanded(
-                    child: Container(
-                      color: Colors.white,
-                      child: ListView(
-                        children: model.productsInCart.map((product) {
-                          return CartTile(
-                            cartProduct: product,
-                            noProduct: _noProductInCart,
-                          );
-                        }).toList(),
-                      ),
-                    ),
-                  );
-                }
-              }),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

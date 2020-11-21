@@ -27,9 +27,10 @@ class _PaymentCardState extends State<PaymentCard> {
                 .push(MaterialPageRoute(builder: (context) => PaymentScreen()));
           },
           child: Card(
-            margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 0.0),
             child: Container(
               height: 60,
+              color: Colors.white,
               child: Padding(
                 padding: const EdgeInsets.only(left: 8, right: 16),
                 child: Center(
@@ -62,9 +63,10 @@ class _PaymentCardState extends State<PaymentCard> {
                                 Text(
                                   "Pagamento",
                                   style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey[700],
-                                      fontSize: 16),
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey[700],
+                                    fontSize: 16,
+                                  ),
                                 ),
                               ],
                             ),

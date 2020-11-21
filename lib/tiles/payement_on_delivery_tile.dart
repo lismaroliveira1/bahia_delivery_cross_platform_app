@@ -29,6 +29,10 @@ class PaymentOnDeliveryTile extends StatelessWidget {
             paymentOnDeliveryData.description
                     .replaceAll("(Visa ou Master)", "") +
                 "  - (Pagemento na entrega)",
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              color: Colors.grey[700],
+            ),
           )
         ],
       ),

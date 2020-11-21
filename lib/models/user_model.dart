@@ -1873,7 +1873,11 @@ class UserModel extends Model {
     }
   }
 
-  void removeCartItem(CartProduct cartProduct) async {
+  void removeCartItem({
+    @required CartProduct cartProduct,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
     if (firebaseUser == null) await _auth.currentUser();
     if (firebaseUser != null) {
       try {
@@ -1884,25 +1888,18 @@ class UserModel extends Model {
             .document(cartProduct.cId)
             .delete();
         productsInCart.remove(cartProduct);
-        notifyListeners();
-      } catch (erro) {}
-      try {
-        productsInCart.clear();
-        QuerySnapshot querySnapshot = await Firestore.instance
-            .collection("users")
-            .document(firebaseUser.uid)
-            .collection("cart")
-            .getDocuments();
-        if (querySnapshot.documents.length > 0) {
-          querySnapshot.documents.map((doc) {
-            productsInCart.add(CartProduct.fromDocument(doc));
-          }).toList();
+        if (productsInCart.length > 0) {
           hasProductInCart = true;
         } else {
           productsInCart = [];
           hasProductInCart = false;
         }
-      } catch (e) {}
+        onSuccess();
+        notifyListeners();
+      } catch (erro) {
+        onFail();
+        notifyListeners();
+      }
     }
   }
 }

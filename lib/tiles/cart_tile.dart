@@ -47,7 +47,7 @@ class _CartTileState extends State<CartTile> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 4.0),
+                    padding: EdgeInsets.symmetric(horizontal: 0.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
                       child: Image.network(
@@ -61,6 +61,7 @@ class _CartTileState extends State<CartTile> {
                   widget.cartProduct.productOptionals.length > 0
                       ? Container(
                           height: MediaQuery.of(context).size.width / 4.2,
+                          width: MediaQuery.of(context).size.width / 3.8,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -72,6 +73,7 @@ class _CartTileState extends State<CartTile> {
                                 ),
                               ),
                               Container(
+                                width: 200,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -224,7 +226,10 @@ class _CartTileState extends State<CartTile> {
                                           onPressed: () {
                                             UserModel.of(context)
                                                 .removeCartItem(
-                                                    widget.cartProduct);
+                                              cartProduct: widget.cartProduct,
+                                              onSuccess: _onSuccess,
+                                              onFail: _onFail,
+                                            );
                                           },
                                         );
                                       })
@@ -234,7 +239,7 @@ class _CartTileState extends State<CartTile> {
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
+                              vertical: 2.0,
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -295,4 +300,12 @@ class _CartTileState extends State<CartTile> {
       ],
     );
   }
+
+  void _onSuccess() {
+    if (!UserModel.of(context).hasProductInCart) {
+      Scaffold.of(context).hideCurrentSnackBar();
+    }
+  }
+
+  void _onFail() {}
 }
