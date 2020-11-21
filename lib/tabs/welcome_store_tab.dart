@@ -495,7 +495,7 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                   ),
                 ),
               ),
-              ScopedModelDescendant<CartModel>(builder: (context, cart, model) {
+              ScopedModelDescendant<UserModel>(builder: (context, cart, model) {
                 if (model.isLoading) {
                   return Container(
                     height: 0,
@@ -506,8 +506,11 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                     child: Container(
                       color: Colors.white,
                       child: ListView(
-                        children: model.products.map((product) {
-                          return CartTile(product);
+                        children: model.productsInCart.map((product) {
+                          return CartTile(
+                            cartProduct: product,
+                            noProduct: _noProductInCart,
+                          );
                         }).toList(),
                       ),
                     ),
@@ -519,5 +522,9 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
         ),
       ),
     );
+  }
+
+  void _noProductInCart() {
+    Scaffold.of(context).hideCurrentSnackBar();
   }
 }

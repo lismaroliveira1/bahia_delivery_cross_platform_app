@@ -38,6 +38,7 @@ class CartModel extends Model {
       ScopedModel.of<CartModel>(context);
   @override
   void addListener(VoidCallback listener) {
+    if (user.isLoggedIn()) _loadCartItems();
     super.addListener(listener);
     veryIfExistsProducts();
   }
@@ -137,6 +138,7 @@ class CartModel extends Model {
 
   void decProduct(CartProduct cartProduct) {
     cartProduct.quantify--;
+    cartProduct.price = cartProduct.quantify * cartProduct.productPrice;
     Firestore.instance
         .collection("users")
         .document(user.firebaseUser.uid)
@@ -147,7 +149,15 @@ class CartModel extends Model {
   }
 
   void incProduct(CartProduct cartProduct) {
+    double priceOptinals = 0;
+
+    for (IncrementalOptData incrementalOptData
+        in cartProduct.productOptionals) {
+      priceOptinals += incrementalOptData.price * incrementalOptData.quantity;
+    }
     cartProduct.quantify++;
+    cartProduct.price =
+        cartProduct.quantify * (cartProduct.productPrice + priceOptinals);
     Firestore.instance
         .collection("users")
         .document(user.firebaseUser.uid)
@@ -480,6 +490,4 @@ class CartModel extends Model {
     }
     notifyListeners();
   }
-
-  void getProducts() {}
 }

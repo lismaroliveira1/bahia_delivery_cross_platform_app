@@ -99,7 +99,10 @@ class _CartTabState extends State<CartTab> {
                       Expanded(
                           child: ListView(
                         children: model.products.map((product) {
-                          return CartTile(product);
+                          return CartTile(
+                            cartProduct: product,
+                            noProduct: () {},
+                          );
                         }).toList(),
                       )),
                       DiscountCard(),

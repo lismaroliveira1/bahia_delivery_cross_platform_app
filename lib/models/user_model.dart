@@ -1872,4 +1872,37 @@ class UserModel extends Model {
       }
     }
   }
+
+  void removeCartItem(CartProduct cartProduct) async {
+    if (firebaseUser == null) await _auth.currentUser();
+    if (firebaseUser != null) {
+      try {
+        Firestore.instance
+            .collection("users")
+            .document(firebaseUser.uid)
+            .collection("cart")
+            .document(cartProduct.cId)
+            .delete();
+        productsInCart.remove(cartProduct);
+        notifyListeners();
+      } catch (erro) {}
+      try {
+        productsInCart.clear();
+        QuerySnapshot querySnapshot = await Firestore.instance
+            .collection("users")
+            .document(firebaseUser.uid)
+            .collection("cart")
+            .getDocuments();
+        if (querySnapshot.documents.length > 0) {
+          querySnapshot.documents.map((doc) {
+            productsInCart.add(CartProduct.fromDocument(doc));
+          }).toList();
+          hasProductInCart = true;
+        } else {
+          productsInCart = [];
+          hasProductInCart = false;
+        }
+      } catch (e) {}
+    }
+  }
 }
