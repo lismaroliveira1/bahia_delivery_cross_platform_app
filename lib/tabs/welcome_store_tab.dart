@@ -485,14 +485,24 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                   top: 10,
                   bottom: 2.0,
                 ),
-                child: Text(
-                  "Carrinho",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontWeight: FontWeight.bold,
-                    fontSize: 22,
-                  ),
+                child: Column(
+                  children: [
+                    Text(
+                      "Carrinho",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Divider(
+                      color: Colors.black,
+                    ),
+                  ],
                 ),
               ),
               ScopedModelDescendant<UserModel>(builder: (context, cart, model) {
