@@ -23,7 +23,7 @@ class _PurchasesStoresState extends State<PurchasesStores> {
               Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 2),
                     child: Text(
                       "Peça Novamente",
                       style: TextStyle(
@@ -37,7 +37,7 @@ class _PurchasesStoresState extends State<PurchasesStores> {
                 ],
               ),
               Container(
-                height: 140,
+                height: 100,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: model.lastPurchasedStores.map((doc) {

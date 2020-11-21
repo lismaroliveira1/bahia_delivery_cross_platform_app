@@ -159,14 +159,15 @@ class _HomeTabState extends State<HomeTab> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.only(left: 18),
+                        padding: EdgeInsets.only(left: 10, bottom: 5),
                         child: Text(
                           "Categorias",
                           style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[800],
-                              fontStyle: FontStyle.italic,
-                              fontSize: 14),
+                            fontSize: 16,
+                            fontStyle: FontStyle.italic,
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                       ListCategory(),

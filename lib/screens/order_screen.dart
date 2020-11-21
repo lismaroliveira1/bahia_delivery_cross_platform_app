@@ -17,11 +17,7 @@ class _OrderScreenState extends State<OrderScreen> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(
       builder: (context, child, model) {
-        if (!isVerifiedListStoreOrders) {
-          model.updatePartnerData();
-          model.getUserOrder();
-          isVerifiedListStoreOrders = true;
-        }
+        if (!isVerifiedListStoreOrders) {}
         if (!isVerifiedListUserOrders) {
           isVerifiedListUserOrders = true;
         }
@@ -31,47 +27,6 @@ class _OrderScreenState extends State<OrderScreen> {
             child: Center(
               child: CircularProgressIndicator(),
             ),
-          );
-        } else if (!model.isLoggedIn()) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.view_list,
-                size: 80.0,
-                color: Colors.red,
-              ),
-              SizedBox(
-                height: 16.0,
-              ),
-              Text(
-                "Faça login para login para acompanhar os produtos",
-                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 16.0,
-              ),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  height: 55,
-                  child: RaisedButton(
-                    color: Colors.red,
-                    child: Text(
-                      "Entrar",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => LoginScreen(),
-                      ));
-                    },
-                  ),
-                ),
-              )
-            ],
           );
         } else {
           var listPartnerOders = model.listPartnerOders;

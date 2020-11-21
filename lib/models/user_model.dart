@@ -507,51 +507,6 @@ class UserModel extends Model {
         } else {}
       }
       getAllUserData();
-      if (storeDataList.length > 0) hasStories = true;
-      try {
-        QuerySnapshot query = await Firestore.instance
-            .collection("orders")
-            .orderBy('createdAt', descending: true)
-            .getDocuments();
-        listUserOrders.clear();
-        purchasedsProducts.clear();
-        query.documents.map((doc) {
-          if (doc.data["client"] == firebaseUser.uid) {
-            listUserOrders.add(OrderData.fromDocument(doc));
-            updatedPurchasedProducts(doc);
-          }
-        }).toList();
-        lastPurchasedStores.clear();
-        for (OrderData order in listUserOrders) {
-          bool hasStoreinList = false;
-          if (lastPurchasedStores.length == 0) {
-            for (StoreData storesVeryfication in storeDataList) {
-              if (storesVeryfication.id == order.storeId) {
-                lastPurchasedStores.add(
-                    StoreData.fromDocument(storesVeryfication.storeSnapshot));
-              }
-            }
-          } else {
-            for (StoreData storeFlagVeryFicatrion in lastPurchasedStores) {
-              if (storeFlagVeryFicatrion.id == order.storeId) {
-                hasStoreinList = true;
-
-                break;
-              }
-            }
-            if (!hasStoreinList) {
-              for (StoreData storesVeryfication in storeDataList) {
-                if (storesVeryfication.id == order.storeId) {
-                  if (storesVeryfication.id == order.storeId) {
-                    lastPurchasedStores.add(StoreData.fromDocument(
-                        storesVeryfication.storeSnapshot));
-                  }
-                }
-              }
-            }
-          }
-        }
-      } catch (erro) {}
     }
 
     isLoading = false;

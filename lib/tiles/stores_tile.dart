@@ -36,131 +36,163 @@ class _ListStoriesState extends State<ListStories> {
               child: Stack(
                 children: [
                   Column(
-                      children: model.storeDataListOpened.map((doc) {
-                    return doc.ishourSeted
-                        ? Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 4.0),
-                            child: Stack(
+                    children: [
+                      model.storeDataList.length > 0
+                          ? Row(
                               children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: FlatButton(
-                                    padding: EdgeInsets.zero,
-                                    onPressed: () {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              WelcomeStoreScreenn(
-                                                  doc.storeSnapshot),
-                                        ),
-                                      );
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(4.0),
-                                          child: Container(
-                                            height: 75,
-                                            width: 75,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              child: Stack(
-                                                children: [
-                                                  FadeInImage.memoryNetwork(
-                                                    placeholder:
-                                                        kTransparentImage,
-                                                    image: doc.image,
-                                                    width: 75,
-                                                    height: 75,
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                  !doc.isStoreOpen
-                                                      ? Center(
-                                                          child: Image.asset(
-                                                            'images/fechado.png',
-                                                            width: 50 * 1.2,
-                                                            height: 35 * 1.2,
-                                                            fit: BoxFit.fill,
-                                                          ),
-                                                        )
-                                                      : Container(
-                                                          height: 0.0,
-                                                          width: 0.0,
-                                                        ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 4,
-                                        ),
-                                        Padding(
-                                          padding:
-                                              EdgeInsets.fromLTRB(0, 4, 4, 4),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                doc.name,
-                                                style: TextStyle(
-                                                  color: Colors.black87,
-                                                  fontWeight: FontWeight.w700,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 4,
-                                              ),
-                                              Container(
-                                                child: Text(
-                                                  doc.description,
-                                                  style: TextStyle(
-                                                      color: Colors.black54,
-                                                      fontSize: 12),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 20,
-                                              )
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 3.0,
-                                  right: 3.0,
-                                  child: IconButton(
-                                    onPressed: () {
-                                      model.addFavoriteStore(doc);
-                                    },
-                                    icon: Icon(
-                                      Icons.favorite,
-                                      color:
-                                          isFavorite ? Colors.red : Colors.grey,
-                                      size: 18,
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(10, 10, 10, 2),
+                                  child: Text(
+                                    "Lojas",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontStyle: FontStyle.italic,
+                                      color: Colors.grey[700],
+                                      fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ),
                               ],
+                            )
+                          : Container(
+                              height: 0,
+                              width: 0,
                             ),
-                          )
-                        : Container(
-                            height: 0,
-                            width: 0,
-                          );
-                  }).toList()),
+                      Column(
+                          children: model.storeDataListOpened.map((doc) {
+                        return doc.ishourSeted
+                            ? Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8.0, vertical: 4.0),
+                                child: Stack(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: FlatButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  WelcomeStoreScreenn(
+                                                      doc.storeSnapshot),
+                                            ),
+                                          );
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: Container(
+                                                height: 75,
+                                                width: 75,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  child: Stack(
+                                                    children: [
+                                                      FadeInImage.memoryNetwork(
+                                                        placeholder:
+                                                            kTransparentImage,
+                                                        image: doc.image,
+                                                        width: 75,
+                                                        height: 75,
+                                                        fit: BoxFit.cover,
+                                                      ),
+                                                      !doc.isStoreOpen
+                                                          ? Center(
+                                                              child:
+                                                                  Image.asset(
+                                                                'images/fechado.png',
+                                                                width: 50 * 1.2,
+                                                                height:
+                                                                    35 * 1.2,
+                                                                fit:
+                                                                    BoxFit.fill,
+                                                              ),
+                                                            )
+                                                          : Container(
+                                                              height: 0.0,
+                                                              width: 0.0,
+                                                            ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 4,
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 4, 4, 4),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    doc.name,
+                                                    style: TextStyle(
+                                                      color: Colors.black87,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 4,
+                                                  ),
+                                                  Container(
+                                                    child: Text(
+                                                      doc.description,
+                                                      style: TextStyle(
+                                                          color: Colors.black54,
+                                                          fontSize: 12),
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 20,
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 3.0,
+                                      right: 3.0,
+                                      child: IconButton(
+                                        onPressed: () {
+                                          model.addFavoriteStore(doc);
+                                        },
+                                        icon: Icon(
+                                          Icons.favorite,
+                                          color: isFavorite
+                                              ? Colors.red
+                                              : Colors.grey,
+                                          size: 18,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container(
+                                height: 0,
+                                width: 0,
+                              );
+                      }).toList()),
+                    ],
+                  ),
                 ],
               ),
             ),

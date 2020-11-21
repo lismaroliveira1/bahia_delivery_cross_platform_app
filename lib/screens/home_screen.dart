@@ -101,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double sizeColor = 25.0;
+    double sizeColor = 30.0;
     return PageView(
       controller: _pageController,
       physics: NeverScrollableScrollPhysics(),
@@ -111,29 +111,41 @@ class _HomeScreenState extends State<HomeScreen> {
           body: _showPage,
           bottomNavigationBar: CurvedNavigationBar(
             height: 55,
-            color: Colors.red,
+            color: Colors.blueGrey[300],
             backgroundColor: Colors.white,
             buttonBackgroundColor: Colors.redAccent,
             items: [
-              Icon(
-                Icons.home,
-                size: sizeColor,
-                color: Colors.white,
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Icon(
+                  Icons.home,
+                  size: sizeColor,
+                  color: Colors.white,
+                ),
               ),
-              Icon(
-                Icons.favorite,
-                size: sizeColor,
-                color: Colors.white,
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Icon(
+                  Icons.favorite,
+                  size: sizeColor,
+                  color: Colors.white,
+                ),
               ),
-              Icon(
-                Icons.add_shopping_cart,
-                size: sizeColor,
-                color: Colors.white,
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Icon(
+                  Icons.add_shopping_cart,
+                  size: sizeColor,
+                  color: Colors.white,
+                ),
               ),
-              Icon(
-                Icons.person_pin,
-                size: sizeColor,
-                color: Colors.white,
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Icon(
+                  Icons.person_pin,
+                  size: sizeColor,
+                  color: Colors.white,
+                ),
               ),
             ],
             animationDuration: Duration(milliseconds: 350),
