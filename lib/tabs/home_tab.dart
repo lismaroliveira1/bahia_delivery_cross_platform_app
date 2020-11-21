@@ -3,6 +3,7 @@ import 'package:bahia_delivery/screens/location_screen.dart';
 import 'package:bahia_delivery/themes/theme.dart';
 import 'package:bahia_delivery/tiles/category_tile.dart';
 import 'package:bahia_delivery/tiles/purchased_stores_tile.dart';
+import 'package:bahia_delivery/tiles/stores_closed_tile.dart';
 import 'package:bahia_delivery/tiles/stores_tile.dart';
 
 import 'package:flutter/material.dart';
@@ -43,11 +44,11 @@ class _HomeTabState extends State<HomeTab> {
           ),
         );
       } else {
-        return Stack(
+        return new Stack(
           children: <Widget>[
-            Container(
+            new Container(
               color: Colors.white,
-              child: CustomScrollView(
+              child: new CustomScrollView(
                 slivers: <Widget>[
                   SliverAppBar(
                     leading: GestureDetector(
@@ -173,6 +174,7 @@ class _HomeTabState extends State<HomeTab> {
                     ]),
                   ),
                   ListStories(),
+                  ListStoriesClosed(),
                 ],
               ),
             ),

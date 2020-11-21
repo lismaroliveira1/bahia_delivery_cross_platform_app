@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
-class ListStories extends StatefulWidget {
+class ListStoriesClosed extends StatefulWidget {
   @override
-  _ListStoriesState createState() => _ListStoriesState();
+  _ListStoriesClosedState createState() => _ListStoriesClosedState();
 }
 
-class _ListStoriesState extends State<ListStories> {
+class _ListStoriesClosedState extends State<ListStoriesClosed> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
       bool isFavorite = false;
@@ -36,7 +36,7 @@ class _ListStoriesState extends State<ListStories> {
               child: Stack(
                 children: [
                   Column(
-                      children: model.storeDataListOpened.map((doc) {
+                      children: model.storeDataListClosed.map((doc) {
                     return doc.ishourSeted
                         ? Padding(
                             padding: const EdgeInsets.symmetric(

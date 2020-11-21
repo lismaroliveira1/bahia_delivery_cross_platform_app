@@ -89,12 +89,15 @@ class UserModel extends Model {
   bool isStoreHourConfigurated = false;
   List<StoreData> lastPurchasedStores = [];
   List<OrderData> allOrders = [];
+  List<StoreData> storeDataListOpened = [];
+  List<StoreData> storeDataListClosed = [];
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
   @override
   void addListener(VoidCallback listener) async {
     super.addListener(listener);
+
     _loadCurrentUser();
     _getCurrentLocation();
     _loadListCreditDebitCard();
@@ -105,7 +108,6 @@ class UserModel extends Model {
     updateStoreFavorites();
     updatePartnerData();
     veryIfExistsProducts();
-    getAllUserData();
   }
 
   Future<void> signIn({
@@ -408,6 +410,7 @@ class UserModel extends Model {
     creditDebitCardList.clear();
     categoryDataList.clear();
     storeDataList.clear();
+    storeDataListClosed.clear();
     storeListFavorites.clear();
     listUserOrders.clear();
     listPartnerOders.clear();
@@ -503,13 +506,7 @@ class UserModel extends Model {
           } catch (e) {}
         } else {}
       }
-      try {
-        QuerySnapshot querySnapshot =
-            await Firestore.instance.collection("stores").getDocuments();
-        storeDataList = querySnapshot.documents
-            .map((doc) => StoreData.fromDocument(doc))
-            .toList();
-      } catch (e) {}
+      getAllUserData();
       if (storeDataList.length > 0) hasStories = true;
       try {
         QuerySnapshot query = await Firestore.instance
@@ -567,9 +564,18 @@ class UserModel extends Model {
       try {
         QuerySnapshot querySnapshot =
             await Firestore.instance.collection("stores").getDocuments();
-        storeDataList = querySnapshot.documents
-            .map((doc) => StoreData.fromDocument(doc))
-            .toList();
+        storeDataList.clear();
+        storeDataListOpened.clear();
+        storeDataListClosed.clear();
+        querySnapshot.documents.map((doc) {
+          StoreData storeData = StoreData.fromDocument(doc);
+          storeDataList.add(StoreData.fromDocument(doc));
+          if (storeData.isStoreOpen) {
+            storeDataListOpened.add(StoreData.fromDocument(doc));
+          } else {
+            storeDataListClosed.add(StoreData.fromDocument(doc));
+          }
+        }).toList();
       } catch (e) {}
       if (storeDataList.length > 0) hasStories = true;
       try {
