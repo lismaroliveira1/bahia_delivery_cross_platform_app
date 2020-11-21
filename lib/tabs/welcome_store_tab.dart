@@ -1,10 +1,10 @@
 import 'package:bahia_delivery/models/cart_model.dart';
 import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/cart_screen.dart';
 import 'package:bahia_delivery/screens/product_screen.dart';
 import 'package:bahia_delivery/screens/sale_off_store_screen.dart';
 import 'package:bahia_delivery/screens/store_screen.dart';
 import 'package:bahia_delivery/tiles/cart_tile.dart';
+import 'package:bahia_delivery/widgets/cart_price.dart';
 import 'package:bahia_delivery/widgets/chip_card.dart';
 import 'package:bahia_delivery/widgets/discount_card.dart';
 import 'package:bahia_delivery/widgets/payment_card.dart';
@@ -533,10 +533,10 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                       );
                     }
                   }),
-                  Spacer(),
                   DiscountCard(),
                   ShipCard(),
                   PaymentCard(),
+                  CartPrice(widget.documentSnapshot),
                 ],
               ),
             ),

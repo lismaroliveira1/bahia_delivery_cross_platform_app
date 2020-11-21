@@ -108,7 +108,6 @@ class _CartTabState extends State<CartTab> {
                       DiscountCard(),
                       ShipCard(),
                       PaymentCard(),
-                      CartPrice(),
                     ],
                   ),
                 );

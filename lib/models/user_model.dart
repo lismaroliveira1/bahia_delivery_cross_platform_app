@@ -1902,4 +1902,62 @@ class UserModel extends Model {
       }
     }
   }
+
+  Future<void> finishOrderWithPayOnDelivery({
+    @required double discount,
+    @required VoidCallback onSucces,
+    @required VoidCallback onFail,
+    @required double shipePrice,
+    @required DocumentSnapshot storeData,
+  }) async {
+    if (firebaseUser == null) _auth.currentUser();
+    if (firebaseUser != null) {
+      double totalPrice = 0;
+      try {
+        if (productsInCart.length == 0) return null;
+        QuerySnapshot querySnapshot = await Firestore.instance
+            .collection("users")
+            .document(firebaseUser.uid)
+            .collection("cart")
+            .getDocuments();
+        List<DocumentSnapshot> items = querySnapshot.documents;
+        for (DocumentSnapshot doc in items) {
+          totalPrice += doc.data["totalPrice"];
+        }
+
+        await Firestore.instance.collection("orders").add({
+          "client": firebaseUser.uid,
+          "clientName": userName,
+          "clientImage":
+              firebaseUser.photoUrl == null ? userImage : firebaseUser.photoUrl,
+          "clientAddress": currentAddressDataFromGoogle.description
+              .replaceAll("State of ", "")
+              .replaceAll("Brazil", "Brasil"),
+          "storeId": storeData.documentID,
+          "products":
+              productsInCart.map((cartProduct) => cartProduct.toMap()).toList(),
+          "shipPrice": shipePrice,
+          "StoreName": storeData.data["name"],
+          "storeImage": storeData.data["image"],
+          "storeDescription": "storeDescrition",
+          "discount": discount,
+          "totalPrice": totalPrice,
+          "status": 1,
+          'createdAt': FieldValue.serverTimestamp(),
+          'platform': Platform.operatingSystem,
+          'paymentType': "Pagamento na Entrega"
+        });
+        getAllUserData();
+        onSucces();
+        productsInCart.clear();
+        hasProductInCart = false;
+        notifyListeners();
+        for (DocumentSnapshot doc in querySnapshot.documents) {
+          doc.reference.delete();
+        }
+      } catch (e) {
+        onFail();
+      }
+    }
+  }
 }

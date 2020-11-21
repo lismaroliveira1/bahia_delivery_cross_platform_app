@@ -38,32 +38,32 @@ class _CartTileState extends State<CartTile> {
                 child: Text(
                   widget.cartProduct.productTitle,
                   style: TextStyle(
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 17.0),
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 17.0,
+                  ),
                 ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 0.0),
+                    padding: EdgeInsets.symmetric(horizontal: 4.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
                       child: Image.network(
                         widget.cartProduct.productImage,
-                        height: MediaQuery.of(context).size.width / 4.2,
-                        width: MediaQuery.of(context).size.width / 4.2,
+                        height: MediaQuery.of(context).size.width / 6.5,
+                        width: MediaQuery.of(context).size.width / 6.5,
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
                   widget.cartProduct.productOptionals.length > 0
-                      ? Container(
-                          height: MediaQuery.of(context).size.width / 4.2,
-                          width: MediaQuery.of(context).size.width / 3.8,
+                      ? Expanded(
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 "Complementos",
@@ -73,112 +73,45 @@ class _CartTileState extends State<CartTile> {
                                 ),
                               ),
                               Container(
-                                width: 200,
                                 child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: widget.cartProduct.productOptionals
-                                      .map(
-                                        (optionals) => Row(
-                                          children: [
-                                            Text(
-                                              optionals.quantity.toString() +
-                                                  " x " +
-                                                  optionals.title,
-                                              style: TextStyle(
-                                                color: Colors.black,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: widget
+                                          .cartProduct.productOptionals
+                                          .map(
+                                            (optionals) => Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 4.0,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    optionals.quantity
+                                                            .toString() +
+                                                        " x " +
+                                                        optionals.title,
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    optionals.price
+                                                        .toStringAsFixed(2),
+                                                    style: TextStyle(
+                                                      color: Colors.black54,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ),
-                                            Text(
-                                              " R\$ ${optionals.price.toStringAsFixed(2)}",
-                                              style: TextStyle(
-                                                color: Colors.black54,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(vertical: 2.0),
-                                child: Container(
-                                  height: 20,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          IconButton(
-                                            padding: EdgeInsets.zero,
-                                            icon: Icon(
-                                              Icons.remove,
-                                              color: Colors.black54,
-                                            ),
-                                            onPressed: widget
-                                                        .cartProduct.quantify >
-                                                    1
-                                                ? () {
-                                                    CartModel.of(context)
-                                                        .decProduct(
-                                                            widget.cartProduct);
-                                                  }
-                                                : null,
-                                          ),
-                                          ScopedModelDescendant<UserModel>(
-                                              builder: (context, child, model) {
-                                            if (model.isLoading) {
-                                              return Container(
-                                                height: 0,
-                                              );
-                                            } else {
-                                              return StreamBuilder<
-                                                      DocumentSnapshot>(
-                                                  stream: Firestore.instance
-                                                      .collection("users")
-                                                      .document(
-                                                          UserModel.of(context)
-                                                              .firebaseUser
-                                                              .uid)
-                                                      .collection("cart")
-                                                      .document(widget
-                                                          .cartProduct.cId)
-                                                      .snapshots(),
-                                                  builder: (context, snapshot) {
-                                                    if (!snapshot.hasData) {
-                                                      return Container(
-                                                        height: 0,
-                                                        width: 0,
-                                                      );
-                                                    } else {
-                                                      quantity = snapshot
-                                                          .data["quantity"];
-                                                      return Text(
-                                                        quantity.toString(),
-                                                        style: TextStyle(
-                                                          color: Colors.black87,
-                                                        ),
-                                                      );
-                                                    }
-                                                  });
-                                            }
-                                          }),
-                                          IconButton(
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () {
-                                              CartModel.of(context).incProduct(
-                                                  widget.cartProduct);
-                                            },
-                                            icon: Icon(
-                                              Icons.add,
-                                              color: Colors.black54,
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
+                                          )
+                                          .toList(),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -197,7 +130,7 @@ class _CartTileState extends State<CartTile> {
                   Padding(
                     padding: EdgeInsets.only(bottom: 3.0),
                     child: Container(
-                      height: MediaQuery.of(context).size.width / 4.2,
+                      height: MediaQuery.of(context).size.width / 6.5,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -239,7 +172,7 @@ class _CartTileState extends State<CartTile> {
                           ),
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                              vertical: 2.0,
+                              horizontal: 20,
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -290,6 +223,70 @@ class _CartTileState extends State<CartTile> {
                     ),
                   ),
                 ],
+              ),
+              Container(
+                height: 20,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: Icon(
+                        Icons.remove,
+                        color: Colors.black54,
+                      ),
+                      onPressed: widget.cartProduct.quantify > 1
+                          ? () {
+                              CartModel.of(context)
+                                  .decProduct(widget.cartProduct);
+                            }
+                          : null,
+                    ),
+                    ScopedModelDescendant<UserModel>(
+                        builder: (context, child, model) {
+                      if (model.isLoading) {
+                        return Container(
+                          height: 0,
+                        );
+                      } else {
+                        return StreamBuilder<DocumentSnapshot>(
+                            stream: Firestore.instance
+                                .collection("users")
+                                .document(
+                                    UserModel.of(context).firebaseUser.uid)
+                                .collection("cart")
+                                .document(widget.cartProduct.cId)
+                                .snapshots(),
+                            builder: (context, snapshot) {
+                              if (!snapshot.hasData) {
+                                return Container(
+                                  height: 0,
+                                  width: 0,
+                                );
+                              } else {
+                                quantity = snapshot.data["quantity"];
+                                return Text(
+                                  quantity.toString(),
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                  ),
+                                );
+                              }
+                            });
+                      }
+                    }),
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        CartModel.of(context).incProduct(widget.cartProduct);
+                      },
+                      icon: Icon(
+                        Icons.add,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
