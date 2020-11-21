@@ -43,6 +43,7 @@ class _PurchasesStoresState extends State<PurchasesStores> {
                   children: model.lastPurchasedStores.map((doc) {
                     print(model.lastPurchasedStores.length);
                     return FlatButton(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) =>

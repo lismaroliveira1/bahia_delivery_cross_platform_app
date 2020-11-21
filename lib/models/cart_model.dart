@@ -480,4 +480,6 @@ class CartModel extends Model {
     }
     notifyListeners();
   }
+
+  void getProducts() {}
 }

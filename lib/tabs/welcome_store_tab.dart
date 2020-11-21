@@ -1,8 +1,10 @@
+import 'package:bahia_delivery/models/cart_model.dart';
 import 'package:bahia_delivery/models/user_model.dart';
 import 'package:bahia_delivery/screens/cart_screen.dart';
 import 'package:bahia_delivery/screens/product_screen.dart';
 import 'package:bahia_delivery/screens/sale_off_store_screen.dart';
 import 'package:bahia_delivery/screens/store_screen.dart';
+import 'package:bahia_delivery/tiles/cart_tile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -29,6 +31,7 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
       );
       UserModel.of(context).verifyOffSales(widget.documentSnapshot.documentID);
       UserModel.of(context).veryIfExistsProducts();
+      CartModel.of(context).updatePrices();
       isReadPurchasedProducts = true;
     }
     return Stack(
@@ -443,11 +446,7 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) => CartScreen(),
-                      ),
-                    );
+                    _onCartPressed();
                   },
                 );
               } else {
@@ -460,6 +459,65 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
           ),
         ),
       ],
+    );
+  }
+
+  void _onCartPressed() {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        duration: Duration(
+          seconds: 30,
+        ),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
+        ),
+        content: Container(
+          color: Colors.white,
+          height: MediaQuery.of(context).size.height * 0.8,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: 10,
+                  bottom: 2.0,
+                ),
+                child: Text(
+                  "Carrinho",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                  ),
+                ),
+              ),
+              ScopedModelDescendant<CartModel>(builder: (context, cart, model) {
+                if (model.isLoading) {
+                  return Container(
+                    height: 0,
+                    width: 0,
+                  );
+                } else {
+                  return Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      child: ListView(
+                        children: model.products.map((product) {
+                          return CartTile(product);
+                        }).toList(),
+                      ),
+                    ),
+                  );
+                }
+              }),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
