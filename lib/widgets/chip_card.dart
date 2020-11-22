@@ -43,8 +43,19 @@ class ShipCard extends StatelessWidget {
                   color: Colors.grey,
                 ),
                 onPressed: () async {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => LocationScreen(1)));
+                  Scaffold.of(context).hideCurrentSnackBar();
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12),
+                      ),
+                    ),
+                    content: Container(
+                      height: 400,
+                    ),
+                  ));
                 },
               ),
               children: <Widget>[

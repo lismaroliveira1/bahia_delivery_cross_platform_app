@@ -18,6 +18,7 @@ import 'package:bahia_delivery/data/store_with_cpf_data.dart';
 import 'package:bahia_delivery/models/adress.dart';
 import 'package:bahia_delivery/data/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -27,6 +28,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:random_string/random_string.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const token = '635289558f18ba4c749d6928e8cd0ba7';
@@ -91,6 +93,7 @@ class UserModel extends Model {
   List<OrderData> allOrders = [];
   List<StoreData> storeDataListOpened = [];
   List<StoreData> storeDataListClosed = [];
+  Map<String, dynamic> dataSale = {};
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -996,7 +999,6 @@ class UserModel extends Model {
   void getUserOrder() async {
     if (firebaseUser == null) firebaseUser = await _auth.currentUser();
     if (firebaseUser != null) {
-      bool hasStore = false;
       try {} catch (e) {}
       notifyListeners();
     }
@@ -1958,6 +1960,97 @@ class UserModel extends Model {
       } catch (e) {
         onFail();
       }
+    }
+  }
+
+  Future<String> finishOrder({
+    @required double discount,
+    @required VoidCallback onSucces,
+    @required VoidCallback onFail,
+    @required double shipePrice,
+    @required DocumentSnapshot storeData,
+    @required CreditDebitCardData creditDebitCardData,
+  }) async {
+    if (firebaseUser == null) {
+      _auth.currentUser();
+      return "";
+    }
+
+    if (firebaseUser != null) {
+      double totalPrice = 0;
+      final CloudFunctions functions = CloudFunctions.instance;
+      try {
+        if (productsInCart.length == 0) return null;
+        QuerySnapshot querySnapshot = await Firestore.instance
+            .collection("users")
+            .document(firebaseUser.uid)
+            .collection("cart")
+            .getDocuments();
+        List<DocumentSnapshot> items = querySnapshot.documents;
+        for (DocumentSnapshot doc in items) {
+          totalPrice += doc.data["totalPrice"];
+        }
+        print(creditDebitCardData.cpf);
+        dataSale = {
+          'merchantOrderId': randomAlphaNumeric(10),
+          'amount': (totalPrice * 100).toInt(),
+          'sotfDescriptor': "Bahia Delivery",
+          'installments': 1,
+          'creditCard': {
+            'cardNumber': creditDebitCardData.cardNumber.replaceAll(" ", ""),
+            'holder': creditDebitCardData.cardOwnerName,
+            'expirationDate': creditDebitCardData.validateDate,
+            'secuityCode': creditDebitCardData.cvv,
+            'brand': creditDebitCardData.brand,
+          },
+          'cpf':
+              creditDebitCardData.cpf.replaceAll(".", "").replaceAll("-", ""),
+          'paymentType': 'CreditCard'
+        };
+        final HttpsCallable callable =
+            functions.getHttpsCallable(functionName: 'authorizedCreditCard');
+        final response = await callable.call(dataSale);
+        final data = Map<String, dynamic>.from(response.data as LinkedHashMap);
+        print(data["success"]);
+        if (data["success"] as bool) {
+          await Firestore.instance.collection("orders").add({
+            "client": firebaseUser.uid,
+            "clientName": userName,
+            "clientImage": firebaseUser.photoUrl == null
+                ? userImage
+                : firebaseUser.photoUrl,
+            "clientAddress": currentAddressDataFromGoogle.description
+                .replaceAll("State of ", "")
+                .replaceAll("Brazil", "Brasil"),
+            "storeId": storeData.documentID,
+            "products": productsInCart
+                .map((cartProduct) => cartProduct.toMap())
+                .toList(),
+            "shipPrice": shipePrice,
+            "StoreName": storeData.data["name"],
+            "storeImage": storeData.data["image"],
+            "storeDescription": "storeDescrition",
+            "discount": discount,
+            "totalPrice": totalPrice,
+            "status": 1,
+            'createdAt': FieldValue.serverTimestamp(),
+            'paymentType': "Pagamento na Entrega"
+          });
+          getAllUserData();
+          onSucces();
+          notifyListeners();
+          return data['paymentId'] as String;
+        } else {
+          onFail();
+          notifyListeners();
+          return Future.error(data['error']['message']);
+        }
+      } catch (e) {
+        notifyListeners();
+        return Future.error('Fala ao processa a transação. Tente Novamente');
+      }
+    } else {
+      return "";
     }
   }
 }

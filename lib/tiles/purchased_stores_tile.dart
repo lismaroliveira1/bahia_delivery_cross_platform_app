@@ -62,7 +62,7 @@ class _PurchasesStoresState extends State<PurchasesStores> {
                               width: 80,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: Colors.blueGrey,
+                                color: Colors.white,
                                 image: new DecorationImage(
                                   image: new NetworkImage(
                                     doc.image,

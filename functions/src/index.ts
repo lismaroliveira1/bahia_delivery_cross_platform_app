@@ -28,6 +28,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
         };
     }
     if (!context.auth) {
+        
         return {
             "success": false,
             "error": {
@@ -124,7 +125,9 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
     }
 
     try {
+        console.log("ok");
         const transaction = await cielo.creditCard.transaction(saleData);
+        console.log(transaction.payment.authorizeNow);
         if (transaction.payment.status === 1) {
             return {
                 "success": true,
