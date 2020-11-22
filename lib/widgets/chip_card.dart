@@ -1,5 +1,4 @@
 import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/location_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -44,18 +43,36 @@ class ShipCard extends StatelessWidget {
                 ),
                 onPressed: () async {
                   Scaffold.of(context).hideCurrentSnackBar();
-                  Scaffold.of(context).showSnackBar(SnackBar(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12),
+                  Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                        ),
+                      ),
+                      content: Container(
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              title: Text(
+                                "Seu Atual Endereço",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              leading: Icon(
+                                Icons.location_city,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    content: Container(
-                      height: 400,
-                    ),
-                  ));
+                  );
                 },
               ),
               children: <Widget>[

@@ -996,13 +996,7 @@ class UserModel extends Model {
     storeListFavorites.remove(storeListFavorites);
   }
 
-  void getUserOrder() async {
-    if (firebaseUser == null) firebaseUser = await _auth.currentUser();
-    if (firebaseUser != null) {
-      try {} catch (e) {}
-      notifyListeners();
-    }
-  }
+  
 
   void updatedPurchasedProducts(DocumentSnapshot snapshot) {
     for (LinkedHashMap product in snapshot.data["products"]) {
@@ -2052,5 +2046,9 @@ class UserModel extends Model {
     } else {
       return "";
     }
+  }
+
+  void getCurrentUserAdress() {
+    
   }
 }
