@@ -17,6 +17,7 @@ class ComboData {
   String storeId;
   List<ProductData> products = [];
   File imageFile;
+  String type;
 
   ComboData({
     @required this.image,
@@ -42,6 +43,14 @@ class ComboData {
     }
   }
 
+  ComboData.fromCartQueryDocument(QueryDocumentSnapshot queryDoc) {
+    title = queryDoc.get("comboTitle");
+    image = queryDoc.get("comboImage");
+    price = queryDoc.get("price");
+    quantity = queryDoc.get("quantity");
+    storeId = queryDoc.get("storeId");
+    type = queryDoc.get("type");
+  }
   Map<String, dynamic> toMap() {
     return {
       "image": image,

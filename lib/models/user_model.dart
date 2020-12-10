@@ -63,6 +63,7 @@ class UserModel extends Model {
   bool hasProductInCart = false;
   List<CreditDebitCardData> creditDebitCardList = [];
   List<PaymentFormData> paymentFormsList = [];
+  List<ComboData> comboCartList = [];
 
   Location location = new Location();
   bool _serviceEnabled;
@@ -108,6 +109,7 @@ class UserModel extends Model {
     await getListHomeStores();
     await getOrders();
     getcartProductList();
+    getComboCartItens();
     getPaymentUserForms();
     await updateFavoritList();
     await getPartnerData();
@@ -1300,8 +1302,6 @@ class UserModel extends Model {
       }).toList();
       if (cartProducts.length > 0) {
         hasProductInCart = true;
-      } else {
-        hasProductInCart = false;
       }
       notifyListeners();
     }
@@ -1503,6 +1503,9 @@ class UserModel extends Model {
   }) async {
     if (firebaseUser != null) {
       double totalPrice = 0;
+      double productPrice = 0;
+      double comboPrice = 0;
+      double offPrice = 0;
 
       try {
         print(cartProducts.length);
@@ -1516,9 +1519,13 @@ class UserModel extends Model {
             .get();
         List<QueryDocumentSnapshot> items = querySnapshot.docs;
         for (QueryDocumentSnapshot doc in items) {
-          totalPrice += doc.get("totalPrice");
+          if (doc.get("type") == "products") {
+            productPrice += doc.get("totalPrice");
+          } else if (doc.get("type") == "combo") {
+            comboPrice += doc.get("price");
+          }
         }
-
+        totalPrice = productPrice + comboPrice + offPrice;
         await FirebaseFirestore.instance.collection("orders").add({
           "client": firebaseUser.uid,
           "clientName": userData.name,
@@ -1554,6 +1561,7 @@ class UserModel extends Model {
         await updateFavoritList();
       } catch (e) {
         onFail();
+        print(e);
       }
     }
   }
@@ -1703,12 +1711,38 @@ class UserModel extends Model {
             .add(
               comboData.toComboProductMap(),
             );
+        await getComboCartItens();
         isLoading = false;
+        onSuccess();
         notifyListeners();
       } catch (e) {
         isLoading = false;
+        onFail();
         notifyListeners();
       }
+    }
+  }
+
+  Future<void> getComboCartItens() async {
+    if (isLoggedIn()) {
+      try {
+        QuerySnapshot comboQuery = await FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .collection("cart")
+            .get();
+        comboQuery.docs.map((queryDoc) {
+          if (queryDoc.get("type") == "combo") {
+            comboCartList.add(
+              ComboData.fromCartQueryDocument(queryDoc),
+            );
+          }
+        }).toList();
+        if (comboCartList.length > 0) {
+          hasProductInCart = true;
+        }
+        notifyListeners();
+      } catch (erro) {}
     }
   }
 }

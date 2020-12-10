@@ -1,4 +1,4 @@
-import 'package:bahia_delivery/validators/credit_card_validator.dart';
+import 'package:bd_app_full/validators/credit_card_validator.dart';
 import 'package:rxdart/subjects.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 

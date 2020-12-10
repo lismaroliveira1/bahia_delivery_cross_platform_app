@@ -51,6 +51,13 @@ class _CartPriceState extends State<CartPrice> {
                       } else {
                         double totalPrice = 0;
                         double totalProductsPrice = 0;
+                        double totalCombosPrice = 0;
+                        List<DocumentSnapshot> comboItens = snapshot.data.docs
+                            .where((element) => element.get("type") == "combo")
+                            .toList();
+                        for (DocumentSnapshot doc in comboItens) {
+                          totalCombosPrice += doc.get("price");
+                        }
                         List<DocumentSnapshot> items = snapshot.data.docs
                             .where(
                                 (element) => element.get("type") == "product")
@@ -58,7 +65,11 @@ class _CartPriceState extends State<CartPrice> {
                         for (DocumentSnapshot doc in items) {
                           totalProductsPrice += doc.get("totalPrice");
                         }
-                        totalPrice = totalProductsPrice + ship - discount;
+
+                        totalPrice = totalProductsPrice +
+                            ship -
+                            discount +
+                            totalCombosPrice;
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
@@ -84,7 +95,7 @@ class _CartPriceState extends State<CartPrice> {
                                   ),
                                 ),
                                 Text(
-                                  "R\$ ${totalProductsPrice.toStringAsFixed(2)}",
+                                  "R\$ ${(totalProductsPrice + totalCombosPrice).toStringAsFixed(2)}",
                                   style: TextStyle(
                                     fontWeight: FontWeight.w500,
                                     color: Colors.black87,

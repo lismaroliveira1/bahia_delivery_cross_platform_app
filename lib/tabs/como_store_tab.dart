@@ -333,6 +333,8 @@ class _ComboStoreTabState extends State<ComboStoreTab> {
                           onPressed: () {
                             UserModel.of(context).addCombotoCart(
                               comboData: comboCartData,
+                              onFail: _onFail,
+                              onSuccess: _onSuccess,
                             );
                           },
                         )
