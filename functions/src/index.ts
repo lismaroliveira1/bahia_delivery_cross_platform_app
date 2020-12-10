@@ -28,7 +28,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
         };
     }
     if (!context.auth) {
-        
+
         return {
             "success": false,
             "error": {
@@ -84,7 +84,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                 "success": false,
                 "error": {
                     "code": -1,
-                    "message": "Caratão não suportado: " + data.creditCard.brand
+                    "message": "Cartão não suportado: " + data.creditCard.brand
                 }
             };
     }
@@ -106,7 +106,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                 district: userData.address.district
             }
         },
-        
+
         payment: {
             currency: "BRL",
             country: "BRA",
@@ -217,7 +217,7 @@ async function sendPushFCM(tokens: string[], title: string, message: string) {
                 title: title,
                 body: message,
                 click_action: 'FLUTTER_NOTIFICATION_CLICK'
-                
+
             }
         };
         return admin.messaging().sendToDevice(tokens, payload);
@@ -244,14 +244,14 @@ export const onOrderStatusChanged = functions
                 '' + orderStatus.get(afterStatus));
         }
 
-});
+    });
 
 const partnerStatus = new Map([
     [1, "Parabéns!! Seja bem vindo! Agora você é um Parceiro Bahia Delivery!!"],
     [2, "Agora é so esperar, sua proposta está em análise"],
     [3, "Você está na modalidade somente usuário"],
     [4, "Sua conta Parceiro Bahia Delivey está temporariamente suspensa."]
-    
+
 ]);
 export const onParnerterStatusChanged = functions.firestore.document("/users/{isPartner}").onUpdate(async (snapshot, context) => {
     const beforeStatus = snapshot.before.data().isPartner;
@@ -270,7 +270,7 @@ export const onParnerterStatusChanged = functions.firestore.document("/users/{is
             '' + partnerStatus.get(afterStatus));
     }
 });
- 
+
 export const onOrderChatUpdated = functions.firestore.document("/orders/{orderId}/chat/{chatId}").onCreate(async (data, context) => {
     const orderId = context.params.orderId;
     const chatId = context.params.chatId;
@@ -291,7 +291,7 @@ export const onOrderChatUpdated = functions.firestore.document("/orders/{orderId
         const partnerChatStoreTokens = tokensChatUserStore.docs.map(doc => doc.id);
         await sendPushFCM(partnerChatStoreTokens, 'Nova mensagem de ' + orderChatData.clientName,
             '' + chatData.text);
-        
+
     }
     if (chatData.userId === orderChatData.storeId) {
         const tokensChatUser = await admin.firestore().collection("users").
@@ -299,6 +299,6 @@ export const onOrderChatUpdated = functions.firestore.document("/orders/{orderId
         const partnerChatUserTokens = tokensChatUser.docs.map(doc => doc.id);
         await sendPushFCM(partnerChatUserTokens, 'Nova mensagem de ' + orderChatData.StoreName,
             '' + chatData.text);
-        
+
     }
- });
+});

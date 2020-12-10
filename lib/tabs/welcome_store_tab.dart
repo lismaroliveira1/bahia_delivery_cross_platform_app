@@ -1,48 +1,31 @@
-import 'package:bahia_delivery/models/cart_model.dart';
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/product_screen.dart';
-import 'package:bahia_delivery/screens/sale_off_store_screen.dart';
-import 'package:bahia_delivery/screens/store_screen.dart';
-import 'package:bahia_delivery/tiles/cart_tile.dart';
-import 'package:bahia_delivery/widgets/cart_price.dart';
-import 'package:bahia_delivery/widgets/chip_card.dart';
-import 'package:bahia_delivery/widgets/discount_card.dart';
-import 'package:bahia_delivery/widgets/payment_card.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bd_app_full/data/store_data.dart';
+import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/cart_screen.dart';
+import 'package:bd_app_full/screens/category_store_screen.dart';
+import 'package:bd_app_full/screens/combo_screnn.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class WelcomeStoreTab extends StatefulWidget {
-  final DocumentSnapshot documentSnapshot;
-  WelcomeStoreTab(this.documentSnapshot);
-
+  final StoreData storeData;
+  WelcomeStoreTab(this.storeData);
   @override
   _WelcomeStoreTabState createState() => _WelcomeStoreTabState();
 }
 
 class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
-  bool hasProductData = false;
-  bool isReadPurchasedProducts = false;
-
   @override
   Widget build(BuildContext context) {
-    if (!isReadPurchasedProducts) {
-      UserModel.of(context).getPurchasedProductsListByStore(
-        widget.documentSnapshot.documentID,
-      );
-      UserModel.of(context).verifyOffSales(widget.documentSnapshot.documentID);
-      UserModel.of(context).veryIfExistsProducts();
-      CartModel.of(context).updatePrices();
-      isReadPurchasedProducts = true;
-    }
     return Stack(
       children: [
         NestedScrollView(
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverAppBar(
+                backgroundColor: Colors.transparent,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(30),
@@ -50,391 +33,281 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                   ),
                 ),
                 expandedHeight: 200.0,
-                floating: false,
-                pinned: false,
+                floating: true,
                 flexibleSpace: FlexibleSpaceBar(
                   background: ClipRRect(
                     borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(30),
-                        bottomRight: Radius.circular(30)),
-                    child: Image.network(
-                      widget.documentSnapshot.data["image"],
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
+                    ),
+                    child: FadeInImage.memoryNetwork(
+                      placeholder: kTransparentImage,
+                      image: widget.storeData.image,
                       fit: BoxFit.cover,
                     ),
                   ),
                 ),
               ),
-              new SliverList(
+              SliverList(
                 delegate: SliverChildListDelegate([
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 10,
-                      bottom: 2.0,
-                    ),
-                    child: Text(
-                      widget.documentSnapshot.data["title"],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22,
+                  Center(
+                    child: Container(
+                      margin: EdgeInsets.only(
+                        top: 14,
+                      ),
+                      child: Text(
+                        widget.storeData.name,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.grey[700],
+                        ),
                       ),
                     ),
                   ),
-                  FutureBuilder<QuerySnapshot>(
-                    future: Firestore.instance
-                        .collection("stores")
-                        .document(widget.documentSnapshot.documentID)
-                        .collection("off")
-                        .getDocuments(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return Container(
+                  Center(
+                    child: Text(widget.storeData.description),
+                  ),
+                  widget.storeData.productsOff.length > 0
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 12),
+                          child: Text(
+                            "Promoções",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        )
+                      : Container(
                           height: 0,
                           width: 0,
-                        );
-                      } else {
-                        if (snapshot.data.documents.length > 0) {
-                          return Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        10, 20, 10, 0),
-                                    child: Text(
-                                      "Promoções",
+                        ),
+                  widget.storeData.productsOff.length > 0
+                      ? Container(
+                          height: 160,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: widget.storeData.productsOff.map((off) {
+                              double imageSize =
+                                  MediaQuery.of(context).size.width / 4;
+                              return Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      height: imageSize,
+                                      width: imageSize,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        image: new DecorationImage(
+                                          image: NetworkImage(
+                                            off.image,
+                                          ),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      off.title,
                                       style: TextStyle(
-                                        fontSize: 16,
-                                        fontStyle: FontStyle.italic,
-                                        color: Colors.grey[700],
+                                        fontSize: 14,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(8, 2, 8, 6),
-                                child: Container(
-                                  height: MediaQuery.of(context).size.width / 2,
-                                  child: ListView(
-                                    scrollDirection: Axis.horizontal,
-                                    children:
-                                        snapshot.data.documents.map((doc) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 3,
-                                        ),
-                                        child: Container(
-                                          child: FlatButton(
-                                            padding: EdgeInsets.zero,
-                                            onPressed: () {
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      SalesOffStoreScreen(widget
-                                                          .documentSnapshot),
-                                                ),
-                                              );
-                                            },
-                                            child: Card(
-                                              elevation: 2.0,
-                                              shape: new RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          16)),
-                                              child: Column(
-                                                children: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            4.0),
-                                                    child: ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              16),
-                                                      child: FadeInImage
-                                                          .memoryNetwork(
-                                                        placeholder:
-                                                            kTransparentImage,
-                                                        image:
-                                                            doc.data["image"],
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            3,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            3,
-                                                        fit: BoxFit.fill,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Text(doc.data["title"]),
-                                                  Text(doc.data["description"]),
-                                                  Text(doc.data["price"]
-                                                      .toString()),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        } else {
-                          return Container(
-                            height: 0,
-                            width: 0,
-                          );
-                        }
-                      }
-                    },
-                  ),
-                  ScopedModelDescendant<UserModel>(
-                      builder: (context, child, model) {
-                    if (model.isLoading) {
-                      return Container(
-                        height: 0,
-                        width: 0,
-                      );
-                    } else {
-                      return model.purchasedProductsByStore.length > 0
-                          ? Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          10, 20, 10, 0),
-                                      child: Text(
-                                        "Compre novamente",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.grey[700],
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
+                                    Text(off.description),
                                   ],
                                 ),
-                                Container(
-                                  height: 140,
-                                  child: ListView(
-                                    scrollDirection: Axis.horizontal,
-                                    children: model.purchasedProductsByStore
-                                        .map((doc) {
-                                      double price = doc.data["price"];
-                                      return Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 4,
-                                          horizontal: 0,
-                                        ),
-                                        child: FlatButton(
-                                          onPressed: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ProductScreen(
-                                                  doc,
-                                                  widget.documentSnapshot
-                                                      .documentID,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                height: 100,
-                                                width: 100,
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  image: new DecorationImage(
-                                                    image: new NetworkImage(
-                                                        doc.data["image"]),
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 2),
-                                                child: Text(
-                                                  doc.data["title"],
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 2),
-                                                child: Text(
-                                                  price.toStringAsFixed(2),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    }).toList(),
+                              );
+                            }).toList(),
+                          ),
+                        )
+                      : Container(
+                          height: 0,
+                          width: 0,
+                        ),
+                  widget.storeData.storesCombos.length > 0
+                      ? Column(
+                          children: [
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 12),
+                                  child: Text(
+                                    "Combos",
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                                   ),
                                 ),
                               ],
-                            )
-                          : Container(
-                              height: 0.0,
-                              width: 0.0,
-                            );
-                    }
-                  }),
-                  ScopedModelDescendant<UserModel>(
-                      builder: (context, child, model) {
-                    if (model.isLoading) {
-                      return Container(
-                        height: 0,
-                        width: 0,
-                      );
-                    } else {
-                      if (model.hasSalesOff) {
-                        return Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-                              child: Text(
-                                "Seções",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.grey[700],
-                                  fontWeight: FontWeight.w600,
-                                ),
+                            ),
+                            Container(
+                              height: 160,
+                              child: ListView(
+                                scrollDirection: Axis.horizontal,
+                                children:
+                                    widget.storeData.storesCombos.map((combo) {
+                                  double imageSize =
+                                      MediaQuery.of(context).size.width / 4;
+                                  return Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: FlatButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          PageTransition(
+                                            type:
+                                                PageTransitionType.rightToLeft,
+                                            child: ComboStoreScreen(
+                                              combo,
+                                              widget.storeData,
+                                            ),
+                                            inheritTheme: true,
+                                            duration: Duration(
+                                              milliseconds: 350,
+                                            ),
+                                            ctx: context,
+                                          ),
+                                        );
+                                      },
+                                      child: Column(
+                                        children: <Widget>[
+                                          Container(
+                                            height: imageSize,
+                                            width: imageSize,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              image: new DecorationImage(
+                                                image: NetworkImage(
+                                                  combo.image,
+                                                ),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                          Text(
+                                            combo.title,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          Text(
+                                            combo.description,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
                               ),
                             ),
                           ],
-                        );
-                      } else {
-                        return Container(
+                        )
+                      : Container(
                           height: 0,
                           width: 0,
-                        );
-                      }
-                    }
-                  })
+                        )
                 ]),
               )
             ];
           },
-          body: Container(
-            child: FutureBuilder<QuerySnapshot>(
-              future: Firestore.instance
-                  .collection("stores")
-                  .document(widget.documentSnapshot.documentID)
-                  .collection("categories")
-                  .orderBy(
-                    "order",
-                    descending: false,
-                  )
-                  .getDocuments(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Container(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                } else {
-                  return StaggeredGridView.count(
-                    padding: EdgeInsets.zero,
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 2.0,
-                    crossAxisSpacing: 3.0,
-                    staggeredTiles: snapshot.data.documents.map((doc) {
-                      return StaggeredTile.count(
-                        doc.data["x"],
-                        doc.data["y"] + 0.3,
-                      );
-                    }).toList(),
-                    children: snapshot.data.documents.map((doc) {
-                      double width;
-                      double height;
-                      height =
-                          (MediaQuery.of(context).size.width * 0.95 * 0.5) *
-                              doc.data["y"];
-                      width = (MediaQuery.of(context).size.width * 0.95 * 0.5) *
-                          doc.data["x"];
-                      return Card(
-                        elevation: 4,
-                        child: FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => StoreScreen(
-                                  snapshot: widget.documentSnapshot,
-                                  categoryId: doc.documentID,
+          body: StaggeredGridView.count(
+            padding: EdgeInsets.zero,
+            crossAxisCount: 2,
+            mainAxisSpacing: 2.0,
+            crossAxisSpacing: 3.0,
+            staggeredTiles: widget.storeData.storeCategoryList.map((category) {
+              return StaggeredTile.count(
+                category.x,
+                category.y + 0.2 * category.y,
+              );
+            }).toList(),
+            children: widget.storeData.storeCategoryList.map(
+              (category) {
+                double width;
+                double height;
+                height = (MediaQuery.of(context).size.width * 0.95 * 0.5) *
+                    category.y;
+                width = (MediaQuery.of(context).size.width * 0.95 * 0.5) *
+                    category.x;
+                return FlatButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {},
+                  child: Card(
+                    elevation: 4,
+                    child: FlatButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: CategoryStoreScreen(
+                              widget.storeData,
+                              category.id,
+                            ),
+                            inheritTheme: true,
+                            duration: Duration(
+                              milliseconds: 350,
+                            ),
+                            ctx: context,
+                          ),
+                        );
+                      },
+                      padding: EdgeInsets.zero,
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4.0,
+                                vertical: 2.0,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: Image.network(
+                                  category.image,
+                                  fit: BoxFit.cover,
+                                  height: height,
+                                  width: width,
                                 ),
                               ),
-                            );
-                          },
-                          padding: EdgeInsets.zero,
-                          child: Center(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 4.0,
-                                    vertical: 2.0,
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(6),
-                                    child: Image.network(
-                                      doc.data["image"],
-                                      fit: BoxFit.cover,
-                                      height: height,
-                                      width: width,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 4.0,
-                                    vertical: 2.0,
-                                  ),
-                                  child: Text(
-                                    doc.data["title"],
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontStyle: FontStyle.italic,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 4.0,
-                                    vertical: 2.0,
-                                  ),
-                                  child: Text(
-                                    doc.data["description"],
-                                  ),
-                                )
-                              ],
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4.0,
+                                vertical: 2.0,
+                              ),
+                              child: Text(
+                                category.title,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 4.0,
+                                vertical: 2.0,
+                              ),
+                              child: Text(
+                                category.description,
+                              ),
+                            )
+                          ],
                         ),
-                      );
-                    }).toList(),
-                  );
-                }
+                      ),
+                    ),
+                  ),
+                );
               },
-            ),
+            ).toList(),
           ),
         ),
         Positioned(
@@ -449,7 +322,18 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    _onCartPressed();
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        type: PageTransitionType.rightToLeft,
+                        child: CartScreen(widget.storeData),
+                        inheritTheme: true,
+                        duration: Duration(
+                          milliseconds: 500,
+                        ),
+                        ctx: context,
+                      ),
+                    );
                   },
                 );
               } else {
@@ -463,103 +347,5 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
         ),
       ],
     );
-  }
-
-  void _onCartPressed() {
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        duration: Duration(
-          seconds: 30,
-        ),
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(12),
-            topRight: Radius.circular(12),
-          ),
-        ),
-        content: Stack(
-          children: [
-            Container(
-              color: Colors.white,
-              height: MediaQuery.of(context).size.height * 0.8,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      top: 10,
-                      bottom: 2.0,
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          "Carrinho",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.grey[600],
-                            fontWeight: FontWeight.bold,
-                            fontSize: 22,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Divider(
-                          color: Colors.black,
-                        ),
-                      ],
-                    ),
-                  ),
-                  ScopedModelDescendant<UserModel>(
-                      builder: (context, cart, model) {
-                    if (model.isLoading) {
-                      return Container(
-                        height: 0,
-                        width: 0,
-                      );
-                    } else {
-                      return Expanded(
-                        child: Container(
-                          color: Colors.white,
-                          child: ListView(
-                            children: model.productsInCart.map((product) {
-                              return CartTile(
-                                cartProduct: product,
-                                noProduct: _noProductInCart,
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                      );
-                    }
-                  }),
-                  DiscountCard(),
-                  ShipCard(),
-                  PaymentCard(),
-                  CartPrice(widget.documentSnapshot),
-                ],
-              ),
-            ),
-            Positioned(
-              top: 2,
-              right: 5,
-              child: IconButton(
-                onPressed: () {
-                  Scaffold.of(context).hideCurrentSnackBar();
-                },
-                icon: Icon(
-                  Icons.close_rounded,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _noProductInCart() {
-    Scaffold.of(context).hideCurrentSnackBar();
   }
 }

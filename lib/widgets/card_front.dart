@@ -7,7 +7,7 @@ class CardFront extends StatelessWidget {
   final String cardCVV;
   final String cpf;
   final String asset;
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   CardFront(
       {@required this.cardNumber,
       @required this.cardOwnerName,
@@ -18,7 +18,6 @@ class CardFront extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
       child: Padding(
         padding: const EdgeInsets.only(right: 8.0, left: 8.0),
         child: ClipRRect(
@@ -30,7 +29,7 @@ class CardFront extends StatelessWidget {
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             clipBehavior: Clip.antiAlias,
             child: Container(
-              height: 250,
+              height: 260,
               padding: EdgeInsets.zero,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

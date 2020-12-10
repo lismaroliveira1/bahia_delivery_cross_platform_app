@@ -1,7 +1,8 @@
 import 'dart:collection';
 
-import 'package:bahia_delivery/data/incremental_optional_data.dart';
-import 'package:bahia_delivery/data/product_data.dart';
+import 'package:bd_app_full/data/combo_data.dart';
+import 'package:bd_app_full/data/incremental_options_data.dart';
+import 'package:bd_app_full/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CartProduct {
@@ -15,28 +16,29 @@ class CartProduct {
   String productTitle;
   String productDescription;
   double productPrice;
-  List<IncrementalOptData> productOptionals = [];
+  List<IncrementalOptionalsData> productOptionals = [];
   ProductData productData;
+  ComboData comboProductData;
   CartProduct();
-  CartProduct.fromDocument(DocumentSnapshot document) {
+  CartProduct.fromDocument(QueryDocumentSnapshot document) {
     //Colocar um laço para verficar de já existe o produto no carrinho
-    storeId = document.data["storeId"];
-    productImage = document.data["productImage"];
-    cId = document.documentID;
-    category = document.data["category"];
-    pId = document.data["pid"];
-    quantify = document.data["quantity"];
-    productDescription = document.data["productDescription"];
-    productPrice = document.data["productPrice"];
-    productTitle = document.data["productTitle"];
-    price = document.data["totalPrice"];
-    if (document.data["complement"] == "noComplements") {
+    storeId = document.get("storeId");
+    productImage = document.get("productImage");
+    cId = document.id;
+    category = document.get("category");
+    pId = document.get("pid");
+    quantify = document.get("quantity");
+    productDescription = document.get("productDescription");
+    productPrice = document.get("productPrice");
+    productTitle = document.get("productTitle");
+    price = document.get("totalPrice");
+    if (document.get("complement") == "noComplements") {
       productOptionals.clear();
-    } else if (document.data["complement"] == []) {
+    } else if (document.get("complement") == []) {
       productOptionals.clear();
     } else {
-      List<IncrementalOptData> productOptionalsDocuement = [];
-      for (LinkedHashMap p in document.data["complement"]) {
+      List<IncrementalOptionalsData> productOptionalsDocuement = [];
+      for (LinkedHashMap p in document.get("complement")) {
         String id;
         String image;
         String title;
@@ -87,7 +89,7 @@ class CartProduct {
           }
         });
         productOptionalsDocuement.add(
-          IncrementalOptData(
+          IncrementalOptionalsData(
             id: id,
             productId: productId,
             type: type,
@@ -122,6 +124,7 @@ class CartProduct {
       }
     }
     return {
+      "type": "product",
       "productImage": productImage,
       "storeId": storeId,
       "productTitle": productTitle,

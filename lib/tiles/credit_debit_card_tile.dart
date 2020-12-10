@@ -1,5 +1,5 @@
-import 'package:bahia_delivery/data/credit_debit_card_data.dart';
-import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bd_app_full/data/credit_debit_card_data.dart';
+import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 
 class CreditDebitCardTile extends StatelessWidget {

@@ -1,16 +1,14 @@
-import 'package:bahia_delivery/models/cart_model.dart';
-import 'package:bahia_delivery/tabs/welcome_store_tab.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bd_app_full/data/store_data.dart';
+import 'package:bd_app_full/tabs/welcome_store_tab.dart';
 import 'package:flutter/material.dart';
 
-class WelcomeStoreScreenn extends StatelessWidget {
-  final DocumentSnapshot documentSnapshot;
-  WelcomeStoreScreenn(this.documentSnapshot);
-
+class WelcomeStoreScreen extends StatelessWidget {
+  final StoreData storeData;
+  WelcomeStoreScreen(this.storeData);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: WelcomeStoreTab(documentSnapshot),
+      body: WelcomeStoreTab(storeData),
     );
   }
 }

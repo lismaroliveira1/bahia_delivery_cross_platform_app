@@ -1,7 +1,6 @@
-import 'package:bahia_delivery/validators/login_validator.dart';
+import 'package:bd_app_full/validators/login_validators.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:rxdart/subjects.dart';
 
 class LoginBloc extends BlocBase with LoginValidators {
   final _emailController = BehaviorSubject<String>();

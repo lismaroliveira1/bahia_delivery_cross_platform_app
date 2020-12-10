@@ -1,16 +1,16 @@
-import 'package:bahia_delivery/blocs/credit_card_bloc.dart';
-import 'package:bahia_delivery/data/credit_debit_card_item.dart';
-import 'package:bahia_delivery/input_formaters/cpf_input_formaters.dart';
-import 'package:bahia_delivery/input_formaters/upper_case_input_formater.dart';
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/tiles/credit_card_imput_formater.dart';
-import 'package:bahia_delivery/widgets/card_back.dart';
-import 'package:bahia_delivery/widgets/card_front.dart';
+import 'package:bd_app_full/blocs/credit_card_block.dart';
+import 'package:bd_app_full/data/credit_debit_card_Item.dart';
+import 'package:bd_app_full/input_formaters/cpf_input_formaters.dart';
+import 'package:bd_app_full/input_formaters/masked_text_input_formater.dart';
+import 'package:bd_app_full/input_formaters/upper_case_input_formater.dart';
+import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/widgets/card_back.dart';
+import 'package:bd_app_full/widgets/card_front.dart';
 import 'package:credit_card_type_detector/credit_card_type_detector.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter/services.dart';
 
 class CreditCardSession extends StatefulWidget {
   @override

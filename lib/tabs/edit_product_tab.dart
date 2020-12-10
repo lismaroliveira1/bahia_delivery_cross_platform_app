@@ -1,11 +1,9 @@
 import 'dart:io';
 
-import 'package:bahia_delivery/data/product_data.dart';
-import 'package:bahia_delivery/data/store_categore_data.dart';
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/optional_scren.dart';
-import 'package:bahia_delivery/widgets/Input_product_parameters_widget.dart';
-import 'package:bahia_delivery/widgets/store_home_widgets.dart';
+import 'package:bd_app_full/data/category_store_data.dart';
+import 'package:bd_app_full/data/product_data.dart';
+import 'package:bd_app_full/data/subsection_data.dart';
+import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -18,352 +16,378 @@ class EditProductTab extends StatefulWidget {
 }
 
 class _EditProductTabState extends State<EditProductTab> {
-  final GlobalKey _formKey = GlobalKey<FormState>();
-  bool isImageEdited = false;
-  final _picker = ImagePicker();
-  File _imageFile;
-  final TextEditingController titleController = TextEditingController();
-  final TextEditingController shortDescriptionController =
+  String imageUrl = "";
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _longDescriptionController =
       TextEditingController();
-  final TextEditingController priceController = TextEditingController();
-  final TextEditingController sessionController = TextEditingController();
-  final TextEditingController longDescriptionController =
-      TextEditingController();
-  String categoryId;
-  StoreCategoreData categoreData;
-  bool isCategorySet = false;
+
+  File imageFile;
+
+  bool isImageChoosed = false;
+
+  final picker = ImagePicker();
+  CategoryStoreData sectionStore;
+  SubSectionData subSectionData;
+  ProductData productData;
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+    productData = widget.productData;
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (!isCategorySet) {
-      final List<StoreCategoreData> categoritList =
-          UserModel.of(context).storesCategoresList;
-      print(categoritList.length);
-      for (StoreCategoreData category in categoritList) {
-        if (category.id == widget.productData.categoryId) {
-          print(category.id);
-          setState(() {
-            categoreData = category;
-            categoryId = category.id;
-          });
-          break;
-        }
-      }
-      isCategorySet = true;
-    }
+    double sizeImage = MediaQuery.of(context).size.width / 3;
     return Form(
       key: _formKey,
-      child: CustomScrollView(
-        slivers: [
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                Center(
-                  child: Container(
-                    margin: EdgeInsets.only(top: 50),
-                    height: MediaQuery.of(context).size.width / 3,
-                    width: MediaQuery.of(context).size.width / 3,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: isImageEdited
-                              ? Image.file(
-                                  _imageFile,
-                                  isAntiAlias: false,
-                                  height: MediaQuery.of(context).size.width / 3,
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.network(
-                                  widget.productData.image,
-                                  fit: BoxFit.fill,
-                                ),
-                        ),
-                        Positioned(
-                          bottom: 4.0,
-                          right: 4.0,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 10,
-                              height: MediaQuery.of(context).size.width / 10,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Card(
-                                child: IconButton(
-                                  padding: EdgeInsets.zero,
-                                  icon: Icon(Icons.edit),
-                                  onPressed: () {
-                                    Scaffold.of(context).showSnackBar(
-                                      SnackBar(
-                                        backgroundColor: Colors.redAccent,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.only(
-                                              topLeft: Radius.circular(12),
-                                              topRight: Radius.circular(12)),
-                                        ),
-                                        content: Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              10,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              FlatButton(
-                                                onPressed: () async {
-                                                  try {
-                                                    final _pickedFile =
-                                                        await _picker.getImage(
-                                                      source:
-                                                          ImageSource.gallery,
-                                                      maxHeight: 500,
-                                                      maxWidth: 500,
-                                                    );
-                                                    if (_pickedFile == null)
-                                                      return;
-                                                    _imageFile =
-                                                        File(_pickedFile.path);
-                                                    setState(() {
-                                                      isImageEdited = true;
-                                                    });
-                                                  } catch (erro) {
-                                                    setState(() {
-                                                      isImageEdited = false;
-                                                    });
-                                                  }
-                                                },
-                                                child: Container(
-                                                  child: Image.asset(
-                                                    "images/gallery_image.png",
-                                                  ),
-                                                  height: 50,
-                                                  width: 50,
-                                                ),
-                                              ),
-                                              FlatButton(
-                                                onPressed: () async {
-                                                  try {
-                                                    final _pickedFile =
-                                                        await _picker.getImage(
-                                                      source:
-                                                          ImageSource.camera,
-                                                      maxHeight: 500,
-                                                      maxWidth: 500,
-                                                    );
-                                                    if (_pickedFile == null)
-                                                      return;
-                                                    _imageFile =
-                                                        File(_pickedFile.path);
-                                                    setState(() {
-                                                      isImageEdited = true;
-                                                    });
-                                                  } catch (erro) {
-                                                    setState(() {
-                                                      isImageEdited = false;
-                                                    });
-                                                  }
-                                                },
-                                                child: Container(
-                                                  child: Image.asset(
-                                                    "images/camera_image.png",
-                                                  ),
-                                                  height: 50,
-                                                  width: 50,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
+      child: Container(
+        color: Colors.black26,
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxScroled) {
+            return <Widget>[
+              SliverAppBar(
+                backgroundColor: Colors.transparent,
+                expandedHeight: 100,
+              )
+            ];
+          },
+          body: Form(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Center(
+                    child: Container(
+                      height: sizeImage,
+                      width: sizeImage,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Stack(
+                        children: <Widget>[
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: isImageChoosed
+                                ? Image.file(
+                                    imageFile,
+                                    isAntiAlias: false,
+                                    height:
+                                        MediaQuery.of(context).size.width / 3,
+                                    width:
+                                        MediaQuery.of(context).size.width / 3,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.network(
+                                    productData.productImage,
+                                    height:
+                                        MediaQuery.of(context).size.width / 3,
+                                    width:
+                                        MediaQuery.of(context).size.width / 3,
+                                    fit: BoxFit.cover,
+                                  ),
+                          ),
+                          Positioned(
+                            bottom: 4.0,
+                            right: 4.0,
+                            child: IconButton(
+                              onPressed: () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    backgroundColor: Colors.redAccent,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(12),
+                                        topRight: Radius.circular(12),
                                       ),
-                                    );
-                                  },
-                                ),
-                              ),
+                                    ),
+                                    content: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      height:
+                                          MediaQuery.of(context).size.height /
+                                              12,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          FlatButton(
+                                            padding: EdgeInsets.only(
+                                              left: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  18,
+                                            ),
+                                            onPressed: () async {
+                                              try {
+                                                final _pickedFile =
+                                                    await picker.getImage(
+                                                  source: ImageSource.gallery,
+                                                  maxHeight: 500,
+                                                  maxWidth: 500,
+                                                );
+                                                if (_pickedFile == null) return;
+                                                imageFile =
+                                                    File(_pickedFile.path);
+                                                if (imageFile == null) return;
+                                                setState(() {
+                                                  isImageChoosed = true;
+                                                });
+                                              } catch (e) {
+                                                setState(() {
+                                                  isImageChoosed = false;
+                                                });
+                                              }
+                                            },
+                                            child: Container(
+                                              child: Image.asset(
+                                                "images/gallery_image.png",
+                                              ),
+                                              height: 50,
+                                              width: 50,
+                                            ),
+                                          ),
+                                          FlatButton(
+                                            padding: EdgeInsets.only(
+                                              right: MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  18,
+                                            ),
+                                            onPressed: () async {
+                                              try {
+                                                final _pickedFile =
+                                                    await picker.getImage(
+                                                  source: ImageSource.camera,
+                                                  maxHeight: 500,
+                                                  maxWidth: 500,
+                                                );
+                                                if (_pickedFile == null) return;
+                                                imageFile =
+                                                    File(_pickedFile.path);
+                                                if (imageFile == null) return;
+                                                setState(() {
+                                                  isImageChoosed = true;
+                                                });
+                                              } catch (e) {
+                                                setState(() {
+                                                  isImageChoosed = false;
+                                                });
+                                              }
+                                            },
+                                            child: Container(
+                                              child: Image.asset(
+                                                "images/camera_image.png",
+                                              ),
+                                              height: 50,
+                                              width: 50,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              icon: Icon(Icons.camera_alt),
                             ),
                           ),
-                        )
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 6.0, horizontal: 8.0),
-                  child: Container(
-                    child: Column(
-                      children: [
-                        EditProductParameters(
-                          controller: titleController,
-                          initialText: widget.productData.title,
-                          hintText: "Ex: Pizza",
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 4.0,
+                      horizontal: 8.0,
+                    ),
+                    child: TextField(
+                      controller: _nameController
+                        ..text = productData.productTitle,
+                      decoration: InputDecoration(
                           labelText: "Nome",
-                        ),
-                        EditProductParameters(
-                          controller: shortDescriptionController,
-                          initialText: widget.productData.description,
-                          hintText: "",
-                          labelText: "Descrição Curta",
-                        ),
-                        EditProductParameters(
-                          controller: longDescriptionController,
-                          initialText: widget.productData.fullDescription,
-                          hintText: "",
-                          labelText: "Descrição Longa",
-                          minLines: 3,
-                          maxLines: 4,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                              flex: 3,
-                              child: EditProductParameters(
-                                controller: priceController,
-                                initialText:
-                                    widget.productData.price.toString(),
-                                hintText: "19,99",
-                                labelText: "Preço",
-                              ),
-                            ),
-                            Expanded(
-                              flex: 7,
-                              child: EditProductParameters(
-                                controller: sessionController,
-                                initialText: widget.productData.group,
-                                hintText: "Ex: pizzas salgadas",
-                                labelText: "Sessão",
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          )),
                     ),
                   ),
-                ),
-                StoreHomeWigget(
-                  icon: Icons.add_circle_outline_outlined,
-                  name: "Opcionais",
-                  description: "Crie ou edite complementos ou opções de compra",
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => new OptionalScrenn(
-                          widget.productData,
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 4.0,
+                      horizontal: 8.0,
+                    ),
+                    child: TextField(
+                      controller: _descriptionController
+                        ..text = productData.productDescription,
+                      decoration: InputDecoration(
+                        labelText: "Descrição curta",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                    );
-                  },
-                ),
-                StoreHomeWigget(
-                  icon: Icons.add_circle_outline_outlined,
-                  name: "Categoria",
-                  description:
-                      "Indique a categoria a que esse produto pertence",
-                  onPressed: _onCategorySetupPressed,
-                  trailing: categoreData != null
-                      ? Container(
-                          height: 50,
-                          width: 50,
-                          child: Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: Image.network(
-                                categoreData.image,
-                                width: 40,
-                                height: 40,
-                                fit: BoxFit.cover,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 4.0,
+                      horizontal: 8.0,
+                    ),
+                    child: TextField(
+                      controller: _longDescriptionController
+                        ..text = productData.fullDescription,
+                      decoration: InputDecoration(
+                        labelText: "Descrição longa",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 4.0,
+                      horizontal: 8.0,
+                    ),
+                    child: Container(
+                      width: 110,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 3),
+                        child: TextField(
+                          controller: _priceController
+                            ..text =
+                                productData.productPrice.toStringAsFixed(2),
+                          decoration: InputDecoration(
+                            labelText: "Preço",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 4.0,
+                        ),
+                        child: FlatButton(
+                          onPressed: () {
+                            _onSectionPressed();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colors.black38,
+                                )),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width / 3,
+                              padding: EdgeInsets.all(18),
+                              child: Center(
+                                child: Text("Seção"),
                               ),
                             ),
                           ),
-                        )
-                      : Container(
-                          height: 0,
-                          width: 0,
                         ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Container(
-                    height: 50,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Colors.red,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 4.0,
+                        ),
+                        child: FlatButton(
+                          onPressed: () {
+                            _onSubSectionPressed();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: Colors.black38,
+                                )),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width / 3,
+                              padding: EdgeInsets.all(18),
+                              child: Center(
+                                child: Text("Subseção"),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      vertical: 16.0,
                     ),
-                    child: ScopedModelDescendant<UserModel>(
-                      builder: (context, child, model) {
-                        if (model.isLoading) {
-                          return Container(
-                            child: Center(
-                              child: Container(
+                    child: FlatButton(
+                      onPressed: () {
+                        productData.productTitle = _nameController.text;
+                        productData.productDescription =
+                            _descriptionController.text;
+                        productData.productPrice =
+                            double.parse(_priceController.text);
+                        UserModel.of(context).editPartnerProduct(
+                          imageFile: isImageChoosed ? imageFile : null,
+                          productData: productData,
+                          onSuccess: _onSuccess,
+                          onFail: _onFail,
+                        );
+                      },
+                      child: Container(
+                        height: 55,
+                        width: MediaQuery.of(context).size.width / 3,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(child: ScopedModelDescendant<UserModel>(
+                          builder: (context, child, model) {
+                            if (model.isLoading) {
+                              return Container(
                                 height: 20,
                                 width: 20,
                                 child: CircularProgressIndicator(),
-                              ),
-                            ),
-                          );
-                        } else {
-                          return FlatButton(
-                            onPressed: () {
-                              double doublePrice = double.parse(
-                                priceController.text,
                               );
-                              final productData = ProductData(
-                                id: widget.productData.id,
-                                title: titleController.text,
-                                categoryId: categoryId,
-                                description: shortDescriptionController.text,
-                                image: "image",
-                                price: doublePrice,
-                                fullDescription: longDescriptionController.text,
-                                group: sessionController.text,
-                              );
-
-                              model.editProduct(
-                                productData: productData,
-                                imageFile: _imageFile,
-                                onSuccess: _onsSuccess,
-                                onFail: _onFail,
-                                categoryId: categoryId,
-                                callOnCategoryNull: _onCategorySetupPressed,
-                              );
-                            },
-                            child: Center(
-                              child: Text(
-                                "Atualizar",
+                            } else {
+                              return Text(
+                                "Enviar",
                                 style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          );
-                        }
-                      },
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 16),
+                              );
+                            }
+                          },
+                        )),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 
-  void _onsSuccess() {
-    Navigator.of(context).pop();
-  }
-
-  void _onCategorySetupPressed() {
-    Scaffold.of(context).showSnackBar(
+  void _onSectionPressed() {
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
@@ -373,62 +397,180 @@ class _EditProductTabState extends State<EditProductTab> {
           ),
         ),
         content: Container(
-          height: 300,
-          child: Expanded(
-            child: ListView(
-                children:
-                    UserModel.of(context).storesCategoresList.map((category) {
-              return Column(
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: categoryId == category.id
-                            ? Colors.red
-                            : Colors.white,
+          height: 450.0,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.add_circle_outline,
+                        color: Colors.black,
                       ),
                     ),
-                    child: ListTile(
-                      onTap: () {
-                        setState(() {
-                          categoryId = category.id;
-                          categoreData = category;
-                        });
-                        Scaffold.of(context).hideCurrentSnackBar();
+                    Text(
+                      "Seções",
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       },
-                      dense: true,
-                      title: Text(
-                        category.title,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      subtitle: Text(
-                        category.description,
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          category.image,
-                          width: 40,
-                          height: 40,
-                          fit: BoxFit.cover,
-                        ),
+                      icon: Icon(
+                        Icons.close_rounded,
+                        color: Colors.black,
                       ),
                     ),
-                  ),
-                  Divider(color: Colors.grey),
-                ],
-              );
-            }).toList()),
+                  ],
+                ),
+              ),
+              ScopedModelDescendant<UserModel>(
+                  builder: (context, child, model) {
+                if (model.isLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else {
+                  return Expanded(
+                    child: ListView(
+                      children: model.sectionsStorePartnerList.map((section) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: section == sectionStore
+                                  ? Colors.black
+                                  : Colors.transparent,
+                            ),
+                          ),
+                          child: ListTile(
+                            onTap: () {
+                              setState(() {
+                                sectionStore = section;
+                                productData.category = section.title;
+                                productData.categoryId = section.id;
+                              });
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                            title: Text(
+                              section.title,
+                              style: TextStyle(
+                                color: Colors.black87,
+                              ),
+                            ),
+                            leading: Container(
+                              height: 60,
+                              width: 60,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                    section.image,
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            subtitle: Text(
+                              section.description,
+                            ),
+                            trailing: Text(
+                              "${section.order}º",
+                              style: TextStyle(
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  );
+                }
+              })
+            ],
           ),
         ),
       ),
     );
+  }
+
+  void _onSubSectionPressed() {
+    if (sectionStore == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Primeiro escolha a seção",
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 1),
+        ),
+      );
+      _onSectionPressed();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(12),
+            ),
+          ),
+          content: Container(
+            height: MediaQuery.of(context).size.height * 0.4,
+            child: Column(
+              children: [
+                Divider(
+                  color: Colors.grey[400],
+                ),
+                Expanded(
+                  child: ListView(
+                    children: sectionStore.subSectionsList.map((subsection) {
+                      return Column(
+                        children: [
+                          ListTile(
+                            onTap: () {
+                              setState(() {
+                                subSectionData = subsection;
+                                productData.group = subsection.title;
+                              });
+                              ScaffoldMessenger.of(context)
+                                  .hideCurrentSnackBar();
+                            },
+                            title: Text(
+                              subsection.title,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.black54,
+                              ),
+                            ),
+                          ),
+                          Divider(
+                            color: Colors.grey[400],
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+  }
+
+  void _onSuccess() {
+    Navigator.of(context).pop();
   }
 
   void _onFail() {}

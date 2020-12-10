@@ -1,15 +1,15 @@
-import 'package:bahia_delivery/data/credit_debit_card_data.dart';
-import 'package:bahia_delivery/data/user.dart';
+import 'package:bd_app_full/data/credit_debit_card_data.dart';
+import 'package:bd_app_full/data/user_data.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 
 class CieloPayment {
-  final CloudFunctions functions = CloudFunctions.instance;
+  final FirebaseFunctions functions = FirebaseFunctions.instance;
   void authorized(
       {@required CreditDebitCardData creditDebitCardData,
       @required num price,
       @required String orderId,
-      @required User user}) async {
+      @required UserData user}) async {
     final Map<String, dynamic> dataSale = {
       'merchantOrderId': orderId,
       'amount': (100 * price).toInt(),
@@ -20,7 +20,7 @@ class CieloPayment {
       'paymentType': 'CreditCard',
     };
     final HttpsCallable callable =
-        functions.getHttpsCallable(functionName: 'authorizeCreditCard');
+        functions.httpsCallable('authorizeCreditCard');
     final response = await callable.call(dataSale);
     print(response.data);
   }

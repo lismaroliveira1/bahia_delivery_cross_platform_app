@@ -1,69 +1,93 @@
 import 'dart:collection';
 
+import 'package:bd_app_full/data/category_store_data.dart';
+import 'package:bd_app_full/data/combo_data.dart';
+import 'package:bd_app_full/data/offs_data.dart';
+import 'package:bd_app_full/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geodesy/geodesy.dart';
 
 class StoreData {
-  String id;
-  String name;
-  String image;
   String description;
-  DocumentSnapshot storeSnapshot;
-  int openingTimeHour;
-  int openingTimeMinute;
+  String image;
+  bool isOpen;
+  String name;
+  String partnerId;
+  String id;
+  bool isActive = false;
   int closingTimeHour;
   int closingTimeMinute;
-  bool ishourSeted = false;
-  bool isStoreOpen = false;
-  StoreData.fromDocument(DocumentSnapshot documentSnapshot) {
-    bool isClosingTimeSeted = false;
-    bool isOpeningTimeConfigurated = false;
-    id = documentSnapshot.documentID;
-    name = documentSnapshot.data["name"];
-    image = documentSnapshot.data["image"];
-    description = documentSnapshot.data["description"];
-    storeSnapshot = documentSnapshot;
-    if (documentSnapshot.data["closingTime"] != null) {
-      Map map = documentSnapshot.data["closingTime"];
-      closingTimeHour = map["hour"];
-      closingTimeMinute = map["minute"];
-      isClosingTimeSeted = true;
-    }
-    if (documentSnapshot.data["openingTime"] != null) {
-      Map map = documentSnapshot.data["openingTime"];
-      openingTimeHour = map["hour"];
-      openingTimeMinute = map["minute"];
-      isOpeningTimeConfigurated = true;
-    }
-    if (isClosingTimeSeted && isOpeningTimeConfigurated) ishourSeted = true;
+  int openingTimeHour;
+  int openingTimeMinute;
+  List<OffData> productsOff = [];
+  List<ProductData> products = [];
+  List<CategoryStoreData> storeCategoryList = [];
+  List<ProductData> purchasedProducts = [];
+  List<ComboData> storesCombos = [];
+  bool isFavorite = false;
+  GeoPoint geopoint;
+  double distance;
+  LatLng latLng;
+  double deliveryTime;
 
-    if (ishourSeted) {
+  StoreData(
+    this.description,
+    this.image,
+    this.isOpen,
+    this.name,
+    this.partnerId,
+    this.id,
+    this.isActive,
+    this.closingTimeHour,
+    this.closingTimeMinute,
+    this.openingTimeHour,
+    this.openingTimeMinute,
+    this.productsOff,
+    this.distance,
+    this.deliveryTime,
+  );
+
+  StoreData.fromQueryDocument(QueryDocumentSnapshot queryDoc) {
+    id = queryDoc.id;
+    LinkedHashMap p;
+    description = queryDoc.get("description");
+    image = queryDoc.get("image");
+    name = queryDoc.get("name");
+    partnerId = queryDoc.get("partnerId");
+    geopoint = queryDoc.data()["address"]["geopoint"];
+    latLng = LatLng(
+      geopoint.latitude,
+      geopoint.longitude,
+    );
+    try {
+      p = queryDoc.data()["closingTime"];
+      closingTimeHour = p["hour"];
+      closingTimeMinute = p["minute"];
+      p = queryDoc.data()["openingTime"];
+      openingTimeMinute = p["minute"];
+      openingTimeHour = p["hour"];
       if (DateTime.now().hour > openingTimeHour &&
           DateTime.now().hour < closingTimeHour) {
-        isStoreOpen = true;
+        isOpen = true;
       } else if (DateTime.now().hour == openingTimeHour) {
         if (DateTime.now().minute >= openingTimeMinute) {
-          isStoreOpen = true;
+          isOpen = true;
         } else {
-          isStoreOpen = false;
+          isOpen = false;
         }
+      } else if (DateTime.now().hour < openingTimeHour ||
+          DateTime.now().hour > closingTimeHour) {
+        isOpen = false;
       } else if (DateTime.now().hour == closingTimeHour) {
         if (DateTime.now().minute <= closingTimeMinute) {
-          isStoreOpen = true;
+          isOpen = true;
         } else {
-          isStoreOpen = false;
+          isOpen = false;
         }
-      } else {
-        isStoreOpen = false;
       }
+      isActive = true;
+    } catch (erro) {
+      isActive = false;
     }
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      "id": id,
-      "title": name,
-      "image": image,
-      "description": description,
-    };
   }
 }

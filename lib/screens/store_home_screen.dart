@@ -1,7 +1,7 @@
-import 'package:bahia_delivery/tabs/store_home_tab.dart';
+import 'package:bd_app_full/tabs/store_home_tab.dart';
 import 'package:flutter/material.dart';
 
-class StoreHomeScreen extends StatelessWidget {
+class StoreHomeScrenn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

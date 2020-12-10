@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
 class CardBack extends StatelessWidget {
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final String cvv;
   CardBack(this.cvv);
   Widget build(BuildContext context) {
     return Form(
-      key: formKey,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Card(

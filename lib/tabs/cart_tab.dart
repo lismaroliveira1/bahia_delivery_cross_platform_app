@@ -1,121 +1,82 @@
-import 'package:bahia_delivery/data/cart_product.dart';
-import 'package:bahia_delivery/models/cart_model.dart';
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/login_screen.dart';
-import 'package:bahia_delivery/tiles/cart_tile.dart';
-import 'package:bahia_delivery/widgets/cart_price.dart';
-import 'package:bahia_delivery/widgets/chip_card.dart';
-import 'package:bahia_delivery/widgets/discount_card.dart';
-import 'package:bahia_delivery/widgets/payment_card.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bd_app_full/data/store_data.dart';
+import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/tiles/cart_tile.dart';
+import 'package:bd_app_full/widgets/cart_price.dart';
+import 'package:bd_app_full/widgets/discount_cart.dart';
+import 'package:bd_app_full/widgets/payment_cart.dart';
+import 'package:bd_app_full/widgets/ship_card.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class CartTab extends StatefulWidget {
+  final StoreData storeData;
+  CartTab(this.storeData);
   @override
   _CartTabState createState() => _CartTabState();
 }
 
 class _CartTabState extends State<CartTab> {
-  CartProduct cartProduct = CartProduct();
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<CartModel>(
-      builder: (context, child, model) {
-        if (model.isLoading && UserModel.of(context).isLoggedIn()) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (!UserModel.of(context).isLoggedIn()) {
-          return Container(
-            padding: EdgeInsets.only(right: 130, left: 130),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Icons.remove_shopping_cart,
-                  size: 80.0,
-                  color: Colors.red,
-                ),
-                SizedBox(
-                  height: 16.0,
-                ),
-                Text(
-                  "Faça login para adcionar produtos!",
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: 16.0,
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    height: 55,
-                    child: RaisedButton(
-                      color: Colors.red,
-                      child: Text(
-                        "Entrar",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
+    return SafeArea(
+      child: Container(
+        child: ListView(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                top: 10,
+                bottom: 2.0,
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    child: Text(
+                      "Carrinho",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22,
                       ),
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => LoginScreen(),
-                        ));
-                      },
                     ),
                   ),
-                )
-              ],
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Divider(
+                    color: Colors.black,
+                  ),
+                ],
+              ),
             ),
-          );
-        } else if (model.products == null || model.products.length == 0) {
-          return Center(
-            child: Text(
-              "Nenhum produto no carrinho",
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          );
-        } else {
-          return FutureBuilder<QuerySnapshot>(
-            future: Firestore.instance
-                .collection("users")
-                .document(UserModel.of(context).firebaseUser.uid)
-                .collection("cart")
-                .getDocuments(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return Center(
-                  child: Text("Seu Carrinho está vázio"),
+            ScopedModelDescendant<UserModel>(builder: (context, cart, model) {
+              if (model.isLoading) {
+                return Container(
+                  height: 0,
+                  width: 0,
                 );
               } else {
-                return Form(
-                  key: formKey,
+                return Center(
                   child: Column(
-                    children: [
-                      Expanded(
-                          child: ListView(
-                        children: model.products.map((product) {
-                          return CartTile(
-                            cartProduct: product,
-                            noProduct: () {},
-                          );
-                        }).toList(),
-                      )),
-                      DiscountCard(),
-                      ShipCard(),
-                      PaymentCard(),
-                    ],
+                    children: model.cartProducts.map((product) {
+                      return CartTile(
+                        cartProduct: product,
+                        noProduct: _noProductInCart,
+                      );
+                    }).toList(),
                   ),
                 );
               }
-            },
-          );
-        }
-      },
+            }),
+            DiscountCard(),
+            ShipCard(),
+            PaymentCard(),
+            CartPrice(widget.storeData),
+          ],
+        ),
+      ),
     );
   }
+
+  void _noProductInCart() {}
 }

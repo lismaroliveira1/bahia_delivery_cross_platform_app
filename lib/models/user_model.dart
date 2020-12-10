@@ -1,143 +1,128 @@
 import 'dart:collection';
 import 'dart:io';
-import 'package:bahia_delivery/data/address_data.dart';
-import 'package:bahia_delivery/data/address_data_from_google.dart';
-import 'package:bahia_delivery/data/cart_product.dart';
-import 'package:bahia_delivery/data/category_data.dart';
-import 'package:bahia_delivery/data/credit_debit_card_data.dart';
-import 'package:bahia_delivery/data/credit_debit_card_item.dart';
-import 'package:bahia_delivery/data/incremental_optional_data.dart';
-import 'package:bahia_delivery/data/order_data.dart';
-import 'package:bahia_delivery/data/payment_on_delivery_date.dart';
-import 'package:bahia_delivery/data/product_data.dart';
-import 'package:bahia_delivery/data/sales_off_data.dart';
-import 'package:bahia_delivery/data/search_data.dart';
-import 'package:bahia_delivery/data/store_categore_data.dart';
-import 'package:bahia_delivery/data/store_data.dart';
-import 'package:bahia_delivery/data/store_with_cpf_data.dart';
-import 'package:bahia_delivery/models/adress.dart';
-import 'package:bahia_delivery/data/user.dart';
+
+import 'package:bd_app_full/data/address_data.dart';
+import 'package:bd_app_full/data/cart_product.dart';
+import 'package:bd_app_full/data/category_data.dart';
+import 'package:bd_app_full/data/category_store_data.dart';
+import 'package:bd_app_full/data/combo_data.dart';
+import 'package:bd_app_full/data/credit_debit_card_Item.dart';
+import 'package:bd_app_full/data/credit_debit_card_data.dart';
+import 'package:bd_app_full/data/incremental_options_data.dart';
+import 'package:bd_app_full/data/offs_data.dart';
+import 'package:bd_app_full/data/order_data.dart';
+import 'package:bd_app_full/data/payment_form_data.dart';
+import 'package:bd_app_full/data/payment_on_delivery_date.dart';
+import 'package:bd_app_full/data/product_data.dart';
+import 'package:bd_app_full/data/store_data.dart';
+import 'package:bd_app_full/data/subsection_data.dart';
+import 'package:bd_app_full/data/user_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:geodesy/geodesy.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:location/location.dart';
 import 'package:random_string/random_string.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const token = '635289558f18ba4c749d6928e8cd0ba7';
 
 class UserModel extends Model {
-  Map<String, dynamic> userData = Map();
-  List<AddressDataFromGoogle> addressDataFromGoogleList = [];
-  FirebaseUser firebaseUser;
-  FirebaseAuth _auth = FirebaseAuth.instance;
   bool isLoading = false;
-  int isPartner = 3;
-  double longittude;
-  double latitude;
-  int favoriteStoryQuantity = 0;
-  List<AddressData> addresses = [];
-  List<CreditDebitCardData> creditDebitCardList = [];
-  List<CategoryData> categoryDataList = [];
-  List<StoreData> storeDataList = [];
-  List<StoreData> storeListFavorites = [];
+  bool isReady = true;
+  User firebaseUser;
+  UserData userData;
+  List<CategoryData> categoryList = [];
   List<OrderData> listUserOrders = [];
-  List<OrderData> listPartnerOders = [];
-  List<IncrementalOptData> incrementalOptDataList = [];
-  List<IncrementalOptData> productIncrementals = [];
-  String street;
-  String state;
-  String zipCode;
-  String district;
-  String city;
-  AddressData currentUserAddress;
-  String currentUserId;
+  List<StoreData> storeHomeList = [];
+  List<StoreData> lastPurchasedStores = [];
+  List<String> favoriteStoreId = [];
+  List<StoreData> favoriteStoresList = [];
+  List<ProductData> allProductsFromStoreHomeList = [];
+  List<ProductData> productsPartnerList = [];
+  List<CategoryStoreData> sectionsStorePartnerList = [];
+  List<OffData> offPartnerData = [];
+  List<ComboData> comboStoreList = [];
+  List<ComboData> comboStoreHomeList = [];
+  List<OrderData> partnerOrderList = [];
+  List<CartProduct> cartProducts = [];
+  String couponCode;
+  int discountPercentage = 0;
   bool addressSeted = false;
-  bool errorSignGoogle = false;
-  bool errorSignFacebook = false;
-  bool isLogged = false;
   bool paymentSet = false;
+  bool payOnApp = false;
   CreditDebitCardData currentCreditDebitCardData;
   PaymentOnDeliveryData currentPaymentOndeliveryData;
-  bool payOnApp;
-  StoreData storeData;
-  CategoryData categoryData;
-  bool hasStories = false;
-  String userName;
-  String userImage;
-  String userPhoneNumber = '';
-  String userEmail;
-  String storeName = "";
-  String storeImage = "";
-  String storeId = "";
-  bool hasPartnerOrders = false;
-  OrderData chatOrderData;
-  AddressDataFromGoogle currentAddressDataFromGoogle;
-  List<ProductData> productsStore = [];
-  List<StoreCategoreData> storesCategoresList = [];
-  List<SalesOffData> salesOffList = [];
-  List<ProductData> purchasedsProducts = [];
-  List<DocumentSnapshot> purchasedProductsByStore = [];
-  bool hasSalesOff = false;
-  bool hasProductInCart = false;
-  List<CartProduct> productsInCart = [];
-  bool isStoreHourConfigurated = false;
-  List<StoreData> lastPurchasedStores = [];
-  List<OrderData> allOrders = [];
-  List<StoreData> storeDataListOpened = [];
-  List<StoreData> storeDataListClosed = [];
   Map<String, dynamic> dataSale = {};
+  String userImage;
+  bool hasProductInCart = false;
+  List<CreditDebitCardData> creditDebitCardList = [];
+  List<PaymentFormData> paymentFormsList = [];
+
+  Location location = new Location();
+  bool _serviceEnabled;
+  PermissionStatus _permissionGranted;
+  LocationData _locationData;
+
+  Geodesy geodesy = Geodesy();
+
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
+
   @override
   void addListener(VoidCallback listener) async {
     super.addListener(listener);
-
     _loadCurrentUser();
-    _getCurrentLocation();
-    _loadListCreditDebitCard();
-    _loadAddressFromGoogle();
-    loadAddressItems();
-    updateCategory();
-    updateStories();
-    updateStoreFavorites();
-    updatePartnerData();
-    veryIfExistsProducts();
+    getPurchasedStoresList();
   }
 
-  Future<void> signIn({
-    @required String email,
-    @required String pass,
-    @required Function onFail,
-    @required Function onSuccess,
-  }) async {
+  bool isLoggedIn() {
+    return firebaseUser != null; //firebaseUser != null;
+  }
+
+  void _loadCurrentUser() async {
     isLoading = true;
     notifyListeners();
-    try {
-      final AuthResult result =
-          await _auth.signInWithEmailAndPassword(email: email, password: pass);
-      this.firebaseUser = result.user;
-      onSuccess();
-      saveToken();
-      getAllUserData();
-      updatePartnerData();
-      isLoading = false;
-      isLogged = true;
-      notifyListeners();
-    } on PlatformException catch (_) {
-      onFail();
-      isLoading = false;
-      notifyListeners();
-      isLogged = false;
+    if (firebaseUser == null) {
+      firebaseUser = _auth.currentUser;
     }
+    DocumentSnapshot docUser = await FirebaseFirestore.instance
+        .collection("users")
+        .doc(firebaseUser.uid)
+        .get();
+    userData = UserData(
+      name: docUser.get("name"),
+      image: docUser.get("image"),
+      email: firebaseUser.email,
+      isPartner: docUser.get("isPartner"),
+      storeId: docUser.get("isPartner") == 1 ? docUser.get("storeId") : "",
+    );
+    await getListOfCategory();
+    await getListHomeStores();
+    await getOrders();
+    getcartProductList();
+    getPaymentUserForms();
+    await updateFavoritList();
+    await getPartnerData();
+    await getProductsPartnerList();
+    await getSectionList();
+    await getPartnerOffSales();
+    await getComboList();
+    await getPartnerOrderList();
+    getPurchasedStoresList();
+    getAllProductsToList();
+    getPaymentUserForms();
+    isLoading = false;
+    isReady = true;
+
+    notifyListeners();
   }
 
   Future<void> signUpWithGoogle({
@@ -145,613 +130,1241 @@ class UserModel extends Model {
     @required VoidCallback onFail,
     @required VoidCallback onFailGoogle,
   }) async {
-    isLoading = true;
-    notifyListeners();
-    final GoogleSignIn _googleSignIn = GoogleSignIn(
-      scopes: [
-        'email',
-        'https://www.googleapis.com/auth/contacts.readonly',
-      ],
-    );
-    final GoogleSignInAccount googleSignInAccount =
-        await _googleSignIn.signIn();
-    if (googleSignInAccount == null) {
-      return null;
-    }
-    final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
-    final AuthCredential authCredential = GoogleAuthProvider.getCredential(
-        idToken: googleSignInAuthentication.idToken,
-        accessToken: googleSignInAuthentication.accessToken);
-    final AuthResult authResult =
-        await FirebaseAuth.instance.signInWithCredential(authCredential);
-
     try {
-      DocumentSnapshot docUser = await Firestore.instance
-          .collection("users")
-          .document(authResult.user.uid)
-          .get();
-      if (docUser.exists) {
-        await _auth.signOut();
-        userData = Map();
-        firebaseUser = null;
-        onFailGoogle();
-        isLogged = false;
-        isLoading = false;
+      bool hasPartnerInDataBank = false;
+      final GoogleSignIn _googleSignIn = GoogleSignIn(
+        scopes: [
+          'email',
+          'https://www.googleapis.com/auth/contacts.readonly',
+        ],
+      );
+      final GoogleSignInAccount googleSignInAccount =
+          await _googleSignIn.signIn();
+      if (googleSignInAccount == null) {
+        return null;
+      }
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
+      final AuthCredential authCredential = GoogleAuthProvider.credential(
+        idToken: googleSignInAuthentication.idToken,
+        accessToken: googleSignInAuthentication.accessToken,
+      );
+      final UserCredential authResult =
+          await FirebaseAuth.instance.signInWithCredential(authCredential);
+      this.firebaseUser = authResult.user;
+      QuerySnapshot queryUser =
+          await FirebaseFirestore.instance.collection("users").get();
+      List<QueryDocumentSnapshot> list = queryUser.docs;
+      for (QueryDocumentSnapshot doc in list) {
+        if (doc.id == firebaseUser.uid) {
+          hasPartnerInDataBank = true;
+          break;
+        }
+      }
+      if (!hasPartnerInDataBank) {
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .set({
+          "email": firebaseUser.email,
+          "image": firebaseUser.photoURL,
+          "isPartner": 3,
+          "name": firebaseUser.displayName,
+          "phoneNumber": firebaseUser.phoneNumber,
+        });
+        saveToken();
+        _loadCurrentUser();
+        onSuccess();
         notifyListeners();
       } else {
-        userName = authResult.user.displayName;
-        userImage = authResult.user.photoUrl;
-        final user = User(
-            name: authResult.user.displayName,
-            email: authResult.user.email,
-            image: authResult.user.photoUrl,
-            isPartner: 3,
-            currentAddress: "");
-        this.firebaseUser = authResult.user;
-        _saveUserData(user);
-        isLogged = true;
-        getAllUserData();
-        saveToken();
-        onSuccess();
-        updatePartnerData();
-        isLoading = false;
-        notifyListeners();
+        onFailGoogle();
       }
-    } catch (e) {
-      isLogged = false;
-      print(e);
+    } catch (erro) {
       onFail();
     }
   }
 
-  Future<void> signInWithGoogle(
-      {@required VoidCallback onSuccess, @required VoidCallback onFail}) async {
-    isLoading = true;
-    notifyListeners();
-
-    final GoogleSignIn _googleSignIn = GoogleSignIn(
-      scopes: [
-        'email',
-        'https://www.googleapis.com/auth/contacts.readonly',
-      ],
-    );
-    final GoogleSignInAccount googleSignInAccount =
-        await _googleSignIn.signIn();
-    if (googleSignInAccount == null) {
-      return null;
-    }
-    final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
-    final AuthCredential authCredential = GoogleAuthProvider.getCredential(
-        idToken: googleSignInAuthentication.idToken,
-        accessToken: googleSignInAuthentication.accessToken);
-    final AuthResult authResult =
-        await FirebaseAuth.instance.signInWithCredential(authCredential);
-
+  Future<void> signUp({
+    @required UserData user,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
     try {
-      DocumentSnapshot docUser = await Firestore.instance
+      print(user.email);
+      final UserCredential result = await _auth.createUserWithEmailAndPassword(
+        email: user.email,
+        password: user.password,
+      );
+      this.firebaseUser = result.user;
+      await FirebaseFirestore.instance
           .collection("users")
-          .document(authResult.user.uid)
-          .get();
-      if (docUser.exists) {
-        userName = authResult.user.displayName;
-        userImage = authResult.user.photoUrl;
-        this.firebaseUser = authResult.user;
-        updatePartnerData();
-        getAllUserData();
-        isLogged = true;
-        saveToken();
-        isLoading = false;
-        notifyListeners();
-      } else {
-        await _auth.signOut();
-        userData = Map();
-        firebaseUser = null;
-        isLogged = false;
-        isLoading = false;
-        notifyListeners();
-      }
-    } catch (e) {
-      errorSignGoogle = true;
-      isLoading = false;
-      isLogged = false;
+          .doc(firebaseUser.uid)
+          .set({
+        "email": user.email,
+        "image": "https://meuvidraceiro.com.br/images/sem-imagem.png",
+        "isPartner": 3,
+        "name": user.name,
+        "phoneNumber": "",
+      });
+      saveToken();
+      _loadCurrentUser();
+      onSuccess();
       notifyListeners();
-    }
-  }
-
-  Future<void> signInWithFacebook(
-      {@required onSuccess, @required onFail}) async {
-    isLoading = false;
-    notifyListeners();
-    final FacebookLogin facebookLogin = FacebookLogin();
-    final result = await facebookLogin.logIn(['email', 'public_profile']);
-
-    switch (result.status) {
-      case FacebookLoginStatus.loggedIn:
-        final credential = FacebookAuthProvider.getCredential(
-          accessToken: result.accessToken.token,
-        );
-        final authResult = await _auth.signInWithCredential(credential);
-        if (authResult.user != null) {
-          DocumentSnapshot docUser = await Firestore.instance
-              .collection("users")
-              .document(authResult.user.uid)
-              .get();
-          if (docUser.exists) {
-            this.firebaseUser = authResult.user;
-            updatePartnerData();
-            getAllUserData();
-            isLogged = true;
-            saveToken();
-            isLoading = false;
-            notifyListeners();
-          } else {
-            await _auth.signOut();
-            userData = Map();
-            firebaseUser = null;
-            isLogged = false;
-            isLoading = false;
-            notifyListeners();
-          }
-        }
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        // TODO: Handle this case.
-        isLogged = false;
-        break;
-      case FacebookLoginStatus.error:
-        errorSignFacebook = true;
-        isLogged = false;
-        isLoading = false;
-        notifyListeners();
-        break;
+    } catch (error) {
+      print(error);
+      onFail();
     }
   }
 
   Future<void> signUpWithFacebook({
     @required VoidCallback onSuccess,
+    @required onFail,
+    @required onFailFacebook,
+  }) async {}
+
+  void signIn({
+    @required String email,
+    @required String pass,
+    @required VoidCallback onSuccess,
     @required VoidCallback onFail,
-    @required onFailFacebbok,
+  }) async {
+    try {
+      final UserCredential result = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: pass,
+      );
+      this.firebaseUser = result.user;
+      saveToken();
+      _loadCurrentUser();
+      notifyListeners();
+    } catch (erro) {}
+  }
+
+  void signOut({
+    @required VoidCallback onSuccess,
   }) async {
     isLoading = true;
     notifyListeners();
-    try {
-      final FacebookLogin facebookLogin = FacebookLogin();
-      final result = await facebookLogin.logIn(['email', 'public_profile']);
-      switch (result.status) {
-        case FacebookLoginStatus.loggedIn:
-          final credential = FacebookAuthProvider.getCredential(
-            accessToken: result.accessToken.token,
-          );
-
-          final authResult = await _auth.signInWithCredential(credential);
-          if (authResult.user != null) {
-            DocumentSnapshot docUser = await Firestore.instance
-                .collection("users")
-                .document(authResult.user.uid)
-                .get();
-            if (docUser.exists) {
-              await _auth.signOut();
-              userData = Map();
-              firebaseUser = null;
-              onFail();
-              isLogged = false;
-              isLoading = false;
-              notifyListeners();
-            } else {
-              final user = User(
-                  name: authResult.user.displayName,
-                  email: authResult.user.email,
-                  isPartner: 3,
-                  currentAddress: "");
-              this.firebaseUser = authResult.user;
-              _saveUserData(user);
-              getAllUserData();
-              updatePartnerData();
-              isLogged = true;
-              saveToken();
-              onSuccess();
-              isLoading = false;
-              notifyListeners();
-            }
-          }
-          break;
-        case FacebookLoginStatus.cancelledByUser:
-          isLogged = false;
-          isLoading = false;
-          notifyListeners();
-          break;
-        case FacebookLoginStatus.error:
-          errorSignFacebook = true;
-          isLogged = false;
-          isLoading = false;
-          notifyListeners();
-          break;
-      }
-    } catch (e) {
-      print(e);
-      onFail();
-      isLogged = false;
-      isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  Future<void> signUp(
-      {@required User user,
-      @required Function onSuccess,
-      @required Function onFail}) async {
-    isLoading = true;
-    notifyListeners();
-    try {
-      final AuthResult result = await _auth.createUserWithEmailAndPassword(
-          email: user.email, password: user.password);
-      this.firebaseUser = result.user;
-      await _saveUserData(user);
-      onSuccess();
-      updatePartnerData();
-      getAllUserData();
-      isLogged = true;
-      saveToken();
-      isLoading = false;
-      notifyListeners();
-    } on PlatformException catch (_) {
-      onFail();
-      isLogged = false;
-      isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  void signOut() async {
-    isLoading = true;
-    notifyListeners();
     await _auth.signOut();
-    userData = Map();
-    addresses.clear();
-    creditDebitCardList.clear();
-    categoryDataList.clear();
-    storeDataList.clear();
-    storeDataListClosed.clear();
-    storeListFavorites.clear();
-    listUserOrders.clear();
-    listPartnerOders.clear();
-    lastPurchasedStores.clear();
     firebaseUser = null;
-    isLogged = false;
+    onSuccess();
+    notifyListeners();
+    firebaseUser = null;
+    categoryList = [];
+    listUserOrders = [];
+    storeHomeList = [];
+    lastPurchasedStores = [];
+    favoriteStoreId = [];
+    favoriteStoresList = [];
+    allProductsFromStoreHomeList = [];
+    productsPartnerList = [];
+    sectionsStorePartnerList = [];
+    offPartnerData = [];
+    comboStoreList = [];
+    comboStoreHomeList = [];
+    partnerOrderList = [];
+    cartProducts = [];
+    dataSale = {};
+    creditDebitCardList = [];
+    paymentFormsList = [];
     isLoading = false;
-    updatePartnerData();
-    notifyListeners();
   }
 
-  Future<Null> _saveUserData(User user) async {
-    userData["name"] = user.name;
-    userData["email"] = user.email;
-    userData["isPartner"] = 3;
-    userData["image"] = "https://meuvidraceiro.com.br/images/sem-imagem.png";
-    await Firestore.instance
-        .collection("users")
-        .document(firebaseUser.uid)
-        .setData(userData);
-    notifyListeners();
-  }
-
-  bool isLoggedIn() {
-    return firebaseUser != null;
-  }
-
-  void _getCurrentLocation() async {
-    isLoading = true;
-    notifyListeners();
-    if (firebaseUser == null) firebaseUser = await _auth.currentUser();
-    if (firebaseUser != null) {
-      final postition =
-          await getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-      if (postition.latitude != null) {
-        latitude = postition.latitude;
+  void signInWithGoogle({
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    try {
+      final GoogleSignIn _googleSignIn = GoogleSignIn(
+        scopes: [
+          'email',
+          'https://www.googleapis.com/auth/contacts.readonly',
+        ],
+      );
+      final GoogleSignInAccount googleSignInAccount =
+          await _googleSignIn.signIn();
+      if (googleSignInAccount == null) {
+        return null;
       }
-      if (postition.longitude != null) {
-        longittude = postition.longitude;
-      }
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
+      final AuthCredential authCredential = GoogleAuthProvider.credential(
+        idToken: googleSignInAuthentication.idToken,
+        accessToken: googleSignInAuthentication.accessToken,
+      );
+      final UserCredential authResult =
+          await FirebaseAuth.instance.signInWithCredential(authCredential);
+      this.firebaseUser = authResult.user;
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(firebaseUser.uid)
+          .update({
+        "phoneNumber": firebaseUser.phoneNumber,
+        "image": firebaseUser.photoURL,
+      });
+      saveToken();
+      _loadCurrentUser();
+      notifyListeners();
+    } catch (erro) {
+      print(erro);
     }
-    isLoading = false;
     notifyListeners();
   }
 
-  void _loadCurrentUser() async {
-    isLoading = true;
-    notifyListeners();
-    if (firebaseUser == null) firebaseUser = await _auth.currentUser();
-    if (firebaseUser != null) {
-      if (userData["name"] == null) {
-        DocumentSnapshot docUser = await Firestore.instance
-            .collection("users")
-            .document(firebaseUser.uid)
+  void signInWithFacebook({
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) {}
+
+  Future<void> getListOfCategory() async {
+    try {
+      QuerySnapshot querySnashot =
+          await FirebaseFirestore.instance.collection("categories").get();
+      querySnashot.docs
+          .map((queryDoc) =>
+              categoryList.add(CategoryData.fromQueryDocument(queryDoc)))
+          .toList();
+      notifyListeners();
+    } catch (erro) {
+      sendErrorMessageToADM(
+        errorFromUser: erro.toString(),
+      );
+    }
+  }
+
+  void sendErrorMessageToADM({@required String errorFromUser}) async {
+    try {
+      await FirebaseFirestore.instance.collection("errors").add({
+        "erro": errorFromUser,
+        "userId": firebaseUser.uid,
+        "errorAt": DateTime.now(),
+      });
+    } catch (error) {}
+  }
+
+  Future<void> getOrders() async {
+    if (isLoggedIn()) {
+      try {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection("orders")
+            .orderBy(
+              "createdAt",
+              descending: true,
+            )
             .get();
-        userData = docUser.data;
-        userName = userData["name"];
-        userImage = userData["image"];
-        isPartner = userData["isPartner"];
-        if (userData["storeId"] != null) {
-          await Firestore.instance
-              .collection("stores")
-              .document(userData["storeId"])
-              .get()
-              .then((doc) {
-            if (doc.exists) {
-              final storeDocument = StoreData.fromDocument(doc);
-              storeData = storeDocument;
-            }
-          });
-        }
-        if (userData["currentAddress"] != null) {
-          currentUserId = userData["currentAddress"];
-          try {
-            await Firestore.instance
-                .collection("users")
-                .document(firebaseUser.uid)
-                .collection("address")
-                .document(currentUserId)
-                .get()
-                .then((doc) {
-              if (doc.exists) {
-                final userAddress = AddressData.fromDocument(doc);
-                currentUserAddress = userAddress;
-                addressSeted = true;
-              } else {
-                currentUserAddress.aid = "";
-                currentUserAddress.city = "";
-                currentUserAddress.street = "";
-                addressSeted = false;
-              }
-            });
-          } catch (e) {}
-        } else {}
+        querySnapshot.docs.map((queryDoc) async {
+          if (queryDoc.get("client") == firebaseUser.uid) {
+            listUserOrders.add(OrderData.fromQueryDocument(queryDoc));
+          }
+        }).toList();
+        notifyListeners();
+      } catch (erro) {
+        sendErrorMessageToADM(
+          errorFromUser: erro.toString(),
+        );
+        notifyListeners();
       }
-      getAllUserData();
     }
-
-    isLoading = false;
-    notifyListeners();
   }
 
-  void getAllUserData() async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
+  Future<void> getListHomeStores() async {
+    if (isLoggedIn()) {
+      storeHomeList.clear();
+      _locationData = await location.getLocation();
+      LatLng latLngDevice = LatLng(
+        _locationData.latitude,
+        _locationData.longitude,
+      );
       try {
         QuerySnapshot querySnapshot =
-            await Firestore.instance.collection("stores").getDocuments();
-        storeDataList.clear();
-        storeDataListOpened.clear();
-        storeDataListClosed.clear();
-        querySnapshot.documents.map((doc) {
-          StoreData storeData = StoreData.fromDocument(doc);
-          storeDataList.add(StoreData.fromDocument(doc));
-          if (storeData.isStoreOpen) {
-            storeDataListOpened.add(StoreData.fromDocument(doc));
-          } else {
-            storeDataListClosed.add(StoreData.fromDocument(doc));
-          }
+            await FirebaseFirestore.instance.collection("stores").get();
+        querySnapshot.docs.map((queryDoc) {
+          storeHomeList.add(StoreData.fromQueryDocument(queryDoc));
         }).toList();
-      } catch (e) {}
-      if (storeDataList.length > 0) hasStories = true;
-      try {
-        QuerySnapshot query = await Firestore.instance
-            .collection("orders")
-            .orderBy('createdAt', descending: true)
-            .getDocuments();
-        listUserOrders.clear();
-        purchasedsProducts.clear();
-        query.documents.map((doc) {
-          if (doc.data["client"] == firebaseUser.uid) {
-            listUserOrders.add(OrderData.fromDocument(doc));
-            updatedPurchasedProducts(doc);
-          }
-        }).toList();
-      } catch (erro) {}
-      try {
-        lastPurchasedStores.clear();
-        for (OrderData order in listUserOrders) {
-          bool hasStoreinList = false;
-          if (lastPurchasedStores.length == 0) {
-            for (StoreData storesVeryfication in storeDataList) {
-              if (storesVeryfication.id == order.storeId) {
-                lastPurchasedStores.add(
-                    StoreData.fromDocument(storesVeryfication.storeSnapshot));
-              }
-            }
-          } else {
-            for (StoreData storeFlagVeryFicatrion in lastPurchasedStores) {
-              if (storeFlagVeryFicatrion.id == order.storeId) {
-                hasStoreinList = true;
+        storeHomeList.forEach((storeElement) async {
+          List<ProductData> purchasedProducts = [];
 
-                break;
-              }
-            }
-            if (!hasStoreinList) {
-              for (StoreData storesVeryfication in storeDataList) {
-                if (storesVeryfication.id == order.storeId) {
-                  if (storesVeryfication.id == order.storeId) {
-                    lastPurchasedStores.add(StoreData.fromDocument(
-                        storesVeryfication.storeSnapshot));
+          storeElement.productsOff = await getOffStores(storeElement.id);
+          storeElement.products = await getProductsStore(storeElement.id);
+          storeElement.storesCombos =
+              await getComboStoreHomeList(storeElement.id);
+
+          storeElement.products.forEach((element) async {
+            element.incrementalOptionalsList = await getIncrementalByProduct(
+                storeId: storeElement.id, productId: element.pId);
+          });
+          storeElement.storeCategoryList =
+              await getCategoryByStore(storeElement.id);
+          for (OrderData orderData in listUserOrders) {
+            for (ProductData productData in orderData.products) {
+              for (ProductData productDataStore in storeElement.products) {
+                if (productDataStore.pId == productData.pId) {
+                  if (purchasedProducts.length == 0) {
+                    purchasedProducts.add(productDataStore);
+                  } else {
+                    bool hasThisProduct = false;
+                    for (ProductData purchasedProductElement
+                        in purchasedProducts) {
+                      if (productDataStore.pId == purchasedProductElement.pId) {
+                        hasThisProduct = true;
+                        break;
+                      }
+                    }
+                    if (!hasThisProduct)
+                      purchasedProducts.add(productDataStore);
                   }
                 }
               }
             }
           }
-        }
+          storeElement.purchasedProducts = purchasedProducts;
+          storeElement.distance = geodesy.distanceBetweenTwoGeoPoints(
+            storeElement.latLng,
+            latLngDevice,
+          );
+          storeElement.deliveryTime = calctime(storeElement.distance);
+        });
+      } catch (erro) {
+        sendErrorMessageToADM(
+          errorFromUser: erro.toString(),
+        );
         notifyListeners();
+      }
+    }
+  }
+
+  double calctime(double distance) {
+    double storeTime;
+    double averageSpeed = 15;
+    storeTime = distance / (averageSpeed * 60);
+    return storeTime;
+  }
+
+  Future<List<IncrementalOptionalsData>> getIncrementalByProduct({
+    @required storeId,
+    @required productId,
+  }) async {
+    List<IncrementalOptionalsData> incrementals = [];
+    if (isLoggedIn()) {
+      try {
+        QuerySnapshot query = await FirebaseFirestore.instance
+            .collection("stores")
+            .doc(storeId)
+            .collection("products")
+            .doc(productId)
+            .collection("incrementalOptions")
+            .get();
+        query.docs.map((doc) {
+          incrementals.add(IncrementalOptionalsData.fromQueryDocument(doc));
+        }).toList();
+
+        notifyListeners();
+        return incrementals;
       } catch (erro) {
         notifyListeners();
+        return [];
       }
+    } else {
+      notifyListeners();
+      return [];
     }
   }
 
-  Future<void> getAddressFromZipCode(String zipCode) async {
-    isLoading = true;
-    notifyListeners();
-    final cleanedCep = zipCode.replaceAll('.', '').replaceAll('-', '');
-    final endPoint = "https://www.cepaberto.com/api/v3/cep?cep=$cleanedCep";
-    final Dio dio = Dio();
-    dio.options.headers[HttpHeaders.authorizationHeader] = 'Token token=$token';
-    try {
-      final response = await dio.get<Map<String, dynamic>>(endPoint);
-      if (response.data.isEmpty) {
-        return Future.error('CEP Inválido');
-      }
-      try {
-        final cepAbertoAddress = CepAbertoAddress.fromMap(response.data);
-        if (cepAbertoAddress != null) {
-          street = cepAbertoAddress.logradouro;
-          state = cepAbertoAddress.state.sigla;
-          zipCode = cepAbertoAddress.cep;
-          district = cepAbertoAddress.bairro;
-          city = cepAbertoAddress.city.nome;
-        } else {
-          return 'null ZipCode';
+  Future<List<OffData>> getOffStores(String id) async {
+    if (isLoggedIn()) {
+      final List<OffData> productsOff = [];
+      QuerySnapshot offs = await FirebaseFirestore.instance
+          .collection("stores")
+          .doc(id)
+          .collection("off")
+          .get();
+      offs.docs.map((queryDoc) {
+        productsOff.add(OffData.fromQueryDocument(queryDoc));
+      }).toList();
+      return productsOff;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<ProductData>> getProductsStore(String id) async {
+    if (isLoggedIn()) {
+      List<ProductData> products = [];
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection("stores")
+          .doc(id)
+          .collection("products")
+          .get();
+      querySnapshot.docs.map((queryDoc) {
+        products.add(ProductData.fromQueryDocument(queryDoc));
+      }).toList();
+
+      return products;
+    } else {
+      return [];
+    }
+  }
+
+  Future<List<CategoryStoreData>> getCategoryByStore(String id) async {
+    if (isLoggedIn()) {
+      List<CategoryStoreData> storeCategoryList = [];
+      QuerySnapshot queryCategory = await FirebaseFirestore.instance
+          .collection("stores")
+          .doc(id)
+          .collection("categories")
+          .orderBy(
+            "order",
+            descending: false,
+          )
+          .get();
+      queryCategory.docs.map((storeCategory) {
+        storeCategoryList
+            .add(CategoryStoreData.fromQueryDocument(storeCategory));
+      }).toList();
+      return storeCategoryList;
+    } else {
+      return [];
+    }
+  }
+
+  void getPurchasedStoresList() {
+    if (isLoggedIn()) {
+      lastPurchasedStores.clear();
+      for (OrderData ordeData in listUserOrders) {
+        for (StoreData storeData in storeHomeList) {
+          if (ordeData.storeId == storeData.id) {
+            if (lastPurchasedStores.length == 0) {
+              lastPurchasedStores.add(storeData);
+            } else {
+              bool hasStore = false;
+              for (StoreData storePurchasedData in lastPurchasedStores) {
+                if (storePurchasedData.id == storeData.id) {
+                  hasStore = true;
+                  break;
+                }
+              }
+              if (!hasStore) {
+                lastPurchasedStores.add(storeData);
+              }
+            }
+          }
         }
-      } catch (e) {}
-    } on DioError {
-      //return Future.error("Erro ao buscar CEP" + e.toString());
+      }
+      notifyListeners();
     }
-    isLoading = false;
-    notifyListeners();
   }
 
-  Future<void> getAddressFromLatLng(
-      {@required double lat, @required double lng}) async {
-    isLoading = true;
-    notifyListeners();
-    final endPoint = "https://www.cepaberto.com/api/v3/nearest";
-    final Dio dio = Dio();
-    dio.options.headers[HttpHeaders.authorizationHeader] = 'Token token=$token';
-    try {
-      final response = await dio.get<Map<String, dynamic>>(endPoint,
-          queryParameters: {'lat': lat, 'lng': lng});
-      if (response.data.isEmpty) {
-        return Future.error('Dados Inválidos');
+  void addRemoveStoreFavorite({
+    @required storeId,
+  }) async {
+    if (isLoggedIn()) {
+      for (StoreData storeData in storeHomeList) {
+        if (storeData.id == storeId) {
+          if (storeData.isFavorite) {
+            storeData.isFavorite = false;
+            favoriteStoresList.remove(storeData);
+            notifyListeners();
+            QuerySnapshot queryDoc = await FirebaseFirestore.instance
+                .collection("users")
+                .doc(firebaseUser.uid)
+                .collection("favorites")
+                .get();
+
+            for (QueryDocumentSnapshot queryDocumentSnapshot in queryDoc.docs) {
+              if (queryDocumentSnapshot.get("storeId") == storeId) {
+                queryDocumentSnapshot.reference.delete();
+                break;
+              }
+            }
+            break;
+          } else {
+            favoriteStoresList.add(storeData);
+            storeData.isFavorite = true;
+            notifyListeners();
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(firebaseUser.uid)
+                .collection("favorites")
+                .add({
+              "storeId": storeId,
+            });
+
+            break;
+          }
+        }
       }
-      final cepAbertoAddress = CepAbertoAddress.fromMap(response.data);
-      if (cepAbertoAddress != null) {
-        street = cepAbertoAddress.logradouro;
-        state = cepAbertoAddress.state.sigla;
-        zipCode = cepAbertoAddress.cep;
-        district = cepAbertoAddress.bairro;
-        city = cepAbertoAddress.city.nome;
-      }
-    } on DioError {}
-    isLoading = false;
-    notifyListeners();
+      notifyListeners();
+    }
   }
 
-  void addAddress(Address address) async {
-    final addressData = AddressData.fromAddress(address);
-    await Firestore.instance
-        .collection("users")
-        .document(firebaseUser.uid)
-        .collection('address')
-        .add({
-      'name': address.name,
-      'zipCode': address.zipCode,
-      'street': address.street,
-      'number': address.number,
-      'complement': address.complement,
-      'district': address.district,
-      'city': address.city,
-      "state": address.state,
-      "latitude": address.latitude,
-      "longitude": address.longitude
-    }).then((doc) {
-      if (doc.documentID != null) {
-        address.aid = doc.documentID;
-        addressData.aid = doc.documentID;
-      } else {
-        address.aid = '';
-        addressData.aid = '';
-      }
-    });
-    addresses.add(addressData);
-    isLoading = false;
-    notifyListeners();
-  }
-
-  void loadAddressItems() async {
-    try {
-      QuerySnapshot query = await Firestore.instance
+  Future<void> updateFavoritList() async {
+    if (isLoggedIn()) {
+      favoriteStoresList.clear();
+      favoriteStoreId.clear();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection("users")
-          .document(firebaseUser.uid)
-          .collection("address")
-          .getDocuments();
-      addresses =
-          query.documents.map((doc) => AddressData.fromDocument(doc)).toList();
-      if (addresses.isEmpty) {
-        addressSeted = false;
+          .doc(firebaseUser.uid)
+          .collection("favorites")
+          .get();
+      querySnapshot.docs.map((queryDoc) {
+        favoriteStoreId.add(queryDoc.get("storeId"));
+      }).toList();
+      for (StoreData storeDataFavorite in storeHomeList) {
+        for (String storeFavoriteId in favoriteStoreId) {
+          if (storeFavoriteId == storeDataFavorite.id) {
+            storeDataFavorite.isFavorite = true;
+            favoriteStoresList.add(storeDataFavorite);
+            break;
+          }
+        }
       }
-    } catch (e) {}
-    notifyListeners();
+      notifyListeners();
+    }
   }
 
-  void setUserAddress(AddressData address) async {
-    isLoading = true;
-    notifyListeners();
-    userData["currentAddress"] = address.aid;
-    userData["address"] = address.toMap();
-    await Firestore.instance
-        .collection("users")
-        .document(firebaseUser.uid)
-        .updateData(userData);
-    currentUserAddress = address;
-    addressSeted = true;
-    isLoading = false;
-    notifyListeners();
-  }
-
-  void newCard(CreditDebitCard creditDebitCard) async {
-    isLoading = true;
-    notifyListeners();
-    final creditDebitCardData =
-        CreditDebitCardData.fromCreditDebitCardItem(creditDebitCard);
-    await Firestore.instance
-        .collection('users')
-        .document(firebaseUser.uid)
-        .collection('paymentForms')
-        .add({
-      'cardNumber': creditDebitCard.cardNumber,
-      'cardOwnerName': creditDebitCard.cardOwnerName,
-      'validateDate': creditDebitCard.validateDate,
-      'cpf': creditDebitCard.cpf,
-      'cvv': creditDebitCard.cvv,
-      'image': creditDebitCard.image,
-      'type': 'creditDebitCard',
-      'brand': creditDebitCard.brand
-    }).then((doc) {
-      if (doc.documentID != null) {
-        creditDebitCardData.cardId = doc.documentID;
-        creditDebitCardList.add(creditDebitCardData);
-      } else {
-        creditDebitCardData.cardId = "";
+  void getAllProductsToList() {
+    allProductsFromStoreHomeList.clear();
+    if (isLoggedIn()) {
+      for (StoreData storeData in storeHomeList) {
+        for (ProductData productsFromStore in storeData.products) {
+          allProductsFromStoreHomeList.add(productsFromStore);
+        }
       }
-    });
-    isLoading = false;
-    notifyListeners();
+      notifyListeners();
+    }
   }
 
-  void _loadListCreditDebitCard() async {
-    try {
-      if (firebaseUser == null) firebaseUser = await _auth.currentUser();
-      if (firebaseUser != null) {
-        QuerySnapshot query = await Firestore.instance
+  Future<void> getPartnerData() async {
+    if (isLoggedIn()) {
+      DocumentSnapshot docUserSnapshot = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(firebaseUser.uid)
+          .get();
+      userData.isPartner = docUserSnapshot.get("isPartner");
+      if (docUserSnapshot.get("isPartner") == 1) {
+        DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+            .collection("stores")
+            .doc(docUserSnapshot.get("storeId"))
+            .get();
+        userData.storeId = docSnapshot.id;
+        userData.storeName = docSnapshot.get("title");
+        userData.storeImage = docSnapshot.get("image");
+      }
+      notifyListeners();
+    }
+  }
+
+  Future<void> getProductsPartnerList() async {
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        productsPartnerList.clear();
+        try {
+          QuerySnapshot queryProductsSnapshot = await FirebaseFirestore.instance
+              .collection("stores")
+              .doc(userData.storeId)
+              .collection("products")
+              .get();
+          queryProductsSnapshot.docs.map((queryDoc) {
+            productsPartnerList.add(ProductData.fromQueryDocument(queryDoc));
+          }).toList();
+        } catch (erro) {}
+      }
+    }
+  }
+
+  Future<void> getSectionList() async {
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection("stores")
+            .doc(userData.storeId)
+            .collection("categories")
+            .orderBy(
+              "order",
+              descending: false,
+            )
+            .get();
+        sectionsStorePartnerList.clear();
+        querySnapshot.docs.map((queryDoc) {
+          sectionsStorePartnerList
+              .add(CategoryStoreData.fromQueryDocument(queryDoc));
+        }).toList();
+        sectionsStorePartnerList.forEach((section) async {
+          List<SubSectionData> subsectionList = [];
+          QuerySnapshot querySubSection = await FirebaseFirestore.instance
+              .collection("stores")
+              .doc(userData.storeId)
+              .collection("categories")
+              .doc(section.id)
+              .collection("subcategories")
+              .orderBy(
+                "order",
+                descending: false,
+              )
+              .get();
+          querySubSection.docs.map((queryDoc) {
+            subsectionList
+                .add(SubSectionData.fromQuerDocument(queryDoc, section.id));
+          }).toList();
+          section.subSectionsList = subsectionList;
+        });
+        notifyListeners();
+      }
+    }
+  }
+
+  void editNewSection({
+    @required String sectionId,
+    @required String title,
+    @required String description,
+    @required int order,
+    @required int x,
+    @required int y,
+    @required imageUrl,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+    @required File imageFile,
+    @required int olderPos,
+  }) async {
+    if (isLoggedIn()) {
+      List<CategoryStoreData> sectionStoreListFlag = sectionsStorePartnerList;
+      isLoading = true;
+      print(olderPos);
+      notifyListeners();
+      if (userData.isPartner == 1) {
+        String url = imageUrl;
+        try {
+          if (imageFile == null) {
+            url = imageUrl;
+            for (var i = 0; i < order - 1; i++) {
+              sectionStoreListFlag[i] = sectionsStorePartnerList[i];
+              sectionStoreListFlag[i].order = i;
+              print(sectionStoreListFlag[i].title);
+              print(sectionStoreListFlag[i].order);
+            }
+
+            sectionStoreListFlag[order - 1] =
+                sectionsStorePartnerList[olderPos];
+            sectionStoreListFlag[order - 1].order = order - 1;
+            print(sectionStoreListFlag[order - 1].title);
+            print(sectionStoreListFlag[order - 1].order);
+
+            for (var i = 0; i < sectionsStorePartnerList.length; i++) {
+              if (sectionsStorePartnerList[i].id == sectionId) {
+                sectionsStorePartnerList.remove(sectionsStorePartnerList[i]);
+                break;
+              }
+            }
+            for (var i = order - 1; i < sectionsStorePartnerList.length; i++) {
+              if (sectionsStorePartnerList[i].id != sectionId) {
+                sectionStoreListFlag[i] = sectionsStorePartnerList[i];
+                sectionStoreListFlag[i].order = i + 1;
+                print(sectionStoreListFlag[i].title);
+                print(sectionStoreListFlag[i].order);
+              }
+            }
+            sectionStoreListFlag.forEach((element) async {
+              await FirebaseFirestore.instance
+                  .collection("stores")
+                  .doc(userData.storeId)
+                  .collection("categories")
+                  .doc(sectionId)
+                  .update({
+                "title": element.title,
+                "description": element.description,
+                "order": element.order,
+                "x": element.x,
+                "y": element.y,
+                "image": element.image,
+              });
+            });
+            await getSectionList();
+            isLoading = false;
+            onSuccess();
+            notifyListeners();
+          } else {
+            isLoading = true;
+            notifyListeners();
+            Reference ref =
+                FirebaseStorage.instance.ref().child("images").child(
+                      DateTime.now().millisecond.toString(),
+                    );
+            UploadTask uploadTask = ref.putFile(imageFile);
+            uploadTask.then((value) async {
+              url = await value.ref.getDownloadURL();
+              await FirebaseFirestore.instance
+                  .collection("stores")
+                  .doc(userData.storeId)
+                  .collection("categories")
+                  .doc(sectionId)
+                  .update({
+                "title": title,
+                "description": description,
+                "order": order - 1,
+                "x": x,
+                "y": y,
+                "image": url,
+              });
+              await getSectionList();
+              isLoading = false;
+              onSuccess();
+              notifyListeners();
+            });
+          }
+        } catch (erro) {
+          print(erro);
+          isLoading = false;
+          onFail();
+          notifyListeners();
+        }
+      }
+    }
+  }
+
+  void insertNewSubsection({
+    @required SubSectionData subSectionData,
+    @required VoidCallback onSucess,
+    @required VoidCallback onFail,
+  }) async {
+    if (isLoggedIn()) {
+      isLoading = true;
+      notifyListeners();
+      try {
+        await FirebaseFirestore.instance
+            .collection("stores")
+            .doc(userData.storeId)
+            .collection("categories")
+            .doc(subSectionData.sectionId)
+            .collection("subcategories")
+            .add(
+              subSectionData.toMap(),
+            );
+        sectionsStorePartnerList.forEach((section) async {
+          List<SubSectionData> subsectionList = [];
+          QuerySnapshot querySubSection = await FirebaseFirestore.instance
+              .collection("stores")
+              .doc(userData.storeId)
+              .collection("categories")
+              .doc(section.id)
+              .collection("subcategories")
+              .orderBy(
+                "order",
+                descending: false,
+              )
+              .get();
+          querySubSection.docs.map((queryDoc) {
+            subsectionList
+                .add(SubSectionData.fromQuerDocument(queryDoc, section.id));
+          }).toList();
+          section.subSectionsList = subsectionList;
+        });
+        onSucess();
+        isLoading = false;
+        notifyListeners();
+      } catch (erro) {
+        isLoading = false;
+        onFail();
+        notifyListeners();
+      }
+    }
+  }
+
+  Future<void> getPartnerOffSales() async {
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection("stores")
+            .doc(userData.storeId)
+            .collection("off")
+            .get();
+        offPartnerData.clear();
+        querySnapshot.docs.map((queryDoc) {
+          offPartnerData.add(OffData.fromQueryDocument(queryDoc));
+        }).toList();
+        notifyListeners();
+      }
+    }
+  }
+
+  Future<void> insertNewCombo({
+    @required ComboData comboData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+    @required File imageFile,
+  }) async {
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        isLoading = true;
+        notifyListeners();
+        try {
+          if (imageFile != null) {
+            Reference ref =
+                FirebaseStorage.instance.ref().child("images").child(
+                      DateTime.now().millisecond.toString(),
+                    );
+            UploadTask uploadTask = ref.putFile(imageFile);
+            uploadTask.then((value) async {
+              comboData.image = await value.ref.getDownloadURL();
+              await FirebaseFirestore.instance
+                  .collection("stores")
+                  .doc(userData.storeId)
+                  .collection("combos")
+                  .add(
+                    comboData.toMap(),
+                  );
+              isLoading = false;
+              getComboList();
+              onSuccess();
+              notifyListeners();
+            });
+          } else {
+            await FirebaseFirestore.instance
+                .collection("stores")
+                .doc(userData.storeId)
+                .collection("combos")
+                .add(
+                  comboData.toMap(),
+                );
+            isLoading = false;
+            getComboList();
+            onSuccess();
+            notifyListeners();
+          }
+        } catch (erro) {
+          isLoading = false;
+          onFail();
+          notifyListeners();
+        }
+      }
+    }
+  }
+
+  Future<void> getComboList() async {
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection("stores")
+            .doc(userData.storeId)
+            .collection("combos")
+            .get();
+        comboStoreList.clear();
+        querySnapshot.docs.map((queryDoc) {
+          comboStoreList.add(ComboData.fromQueryDocument(queryDoc));
+        }).toList();
+      }
+      notifyListeners();
+    }
+  }
+
+  Future<List<ComboData>> getComboStoreHomeList(String storeComboId) async {
+    if (isLoggedIn()) {
+      List<ComboData> combodata = [];
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection("stores")
+          .doc(storeComboId)
+          .collection("combos")
+          .get();
+      querySnapshot.docs.map((queryDoc) {
+        combodata.add(ComboData.fromQueryDocument(queryDoc));
+      }).toList();
+      return combodata;
+    } else {
+      return [];
+    }
+  }
+
+  void editPartnerProduct({
+    @required ProductData productData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+    @required File imageFile,
+  }) async {
+    if (imageFile != null) {
+      try {
+        Reference ref = FirebaseStorage.instance.ref().child("images").child(
+              DateTime.now().millisecond.toString(),
+            );
+        UploadTask uploadTask = ref.putFile(imageFile);
+        uploadTask.then((value) async {
+          productData.productImage = await value.ref.getDownloadURL();
+
+          await FirebaseFirestore.instance
+              .collection("stores")
+              .doc(userData.storeId)
+              .collection("products")
+              .doc(productData.pId)
+              .update(
+                productData.toMap(),
+              );
+          await getProductsPartnerList();
+          onSuccess();
+          notifyListeners();
+        });
+      } catch (erro) {}
+    } else {
+      try {
+        await FirebaseFirestore.instance
+            .collection("stores")
+            .doc(userData.storeId)
+            .collection("products")
+            .doc(productData.pId)
+            .update(
+              productData.toMap(),
+            );
+        await getProductsPartnerList();
+        onSuccess();
+        notifyListeners();
+        getListHomeStores();
+      } catch (erro) {
+        onFail();
+      }
+    }
+  }
+
+  void insertNewProduct({
+    @required ProductData productData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+    @required File imageFile,
+  }) async {
+    if (imageFile != null) {
+      try {
+        Reference ref = FirebaseStorage.instance.ref().child("images").child(
+              DateTime.now().millisecond.toString(),
+            );
+        UploadTask uploadTask = ref.putFile(imageFile);
+        uploadTask.then((value) async {
+          productData.productImage = await value.ref.getDownloadURL();
+          await FirebaseFirestore.instance
+              .collection("stores")
+              .doc(userData.storeId)
+              .collection("products")
+              .add(
+                productData.toMap(),
+              );
+          await getProductsPartnerList();
+          onSuccess();
+          notifyListeners();
+        });
+      } catch (erro) {}
+    } else {
+      try {
+        await FirebaseFirestore.instance
+            .collection("stores")
+            .doc(userData.storeId)
+            .collection("products")
+            .add(
+              productData.toMap(),
+            );
+        await getProductsPartnerList();
+        onSuccess();
+        notifyListeners();
+        getListHomeStores();
+      } catch (erro) {
+        onFail();
+      }
+    }
+  }
+
+  Future<void> editPartnerCombo({
+    @required ComboData comboData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+    @required File imageFile,
+  }) async {
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        print("ok");
+        isLoading = true;
+        notifyListeners();
+        try {
+          print(comboData.id);
+          if (imageFile != null) {
+            Reference ref =
+                FirebaseStorage.instance.ref().child("images").child(
+                      DateTime.now().millisecond.toString(),
+                    );
+            UploadTask uploadTask = ref.putFile(imageFile);
+            uploadTask.then((value) async {
+              comboData.image = await value.ref.getDownloadURL();
+              await FirebaseFirestore.instance
+                  .collection("stores")
+                  .doc(userData.storeId)
+                  .collection("combos")
+                  .doc(comboData.id)
+                  .update(
+                    comboData.toMap(),
+                  );
+              isLoading = false;
+              getComboList();
+              onSuccess();
+              notifyListeners();
+            });
+          } else {
+            await FirebaseFirestore.instance
+                .collection("stores")
+                .doc(userData.storeId)
+                .collection("combos")
+                .doc(comboData.id)
+                .update(
+                  comboData.toMap(),
+                );
+            isLoading = false;
+            getComboList();
+            onSuccess();
+            notifyListeners();
+            getListHomeStores();
+          }
+        } catch (erro) {
+          print(erro);
+          isLoading = false;
+          onFail();
+          notifyListeners();
+        }
+      }
+    }
+  }
+
+  void editSaleOff({
+    @required OffData offData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    print(offData.id);
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        isLoading = true;
+        notifyListeners();
+        if (offData.imageFile != null) {
+          try {
+            Reference ref =
+                FirebaseStorage.instance.ref().child("images").child(
+                      DateTime.now().millisecond.toString(),
+                    );
+            UploadTask uploadTask = ref.putFile(offData.imageFile);
+            uploadTask.then((task) async {
+              offData.image = await task.ref.getDownloadURL();
+              await FirebaseFirestore.instance
+                  .collection("stores")
+                  .doc(userData.storeId)
+                  .collection("off")
+                  .doc(offData.id)
+                  .update(
+                    offData.toMap(),
+                  );
+              isLoading = false;
+              getPartnerOffSales();
+              onSuccess();
+              notifyListeners();
+            });
+          } catch (erro) {
+            onFail();
+            notifyListeners();
+          }
+        } else {
+          try {
+            await FirebaseFirestore.instance
+                .collection("stores")
+                .doc(userData.storeId)
+                .collection("off")
+                .doc(offData.id)
+                .update(
+                  offData.toMap(),
+                );
+            isLoading = false;
+            getPartnerOffSales();
+            onSuccess();
+            notifyListeners();
+            getListHomeStores();
+          } catch (errro) {
+            onFail();
+            notifyListeners();
+          }
+        }
+      }
+    }
+  }
+
+  void insertNewOffSale({
+    @required OffData offData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    print(offData.id);
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        isLoading = true;
+        notifyListeners();
+        if (offData.imageFile != null) {
+          try {
+            Reference ref =
+                FirebaseStorage.instance.ref().child("images").child(
+                      DateTime.now().millisecond.toString(),
+                    );
+            UploadTask uploadTask = ref.putFile(offData.imageFile);
+            uploadTask.then((task) async {
+              offData.image = await task.ref.getDownloadURL();
+              await FirebaseFirestore.instance
+                  .collection("stores")
+                  .doc(userData.storeId)
+                  .collection("off")
+                  .add(
+                    offData.toMap(),
+                  );
+              isLoading = false;
+              getPartnerOffSales();
+              onSuccess();
+              notifyListeners();
+              getListHomeStores();
+            });
+          } catch (erro) {
+            onFail();
+            notifyListeners();
+          }
+        } else {
+          try {
+            await FirebaseFirestore.instance
+                .collection("stores")
+                .doc(userData.storeId)
+                .collection("off")
+                .add(
+                  offData.toMap(),
+                );
+            isLoading = false;
+            getPartnerOffSales();
+            onSuccess();
+            notifyListeners();
+            getListHomeStores();
+          } catch (errro) {
+            onFail();
+            notifyListeners();
+          }
+        }
+      }
+    }
+  }
+
+  Future<void> getPartnerOrderList() async {
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection("orders")
+            .orderBy(
+              "createdAt",
+              descending: true,
+            )
+            .get();
+        querySnapshot.docs.map((queryDoc) {
+          partnerOrderList.add(OrderData.fromQueryDocument(queryDoc));
+        }).toList();
+      }
+    }
+  }
+
+  void addCartItem({
+    @required CartProduct cartProduct,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    if (isLoggedIn()) {
+      try {
+        await FirebaseFirestore.instance
             .collection("users")
-            .document(firebaseUser.uid)
-            .collection("paymentForms")
-            .getDocuments();
-        creditDebitCardList = query.documents
-            .map((documentSnapshot) =>
-                CreditDebitCardData.fromDocument(documentSnapshot))
-            .toList();
+            .doc(firebaseUser.uid)
+            .collection("cart")
+            .add(
+              cartProduct.toMap(),
+            );
+        getcartProductList();
+        onSuccess();
+        notifyListeners();
+      } catch (erro) {
+        onFail();
+        notifyListeners();
       }
-    } catch (e) {}
+    }
+  }
+
+  void getcartProductList() async {
+    if (isLoggedIn()) {
+      cartProducts.clear();
+      QuerySnapshot cartQuery = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(firebaseUser.uid)
+          .collection("cart")
+          .get();
+      cartQuery.docs.map((queryDoc) {
+        if (queryDoc.get("type") == "product") {
+          cartProducts.add(CartProduct.fromDocument(queryDoc));
+        }
+      }).toList();
+      if (cartProducts.length > 0) {
+        hasProductInCart = true;
+      } else {
+        hasProductInCart = false;
+      }
+      notifyListeners();
+    }
+  }
+
+  void removeCartItem({
+    @required CartProduct cartProduct,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    if (isLoggedIn())
+      try {
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .collection("cart")
+            .doc(cartProduct.cId)
+            .delete();
+        cartProducts.remove(cartProduct);
+        onSuccess();
+        notifyListeners();
+      } catch (erro) {
+        onFail();
+        notifyListeners();
+      }
+  }
+
+  void decProduct(CartProduct cartProduct) {
+    cartProduct.quantify--;
+    cartProduct.price = cartProduct.quantify * cartProduct.productPrice;
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(firebaseUser.uid)
+        .collection("cart")
+        .doc(cartProduct.cId)
+        .update(
+          cartProduct.toMap(),
+        );
+    notifyListeners();
+  }
+
+  void incProduct(CartProduct cartProduct) {
+    double priceOptinals = 0;
+
+    for (IncrementalOptionalsData incrementalOptData
+        in cartProduct.productOptionals) {
+      priceOptinals += incrementalOptData.price * incrementalOptData.quantity;
+    }
+    cartProduct.quantify++;
+    cartProduct.price =
+        cartProduct.quantify * (cartProduct.productPrice + priceOptinals);
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(firebaseUser.uid)
+        .collection("cart")
+        .doc(cartProduct.cId)
+        .update(cartProduct.toMap());
+    notifyListeners();
+  }
+
+  void setCoupon(String couponCode, int discountPercentage) {
+    this.couponCode = couponCode;
+    this.discountPercentage = discountPercentage;
   }
 
   void setCurrentCrediCard(CreditDebitCardData creditDebitCardData) {
@@ -764,1227 +1377,51 @@ class UserModel extends Model {
     notifyListeners();
   }
 
-  void setPaymentOnDeliveryMethod(PaymentOnDeliveryData paymentOnDeliveryData) {
-    isLoading = true;
-    notifyListeners();
-    paymentSet = true;
-    currentPaymentOndeliveryData = paymentOnDeliveryData;
-    payOnApp = false;
-    isLoading = false;
-    notifyListeners();
+  double getShipPrice() {
+    return 9.99;
   }
 
-  void saveToken() async {
-    final token = await FirebaseMessaging().getToken();
-    await Firestore.instance
-        .collection('users')
-        .document(firebaseUser.uid)
-        .collection("tokens")
-        .document(token)
-        .setData({
-      'token': token,
-      'updateAt': FieldValue.serverTimestamp(),
-      'platform': Platform.operatingSystem
-    });
-  }
-
-  Future<void> createNewStoreWithCPF({
-    @required File imageFile,
-    @required StoreCPF storeCPF,
-    @required VoidCallback onSuccess,
-    @required VoidCallback onFail,
-  }) async {
-    isLoading = true;
-    notifyListeners();
-    String url;
-    try {
-      if (firebaseUser == null) await _auth.currentUser();
-      if (firebaseUser != null) {
-        if (imageFile == null) {
-          url = "https://meuvidraceiro.com.br/images/sem-imagem.png";
-        } else {
-          StorageUploadTask task = FirebaseStorage.instance
-              .ref()
-              .child("images")
-              .child(DateTime.now().millisecond.toString())
-              .putFile(imageFile);
-          StorageTaskSnapshot taskSnapshot = await task.onComplete;
-          url = await taskSnapshot.ref.getDownloadURL();
-        }
-        await Firestore.instance.collection("stores").add({
-          "partnerId": firebaseUser.uid,
-          "title": storeCPF.name,
-          "name": storeCPF.name,
-          "cpf": storeCPF.cpf,
-          "image": url,
-          "description": storeCPF.description,
-          "isOpen": true,
-          "address": {
-            "name": "Store Address",
-            "zipCode": storeCPF.zipCode,
-            "street": storeCPF.street,
-            "district": storeCPF.district,
-            "number": storeCPF.number,
-            "city": storeCPF.city,
-            "state": storeCPF.state,
-            "image": storeCPF.image,
-          }
-        }).then((store) async {
-          await Firestore.instance
-              .collection("users")
-              .document(firebaseUser.uid)
-              .updateData({
-            "storeId": store.documentID,
-            "isPartner": 2,
-          });
-        });
-        storeData.name = storeCPF.name;
-        storeData.image = storeCPF.description;
-        storeData.description = storeCPF.description;
-        storeCPF = null;
-        onSuccess();
-        isLoading = false;
-        notifyListeners();
+  double getProductsPrice() {
+    double price = 0.0;
+    double priceOptionals = 0.0;
+    for (CartProduct c in cartProducts) {
+      for (var i = 0; i < c.productOptionals.length; i++) {
+        priceOptionals +=
+            c.productOptionals[i].quantity * c.productOptionals[i].price;
       }
-    } catch (e) {
-      print(e);
-      onFail();
-      isLoading = false;
-      notifyListeners();
+      price += c.quantify * c.productPrice;
     }
+    return price + priceOptionals;
   }
 
-  void createNewProduct({
-    @required String productGroup,
-    @required File imageFile,
-    @required String title,
-    @required String description,
-    @required String fullDescription,
-    @required String price,
-    @required String category,
-    @required VoidCallback onSuccess,
-    @required VoidCallback onFail,
-  }) async {
-    isLoading = true;
-    notifyListeners();
-    String url;
-    try {
-      if (imageFile == null) {
-        url = "https://meuvidraceiro.com.br/images/sem-imagem.png";
-      } else {
-        StorageUploadTask task = FirebaseStorage.instance
-            .ref()
-            .child("images")
-            .child(storeData.id + DateTime.now().millisecond.toString())
-            .putFile(imageFile);
-        StorageTaskSnapshot taskSnapshot = await task.onComplete;
-        url = await taskSnapshot.ref.getDownloadURL();
-      }
-      Firestore.instance
-          .collection("stores")
-          .document(userData["storeId"])
-          .collection("products")
-          .add({
-        "group": productGroup,
-        "title": title,
-        "category": category,
-        "description": description,
-        "fullDescription": fullDescription,
-        "image": url,
-        "price": double.parse(
-          price.replaceAll(",", "."),
-        ),
-        "storeID": userData["storeId"]
-      }).then((value) {});
-      onSuccess();
-      updatePartnerData();
-      isLoading = false;
-      notifyListeners();
-    } catch (e) {
-      print(e);
-      isLoading = false;
-      notifyListeners();
-      onFail();
-    }
-  }
-
-  void updateCategory() async {
-    isLoading = true;
-    notifyListeners();
-    try {
-      if (firebaseUser == null) firebaseUser = await _auth.currentUser();
-      if (firebaseUser != null) {
-        QuerySnapshot query =
-            await Firestore.instance.collection("categories").getDocuments();
-        categoryDataList = query.documents
-            .map((doc) => CategoryData.fromDocument(doc))
-            .toList();
-      }
-    } catch (e) {}
-    isLoading = false;
-    notifyListeners();
-  }
-
-  void updateStories() async {
-    try {
-      if (firebaseUser == null) await _auth.currentUser();
-      if (firebaseUser != null) {
-        QuerySnapshot querySnapshot =
-            await Firestore.instance.collection("stores").getDocuments();
-        storeDataList = querySnapshot.documents
-            .map((doc) => StoreData.fromDocument(doc))
-            .toList();
-      }
-    } catch (e) {}
-    if (storeDataList.length > 0) hasStories = true;
-    notifyListeners();
-  }
-
-  void updateStoreFavorites() async {
-    isLoading = true;
-    notifyListeners();
-    try {
-      if (firebaseUser == null) await _auth.currentUser();
-      if (firebaseUser != null) {
-        QuerySnapshot querySnapshot = await Firestore.instance
-            .collection("users")
-            .document(firebaseUser.uid)
-            .collection("favorites")
-            .getDocuments();
-        querySnapshot.documents.map((doc) async {
-          DocumentSnapshot documentSnapshot = await Firestore.instance
-              .collection("stores")
-              .document(doc.documentID)
-              .get();
-          storeListFavorites.add(StoreData.fromDocument(documentSnapshot));
-        }).toList();
-        isLoading = false;
-        notifyListeners();
-      }
-    } catch (e) {
-      print(e);
-      isLoading = false;
-      notifyListeners();
-    }
-  }
-
-  bool verifyFavoriteStore(String storeId) {
-    return true;
-  }
-
-  void addFavoriteStore(StoreData storeDataFavorite) {
-    Firestore.instance
-        .collection("users")
-        .document(firebaseUser.uid)
-        .collection("favorites")
-        .document(storeDataFavorite.id)
-        .setData(
-      {
-        "storeId": storeDataFavorite.id,
-      },
-    );
-    storeListFavorites.add(storeDataFavorite);
-  }
-
-  void removeFavoriteStore(StoreData storeDataFavorite) {
-    Firestore.instance
-        .collection("users")
-        .document(firebaseUser.uid)
-        .collection('favorites')
-        .document(storeDataFavorite.id)
-        .delete();
-    storeListFavorites.remove(storeListFavorites);
-  }
-
-  
-
-  void updatedPurchasedProducts(DocumentSnapshot snapshot) {
-    for (LinkedHashMap product in snapshot.data["products"]) {
-      bool hasProduct = false;
-      final purchasedProduct = ProductData(
-        id: product["pid"],
-        title: product["productTitle"],
-        categoryId: null,
-        description: null,
-        image: null,
-        price: null,
-        fullDescription: null,
-        group: null,
-        storeId: product["storeId"],
-      );
-
-      if (purchasedsProducts.length == 0) {
-        purchasedsProducts.add(purchasedProduct);
-      } else {
-        for (ProductData productPurchased in purchasedsProducts) {
-          if (purchasedProduct.id == productPurchased.id) {
-            hasProduct = true;
-            break;
-          }
-        }
-        if (!hasProduct) {
-          purchasedsProducts.add(purchasedProduct);
-        }
-      }
-    }
-  }
-
-  void getListPurchasedStores() {}
-  void updatePartnerData() async {
-    if (firebaseUser == null) firebaseUser = await _auth.currentUser();
-    if (firebaseUser != null) {
-      try {
-        DocumentSnapshot partnerDocument = await Firestore.instance
-            .collection("users")
-            .document(firebaseUser.uid)
-            .get();
-        if (partnerDocument.data["storeId"] != null) {
-          listPartnerOders.clear();
-          DocumentSnapshot storeDocument = await Firestore.instance
-              .collection("stores")
-              .document(partnerDocument.data["storeId"])
-              .get();
-          storeId = storeDocument.documentID;
-          storeName = storeDocument.data["title"];
-          storeImage = storeDocument.data["image"];
-          storeData = StoreData.fromDocument(storeDocument);
-          isStoreHourConfigurated = storeData.ishourSeted;
-          print(isStoreHourConfigurated);
-          QuerySnapshot querySnapshot = await Firestore.instance
-              .collection("orders")
-              .orderBy('createdAt', descending: true)
-              .getDocuments();
-          querySnapshot.documents.map((doc) {
-            if (doc.data["storeId"] == storeData.id) {
-              listPartnerOders.add(
-                OrderData.fromDocument(doc),
-              );
-            }
-          }).toList();
-          if (listPartnerOders.length > 0) {
-            hasPartnerOrders = true;
-          }
-          QuerySnapshot queryProductSnapshot = await Firestore.instance
-              .collection("stores")
-              .document(partnerDocument.data["storeId"])
-              .collection("products")
-              .getDocuments();
-          productsStore.clear();
-          queryProductSnapshot.documents.map((doc) {
-            productsStore.add(ProductData.fromDocument(doc));
-          }).toList();
-
-          storesCategoresList.clear();
-          QuerySnapshot queryCategories = await Firestore.instance
-              .collection("stores")
-              .document(storeId)
-              .collection("categories")
-              .orderBy(
-                "order",
-                descending: false,
-              )
-              .getDocuments();
-          queryCategories.documents.map((doc) {
-            storesCategoresList.add(StoreCategoreData.fromDocument(doc));
-          }).toList();
-          notifyListeners();
-        }
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  void setChatData(OrderData orderData) {
-    chatOrderData = orderData;
-    print(chatOrderData.orderId);
-    notifyListeners();
-  }
-
-  void sendtextMessageByStore(String text) async {
-    await Firestore.instance
-        .collection("orders")
-        .document(chatOrderData.orderId)
-        .collection("chat")
-        .add({
-      "userId": chatOrderData.storeId,
-      "text": text,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-  }
-
-  void sendImageMessageByStore(File imageFile) async {
-    if (imageFile == null) return;
-    StorageUploadTask task = FirebaseStorage.instance
-        .ref()
-        .child("images")
-        .child("chat")
-        .child(
-          DateTime.now().millisecondsSinceEpoch.toString(),
-        )
-        .putFile(imageFile);
-    StorageTaskSnapshot taskSnapshot = await task.onComplete;
-    String urlImage = await taskSnapshot.ref.getDownloadURL();
-    await Firestore.instance
-        .collection("orders")
-        .document(chatOrderData.orderId)
-        .collection("chat")
-        .add({
-      "userId": chatOrderData.storeId,
-      "image": urlImage,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-  }
-
-  void sendtextMessageByUser(String text) async {
-    await Firestore.instance
-        .collection("orders")
-        .document(chatOrderData.orderId)
-        .collection("chat")
-        .add({
-      "userId": firebaseUser.uid,
-      "text": text,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-  }
-
-  void sendImageMessageByUser(File imageFile) async {
-    if (imageFile == null) return;
-    StorageUploadTask task = FirebaseStorage.instance
-        .ref()
-        .child("images")
-        .child("chat")
-        .child(
-          DateTime.now().millisecondsSinceEpoch.toString(),
-        )
-        .putFile(imageFile);
-    StorageTaskSnapshot taskSnapshot = await task.onComplete;
-    String urlImage = await taskSnapshot.ref.getDownloadURL();
-    await Firestore.instance
-        .collection("orders")
-        .document(chatOrderData.orderId)
-        .collection("chat")
-        .add({
-      "userId": firebaseUser.uid,
-      "image": urlImage,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-  }
-
-  void addNewAddress({
-    @required AddressDataFromGoogle addressDataFromGoogle,
-    @required VoidCallback onSuccess,
-    @required VoidCallback onFail,
-  }) async {
-    try {
-      await Firestore.instance
-          .collection("users")
-          .document(firebaseUser.uid)
-          .collection("addressFromGoogle")
-          .getDocuments()
-          .then((query) {
-        query.documents.map((doc) async {
-          await Firestore.instance
-              .collection("users")
-              .document(firebaseUser.uid)
-              .collection("addressFromGoogle")
-              .document(doc.documentID)
-              .updateData({
-            "isDefined": false,
-          });
-        }).toList();
-      });
-      await Firestore.instance
-          .collection("users")
-          .document(firebaseUser.uid)
-          .collection("addressFromGoogle")
-          .add({
-        "descripition": addressDataFromGoogle.description,
-        "placeId": addressDataFromGoogle.placeId,
-        "reference": addressDataFromGoogle.reference,
-        "isDefined": true,
-      });
-      addressDataFromGoogle.isDefined = true;
-      addressDataFromGoogleList.add(addressDataFromGoogle);
-      setCurrentAddressFromGoolgle(addressDataFromGoogle);
-      onSuccess();
-      _loadAddressFromGoogle();
-      notifyListeners();
-    } catch (e) {
-      print(e.toString());
-      onFail();
-      notifyListeners();
-    }
-  }
-
-  void setCurrentAddressFromGoolgle(
-      AddressDataFromGoogle addressDataFromGoogle) async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      try {
-        await Firestore.instance
-            .collection("users")
-            .document(firebaseUser.uid)
-            .collection("addressFromGoogle")
-            .getDocuments()
-            .then((query) {
-          query.documents.map((doc) async {
-            await Firestore.instance
-                .collection("users")
-                .document(firebaseUser.uid)
-                .collection("addressFromGoogle")
-                .document(doc.documentID)
-                .updateData({
-              "isDefined": false,
-            });
-          }).toList();
-        });
-        await Firestore.instance
-            .collection("users")
-            .document(firebaseUser.uid)
-            .collection("addressFromGoogle")
-            .document(addressDataFromGoogle.id)
-            .updateData({
-          "isDefined": true,
-        });
-        currentAddressDataFromGoogle = addressDataFromGoogle;
-      } catch (e) {
-        print(e);
-      }
-      notifyListeners();
-    }
-  }
-
-  void _loadAddressFromGoogle() async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      try {
-        addressDataFromGoogleList.clear();
-        QuerySnapshot addressQuery = await Firestore.instance
-            .collection("users")
-            .document(firebaseUser.uid)
-            .collection("addressFromGoogle")
-            .getDocuments();
-        addressQuery.documents.map((doc) {
-          final addressData = AddressDataFromGoogle(
-            id: doc.documentID,
-            description: doc.data["descripition"],
-            placeId: doc.data["placeId"],
-            reference: doc.data["reference"],
-            isDefined: doc.data["isDefined"],
-          );
-          if (doc.data["isDefined"]) {
-            currentAddressDataFromGoogle = addressData;
-            addressSeted = true;
-          }
-          addressDataFromGoogleList.add(addressData);
-        }).toList();
-        notifyListeners();
-      } catch (e) {
-        print("erro");
-        print(e.toString());
-        notifyListeners();
-      }
-    }
-  }
-
-  void editProduct({
-    @required ProductData productData,
-    @required File imageFile,
-    @required VoidCallback onSuccess,
-    @required VoidCallback onFail,
-    @required String categoryId,
-    @required callOnCategoryNull,
-  }) async {
-    if (categoryId == null) {
-      callOnCategoryNull();
-      return;
-    }
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      isLoading = true;
-      notifyListeners();
-      try {
-        if (imageFile != null) {
-          StorageUploadTask task = FirebaseStorage.instance
-              .ref()
-              .child("images")
-              .child("chat")
-              .child(
-                DateTime.now().millisecondsSinceEpoch.toString(),
-              )
-              .putFile(imageFile);
-          StorageTaskSnapshot taskSnapshot = await task.onComplete;
-          String urlImage = await taskSnapshot.ref.getDownloadURL();
-          await Firestore.instance
-              .collection("stores")
-              .document(storeId)
-              .collection("products")
-              .document(productData.id)
-              .updateData({
-            "title": productData.title,
-            "image": urlImage,
-            "categoryId": productData.categoryId,
-            "description": productData.description,
-            "fullDescription": productData.fullDescription,
-            "group": productData.group,
-            "price": productData.price,
-          });
-          QuerySnapshot queryProductSnapshot = await Firestore.instance
-              .collection("stores")
-              .document(storeId)
-              .collection("products")
-              .getDocuments();
-          productsStore.clear();
-          queryProductSnapshot.documents.map((doc) {
-            productsStore.add(ProductData.fromDocument(doc));
-          }).toList();
-          onSuccess();
-          isLoading = false;
-          notifyListeners();
-        } else {
-          await Firestore.instance
-              .collection("stores")
-              .document(storeId)
-              .collection("products")
-              .document(productData.id)
-              .updateData({
-            "title": productData.title,
-            "categoryId": productData.categoryId,
-            "description": productData.description,
-            "fullDescription": productData.fullDescription,
-            "group": productData.group,
-            "price": productData.price,
-          });
-          QuerySnapshot queryProductSnapshot = await Firestore.instance
-              .collection("stores")
-              .document(storeId)
-              .collection("products")
-              .getDocuments();
-          productsStore.clear();
-          queryProductSnapshot.documents.map((doc) {
-            productsStore.add(ProductData.fromDocument(doc));
-          }).toList();
-          onSuccess();
-          isLoading = false;
-          notifyListeners();
-        }
-      } catch (e) {
-        onFail();
-        isLoading = false;
-        notifyListeners();
-      }
-    }
-  }
-
-  void insertOptIncrement({
-    @required File imageFile,
-    @required IncrementalOptData incrementalOptData,
-    @required VoidCallback onSuccess,
-    @required VoidCallback onFail,
-  }) async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      isLoading = true;
-      notifyListeners();
-      try {
-        await Firestore.instance
-            .collection("stores")
-            .document(storeId)
-            .collection("products")
-            .document(incrementalOptData.productId)
-            .collection("incrementalOptions")
-            .add(
-              incrementalOptData.toIncrementalMap(),
-            );
-        onSuccess();
-        updateIncrementalProductOptions();
-        getIncrementalsFromProduct(incrementalOptData.productId);
-        isLoading = false;
-        notifyListeners();
-      } catch (e) {
-        onFail();
-        isLoading = false;
-        notifyListeners();
-      }
-    }
-  }
-
-  void updateIncrementalProductOptions() async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      try {
-        QuerySnapshot querySnapshot = await Firestore.instance
-            .collection("stores")
-            .document(storeId)
-            .collection("products")
-            .getDocuments();
-        incrementalOptDataList.clear();
-        querySnapshot.documents.map((doc) async {
-          QuerySnapshot queryIncrementalSnapshot = await Firestore.instance
-              .collection("stores")
-              .document(storeId)
-              .collection("products")
-              .document(doc.documentID)
-              .collection("incrempentalOptions")
-              .getDocuments();
-          queryIncrementalSnapshot.documents.map((doc) {
-            incrementalOptDataList.add(IncrementalOptData.fromDocument(doc));
-          }).toList();
-        }).toList();
-      } catch (e) {}
-    }
-  }
-
-  void insertNewOptOnlyChoose({
-    @required IncrementalOptData incrementalOptData,
-    @required VoidCallback onSuccess,
-    @required VoidCallback onFail,
-  }) async {
-    print("ok");
-    bool alereadySeccion = false;
-    List<DocumentSnapshot> productDocs = [];
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      isLoading = true;
-      notifyListeners();
-      print("1");
-      try {
-        QuerySnapshot querySnapshot = await Firestore.instance
-            .collection("stores")
-            .document(storeId)
-            .collection("products")
-            .document(incrementalOptData.productId)
-            .collection("onlyChooseOptions")
-            .getDocuments();
-        productDocs.clear();
-        querySnapshot.documents.map((doc) {
-          productDocs.add(doc);
-        }).toList();
-        print(productDocs.length);
-        for (DocumentSnapshot doc in productDocs) {
-          if (doc.data["secao"] == incrementalOptData.session) {
-            await Firestore.instance
-                .collection("stores")
-                .document(storeId)
-                .collection("products")
-                .document(incrementalOptData.productId)
-                .collection("onlyChooseOptions")
-                .document(doc.documentID)
-                .collection("itens")
-                .add(
-                  incrementalOptData.toIncrementalMap(),
-                );
-
-            alereadySeccion = true;
-          }
-        }
-        if (!alereadySeccion) {
-          await Firestore.instance
-              .collection("stores")
-              .document(storeId)
-              .collection("products")
-              .document(incrementalOptData.productId)
-              .collection("onlyChooseOptions")
-              .add({
-            "secao": incrementalOptData.session,
-          }).then((doc) async {
-            await Firestore.instance
-                .collection("stores")
-                .document(storeId)
-                .collection("products")
-                .document(incrementalOptData.productId)
-                .collection("onlyChooseOptions")
-                .document(doc.documentID)
-                .updateData({
-              "id": doc.documentID,
-            });
-            await Firestore.instance
-                .collection("stores")
-                .document(storeId)
-                .collection("products")
-                .document(incrementalOptData.productId)
-                .collection("onlyChooseOptions")
-                .document(doc.documentID)
-                .collection("itens")
-                .add(
-                  incrementalOptData.toIncrementalMap(),
-                );
-          });
-        }
-        onSuccess();
-        isLoading = false;
-        notifyListeners();
-      } catch (e) {
-        print(e);
-        onFail();
-        isLoading = false;
-        notifyListeners();
-      }
-    }
-  }
-
-  void getIncrementalsFromProduct(String productID) async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      isLoading = true;
-      notifyListeners();
-      try {
-        QuerySnapshot query = await Firestore.instance
-            .collection("stores")
-            .document(storeId)
-            .collection("products")
-            .document(productID)
-            .collection("incrementalOptions")
-            .getDocuments();
-        productIncrementals.clear();
-        query.documents.map((doc) {
-          productIncrementals.add(IncrementalOptData.fromDocument(doc));
-        }).toList();
-        isLoading = false;
-        notifyListeners();
-      } catch (e) {
-        isLoading = false;
-        notifyListeners();
-      }
-    }
-  }
-
-  void registerNewCategory({
-    @required StoreCategoreData storeCategoreData,
-    @required VoidCallback onSuccess,
-    @required VoidCallback onFail,
-    @required VoidCallback noSize,
-    @required int x,
-    @required int y,
-    @required int order,
-  }) async {
-    print(order);
-    print(storesCategoresList.length);
-    if (x == null || y == null) {
-      noSize();
-      return;
-    }
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      isLoading = true;
-      notifyListeners();
-      String url;
-      try {
-        if (storeCategoreData.imageFile != null) {
-          StorageUploadTask task = FirebaseStorage.instance
-              .ref()
-              .child("images")
-              .child(storeData.id + DateTime.now().millisecond.toString())
-              .putFile(storeCategoreData.imageFile);
-          StorageTaskSnapshot taskSnapshot = await task.onComplete;
-          url = await taskSnapshot.ref.getDownloadURL();
-        } else {
-          url = storeCategoreData.image;
-        }
-        await Firestore.instance
-            .collection("stores")
-            .document(storeId)
-            .collection("categories")
-            .add({
-          "title": storeCategoreData.title,
-          "description": storeCategoreData.description,
-          "image": url,
-          "x": x,
-          "y": y,
-          "order": order,
-        });
-        for (var i = order; i < storesCategoresList.length; i++) {
-          int pos = i + 1;
-          await Firestore.instance
-              .collection("stores")
-              .document(storeId)
-              .collection("categories")
-              .document(storesCategoresList[i].id)
-              .updateData({
-            "order": pos,
-          });
-        }
-        storesCategoresList.clear();
-        QuerySnapshot queryCategories = await Firestore.instance
-            .collection("stores")
-            .document(storeId)
-            .collection("categories")
-            .orderBy(
-              "order",
-              descending: false,
-            )
-            .getDocuments();
-        queryCategories.documents.map((doc) {
-          storesCategoresList.add(StoreCategoreData.fromDocument(doc));
-        }).toList();
-        isLoading = false;
-        onSuccess();
-        notifyListeners();
-      } catch (e) {
-        print(e);
-        isLoading = false;
-        notifyListeners();
-        onFail();
-      }
-    }
-  }
-
-  void updateStoreCategore({
-    @required StoreCategoreData storeCategoreData,
-    @required VoidCallback onSuccess,
-    @required VoidCallback onFail,
-  }) async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      String url;
-      isLoading = true;
-      notifyListeners();
-      try {
-        if (storeCategoreData.imageFile != null) {
-          StorageUploadTask task = FirebaseStorage.instance
-              .ref()
-              .child("images")
-              .child(storeData.id + DateTime.now().millisecond.toString())
-              .putFile(storeCategoreData.imageFile);
-          StorageTaskSnapshot taskSnapshot = await task.onComplete;
-          url = await taskSnapshot.ref.getDownloadURL();
-        } else {
-          url = storeCategoreData.image;
-        }
-        for (var i = storeCategoreData.order;
-            i < storesCategoresList.length;
-            i++) {
-          int pos = i + 1;
-          print(storesCategoresList[i].id);
-          await Firestore.instance
-              .collection("stores")
-              .document(storeId)
-              .collection("categories")
-              .document(storesCategoresList[i].id)
-              .updateData({
-            "order": pos,
-          });
-        }
-        await Firestore.instance
-            .collection("stores")
-            .document(storeId)
-            .collection("categories")
-            .document(storeCategoreData.id)
-            .updateData({
-          "description": storeCategoreData.description,
-          "title": storeCategoreData.title,
-          "image": url,
-          "x": storeCategoreData.x,
-          "y": storeCategoreData.y,
-          "order": storeCategoreData.order,
-        });
-
-        storesCategoresList.clear();
-        QuerySnapshot queryCategories = await Firestore.instance
-            .collection("stores")
-            .document(storeId)
-            .collection("categories")
-            .orderBy(
-              "order",
-              descending: false,
-            )
-            .getDocuments();
-        queryCategories.documents.map((doc) {
-          storesCategoresList.add(StoreCategoreData.fromDocument(doc));
-        }).toList();
-        onSuccess();
-        isLoading = false;
-        notifyListeners();
-      } catch (erro) {
-        onFail();
-        print(erro);
-        isLoading = false;
-        notifyListeners();
-      }
-    }
-  }
-
-  void insertNewOffSale({
-    @required VoidCallback onSuccess,
-    @required VoidCallback onFail,
-    @required SalesOffData salesOffData,
-  }) async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      String url;
-      isLoading = true;
-      notifyListeners();
-      try {
-        if (salesOffData.imageFile != null) {
-          StorageUploadTask task = FirebaseStorage.instance
-              .ref()
-              .child("images")
-              .child(storeData.id + DateTime.now().millisecond.toString())
-              .putFile(salesOffData.imageFile);
-          StorageTaskSnapshot taskSnapshot = await task.onComplete;
-          url = await taskSnapshot.ref.getDownloadURL();
-        } else {
-          url = "https://meuvidraceiro.com.br/images/sem-imagem.png";
-        }
-        await Firestore.instance
-            .collection("stores")
-            .document(storeId)
-            .collection("off")
-            .add({
-          "title": salesOffData.title,
-          "image": url,
-          "description": salesOffData.description,
-          "products": salesOffData.products.map((product) {
-            return {
-              "title": product.title,
-              "description": product.description,
-              "id": product.id,
-              "price": product.price,
-              "image": product.image,
-            };
-          }).toList()
-        });
-        updateSalesOffList();
-        onSuccess();
-        isLoading = false;
-        notifyListeners();
-      } catch (erro) {
-        onFail();
-        isLoading = false;
-        notifyListeners();
-      }
-    }
-  }
-
-  void updateSalesOffList() async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      try {
-        salesOffList.clear();
-        QuerySnapshot querySnapshot = await Firestore.instance
-            .collection("stores")
-            .document(storeId)
-            .collection("off")
-            .getDocuments();
-        querySnapshot.documents.map((doc) {
-          salesOffList.add(SalesOffData.fromDocument(doc));
-        }).toList();
-      } catch (e) {}
-    }
-  }
-
-  void getPurchasedProductsListByStore(String purchasedStoreId) async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      purchasedProductsByStore.clear();
-      QuerySnapshot querySnapshot = await Firestore.instance
-          .collection("stores")
-          .document(purchasedStoreId)
-          .collection("products")
-          .getDocuments();
-      querySnapshot.documents.map((doc) {
-        for (ProductData purchasedProduct in purchasedsProducts) {
-          if (doc.documentID == purchasedProduct.id) {
-            purchasedProductsByStore.add(doc);
-          }
-        }
-      }).toList();
-    }
-    notifyListeners();
-  }
-
-  void verifyOffSales(String storeIdtoVerifyt) async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      QuerySnapshot querySnapshot = await Firestore.instance
-          .collection("stores")
-          .document(storeIdtoVerifyt)
-          .collection("off")
-          .getDocuments();
-      if (querySnapshot.documents.length > 0) {
-        hasSalesOff = true;
-      } else {
-        hasSalesOff = false;
-      }
-    }
-    notifyListeners();
-  }
-
-  void veryIfExistsProducts() async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      try {
-        productsInCart.clear();
-        QuerySnapshot querySnapshot = await Firestore.instance
-            .collection("users")
-            .document(firebaseUser.uid)
-            .collection("cart")
-            .getDocuments();
-        if (querySnapshot.documents.length > 0) {
-          querySnapshot.documents.map((doc) {
-            productsInCart.add(CartProduct.fromDocument(doc));
-          }).toList();
-          hasProductInCart = true;
-        } else {
-          productsInCart = [];
-          hasProductInCart = false;
-        }
-      } catch (e) {}
-      notifyListeners();
-    }
-  }
-
-  void updateStoreHours({
-    @required int openingTimeHour,
-    @required int openingTimeMinute,
-    @required int closingTimeHour,
-    @required int closingTimeMinute,
-    @required VoidCallback onSuccess,
-    @required VoidCallback onFail,
-  }) async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      try {
-        await Firestore.instance
-            .collection("stores")
-            .document(storeId)
-            .updateData({
-          "openingTime": {
-            "hour": openingTimeHour,
-            "minute": openingTimeMinute,
-          },
-          "closingTime": {
-            "hour": closingTimeHour,
-            "minute": closingTimeMinute,
-          },
-        });
-        isStoreHourConfigurated = true;
-        onSuccess();
-        notifyListeners();
-      } catch (e) {
-        onFail();
-        print(e.toString());
-      }
-    }
-  }
-
-  void removeCartItem({
-    @required CartProduct cartProduct,
-    @required VoidCallback onSuccess,
-    @required VoidCallback onFail,
-  }) async {
-    if (firebaseUser == null) await _auth.currentUser();
-    if (firebaseUser != null) {
-      try {
-        Firestore.instance
-            .collection("users")
-            .document(firebaseUser.uid)
-            .collection("cart")
-            .document(cartProduct.cId)
-            .delete();
-        productsInCart.remove(cartProduct);
-        if (productsInCart.length > 0) {
-          hasProductInCart = true;
-        } else {
-          productsInCart = [];
-          hasProductInCart = false;
-        }
-        onSuccess();
-        notifyListeners();
-      } catch (erro) {
-        onFail();
-        notifyListeners();
-      }
-    }
-  }
-
-  Future<void> finishOrderWithPayOnDelivery({
-    @required double discount,
-    @required VoidCallback onSucces,
-    @required VoidCallback onFail,
-    @required double shipePrice,
-    @required DocumentSnapshot storeData,
-  }) async {
-    if (firebaseUser == null) _auth.currentUser();
-    if (firebaseUser != null) {
-      double totalPrice = 0;
-      try {
-        if (productsInCart.length == 0) return null;
-        QuerySnapshot querySnapshot = await Firestore.instance
-            .collection("users")
-            .document(firebaseUser.uid)
-            .collection("cart")
-            .getDocuments();
-        List<DocumentSnapshot> items = querySnapshot.documents;
-        for (DocumentSnapshot doc in items) {
-          totalPrice += doc.data["totalPrice"];
-        }
-
-        await Firestore.instance.collection("orders").add({
-          "client": firebaseUser.uid,
-          "clientName": userName,
-          "clientImage":
-              firebaseUser.photoUrl == null ? userImage : firebaseUser.photoUrl,
-          "clientAddress": currentAddressDataFromGoogle.description
-              .replaceAll("State of ", "")
-              .replaceAll("Brazil", "Brasil"),
-          "storeId": storeData.documentID,
-          "products":
-              productsInCart.map((cartProduct) => cartProduct.toMap()).toList(),
-          "shipPrice": shipePrice,
-          "StoreName": storeData.data["name"],
-          "storeImage": storeData.data["image"],
-          "storeDescription": "storeDescrition",
-          "discount": discount,
-          "totalPrice": totalPrice,
-          "status": 1,
-          'createdAt': FieldValue.serverTimestamp(),
-          'platform': Platform.operatingSystem,
-          'paymentType': "Pagamento na Entrega"
-        });
-        getAllUserData();
-        onSucces();
-        productsInCart.clear();
-        hasProductInCart = false;
-        notifyListeners();
-        for (DocumentSnapshot doc in querySnapshot.documents) {
-          doc.reference.delete();
-        }
-      } catch (e) {
-        onFail();
-      }
-    }
+  double getDiscountPrice() {
+    return getProductsPrice() * discountPercentage / 100;
   }
 
   Future<String> finishOrder({
     @required double discount,
-    @required VoidCallback onSucces,
+    @required VoidCallback onSuccess,
     @required VoidCallback onFail,
     @required double shipePrice,
-    @required DocumentSnapshot storeData,
+    @required StoreData storeData,
     @required CreditDebitCardData creditDebitCardData,
   }) async {
-    if (firebaseUser == null) {
-      _auth.currentUser();
-      return "";
-    }
-
-    if (firebaseUser != null) {
+    if (isLoggedIn()) {
       double totalPrice = 0;
-      final CloudFunctions functions = CloudFunctions.instance;
+      final FirebaseFunctions functions = FirebaseFunctions.instance;
       try {
-        if (productsInCart.length == 0) return null;
-        QuerySnapshot querySnapshot = await Firestore.instance
+        if (cartProducts.length == 0) return null;
+        print("ok");
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
             .collection("users")
-            .document(firebaseUser.uid)
+            .doc(firebaseUser.uid)
             .collection("cart")
-            .getDocuments();
-        List<DocumentSnapshot> items = querySnapshot.documents;
-        for (DocumentSnapshot doc in items) {
-          totalPrice += doc.data["totalPrice"];
-        }
+            .get();
+        querySnapshot.docs.map((queryDoc) {
+          totalPrice += queryDoc.get("totalPrice");
+        }).toList();
         print(creditDebitCardData.cpf);
+
         dataSale = {
           'merchantOrderId': randomAlphaNumeric(10),
           'amount': (totalPrice * 100).toInt(),
@@ -2002,27 +1439,27 @@ class UserModel extends Model {
           'paymentType': 'CreditCard'
         };
         final HttpsCallable callable =
-            functions.getHttpsCallable(functionName: 'authorizedCreditCard');
+            functions.httpsCallable('authorizedCreditCard');
         final response = await callable.call(dataSale);
         final data = Map<String, dynamic>.from(response.data as LinkedHashMap);
         print(data["success"]);
         if (data["success"] as bool) {
-          await Firestore.instance.collection("orders").add({
+          await FirebaseFirestore.instance.collection("orders").add({
             "client": firebaseUser.uid,
-            "clientName": userName,
-            "clientImage": firebaseUser.photoUrl == null
+            "clientName": userData.name,
+            "clientImage": firebaseUser.photoURL == null
                 ? userImage
-                : firebaseUser.photoUrl,
-            "clientAddress": currentAddressDataFromGoogle.description
+                : firebaseUser.photoURL,
+            "clientAddress": "",
+            /*currentAddressDataFromGoogle.description
                 .replaceAll("State of ", "")
-                .replaceAll("Brazil", "Brasil"),
-            "storeId": storeData.documentID,
-            "products": productsInCart
-                .map((cartProduct) => cartProduct.toMap())
-                .toList(),
+                .replaceAll("Brazil", "Brasil"),*/
+            "storeId": storeData.id,
+            "products":
+                cartProducts.map((cartProduct) => cartProduct.toMap()).toList(),
             "shipPrice": shipePrice,
-            "StoreName": storeData.data["name"],
-            "storeImage": storeData.data["image"],
+            "StoreName": storeData.name,
+            "storeImage": storeData.image,
             "storeDescription": "storeDescrition",
             "discount": discount,
             "totalPrice": totalPrice,
@@ -2030,9 +1467,18 @@ class UserModel extends Model {
             'createdAt': FieldValue.serverTimestamp(),
             'paymentType': "Pagamento na Entrega"
           });
-          getAllUserData();
-          onSucces();
+          cartProducts.clear();
+          hasProductInCart = false;
+          onSuccess();
           notifyListeners();
+          for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+            doc.reference.delete();
+          }
+          await getListOfCategory();
+          await getOrders();
+          await getListHomeStores();
+          getcartProductList();
+          await updateFavoritList();
           return data['paymentId'] as String;
         } else {
           onFail();
@@ -2048,7 +1494,221 @@ class UserModel extends Model {
     }
   }
 
-  void getCurrentUserAdress() {
-    
+  Future<void> finishOrderWithPayOnDelivery({
+    @required double discount,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+    @required double shipePrice,
+    @required StoreData storeData,
+  }) async {
+    if (firebaseUser != null) {
+      double totalPrice = 0;
+
+      try {
+        print(cartProducts.length);
+        print("ok");
+        if (cartProducts.length == 0) return null;
+
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .collection("cart")
+            .get();
+        List<QueryDocumentSnapshot> items = querySnapshot.docs;
+        for (QueryDocumentSnapshot doc in items) {
+          totalPrice += doc.get("totalPrice");
+        }
+
+        await FirebaseFirestore.instance.collection("orders").add({
+          "client": firebaseUser.uid,
+          "clientName": userData.name,
+          "clientImage": userData.image,
+          "clientAddress": "" //currentAddressDataFromGoogle.description
+              .replaceAll("State of ", "")
+              .replaceAll("Brazil", "Brasil"),
+          "storeId": storeData.id,
+          "products":
+              cartProducts.map((cartProduct) => cartProduct.toMap()).toList(),
+          "shipPrice": shipePrice,
+          "StoreName": storeData.name,
+          "storeImage": storeData.image,
+          "storeDescription": "storeDescrition",
+          "discount": discount,
+          "totalPrice": totalPrice,
+          "status": 1,
+          'createdAt': FieldValue.serverTimestamp(),
+          'platform': Platform.operatingSystem,
+          'paymentType': "Pagamento na Entrega"
+        });
+        cartProducts.clear();
+        hasProductInCart = false;
+        onSuccess();
+        notifyListeners();
+        for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+          doc.reference.delete();
+        }
+        await getListOfCategory();
+        await getOrders();
+        await getListHomeStores();
+        getcartProductList();
+        await updateFavoritList();
+      } catch (e) {
+        onFail();
+      }
+    }
+  }
+
+  void saveToken() async {
+    final token = await FirebaseMessaging().getToken();
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(firebaseUser.uid)
+        .collection("tokens")
+        .doc(token)
+        .set({
+      'token': token,
+      'updateAt': FieldValue.serverTimestamp(),
+      'platform': Platform.operatingSystem
+    });
+  }
+
+  void setPaymentOnDeliveryMethod(PaymentOnDeliveryData paymentOnDeliveryData) {
+    isLoading = true;
+    notifyListeners();
+    paymentSet = true;
+    currentPaymentOndeliveryData = paymentOnDeliveryData;
+    payOnApp = false;
+    isLoading = false;
+    notifyListeners();
+  }
+
+  void newCard(CreditDebitCard creditDebitCard) async {
+    isLoading = true;
+    notifyListeners();
+    final creditDebitCardData =
+        CreditDebitCardData.fromCreditDebitCardItem(creditDebitCard);
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(firebaseUser.uid)
+        .collection('paymentForms')
+        .add({
+      'cardNumber': creditDebitCard.cardNumber,
+      'cardOwnerName': creditDebitCard.cardOwnerName,
+      'validateDate': creditDebitCard.validateDate,
+      'cpf': creditDebitCard.cpf,
+      'cvv': creditDebitCard.cvv,
+      'image': creditDebitCard.image,
+      'type': 'creditDebitCard',
+      'brand': creditDebitCard.brand
+    }).then((doc) {
+      if (doc.id != null) {
+        creditDebitCardData.cardId = doc.id;
+        creditDebitCardList.add(creditDebitCardData);
+      } else {
+        creditDebitCardData.cardId = "";
+      }
+    });
+    isLoading = false;
+    notifyListeners();
+  }
+
+  void getPaymentUserForms() async {
+    if (isLoggedIn()) {
+      paymentFormsList.clear();
+      QuerySnapshot paymentQuery = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(firebaseUser.uid)
+          .collection("paymentForms")
+          .get();
+      paymentQuery.docs.map((queryDoc) {
+        paymentFormsList.add(
+          PaymentFormData.fromQuerydocs(queryDoc),
+        );
+      }).toList();
+      notifyListeners();
+    }
+  }
+
+  Future<void> getLocationDevice() async {
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+    _locationData = await location.getLocation();
+    userData.latitude = _locationData.latitude;
+    userData.longitude = _locationData.longitude;
+    await getAddressFromLatLng(
+      lat: _locationData.latitude,
+      lng: _locationData.longitude,
+    );
+  }
+
+  Future<void> getAddressFromLatLng(
+      {@required double lat, @required double lng}) async {
+    isLoading = true;
+    notifyListeners();
+    final endPoint = "https://www.cepaberto.com/api/v3/nearest";
+    final Dio dio = Dio();
+    dio.options.headers[HttpHeaders.authorizationHeader] = 'Token token=$token';
+    try {
+      final response = await dio.get<Map<String, dynamic>>(endPoint,
+          queryParameters: {'lat': lat, 'lng': lng});
+      if (response.data.isEmpty) {
+        return Future.error('Dados Inválidos');
+      }
+      //final cepAbertoAddress = CepAbertoAddress.fromMap(response.data);
+      /*if (cepAbertoAddress != null) {
+        street = cepAbertoAddress.logradouro;
+        state = cepAbertoAddress.state.sigla;
+        zipCode = cepAbertoAddress.cep;
+        district = cepAbertoAddress.bairro;
+        city = cepAbertoAddress.city.nome;
+      }*/
+      if (response.data != null) {
+        userData.userAdress = AdressData.fromResponse(response);
+        userData.latLng = LatLng(
+          userData.userAdress.latitude,
+          userData.userAdress.longitude,
+        );
+      }
+    } on DioError {}
+    isLoading = false;
+    notifyListeners();
+  }
+
+  void addCombotoCart({
+    @required ComboData comboData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    if (isLoggedIn()) {
+      isLoading = true;
+      notifyListeners();
+      try {
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .collection("cart")
+            .add(
+              comboData.toComboProductMap(),
+            );
+        isLoading = false;
+        notifyListeners();
+      } catch (e) {
+        isLoading = false;
+        notifyListeners();
+      }
+    }
   }
 }

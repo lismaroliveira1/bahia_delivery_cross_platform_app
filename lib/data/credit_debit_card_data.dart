@@ -1,4 +1,4 @@
-import 'package:bahia_delivery/data/credit_debit_card_item.dart';
+import 'package:bd_app_full/data/credit_debit_card_Item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CreditDebitCardData {
@@ -21,15 +21,26 @@ class CreditDebitCardData {
     brand = creditDebitCard.brand;
   }
 
+  CreditDebitCardData.fromQueryDocument(
+      QueryDocumentSnapshot documentSnapshot) {
+    cardId = documentSnapshot.id;
+    cardNumber = documentSnapshot.get("cardNumber");
+    cardOwnerName = documentSnapshot.get("cardOwnerName");
+    validateDate = documentSnapshot.get("validateDate");
+    cpf = documentSnapshot.get("cpf");
+    cvv = documentSnapshot.get("cvv");
+    image = documentSnapshot.get("image");
+    brand = documentSnapshot.get("brand");
+  }
   CreditDebitCardData.fromDocument(DocumentSnapshot documentSnapshot) {
-    cardId = documentSnapshot.documentID;
-    cardNumber = documentSnapshot.data["cardNumber"];
-    cardOwnerName = documentSnapshot.data["cardOwnerName"];
-    validateDate = documentSnapshot.data["validateDate"];
-    cpf = documentSnapshot.data["cpf"];
-    cvv = documentSnapshot.data["cvv"];
-    image = documentSnapshot.data["image"];
-    brand = documentSnapshot.data["brand"];
+    cardId = documentSnapshot.id;
+    cardNumber = documentSnapshot.get("cardNumber");
+    cardOwnerName = documentSnapshot.get("cardOwnerName");
+    validateDate = documentSnapshot.get("validateDate");
+    cpf = documentSnapshot.get("cpf");
+    cvv = documentSnapshot.get("cvv");
+    image = documentSnapshot.get("image");
+    brand = documentSnapshot.get("brand");
   }
   Map<String, dynamic> toMap() {
     return {

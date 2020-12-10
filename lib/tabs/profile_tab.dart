@@ -1,335 +1,403 @@
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/be_a_partener_screen.dart';
-import 'package:bahia_delivery/screens/order_screen.dart';
-import 'package:bahia_delivery/screens/store_home_screen.dart';
-import 'package:bahia_delivery/tiles/profile_tile.dart';
+import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/coupon_screen.dart';
+import 'package:bd_app_full/screens/notifications_screen.dart';
+import 'package:bd_app_full/screens/order_user_screen.dart';
+import 'package:bd_app_full/screens/payment_user_screen.dart';
+import 'package:bd_app_full/screens/setup_user_screen.dart';
+import 'package:bd_app_full/screens/store_home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'package:page_transition/page_transition.dart';
 
-class ProfileTab extends StatelessWidget {
+class ProfileTab extends StatefulWidget {
+  @override
+  _ProfileTabState createState() => _ProfileTabState();
+}
+
+class _ProfileTabState extends State<ProfileTab> {
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
-      if (model.isLoading || !model.isLoggedIn()) {
-        return Container(
-          child: Center(
-            child: CircularProgressIndicator(),
+    return Container(
+      color: Colors.black26,
+      child: NestedScrollView(
+        headerSliverBuilder: (
+          BuildContext context,
+          bool innerBoxScrolled,
+        ) {
+          return <Widget>[
+            SliverAppBar(
+              backgroundColor: Colors.transparent,
+              expandedHeight: 100,
+            )
+          ];
+        },
+        body: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
           ),
-        );
-      }
-      return Container(
-        child: ListView(
-          children: <Widget>[
-            Container(
-              height: 200.0,
-            ),
-            Container(
-              child: FlatButton(
-                padding: EdgeInsets.zero,
-                onPressed: () {},
-                child: ProfileTile(
-                    title: "Chats",
-                    description: "Minhas Conversas",
-                    icon: Icons.message),
-              ),
-            ),
-            FlatButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {},
-              child: ProfileTile(
-                  title: "Pagamentos",
-                  description: "Minhas formas de pagamento",
-                  icon: Icons.payment),
-            ),
-            FlatButton(
-              onPressed: () {},
-              padding: EdgeInsets.zero,
-              child: ProfileTile(
-                  title: "Cupons",
-                  description: "Meus Cupons",
-                  icon: Icons.money_off),
-            ),
-            ScopedModelDescendant<UserModel>(
-              builder: (context, child, model) {
-                if (model.isLoading) {
-                  return Container(
-                    height: 0,
-                    width: 0,
-                  );
-                } else {
-                  return StreamBuilder<DocumentSnapshot>(
-                    stream: Firestore.instance
+          child: Container(
+            margin: EdgeInsets.only(top: 100),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 2,
+                    horizontal: 6,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.grey[400],
+                        )),
+                    child: ListTile(
+                      dense: true,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: PaymentUserScreen(),
+                            inheritTheme: true,
+                            duration: Duration(
+                              milliseconds: 350,
+                            ),
+                            ctx: context,
+                          ),
+                        );
+                      },
+                      leading: Icon(
+                        Icons.message,
+                      ),
+                      title: Text(
+                        "Pagamentos",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "Minhas formas de pagamento",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 2,
+                    horizontal: 6,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.grey[400],
+                        )),
+                    child: ListTile(
+                      dense: true,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: CouponScreen(),
+                            inheritTheme: true,
+                            duration: Duration(
+                              milliseconds: 350,
+                            ),
+                            ctx: context,
+                          ),
+                        );
+                      },
+                      leading: Icon(
+                        Icons.payment,
+                      ),
+                      title: Text(
+                        "Cupons",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "Meus Cupons",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                StreamBuilder<DocumentSnapshot>(
+                    stream: FirebaseFirestore.instance
                         .collection("users")
-                        .document(model.firebaseUser.uid)
+                        .doc(UserModel.of(context).firebaseUser.uid)
                         .snapshots(),
                     builder: (context, snapshot) {
-                      if (model.isLoading) {
-                        return CircularProgressIndicator();
-                      } else if (snapshot.hasData) {
-                        if (snapshot.data["isPartner"] != null) {
-                          if (snapshot.data["isPartner"] == 1) {
-                            return FlatButton(
-                              padding: EdgeInsets.zero,
-                              child: ProfileTile(
-                                title: "Gerencie Sua loja",
-                                description:
-                                    "Venda seus produtos através do Bahia Delivery",
-                                icon: Icons.scatter_plot,
-                              ),
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => StoreHomeScreen(),
-                                  ),
-                                );
-                              },
-                            );
-                          } else if (snapshot.data["isPartner"] == 2) {
-                            return FlatButton(
-                              padding: EdgeInsets.zero,
-                              child: ProfileTile(
-                                title: "Proposta enviada",
-                                description: "Analisando seus dados",
-                                icon: Icons.scatter_plot,
-                              ),
-                              onPressed: () {},
-                            );
-                          } else {
-                            return FlatButton(
-                              padding: EdgeInsets.zero,
-                              child: ProfileTile(
-                                title: "Seja nosso parceiro",
-                                description:
-                                    "Venda seus produtos através do Bahia Delivery",
-                                icon: Icons.scatter_plot,
-                              ),
-                              onPressed: () => showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return Dialog(
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20.0)),
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(20.0),
-                                              color: Colors.white),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height /
-                                              2.8,
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20),
-                                                    color: Colors.red[50]),
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height /
-                                                    6.5,
-                                                child: Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 6,
-                                                      horizontal: 10),
-                                                  child: Center(
-                                                    child: Image.asset(
-                                                        "images/logo.png"),
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: 6,
-                                                      horizontal: 14),
-                                                  child: Center(
-                                                    child: Text(
-                                                      "Bem vindo ao Bahia Delivery Partners",
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                    ),
-                                                  )),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 6,
-                                                        horizontal: 14),
-                                                child: Text(
-                                                  "Algumas informações a mais serão requeridas.",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.black45,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ),
-                                              Container(
-                                                padding: EdgeInsets.only(
-                                                    left: 20, right: 20),
-                                                child: Row(
-                                                  children: [
-                                                    ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                      child: Container(
-                                                        height: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .height /
-                                                            20,
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            4,
-                                                        child: RaisedButton(
-                                                          padding:
-                                                              EdgeInsets.zero,
-                                                          color: Colors.red,
-                                                          child: Text(
-                                                            "Voltar",
-                                                          ),
-                                                          textColor:
-                                                              Colors.white,
-                                                          onPressed: () {
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                          },
-                                                          disabledColor:
-                                                              Colors.grey,
-                                                          disabledTextColor:
-                                                              Colors.black,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Spacer(),
-                                                    ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(12),
-                                                        child: Container(
-                                                          height: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .height /
-                                                              20,
-                                                          width: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .width /
-                                                              4,
-                                                          child: RaisedButton(
-                                                            padding:
-                                                                EdgeInsets.zero,
-                                                            color: Colors.red,
-                                                            child: Text(
-                                                              "Ok, vamos lá!",
-                                                            ),
-                                                            textColor:
-                                                                Colors.white,
-                                                            onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .push(
-                                                                      MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        BeAParterScreen(),
-                                                              ));
-                                                            },
-                                                            disabledColor:
-                                                                Colors.grey,
-                                                            disabledTextColor:
-                                                                Colors.black,
-                                                          ),
-                                                        ))
-                                                  ],
-                                                ),
-                                              )
-                                            ],
-                                          )),
-                                    );
-                                  }),
-                            );
-                          }
-                        } else {
-                          return Container(
-                            height: 0,
-                            width: 0,
-                          );
+                      if (snapshot.hasData) {
+                        String title;
+                        String subtitle;
+                        int status = snapshot.data.get("isPartner");
+                        switch (status) {
+                          case 1:
+                            title = "Gerencie Sua loja";
+                            subtitle =
+                                "Venda seus produtos através do Bahia Delivery";
+                            break;
+                          case 2:
+                            title = "Proposta enviada";
+                            subtitle = "Analisando seus dados";
+                            break;
+                          case 3:
+                            title = "Seja nosso parceiro";
+                            subtitle =
+                                "Venda seus produtos através do Bahia Delivery";
+                            break;
                         }
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 2,
+                            horizontal: 6,
+                          ),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: Colors.grey[400],
+                                )),
+                            child: ListTile(
+                              dense: true,
+                              onTap: () {
+                                if (status == 1) {
+                                  Navigator.push(
+                                    context,
+                                    PageTransition(
+                                      type: PageTransitionType.rightToLeft,
+                                      child: StoreHomeScrenn(),
+                                      inheritTheme: true,
+                                      duration: Duration(
+                                        milliseconds: 350,
+                                      ),
+                                      ctx: context,
+                                    ),
+                                  );
+                                }
+                              },
+                              leading: Icon(
+                                Icons.scatter_plot,
+                              ),
+                              title: Text(title),
+                              subtitle: Text(
+                                subtitle,
+                              ),
+                            ),
+                          ),
+                        );
                       } else {
                         return Container(
                           height: 0,
                           width: 0,
                         );
                       }
-                    },
-                  );
-                }
-              },
-            ),
-            FlatButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {},
-              child: ProfileTile(
-                  title: "Notificações",
-                  description: "Gerencie as suas notificações",
-                  icon: Icons.notifications_active),
-            ),
-            FlatButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => OrderScreen(),
-                ));
-              },
-              child: ProfileTile(
-                title: "Pedidos",
-                description: "Acompanhe seus pedidos",
-                icon: Icons.list,
-              ),
-            ),
-            FlatButton(
-              onPressed: () {},
-              padding: EdgeInsets.zero,
-              child: FlatButton(
-                padding: EdgeInsets.zero,
-                onPressed: () {},
-                child: ProfileTile(
-                  title: "Minha Conta",
-                  description: "Edite seu peril",
-                  icon: Icons.list,
+                    }),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 2,
+                    horizontal: 6,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.grey[400],
+                        )),
+                    child: ListTile(
+                      dense: true,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: NotificationSetupScreen(),
+                            inheritTheme: true,
+                            duration: Duration(
+                              milliseconds: 350,
+                            ),
+                            ctx: context,
+                          ),
+                        );
+                      },
+                      leading: Icon(Icons.notifications_active),
+                      title: Text(
+                        "Seja um entregador",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "Trabalhe conosco entregando mercadorias",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 2,
+                    horizontal: 6,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.grey[400],
+                        )),
+                    child: ListTile(
+                      dense: true,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: NotificationSetupScreen(),
+                            inheritTheme: true,
+                            duration: Duration(
+                              milliseconds: 350,
+                            ),
+                            ctx: context,
+                          ),
+                        );
+                      },
+                      leading: Icon(Icons.notifications_active),
+                      title: Text(
+                        "Notificações",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "Gerencie as suas notificações",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 2,
+                    horizontal: 6,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.grey[400],
+                        )),
+                    child: ListTile(
+                      dense: true,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: OrderUserScreen(),
+                            inheritTheme: true,
+                            duration: Duration(
+                              milliseconds: 350,
+                            ),
+                            ctx: context,
+                          ),
+                        );
+                      },
+                      leading: Icon(
+                        Icons.list,
+                      ),
+                      title: Text(
+                        "Pedidos",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "Acompanhe seus pedidos",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 2,
+                    horizontal: 6,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.grey[400],
+                        )),
+                    child: ListTile(
+                      dense: true,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: SetupUserScreen(),
+                            inheritTheme: true,
+                            duration: Duration(
+                              milliseconds: 350,
+                            ),
+                            ctx: context,
+                          ),
+                        );
+                      },
+                      leading: Icon(
+                        Icons.phonelink_setup,
+                      ),
+                      title: Text(
+                        "Configurações",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "Configure o apicativo do seu jeito",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            FlatButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {},
-              child: ProfileTile(
-                title: "Configurações",
-                description: "Configure o apicativo do seu jeito",
-                icon: Icons.phonelink_setup,
-              ),
-            ),
-          ],
+          ),
         ),
-      );
-    });
+      ),
+    );
   }
 }

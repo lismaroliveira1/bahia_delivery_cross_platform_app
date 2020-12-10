@@ -1,13 +1,7 @@
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/location_screen.dart';
-import 'package:bahia_delivery/themes/theme.dart';
-import 'package:bahia_delivery/tiles/category_tile.dart';
-import 'package:bahia_delivery/tiles/purchased_stores_tile.dart';
-import 'package:bahia_delivery/tiles/stores_closed_tile.dart';
-import 'package:bahia_delivery/tiles/stores_tile.dart';
-
+import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/welcome_store_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -17,167 +11,323 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  bool isStoresLengthVerified;
+  String permissionStatus;
+
   @override
   void initState() {
     super.initState();
-    isStoresLengthVerified = false;
   }
 
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
-      if (!isStoresLengthVerified) {
-        model.updateStories();
-        model.getAllUserData();
-        isStoresLengthVerified = true;
-      }
-      if (!model.isLoggedIn()) {
-        return Container(
-          height: 0,
-        );
-      } else if (model.isLoading) {
-        return Container(
-          color: Colors.white,
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
+      if (model.isLoading) {
+        return Center(
+          child: CircularProgressIndicator(),
         );
       } else {
-        return new Stack(
-          children: <Widget>[
-            new Container(
-              color: Colors.white,
-              child: new CustomScrollView(
-                slivers: <Widget>[
-                  SliverAppBar(
-                    leading: GestureDetector(
-                      child: Container(
-                        padding: EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(13)),
-                            color: Colors.white,
-                            boxShadow: AppTheme.shadow),
-                        child: Icon(Icons.sort),
-                      ),
-                      onTap: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                    ),
-                    floating: true,
-                    snap: true,
-                    backgroundColor: Colors.transparent,
-                    elevation: 0.0,
-                    title: Container(
-                      padding: EdgeInsets.all(10),
-                      height: 80,
-                      width: 80,
-                      child: Image(
-                        image: AssetImage("images/logo.png"),
-                      ),
-                    ),
-                    centerTitle: true,
-                    actions: [
-                      Padding(
-                        padding: EdgeInsets.all(10),
-                        child: Container(
-                          width: 40,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8)),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
+        return Stack(
+          children: [
+            CustomScrollView(
+              slivers: <Widget>[
+                SliverAppBar(
+                  centerTitle: true,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0.0,
+                  floating: true,
+                  snap: true,
+                  expandedHeight: 100,
+                  flexibleSpace: Container(
+                    height: 100,
+                    margin: EdgeInsets.only(top: 65),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 12.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          new IconButton(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {},
+                            icon: Icon(
+                              Icons.sort,
+                            ),
+                          ),
+                          Image.asset(
+                            "images/logo.png",
+                            width: 85,
+                            height: 85,
+                            fit: BoxFit.cover,
+                          ),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
                             child: FadeInImage.memoryNetwork(
                               placeholder: kTransparentImage,
-                              image: model.firebaseUser.photoUrl == null
-                                  ? "https://meuvidraceiro.com.br/images/sem-imagem.png"
-                                  : model.firebaseUser.photoUrl,
-                              fit: BoxFit.cover,
+                              image: model.userData.image,
+                              height: 40,
+                              width: 40,
+                              fit: BoxFit.fill,
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                  SliverList(
-                    delegate: SliverChildListDelegate([
-                      Padding(
-                        padding: EdgeInsets.only(left: 18),
-                        child: Row(
-                          children: [
-                            FlatButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () async {
-                                var status =
-                                    await Permission.locationWhenInUse.status;
-
-                                if (status.isDenied) {
-                                  //TODO Inplement GO to the settings function
-                                } else if (status.isGranted) {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => LocationScreen(0),
-                                  ));
-                                } else if (status.isRestricted) {
-                                } else if (status.isUndetermined) {
-                                  await Permission.locationWhenInUse.request();
-                                } else if (status.isPermanentlyDenied) {
-                                  //Implementar para o mesmo abrir o settings
-                                }
-                              },
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    model.addressSeted
-                                        ? model.currentAddressDataFromGoogle !=
-                                                null
-                                            ? model.currentAddressDataFromGoogle
-                                                        .description.length <
-                                                    40
-                                                ? model
-                                                    .currentAddressDataFromGoogle
-                                                    .description
-                                                : model.currentAddressDataFromGoogle
-                                                        .description
-                                                        .substring(0, 40) +
-                                                    "..."
-                                            : "Localização"
-                                        : "Localização",
+                ),
+                SliverList(
+                  delegate: SliverChildListDelegate([
+                    Container(
+                      margin: EdgeInsets.only(
+                        top: 8,
+                        bottom: 8,
+                      ),
+                      height: 100,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: model.categoryList.map((category) {
+                          return Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0),
+                                child: Container(
+                                  height: 80,
+                                  width: 80,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    image: new DecorationImage(
+                                      image: NetworkImage(
+                                        category.image,
+                                      ),
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                  SizedBox(
-                                    width: 20,
-                                  ),
-                                  Icon(
-                                    Icons.location_on,
-                                    size: 20,
-                                  )
-                                ],
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
+                              Text(
+                                category.title,
+                                style: TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          );
+                        }).toList(),
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 10, bottom: 5),
-                        child: Text(
-                          "Categorias",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontStyle: FontStyle.italic,
-                            color: Colors.grey[700],
-                            fontWeight: FontWeight.w600,
+                    ),
+                    model.lastPurchasedStores.length > 0
+                        ? Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 12,
+                                  bottom: 12,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Compre Novamente",
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                ),
+                                height: 150,
+                                child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: model.lastPurchasedStores
+                                      .map((purchasedStore) {
+                                    return FlatButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          PageTransition(
+                                            type:
+                                                PageTransitionType.rightToLeft,
+                                            child: WelcomeStoreScreen(
+                                                purchasedStore),
+                                            inheritTheme: true,
+                                            duration: Duration(
+                                              milliseconds: 350,
+                                            ),
+                                            ctx: context,
+                                          ),
+                                        );
+                                      },
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 4,
+                                      ),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          border: Border.all(
+                                            color: Colors.grey[300],
+                                          ),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 6.0,
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 6.0),
+                                                child: Container(
+                                                  height: 100,
+                                                  width: 100,
+                                                  decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    image: new DecorationImage(
+                                                      image: NetworkImage(
+                                                        purchasedStore.image,
+                                                      ),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Text(
+                                              purchasedStore.name,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              )
+                            ],
+                          )
+                        : Container(
+                            height: 0,
+                            width: 0,
                           ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 12, top: 12),
+                      child: Text(
+                        "Lojas",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      ListCategory(),
-                      PurchasesStores(),
-                    ]),
-                  ),
-                  ListStories(),
-                  ListStoriesClosed(),
-                ],
-              ),
+                    ),
+                    Column(
+                      children: model.storeHomeList.map((store) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          child: Stack(
+                            children: [
+                              FlatButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    PageTransition(
+                                      type: PageTransitionType.rightToLeft,
+                                      child: WelcomeStoreScreen(store),
+                                      inheritTheme: true,
+                                      duration: Duration(
+                                        milliseconds: 350,
+                                      ),
+                                      ctx: context,
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: Colors.grey[300],
+                                      ),
+                                      color: Colors.white,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(6.0),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            child: FadeInImage.memoryNetwork(
+                                              placeholder: kTransparentImage,
+                                              image: store.image,
+                                              height: 80,
+                                              width: 80,
+                                              fit: BoxFit.fill,
+                                            ),
+                                          ),
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              store.name,
+                                              style: TextStyle(
+                                                color: Colors.black54,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            Text(
+                                              store.description,
+                                            ),
+                                            store.deliveryTime != null
+                                                ? Text(
+                                                    "${store.deliveryTime.toStringAsFixed(0)} m",
+                                                  )
+                                                : Container(
+                                                    height: 0,
+                                                  ),
+                                          ],
+                                        )
+                                      ],
+                                    )),
+                              ),
+                              Positioned(
+                                top: 2,
+                                right: 2,
+                                child: IconButton(
+                                  onPressed: () {
+                                    model.addRemoveStoreFavorite(
+                                      storeId: store.id,
+                                    );
+                                  },
+                                  icon: Icon(
+                                    Icons.favorite,
+                                    size: 20,
+                                    color: store.isFavorite
+                                        ? Colors.red[200]
+                                        : Colors.grey,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ]),
+                )
+              ],
             ),
           ],
         );

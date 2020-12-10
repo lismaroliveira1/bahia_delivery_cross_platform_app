@@ -1,13 +1,13 @@
-import 'package:bahia_delivery/models/cart_model.dart';
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/services/cielo_payment.dart';
+import 'package:bd_app_full/data/store_data.dart';
+import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/services/cielo_payment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class CartPrice extends StatefulWidget {
-  final DocumentSnapshot doc;
-  CartPrice(this.doc);
+  final StoreData storeData;
+  CartPrice(this.storeData);
   @override
   _CartPriceState createState() => _CartPriceState();
 }
@@ -25,14 +25,21 @@ class _CartPriceState extends State<CartPrice> {
           child: Container(
             color: Colors.white,
             padding: EdgeInsets.all(16.0),
-            child: ScopedModelDescendant<CartModel>(
+            child: ScopedModelDescendant<UserModel>(
               builder: (context, child, model) {
-                double ship = model.getShipPrice();
-                double discount = model.getDiscountPrice();
-                return StreamBuilder<QuerySnapshot>(
-                    stream: Firestore.instance
+                if (model.isLoading) {
+                  return Container(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                } else {
+                  double ship = model.getShipPrice();
+                  double discount = model.getDiscountPrice();
+                  return StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
                         .collection("users")
-                        .document(model.user.firebaseUser.uid)
+                        .doc(model.firebaseUser.uid)
                         .collection("cart")
                         .snapshots(),
                     builder: (context, snapshot) {
@@ -44,9 +51,12 @@ class _CartPriceState extends State<CartPrice> {
                       } else {
                         double totalPrice = 0;
                         double totalProductsPrice = 0;
-                        List<DocumentSnapshot> items = snapshot.data.documents;
+                        List<DocumentSnapshot> items = snapshot.data.docs
+                            .where(
+                                (element) => element.get("type") == "product")
+                            .toList();
                         for (DocumentSnapshot doc in items) {
-                          totalProductsPrice += doc.data["totalPrice"];
+                          totalProductsPrice += doc.get("totalPrice");
                         }
                         totalPrice = totalProductsPrice + ship - discount;
                         return Column(
@@ -157,19 +167,19 @@ class _CartPriceState extends State<CartPrice> {
                                       print("payOnApp");
                                       userModel.finishOrder(
                                         discount: discount,
-                                        onSucces: _onSuccessPayOnApp,
+                                        onSuccess: _onSuccessPayOnApp,
                                         onFail: _onFailOnApp,
                                         shipePrice: ship,
-                                        storeData: widget.doc,
+                                        storeData: widget.storeData,
                                         creditDebitCardData: userModel
                                             .currentCreditDebitCardData,
                                       );
                                     } else {
                                       userModel.finishOrderWithPayOnDelivery(
                                         discount: discount,
-                                        onSucces: _onSuccessPay,
+                                        onSuccess: _onSuccessPay,
                                         shipePrice: ship,
-                                        storeData: widget.doc,
+                                        storeData: widget.storeData,
                                         onFail: _onFailPay,
                                       );
                                     }
@@ -183,7 +193,9 @@ class _CartPriceState extends State<CartPrice> {
                           ],
                         );
                       }
-                    });
+                    },
+                  );
+                }
               },
             ),
           ),
@@ -193,10 +205,14 @@ class _CartPriceState extends State<CartPrice> {
   }
 
   void _onSuccessPay() {
-    Scaffold.of(context).hideCurrentSnackBar();
+    Navigator.of(context).pop();
   }
 
   void _onFailPay() {}
-  void _onSuccessPayOnApp() {}
+
+  void _onSuccessPayOnApp() {
+    Navigator.of(context).pop();
+  }
+
   void _onFailOnApp() {}
 }

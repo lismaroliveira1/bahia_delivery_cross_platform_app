@@ -1,42 +1,30 @@
 import 'dart:io';
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/cart_screen.dart';
-import 'package:bahia_delivery/screens/favorite_screen.dart';
-import 'package:bahia_delivery/screens/profile_screen.dart';
-import 'package:bahia_delivery/tabs/about_tab.dart';
-import 'package:bahia_delivery/tabs/home_tab.dart';
-import 'package:bahia_delivery/tabs/order_tab.dart';
-import 'package:bahia_delivery/tabs/setup_tab.dart';
-import 'package:bahia_delivery/widgets/custom_drawer.dart';
+
+import 'package:bd_app_full/tabs/favorite_tab.dart';
+import 'package:bd_app_full/tabs/home_tab.dart';
+import 'package:bd_app_full/tabs/profile_tab.dart';
+import 'package:bd_app_full/tabs/search_tab.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
-import '../tabs/home_tab.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
-  final int page;
-  HomeScreen(this.page);
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _pageController = PageController();
   final HomeTab _homeTab = HomeTab();
-  final FavoriteScreen _favoriteScreen = FavoriteScreen();
-  final ProfileScreen _profileScreen = ProfileScreen();
-  final OrderTab _orderTab = OrderTab();
-  final SetupTab _setupTab = SetupTab();
-  final AboutTab _aboutTab = AboutTab();
-  final CartScreen _cartScreen = CartScreen();
+  final FavoriteTab _favoriteTab = FavoriteTab();
+  final SearchTab _searchTab = SearchTab();
+  final ProfileTab _profileTab = ProfileTab();
   Widget _showPage = new HomeTab();
 
   @override
   void initState() {
     super.initState();
     configFCM();
-    goTothePage();
   }
 
   void configFCM() {
@@ -47,8 +35,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     fcm.configure(
       onLaunch: (Map<String, dynamic> message) async {
-        UserModel.of(context).updatePartnerData();
-        UserModel.of(context).getUserOrder();
         print("onLaunc: $message");
       },
       onResume: (Map<String, dynamic> message) async {
@@ -85,16 +71,16 @@ class _HomeScreenState extends State<HomeScreen> {
         return _homeTab;
         break;
       case 1:
-        return _favoriteScreen;
+        return _favoriteTab;
         break;
       case 2:
-        return _cartScreen;
+        return _searchTab;
         break;
       case 3:
-        return _profileScreen;
+        return _profileTab;
         break;
       default:
-        return _favoriteScreen;
+        return _homeTab;
         break;
     }
   }
@@ -102,88 +88,55 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     double sizeColor = 30.0;
-    return PageView(
-      controller: _pageController,
-      physics: NeverScrollableScrollPhysics(),
-      children: <Widget>[
-        Scaffold(
-          drawer: CustomDrawer(_pageController),
-          body: _showPage,
-          bottomNavigationBar: CurvedNavigationBar(
-            height: 55,
-            color: Colors.blueGrey[300],
-            backgroundColor: Colors.white,
-            buttonBackgroundColor: Colors.redAccent,
-            items: [
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Icon(
-                  Icons.home,
-                  size: sizeColor,
-                  color: Colors.white,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Icon(
-                  Icons.favorite,
-                  size: sizeColor,
-                  color: Colors.white,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Icon(
-                  Icons.add_shopping_cart,
-                  size: sizeColor,
-                  color: Colors.white,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Icon(
-                  Icons.person_pin,
-                  size: sizeColor,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-            animationDuration: Duration(milliseconds: 350),
-            animationCurve: Curves.easeIn,
-            onTap: (int tappedIndex) {
-              setState(() {
-                _showPage = _pageChooser(tappedIndex);
-              });
-            },
+    return Scaffold(
+      body: _showPage,
+      bottomNavigationBar: CurvedNavigationBar(
+        height: 55,
+        color: Colors.black26,
+        backgroundColor: Colors.white,
+        buttonBackgroundColor: Colors.redAccent,
+        items: [
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Icon(
+              Icons.home,
+              size: sizeColor,
+              color: Colors.white,
+            ),
           ),
-        ),
-        Scaffold(
-          drawer: CustomDrawer(_pageController),
-          body: _orderTab,
-        ),
-        Scaffold(
-          drawer: CustomDrawer(_pageController),
-          body: _setupTab,
-        ),
-        Scaffold(
-          drawer: CustomDrawer(_pageController),
-          body: _aboutTab,
-        )
-      ],
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Icon(
+              Icons.favorite,
+              size: sizeColor,
+              color: Colors.white,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Icon(
+              Icons.search,
+              size: sizeColor,
+              color: Colors.white,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: Icon(
+              Icons.person_pin,
+              size: sizeColor,
+              color: Colors.white,
+            ),
+          ),
+        ],
+        animationDuration: Duration(milliseconds: 350),
+        animationCurve: Curves.ease,
+        onTap: (int tapIndex) {
+          setState(() {
+            _showPage = _pageChooser(tapIndex);
+          });
+        },
+      ),
     );
-  }
-
-  void goTothePage() {
-    switch (widget.page) {
-      case 0:
-        setState(() {
-          _showPage = _pageChooser(0);
-        });
-        break;
-      case 1:
-        setState(() {
-          _showPage = _pageChooser(1);
-        });
-    }
   }
 }

@@ -1,18 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 
 class CategoryData {
-  String title;
   String image;
-  CategoryData();
+  String title;
+  String id;
 
-  CategoryData.fromDocument(DocumentSnapshot documentSnapahot) {
-    title = documentSnapahot.data["title"];
-    image = documentSnapahot.data["image"];
-  }
-  Map<String, dynamic> toMap() {
-    return {
-      "title": title,
-      "image": image,
-    };
+  CategoryData({
+    @required this.image,
+    @required this.title,
+    @required this.id,
+  });
+  CategoryData.fromQueryDocument(QueryDocumentSnapshot queryDocumentSnapshot) {
+    image = queryDocumentSnapshot.get("image");
+    title = queryDocumentSnapshot.get("title");
+    id = queryDocumentSnapshot.id;
   }
 }

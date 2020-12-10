@@ -1,23 +1,14 @@
-import 'package:bahia_delivery/tabs/product_tab.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bd_app_full/data/product_data.dart';
+import 'package:bd_app_full/tabs/product_store_tab.dart';
 import 'package:flutter/material.dart';
 
-class ProductScreen extends StatefulWidget {
-  final DocumentSnapshot snapshot;
-  final String storeId;
-  ProductScreen(this.snapshot, this.storeId);
-
-  @override
-  _ProductScreenState createState() => _ProductScreenState(snapshot);
-}
-
-class _ProductScreenState extends State<ProductScreen> {
-  final DocumentSnapshot snapshot;
-  _ProductScreenState(this.snapshot);
+class ProductStoreScreen extends StatelessWidget {
+  final ProductData productData;
+  ProductStoreScreen(this.productData);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ProductTab(snapshot, widget.storeId),
+      body: ProductStoreTab(productData),
     );
   }
 }

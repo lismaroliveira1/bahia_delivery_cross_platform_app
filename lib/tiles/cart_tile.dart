@@ -1,6 +1,5 @@
-import 'package:bahia_delivery/data/cart_product.dart';
-import 'package:bahia_delivery/models/cart_model.dart';
-import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bd_app_full/data/cart_product.dart';
+import 'package:bd_app_full/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -185,13 +184,13 @@ class _CartTileState extends State<CartTile> {
                                     );
                                   } else {
                                     return StreamBuilder<DocumentSnapshot>(
-                                        stream: Firestore.instance
+                                        stream: FirebaseFirestore.instance
                                             .collection("users")
-                                            .document(UserModel.of(context)
+                                            .doc(UserModel.of(context)
                                                 .firebaseUser
                                                 .uid)
                                             .collection("cart")
-                                            .document(widget.cartProduct.cId)
+                                            .doc(widget.cartProduct.cId)
                                             .snapshots(),
                                         builder: (context, snapshot) {
                                           if (!snapshot.hasData) {
@@ -237,7 +236,7 @@ class _CartTileState extends State<CartTile> {
                       ),
                       onPressed: widget.cartProduct.quantify > 1
                           ? () {
-                              CartModel.of(context)
+                              UserModel.of(context)
                                   .decProduct(widget.cartProduct);
                             }
                           : null,
@@ -250,12 +249,11 @@ class _CartTileState extends State<CartTile> {
                         );
                       } else {
                         return StreamBuilder<DocumentSnapshot>(
-                            stream: Firestore.instance
+                            stream: FirebaseFirestore.instance
                                 .collection("users")
-                                .document(
-                                    UserModel.of(context).firebaseUser.uid)
+                                .doc(UserModel.of(context).firebaseUser.uid)
                                 .collection("cart")
-                                .document(widget.cartProduct.cId)
+                                .doc(widget.cartProduct.cId)
                                 .snapshots(),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData) {
@@ -278,7 +276,7 @@ class _CartTileState extends State<CartTile> {
                     IconButton(
                       padding: EdgeInsets.zero,
                       onPressed: () {
-                        CartModel.of(context).incProduct(widget.cartProduct);
+                        UserModel.of(context).incProduct(widget.cartProduct);
                       },
                       icon: Icon(
                         Icons.add,
@@ -299,8 +297,8 @@ class _CartTileState extends State<CartTile> {
   }
 
   void _onSuccess() {
-    if (!UserModel.of(context).hasProductInCart) {
-      Scaffold.of(context).hideCurrentSnackBar();
+    if (!(UserModel.of(context).cartProducts.length == 0)) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
     }
   }
 

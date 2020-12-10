@@ -1,12 +1,13 @@
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/create_edit_product_screen.dart';
-import 'package:bahia_delivery/screens/order_store_screen.dart';
-import 'package:bahia_delivery/screens/report_screen.dart';
-import 'package:bahia_delivery/screens/sales_off_screen.dart';
-import 'package:bahia_delivery/screens/setup_store_screnn.dart';
-import 'package:bahia_delivery/screens/store_category_screen.dart';
-import 'package:bahia_delivery/widgets/store_home_widgets.dart';
+import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/category_store_partner_screen.dart';
+import 'package:bd_app_full/screens/combo_partner_screen.dart';
+import 'package:bd_app_full/screens/off_sales_screnn.dart';
+import 'package:bd_app_full/screens/order_partner_screnn.dart';
+import 'package:bd_app_full/screens/product_store_screnn.dart';
+import 'package:bd_app_full/screens/report_store_screem.dart';
+import 'package:bd_app_full/screens/setup_partner_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -16,273 +17,386 @@ class StoreHomeTab extends StatefulWidget {
 }
 
 class _StoreHomeTabState extends State<StoreHomeTab> {
-  bool isVerifiedStore = false;
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<UserModel>(
-      builder: (context, child, model) {
-        if (model.isLoading) {
-          return Container(
-            color: Colors.white,
-            child: Center(
+    return Container(
+      color: Colors.black26,
+      child: ScopedModelDescendant<UserModel>(
+        builder: (context, child, model) {
+          if (model.isLoading) {
+            return Center(
               child: CircularProgressIndicator(),
-            ),
-          );
-        } else {
-          return CustomScrollView(
-            slivers: <Widget>[
-              SliverAppBar(
-                title: Text(
-                  model.storeName,
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(25),
-                    bottomRight: Radius.circular(25),
-                  ),
-                ),
-                expandedHeight: MediaQuery.of(context).size.height / 5.5,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(25),
-                        bottomRight: Radius.circular(25),
-                      ),
-                      color: Colors.black,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(25),
-                        bottomRight: Radius.circular(25),
-                      ),
-                      child: FadeInImage.memoryNetwork(
-                        placeholder: kTransparentImage,
-                        image: model.storeImage,
-                        fit: BoxFit.cover,
-                      ),
+            );
+          } else {
+            return Container(
+              color: Colors.black26,
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 0,
+                    child: FadeInImage.memoryNetwork(
+                      placeholder: kTransparentImage,
+                      image: model.userData.storeImage,
+                      fit: BoxFit.cover,
+                      height: 300,
+                      width: MediaQuery.of(context).size.width,
                     ),
                   ),
-                ),
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    Stack(
-                      children: [
-                        Container(
-                          height: 100,
+                  NestedScrollView(
+                    headerSliverBuilder:
+                        (BuildContext context, bool innerBoxScroled) {
+                      return <Widget>[
+                        SliverAppBar(
+                          backgroundColor: Colors.transparent,
+                          expandedHeight: 150,
+                        )
+                      ];
+                    },
+                    body: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
                         ),
-                        !model.isStoreHourConfigurated
-                            ? Positioned(
-                                top: 14,
-                                right: 14,
-                                child: Container(
-                                  height: 40,
-                                  width: 40,
-                                  child: FlatButton(
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () {
-                                        _onAttentionButtonPressed();
-                                      },
-                                      child: Image.asset(
-                                          'images/attention_icon.png')),
-                                ))
-                            : Container(
-                                height: 0,
-                                width: 0,
+                      ),
+                      child: Container(
+                        margin: EdgeInsets.only(top: 100),
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
                               ),
-                      ],
-                    )
-                  ],
-                ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                                child: ListTile(
+                                  onTap: () {
+                                    _onFanancialCashWidgetPressed();
+                                  },
+                                  dense: true,
+                                  leading: Icon(
+                                    Icons.article,
+                                  ),
+                                  title: Text("Relatórios"),
+                                  subtitle: Text(
+                                      "Visualize as movimentaçãoes realizadas na sua loja"),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                                child: ListTile(
+                                  onTap: () {
+                                    _onProductWidgetPressed();
+                                  },
+                                  dense: true,
+                                  leading: Icon(
+                                    Icons.add_circle_outline,
+                                  ),
+                                  title: Text("Produtos"),
+                                  subtitle: Text(
+                                      "Adcione ou edite produtos na sua loja"),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                                child: ListTile(
+                                  onTap: () {
+                                    _onSectionStoreWidgetPressed();
+                                  },
+                                  dense: true,
+                                  leading: Icon(
+                                    Icons.category,
+                                  ),
+                                  title: Text("Seções"),
+                                  subtitle: Text(
+                                    "Adcione ou edite seções e/ou subseções",
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                                child: ListTile(
+                                  onTap: () {
+                                    _onSalesOffWidgetPressed();
+                                  },
+                                  dense: true,
+                                  leading: Icon(Icons.bolt),
+                                  title: Text(
+                                    "Promoções",
+                                  ),
+                                  subtitle: Text(
+                                    "Adicione ou edite promoções",
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                                child: ListTile(
+                                  onTap: () {
+                                    _onCombofWidgetPressed();
+                                  },
+                                  dense: true,
+                                  leading: Icon(Icons.apps),
+                                  title: Text(
+                                    "Combos",
+                                  ),
+                                  subtitle: Text(
+                                    "Adicione ou edite combos personalizadors",
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                                child: ListTile(
+                                  onTap: () {
+                                    _onOrderWidgetPressed();
+                                  },
+                                  dense: true,
+                                  leading: Icon(
+                                    Icons.list_alt_rounded,
+                                  ),
+                                  title: Text(
+                                    "Pedidos",
+                                  ),
+                                  subtitle: Text(
+                                    "Consulte os andamentos e detalhes de seus pedidos",
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                                child: ListTile(
+                                  onTap: () {
+                                    _onProductWidgetPressed();
+                                  },
+                                  dense: true,
+                                  leading: Icon(
+                                    Icons.add_circle_outline,
+                                  ),
+                                  title: Text("Entregadores"),
+                                  subtitle:
+                                      Text("Adcione e gerencie entregadores"),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                                child: ListTile(
+                                  onTap: () {
+                                    _onSetupStorePressed();
+                                  },
+                                  dense: true,
+                                  leading: Icon(
+                                    Icons.settings,
+                                  ),
+                                  title: Text(
+                                    "Configurações",
+                                  ),
+                                  subtitle: Text(
+                                    "Personalize sua loja",
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    StoreHomeWigget(
-                      onPressed: _onFinancialCashWidgetPressed,
-                      icon: Icons.article,
-                      name: "Relatórios",
-                      description:
-                          "Visualize as movimentaçãoes realizadas na sua loja",
-                    ),
-                    StoreHomeWigget(
-                      onPressed: _onProductWidgetPressed,
-                      icon: Icons.add_circle_outline,
-                      name: "Produtos",
-                      description: "Adcione ou edite produtos na sua loja",
-                    ),
-                    StoreHomeWigget(
-                      onPressed: _onCategoryStorePressed,
-                      icon: Icons.category,
-                      name: "Categorias",
-                      description:
-                          "Adcione ou edite categorias e organize os prodrutos",
-                    ),
-                    StoreHomeWigget(
-                      onPressed: _onSalesOffStorePressed,
-                      icon: Icons.bolt,
-                      name: "Promoções",
-                      description: "Adicione ou edite promoções",
-                    ),
-                    StoreHomeWigget(
-                      onPressed: _onOrderStoredScreenPressed,
-                      icon: Icons.list_alt_rounded,
-                      name: "Pedidos",
-                      description:
-                          "Consulte os andamentos e detalhes de seus pedidos",
-                    ),
-                    StoreHomeWigget(
-                      onPressed: _onSetupStoreScreenPressed,
-                      icon: Icons.settings,
-                      name: "Configurações",
-                      description: "Personalize sua loja",
-                    )
-                  ],
-                ),
-              ),
-            ],
-          );
-        }
-      },
+            );
+          }
+        },
+      ),
     );
   }
 
-  void _onFinancialCashWidgetPressed() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ReportScrenn(),
+  void _onFanancialCashWidgetPressed() {
+    Navigator.push(
+      context,
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: ReportStoreScreen(),
+        inheritTheme: true,
+        duration: Duration(
+          milliseconds: 350,
+        ),
+        ctx: context,
       ),
     );
   }
 
   void _onProductWidgetPressed() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => CreateEditProductScreen(),
-      ),
-    );
-  }
-
-  void _onCategoryStorePressed() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => CategoryStoreScreen(),
-      ),
-    );
-  }
-
-  void _onOrderStoredScreenPressed() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => OrderStoreScreen(),
-      ),
-    );
-  }
-
-  void _onSalesOffStorePressed() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => SalesOffScreen(),
-      ),
-    );
-  }
-
-  void _onSetupStoreScreenPressed() {
-    final storeData = UserModel.of(context).storeData;
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => SetupStoreScreen(storeData),
-      ),
-    );
-  }
-
-  void _onAttentionButtonPressed() {
-    double imageSide = MediaQuery.of(context).size.width / 8;
-    Scaffold.of(context).showSnackBar(SnackBar(
-      elevation: 12,
-      duration: Duration(minutes: 1),
-      backgroundColor: Colors.grey[200],
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
+    Navigator.push(
+      context,
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: ProductStorePartnerScreen(),
+        inheritTheme: true,
+        duration: Duration(
+          milliseconds: 350,
         ),
+        ctx: context,
       ),
-      content: Container(
-        height: 600,
-        child: Stack(
-          children: [
-            Center(
-              child: Column(
-                children: [
-                  Center(
-                    child: Container(
-                      height: imageSide,
-                      width: imageSide,
-                      child: Image.asset(
-                        'images/logo.png',
-                        height: imageSide,
-                        width: imageSide,
-                      ),
-                    ),
-                  ),
-                  !UserModel.of(context).isStoreHourConfigurated
-                      ? ListTile(
-                          leading: Icon(
-                            Icons.ac_unit,
-                            size: 20,
-                            color: Colors.black,
-                          ),
-                          title: Text(
-                            "Horário de funcionamento",
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                          subtitle: Text(
-                            "Configure o horário de funcionamento da loja para que possa ser vista pelos clientes",
-                            style: TextStyle(
-                              color: Colors.grey,
-                            ),
-                          ),
-                          onTap: () {
-                            final storeData = UserModel.of(context).storeData;
-                            Scaffold.of(context).hideCurrentSnackBar();
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    SetupStoreScreen(storeData),
-                              ),
-                            );
-                          },
-                        )
-                      : Container(
-                          height: 0,
-                          width: 0,
-                        ),
-                ],
-              ),
-            ),
-            Positioned(
-              top: 4,
-              right: 4,
-              child: IconButton(
-                  icon: Icon(
-                    Icons.close_outlined,
-                    color: Colors.redAccent,
-                  ),
-                  onPressed: () {
-                    Scaffold.of(context).hideCurrentSnackBar();
-                  }),
-            )
-          ],
+    );
+  }
+
+  void _onSectionStoreWidgetPressed() {
+    Navigator.push(
+      context,
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: CategoryStorePartnerScrenn(),
+        inheritTheme: true,
+        duration: Duration(
+          milliseconds: 350,
         ),
+        ctx: context,
       ),
-    ));
+    );
+  }
+
+  void _onSalesOffWidgetPressed() {
+    Navigator.push(
+      context,
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: SalesOffScreen(),
+        inheritTheme: true,
+        duration: Duration(
+          milliseconds: 350,
+        ),
+        ctx: context,
+      ),
+    );
+  }
+
+  void _onOrderWidgetPressed() {
+    Navigator.push(
+      context,
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: OrderPartnerScreen(),
+        inheritTheme: true,
+        duration: Duration(
+          milliseconds: 350,
+        ),
+        ctx: context,
+      ),
+    );
+  }
+
+  void _onSetupStorePressed() {
+    Navigator.push(
+      context,
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: SetupPartnerScreen(),
+        inheritTheme: true,
+        duration: Duration(
+          milliseconds: 350,
+        ),
+        ctx: context,
+      ),
+    );
+  }
+
+  void _onCombofWidgetPressed() {
+    Navigator.push(
+      context,
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: ComboPartnerScreen(),
+        inheritTheme: true,
+        duration: Duration(
+          milliseconds: 350,
+        ),
+        ctx: context,
+      ),
+    );
   }
 }

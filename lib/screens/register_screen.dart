@@ -1,7 +1,9 @@
-import 'package:bahia_delivery/blocs/login_bloc.dart';
-import 'package:bahia_delivery/data/user.dart';
-import 'package:bahia_delivery/models/user_model.dart';
+import 'package:bd_app_full/blocs/login_bloc.dart';
+import 'package:bd_app_full/data/user_data.dart';
+import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -12,7 +14,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final _loginBlock = LoginBloc();
-  final User user = User();
+  final UserData user = UserData();
+
   @override
   Widget build(BuildContext scontext) {
     return Scaffold(
@@ -132,7 +135,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         formKey.currentState.save();
                                         if (user.password !=
                                             user.confirmPassword) {
-                                          scaffoldKey.currentState
+                                          ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                             content: const Text(
                                                 'Senhas não coincidem!'),
@@ -196,9 +199,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   borderRadius: new BorderRadius.circular(15)),
                               onPressed: () async {
                                 await UserModel.of(context).signUpWithFacebook(
-                                    onSuccess: _onSuccess,
-                                    onFail: _onFail,
-                                    onFailFacebbok: _onFailFacebook);
+                                  onSuccess: _onSuccess,
+                                  onFail: _onFail,
+                                  onFailFacebook: _onFailFacebook,
+                                );
                               },
                               padding: EdgeInsets.zero,
                               child: Container(
@@ -228,7 +232,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _onSuccess() {
-    scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
         "Usuário criado com sucesso",
         textAlign: TextAlign.center,
@@ -237,12 +241,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
       duration: Duration(seconds: 2),
     ));
     Future.delayed(Duration(seconds: 2)).then((_) {
-      Navigator.of(context).pop();
+      Navigator.pushReplacement(
+        context,
+        PageTransition(
+          type: PageTransitionType.rightToLeft,
+          child: HomeScreen(),
+          inheritTheme: true,
+          duration: Duration(
+            milliseconds: 350,
+          ),
+          ctx: context,
+        ),
+      );
     });
   }
 
   void _onFail() {
-    scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text("Falha ao criar o usuário", textAlign: TextAlign.center),
       backgroundColor: Colors.red,
       duration: Duration(seconds: 2),
@@ -250,7 +265,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _onFailGoogle() {
-    scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
         "Esta conta Google já foi registrada",
         textAlign: TextAlign.center,
@@ -261,7 +276,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _onFailFacebook() {
-    scaffoldKey.currentState.showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
         "Esta conta Facebook já foi registrada",
         textAlign: TextAlign.center,

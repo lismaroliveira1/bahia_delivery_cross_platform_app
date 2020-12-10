@@ -1,7 +1,9 @@
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/insert_new_sale_off_screen.dart';
-import 'package:bahia_delivery/widgets/store_home_widgets.dart';
+import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/edit_off_sales_screen.dart';
+import 'package:bd_app_full/screens/new_off_partner_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class SalesOffTab extends StatefulWidget {
   @override
@@ -9,42 +11,144 @@ class SalesOffTab extends StatefulWidget {
 }
 
 class _SalesOffTabState extends State<SalesOffTab> {
-  final TextEditingController _searchController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: TextField(
-            controller: _searchController,
-            autocorrect: true,
-            decoration: InputDecoration(
-              labelText: "Pesquisar",
-              hintText: "Sanduíche",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+    return Container(
+      color: Colors.black26,
+      child: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxScroled) {
+          return <Widget>[
+            SliverAppBar(
+              backgroundColor: Colors.transparent,
+              expandedHeight: 100,
+            )
+          ];
+        },
+        body: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
             ),
           ),
-        ),
-        StoreHomeWigget(
-          icon: Icons.add_circle_outline_rounded,
-          name: "Nova Promoção",
-          description: "Crie novas promoções na sua loja",
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => InsertNewSaleOffScreen(),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(8, 2, 8, 0),
+                child: Container(
+                  margin: EdgeInsets.only(
+                    top: 35,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.black45,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          type: PageTransitionType.rightToLeft,
+                          child: NewSalesOffPartnerScreen(),
+                          inheritTheme: true,
+                          duration: Duration(
+                            milliseconds: 350,
+                          ),
+                          ctx: context,
+                        ),
+                      );
+                    },
+                    dense: true,
+                    leading: Icon(Icons.add_circle),
+                    title: Text("Nova Promoção"),
+                    subtitle: Text("Cadastre promoções na sua loja"),
+                  ),
+                ),
               ),
-            );
-          },
+              ScopedModelDescendant<UserModel>(
+                  builder: (context, child, model) {
+                if (model.isLoading) {
+                  return Container(
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
+                } else {
+                  if (model.offPartnerData.length > 0) {
+                    return Container(
+                      child: Expanded(
+                        child: ListView(
+                          children: model.offPartnerData
+                              .map(
+                                (offData) => Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        border: Border.all(
+                                          color: Colors.black54,
+                                        )),
+                                    child: ListTile(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          PageTransition(
+                                            child: EditOffSaleScreen(offData),
+                                            type:
+                                                PageTransitionType.rightToLeft,
+                                            inheritTheme: true,
+                                            duration: Duration(
+                                              milliseconds: 350,
+                                            ),
+                                            ctx: context,
+                                          ),
+                                        );
+                                      },
+                                      leading: Container(
+                                        width: 60,
+                                        height: 60,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                              offData.image,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      title: Text(
+                                        offData.title,
+                                      ),
+                                      subtitle: Text(
+                                        offData.description,
+                                      ),
+                                      trailing: Column(
+                                        children: [],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                              .toList(),
+                        ),
+                      ),
+                    );
+                  } else {
+                    return Container(
+                      height: 0,
+                      width: 0,
+                    );
+                  }
+                }
+              }),
+            ],
+          ),
         ),
-      ],
+      ),
     );
   }
-
-  void _onSuccess() {}
-  void _onFail() {}
 }

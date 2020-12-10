@@ -1,9 +1,5 @@
-import 'dart:collection';
-
-import 'package:bahia_delivery/data/order_data.dart';
-import 'package:bahia_delivery/data/product_order_data.dart';
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/chat_user_screen.dart';
+import 'package:bd_app_full/data/order_data.dart';
+import 'package:bd_app_full/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -20,7 +16,7 @@ class _OrderTileState extends State<OrderTile> {
   String firtstatus = "Aceitar Pedido";
   String secondStatus = "Enviar";
   String thirdStatus = "";
-  List<ProductOrderData> products = [];
+  List<ProductData> products = [];
   @override
   Widget build(BuildContext context) {
     String month = '';
@@ -69,9 +65,9 @@ class _OrderTileState extends State<OrderTile> {
           child: Padding(
             padding: EdgeInsets.all(6.0),
             child: StreamBuilder<DocumentSnapshot>(
-              stream: Firestore.instance
+              stream: FirebaseFirestore.instance
                   .collection("orders")
-                  .document(widget.orderData.orderId)
+                  .doc(widget.orderData.id)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -109,7 +105,7 @@ class _OrderTileState extends State<OrderTile> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                              "Código do pedido: ${widget.orderData.orderId.substring(0, 6)}",
+                              "Código do pedido: ${widget.orderData.id.substring(0, 6)}",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -154,7 +150,7 @@ class _OrderTileState extends State<OrderTile> {
                       SizedBox(
                         height: 4.0,
                       ),
-                      _buildProductsAndComplements(widget.orderData.doc),
+                      _buildProductsAndComplements(widget.orderData.products),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
@@ -243,12 +239,12 @@ class _OrderTileState extends State<OrderTile> {
                   padding: EdgeInsets.only(left: 12.0),
                   icon: Icon(Icons.message),
                   onPressed: () {
-                    UserModel.of(context).setChatData(widget.orderData);
+                    /*UserModel.of(context).setChatData(widget.orderData);
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => ChatUserScreen(),
                       ),
-                    );
+                    );*/
                   }),
               Text(
                 "Entre em contato com a loja",
@@ -258,9 +254,7 @@ class _OrderTileState extends State<OrderTile> {
                   color: Colors.red[300],
                   padding: EdgeInsets.only(right: 12.0),
                   icon: Icon(Icons.phone),
-                  onPressed: () {
-                    //TODO CHAMAR O CALL COMO O NUMERO DA LOJA
-                  })
+                  onPressed: () {})
             ],
           ),
         )
@@ -268,11 +262,11 @@ class _OrderTileState extends State<OrderTile> {
     );
   }
 
-  Widget _buildProductsAndComplements(DocumentSnapshot doc) {
-    double shipPrice = doc.data["shipPrice"];
+  Widget _buildProductsAndComplements(List<ProductData> productsList) {
     products.clear();
-    for (LinkedHashMap p in doc.data["products"]) {
-      products.add(ProductOrderData.fromDynamicDocument(p));
+    double shipPrice = widget.orderData.shipPrice;
+    for (ProductData product in productsList) {
+      products.add(product);
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -288,7 +282,7 @@ class _OrderTileState extends State<OrderTile> {
                 " (R\$ ${product.productPrice})",
             textAlign: TextAlign.center,
           ),
-          subtitle: product.optnalsComplement.length > 0
+          subtitle: product.complementProducts.length > 0
               ? Column(
                   children: [
                     Text(
@@ -299,7 +293,7 @@ class _OrderTileState extends State<OrderTile> {
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: product.optnalsComplement.map((complement) {
+                      children: product.complementProducts.map((complement) {
                         return Text(
                           complement.quantity.toString() +
                               " x " +

@@ -11,7 +11,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>bahia_delivery</string>
+	<string>bd_app_full</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -41,16 +41,6 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Libera aíiii</string>
-	<key>io.flutter.embedded_views_preview</key>
-	<string>YES</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Get picture to save store and products photos.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Get picture to save store and products photos.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Get picture from camera</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -58,9 +48,19 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.861823949799-vc35cprkp249096uujjn0vvnmcvjppkn</string>
+				<string>com.googleusercontent.apps.411754724192-47gvsdco9batrabh5aabq11ptuedu3ke</string>
 			</array>
 		</dict>
 	</array>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>It&apos;s needed to access the device photo library </string>
+	<key>NSCameraUsageDescription</key>
+	<string>To access the camera </string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>It&apos;s needed to access the device location</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+<string>It&apos;s needed to accesss treh device location</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>It&apos;s needed to access the device&apos;s microphone</string>
 </dict>
 </plist>

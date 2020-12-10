@@ -1,8 +1,10 @@
-import 'package:bahia_delivery/blocs/login_bloc.dart';
-import 'package:bahia_delivery/data/user.dart';
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/register_screen.dart';
+import 'package:bd_app_full/blocs/login_bloc.dart';
+import 'package:bd_app_full/data/user_data.dart';
+import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/home_screen.dart';
+import 'package:bd_app_full/screens/register_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -15,7 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final User user = User();
+  final UserData user = UserData();
 
   @override
   Widget build(BuildContext context) {
@@ -33,49 +35,55 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 100.0),
-                      child: SizedBox(
-                        height: 200,
-                        width: 200,
-                        child: Image.asset('images/logo_full.png'),
+                    Container(
+                      margin: EdgeInsets.only(top: 100, bottom: 4),
+                      child: StreamBuilder<String>(
+                        stream: _loginBloc.outEmail,
+                        builder: (context, snapshot) {
+                          return TextFormField(
+                            controller: emailController,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                errorText:
+                                    snapshot.hasError ? snapshot.error : null,
+                                errorStyle: TextStyle(color: Colors.white),
+                                hintText: "",
+                                labelText: "Login",
+                                icon: Icon(Icons.person_outline)),
+                            keyboardType: TextInputType.emailAddress,
+                            onSaved: (email) => user.email = email,
+                            onChanged: _loginBloc.changeEmail,
+                          );
+                        },
                       ),
                     ),
-                    StreamBuilder<String>(
-                      stream: _loginBloc.outEmail,
-                      builder: (context, snapshot) {
-                        return TextFormField(
-                          controller: emailController,
-                          obscureText: false,
-                          decoration: InputDecoration(
-                              errorText:
-                                  snapshot.hasError ? snapshot.error : null,
-                              errorStyle: TextStyle(color: Colors.white),
-                              hintText: "Login",
-                              icon: Icon(Icons.person_outline)),
-                          keyboardType: TextInputType.emailAddress,
-                          onSaved: (email) => user.email = email,
-                          onChanged: _loginBloc.changeEmail,
-                        );
-                      },
-                    ),
-                    StreamBuilder<String>(
-                      stream: _loginBloc.outPassword,
-                      builder: (context, snapshot) {
-                        return TextFormField(
-                          controller: passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                              errorText:
-                                  snapshot.hasError ? snapshot.error : null,
-                              errorStyle: TextStyle(color: Colors.white),
-                              hintText: "Senha",
-                              icon: Icon(Icons.lock_outline)),
-                          keyboardType: TextInputType.emailAddress,
-                          onSaved: (password) => user.password = password,
-                          onChanged: _loginBloc.changePassword,
-                        );
-                      },
+                    Container(
+                      margin: EdgeInsets.only(top: 4),
+                      child: StreamBuilder<String>(
+                        stream: _loginBloc.outPassword,
+                        builder: (context, snapshot) {
+                          return TextFormField(
+                            controller: passwordController,
+                            obscureText: true,
+                            decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                errorText:
+                                    snapshot.hasError ? snapshot.error : null,
+                                errorStyle: TextStyle(color: Colors.white),
+                                hintText: "",
+                                labelText: 'Senha',
+                                icon: Icon(Icons.lock_outline)),
+                            keyboardType: TextInputType.emailAddress,
+                            onSaved: (password) => user.password = password,
+                            onChanged: _loginBloc.changePassword,
+                          );
+                        },
+                      ),
                     ),
                     SizedBox(
                       height: 40,
@@ -130,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(12),
                             child: RaisedButton(
                               onPressed: () async {
-                                await UserModel.of(context).signInWithGoogle(
+                                UserModel.of(context).signInWithGoogle(
                                   onSuccess: _onSuccess,
                                   onFail: _onFailGoogle,
                                 );
@@ -154,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               shape: new RoundedRectangleBorder(
                                   borderRadius: new BorderRadius.circular(15)),
                               onPressed: () async {
-                                await UserModel.of(context).signInWithFacebook(
+                                UserModel.of(context).signInWithFacebook(
                                     onSuccess: _onSuccess,
                                     onFail: _onFailFacebook);
                               },
@@ -192,8 +200,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Colors.white),
                           ),
                           onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => RegisterScreen()));
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => RegisterScreen(),
+                              ),
+                            );
                           },
                         )
                       ],
@@ -209,43 +220,64 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onSuccess() {
-    scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(
-        "Usuário logado com sucesso",
-        textAlign: TextAlign.center,
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Usuário logado com sucesso",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 2),
       ),
-      backgroundColor: Colors.red,
-      duration: Duration(seconds: 2),
-    ));
+    );
+    Navigator.push(
+      context,
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: HomeScreen(),
+        inheritTheme: true,
+        duration: Duration(
+          milliseconds: 350,
+        ),
+        ctx: context,
+      ),
+    );
+    Navigator.of(context).pop();
   }
 
   void _onFail() {
-    scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text("Falha ao realizar login", textAlign: TextAlign.center),
-      backgroundColor: Colors.red,
-      duration: Duration(seconds: 2),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Falha ao realizar login", textAlign: TextAlign.center),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   void _onFailGoogle() {
-    scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(
-        "Conta Google não registrada",
-        textAlign: TextAlign.center,
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Conta Google não registrada",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 2),
       ),
-      backgroundColor: Colors.red,
-      duration: Duration(seconds: 2),
-    ));
+    );
   }
 
   void _onFailFacebook() {
-    scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(
-        "Conta Facebook não registrada",
-        textAlign: TextAlign.center,
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Conta Facebook não registrada",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 2),
       ),
-      backgroundColor: Colors.red,
-      duration: Duration(seconds: 2),
-    ));
+    );
   }
 }

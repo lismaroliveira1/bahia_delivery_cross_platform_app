@@ -1,9 +1,5 @@
-import 'dart:collection';
-
-import 'package:bahia_delivery/data/order_data.dart';
-import 'package:bahia_delivery/data/product_order_data.dart';
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/chat_store_screnn.dart';
+import 'package:bd_app_full/data/order_data.dart';
+import 'package:bd_app_full/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -21,7 +17,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
   String secondStatus = "Enviar";
   String thirdStatus = "";
   String noImage = "https://meuvidraceiro.com.br/images/sem-imagem.png";
-  List<ProductOrderData> products = [];
+  List<ProductData> products = [];
   @override
   Widget build(BuildContext context) {
     String month = '';
@@ -70,9 +66,9 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
           child: Padding(
             padding: EdgeInsets.all(6.0),
             child: StreamBuilder<DocumentSnapshot>(
-              stream: Firestore.instance
+              stream: FirebaseFirestore.instance
                   .collection("orders")
-                  .document(widget.orderData.orderId)
+                  .doc(widget.orderData.id)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -114,7 +110,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                              "Código do pedido: ${widget.orderData.orderId.substring(0, 6)}",
+                              "Código do pedido: ${widget.orderData.id.substring(0, 6)}",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
@@ -183,6 +179,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                           vertical: 2.0,
                         ),
                         child: ListTile(
+                          contentPadding: EdgeInsets.zero,
                           subtitle: Text(
                             snapshot.data["clientAddress"],
                             textAlign: TextAlign.center,
@@ -202,7 +199,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                           ],
                         ),
                       ),
-                      _buildProductsAndComplements(widget.orderData.doc),
+                      _buildProductsAndComplements(widget.orderData.products),
                       SizedBox(
                         height: 4.0,
                       ),
@@ -235,10 +232,10 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                           FlatButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
-                              await Firestore.instance
+                              await FirebaseFirestore.instance
                                   .collection("orders")
-                                  .document(widget.orderData.orderId)
-                                  .updateData({
+                                  .doc(widget.orderData.id)
+                                  .update({
                                 "status": 2,
                               });
                               setState(() {
@@ -251,10 +248,10 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                           FlatButton(
                             padding: EdgeInsets.zero,
                             onPressed: () async {
-                              await Firestore.instance
+                              await FirebaseFirestore.instance
                                   .collection("orders")
-                                  .document(widget.orderData.orderId)
-                                  .updateData({
+                                  .doc(widget.orderData.id)
+                                  .update({
                                 "status": 3,
                               });
                               setState(() {
@@ -318,12 +315,12 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                   padding: EdgeInsets.only(left: 12.0),
                   icon: Icon(Icons.message),
                   onPressed: () {
-                    UserModel.of(context).setChatData(widget.orderData);
+                    /*UserModel.of(context).setChatData(widget.orderData);
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => ChatScreen(),
                       ),
-                    );
+                    );*/
                   }),
               Text(
                 "Entre em contato com a loja",
@@ -344,11 +341,11 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
     );
   }
 
-  Widget _buildProductsAndComplements(DocumentSnapshot doc) {
+  Widget _buildProductsAndComplements(List<ProductData> productsList) {
     products.clear();
-    double shipPrice = doc.data["shipPrice"];
-    for (LinkedHashMap p in doc.data["products"]) {
-      products.add(ProductOrderData.fromDynamicDocument(p));
+    double shipPrice = widget.orderData.shipPrice;
+    for (ProductData product in productsList) {
+      products.add(product);
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -363,7 +360,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                 " (R\$ ${product.productPrice})",
             textAlign: TextAlign.center,
           ),
-          subtitle: product.optnalsComplement.length > 0
+          subtitle: product.complementProducts.length > 0
               ? Column(
                   children: [
                     Text(
@@ -374,12 +371,12 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: product.optnalsComplement.map((complement) {
+                      children: product.complementProducts.map((complement) {
                         return Text(
                           complement.quantity.toString() +
                               " x " +
                               complement.title +
-                              " (R\$ ${complement.price})",
+                              " (R\$ ${complement.price.toStringAsFixed(2)})",
                         );
                       }).toList(),
                     ),

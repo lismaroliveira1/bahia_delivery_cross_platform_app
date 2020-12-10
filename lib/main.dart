@@ -1,74 +1,53 @@
-import 'package:bahia_delivery/models/address_model.dart';
-import 'package:bahia_delivery/models/cart_model.dart';
-import 'package:bahia_delivery/models/favorite_model.dart';
-import 'package:bahia_delivery/models/payment_model.dart';
-import 'package:bahia_delivery/models/store_model.dart';
-import 'package:bahia_delivery/models/user_model.dart';
-import 'package:bahia_delivery/screens/home_screen.dart';
-import 'package:bahia_delivery/screens/login_screen.dart';
+import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/home_screen.dart';
+import 'package:bd_app_full/screens/login_screen.dart';
+import 'package:bd_app_full/screens/welcome_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ScopedModel<UserModel>(
       model: UserModel(),
       child: ScopedModelDescendant<UserModel>(
-        builder: (context, child, userModel) {
-          return ScopedModel<StoreModel>(
-              model: StoreModel(),
-              child: ScopedModelDescendant<StoreModel>(
-                builder: (context, child, storeModel) {
-                  return ScopedModel<FavoriteModel>(
-                    model: FavoriteModel(userModel),
-                    child: ScopedModelDescendant<FavoriteModel>(
-                      builder: (context, child, favoriteModel) {
-                        return ScopedModel<PaymmentModel>(
-                          model: PaymmentModel(),
-                          child: ScopedModelDescendant<PaymmentModel>(
-                            builder: (context, child, paymentModel) {
-                              return ScopedModel<CartModel>(
-                                model: CartModel(userModel),
-                                child: ScopedModelDescendant<CartModel>(
-                                  builder: (context, child, cartModel) {
-                                    return ScopedModel<AddressModel>(
-                                      model: AddressModel(),
-                                      child:
-                                          ScopedModelDescendant<AddressModel>(
-                                        builder: (context, child, model) {
-                                          //TODO excluir a address model
-                                          return MaterialApp(
-                                            title: 'Bahia Delivery',
-                                            theme: ThemeData(
-                                                primarySwatch: Colors.blue,
-                                                visualDensity: VisualDensity
-                                                    .adaptivePlatformDensity,
-                                                primaryColor: Color.fromARGB(
-                                                    255, 216, 216, 216)),
-                                            debugShowCheckedModeBanner: false,
-                                            home: userModel.isLoggedIn()
-                                                ? HomeScreen(0)
-                                                : LoginScreen(),
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  },
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ));
+        builder: (context, child, model) {
+          if (model.isReady) {
+            return OverlaySupport(
+              child: MaterialApp(
+                color: Colors.white,
+                title: 'Bahia Delivery',
+                theme: ThemeData(
+                  primarySwatch: Colors.blue,
+                  visualDensity: VisualDensity.adaptivePlatformDensity,
+                  primaryColor: Color.fromARGB(255, 216, 216, 216),
+                ),
+                debugShowCheckedModeBanner: false,
+                home: model.isLoggedIn() ? HomeScreen() : LoginScreen(),
+              ),
+            );
+          } else {
+            return OverlaySupport(
+                child: MaterialApp(
+              title: 'Bahia Delivery',
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+                visualDensity: VisualDensity.adaptivePlatformDensity,
+                primaryColor: Color.fromARGB(255, 216, 216, 216),
+              ),
+              debugShowCheckedModeBanner: false,
+              home: WelcomeScreen(),
+            ));
+          }
         },
       ),
     );

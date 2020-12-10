@@ -1,7 +1,7 @@
 // This is a generated file; do not edit or check into version control.
 FLUTTER_ROOT=/Applications/flutter
-FLUTTER_APPLICATION_PATH=/Users/lismaroliveira/Documents/apps/bahia_delivery_cross_platform_app
-FLUTTER_TARGET=/Users/lismaroliveira/Documents/apps/bahia_delivery_cross_platform_app/lib/main.dart
+FLUTTER_APPLICATION_PATH=/Users/lismaroliveira/Documents/apps/bd_app_full
+FLUTTER_TARGET=/Users/lismaroliveira/Documents/apps/bd_app_full/lib/main.dart
 FLUTTER_BUILD_DIR=build
 SYMROOT=${SOURCE_ROOT}/../build/ios
 OTHER_LDFLAGS=$(inherited) -framework Flutter
