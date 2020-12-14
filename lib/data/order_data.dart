@@ -38,12 +38,15 @@ class OrderData {
     storeDescription = queryDoc.get("storeDescription");
     storeId = queryDoc.get("storeId");
     storeImage = queryDoc.get("storeImage");
-    totalPrice = queryDoc.get("totalPrice");
+    totalPrice = queryDoc.get("shipPrice");
+
     for (LinkedHashMap p in queryDoc.data()["products"]) {
       products.add(ProductData.fromLinkedHashMap(p));
+      totalPrice += p["totalPrice"];
     }
     for (LinkedHashMap combo in queryDoc.data()["combos"]) {
       combos.add(ComboData.fromLinkedHashMap(combo));
+      totalPrice += combo["price"] * combo["quantity"];
     }
   }
 }

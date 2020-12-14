@@ -207,20 +207,47 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                               height: 0,
                               width: 0,
                             ),
-                      _buildComboText(widget.orderData.combos),
+                      widget.orderData.combos.length > 0
+                          ? _buildComboText(widget.orderData.combos)
+                          : Container(
+                              height: 0,
+                              width: 0,
+                            ),
                       SizedBox(
                         height: 4.0,
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: Column(
                           children: [
-                            Text(
-                              "Total: ",
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Entrega: ",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "R\$ " +
+                                      widget.orderData.shipPrice
+                                          .toStringAsFixed(2),
+                                ),
+                              ],
                             ),
-                            Text("R\$ " + totalPrice.toStringAsFixed(2)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Total: ",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "R\$ " +
+                                      widget.orderData.totalPrice
+                                          .toStringAsFixed(2),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
@@ -353,16 +380,34 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
     return Column(
       children: comboList
           .map(
-            (combo) => ListTile(
-              contentPadding: EdgeInsets.zero,
-              dense: true,
-              title: Text(
-                combo.quantity.toString() +
-                    " x " +
-                    combo.title +
-                    " (R\$ ${combo.price.toStringAsFixed(2)})",
-                textAlign: TextAlign.center,
-              ),
+            (combo) => Column(
+              children: [
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                  title: Text(
+                    combo.quantity.toString() +
+                        " x " +
+                        combo.title +
+                        " (R\$ ${combo.price.toStringAsFixed(2)})",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Total: ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "R\$ ${(combo.price * combo.quantity).toStringAsFixed(2)}",
+                    ),
+                  ],
+                ),
+              ],
             ),
           )
           .toList(),
@@ -446,18 +491,6 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                           ),
                         ),
                         Text("R\$ ${product.totalPrice}"),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Delivery: ",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text("R\$ ${shipPrice.toStringAsFixed(2)}"),
                       ],
                     ),
                   ],

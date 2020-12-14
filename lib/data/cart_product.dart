@@ -69,7 +69,7 @@ class CartProduct {
               break;
             case "type":
               type = value;
-              print(type);
+
               break;
             case "maxQuantity":
               maxQuantity = value;

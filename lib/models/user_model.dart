@@ -1517,14 +1517,6 @@ class UserModel extends Model {
             .doc(firebaseUser.uid)
             .collection("cart")
             .get();
-        List<QueryDocumentSnapshot> items = querySnapshot.docs;
-        for (QueryDocumentSnapshot doc in items) {
-          if (doc.get("type") == "products") {
-            productPrice += doc.get("totalPrice");
-          } else if (doc.get("type") == "combo") {
-            comboPrice += doc.get("price");
-          }
-        }
         totalPrice = productPrice + comboPrice + offPrice;
         await FirebaseFirestore.instance.collection("orders").add({
           "client": firebaseUser.uid,

@@ -1,3 +1,4 @@
+import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/order_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -150,17 +151,51 @@ class _OrderTileState extends State<OrderTile> {
                       SizedBox(
                         height: 4.0,
                       ),
-                      _buildProductsAndComplements(widget.orderData.products),
+                      widget.orderData.products.length > 0
+                          ? _buildProductsAndComplements(
+                              widget.orderData.products)
+                          : Container(
+                              height: 0,
+                              width: 0,
+                            ),
+                      widget.orderData.combos.length > 0
+                          ? _buildComboText(widget.orderData.combos)
+                          : Container(
+                              height: 0,
+                              width: 0,
+                            ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: Column(
                           children: [
-                            Text(
-                              "Total: ",
-                              style: TextStyle(fontWeight: FontWeight.bold),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Entrega: ",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "R\$ " +
+                                      widget.orderData.shipPrice
+                                          .toStringAsFixed(2),
+                                ),
+                              ],
                             ),
-                            Text("R\$ " + totalPrice.toStringAsFixed(2)),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Total: ",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  "R\$ " +
+                                      widget.orderData.totalPrice
+                                          .toStringAsFixed(2),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                       ),
@@ -262,6 +297,44 @@ class _OrderTileState extends State<OrderTile> {
     );
   }
 
+  Widget _buildComboText(List<ComboData> comboList) {
+    return Column(
+      children: comboList
+          .map(
+            (combo) => Column(
+              children: [
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                  title: Text(
+                    combo.quantity.toString() +
+                        " x " +
+                        combo.title +
+                        " (R\$ ${combo.price.toStringAsFixed(2)})",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Total: ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "R\$ ${(combo.price * combo.quantity).toStringAsFixed(2)}",
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )
+          .toList(),
+    );
+  }
+
   Widget _buildProductsAndComplements(List<ProductData> productsList) {
     products.clear();
     double shipPrice = widget.orderData.shipPrice;
@@ -314,18 +387,6 @@ class _OrderTileState extends State<OrderTile> {
                         Text("R\$ ${product.totalPrice.toStringAsFixed(2)}"),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Delivery: ",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text("R\$ ${shipPrice.toStringAsFixed(2)}"),
-                      ],
-                    ),
                   ],
                 )
               : Column(
@@ -340,18 +401,6 @@ class _OrderTileState extends State<OrderTile> {
                           ),
                         ),
                         Text("R\$ ${product.totalPrice.toStringAsFixed(2)}"),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Delivery: ",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text("R\$ ${shipPrice.toStringAsFixed(2)}"),
                       ],
                     ),
                   ],
