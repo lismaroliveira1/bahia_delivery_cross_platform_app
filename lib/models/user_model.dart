@@ -1695,7 +1695,7 @@ class UserModel extends Model {
     notifyListeners();
   }
 
-  void addCombotoCart({
+  void addComboToCart({
     @required ComboData comboData,
     @required VoidCallback onSuccess,
     @required VoidCallback onFail,

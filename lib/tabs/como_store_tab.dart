@@ -331,7 +331,7 @@ class _ComboStoreTabState extends State<ComboStoreTab> {
                             ),
                           ),
                           onPressed: () {
-                            UserModel.of(context).addCombotoCart(
+                            UserModel.of(context).addComboToCart(
                               comboData: comboCartData,
                               onFail: _onFail,
                               onSuccess: _onSuccess,
