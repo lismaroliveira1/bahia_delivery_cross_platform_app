@@ -56,7 +56,8 @@ class _CartPriceState extends State<CartPrice> {
                             .where((element) => element.get("type") == "combo")
                             .toList();
                         for (DocumentSnapshot doc in comboItens) {
-                          totalCombosPrice += doc.get("price");
+                          totalCombosPrice +=
+                              doc.get("price") * doc.get("quantity");
                         }
                         List<DocumentSnapshot> items = snapshot.data.docs
                             .where(

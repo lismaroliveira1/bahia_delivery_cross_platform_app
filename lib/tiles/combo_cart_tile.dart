@@ -12,8 +12,16 @@ class ComboCartTile extends StatefulWidget {
 }
 
 class _ComboCartTileState extends State<ComboCartTile> {
+  ComboData comboData;
   double price = 0;
   int quantity = 0;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    comboData = widget.comboData;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -57,8 +65,19 @@ class _ComboCartTileState extends State<ComboCartTile> {
                       ),
                     ),
                   ),
-                  Text(
-                    widget.comboData.description,
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              widget.comboData.description,
+                              textAlign: TextAlign.start,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 3.0),
@@ -126,7 +145,7 @@ class _ComboCartTileState extends State<ComboCartTile> {
                                               width: 0,
                                             );
                                           } else {
-                                            //price = snapshot.data["price"];
+                                            price = snapshot.data["price"];
                                             return Container(
                                               child: Text(
                                                 "R\$ ${price.toStringAsFixed(2)}",
@@ -187,9 +206,10 @@ class _ComboCartTileState extends State<ComboCartTile> {
                                       width: 0,
                                     );
                                   } else {
-                                    quantity = snapshot.data["quantity"];
+                                    comboData.quantity =
+                                        snapshot.data["quantity"];
                                     return Text(
-                                      quantity.toString(),
+                                      comboData.quantity.toString(),
                                       style: TextStyle(
                                         color: Colors.black87,
                                       ),
@@ -200,7 +220,11 @@ class _ComboCartTileState extends State<ComboCartTile> {
                         }),
                         IconButton(
                           padding: EdgeInsets.zero,
-                          onPressed: () {},
+                          onPressed: () {
+                            UserModel.of(context).incComboCartItem(
+                              cartComboData: comboData,
+                            );
+                          },
                           icon: Icon(
                             Icons.add,
                             color: Colors.black54,

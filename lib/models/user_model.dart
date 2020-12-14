@@ -24,6 +24,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:geodesy/geodesy.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:location/location.dart';
@@ -1744,6 +1745,24 @@ class UserModel extends Model {
         }
         notifyListeners();
       } catch (erro) {}
+    }
+  }
+
+  void incComboCartItem({
+    @required ComboData cartComboData,
+  }) async {
+    print("ok");
+    try {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(firebaseUser.uid)
+          .collection("cart")
+          .doc(cartComboData.id)
+          .update({
+        "quantity": cartComboData.quantity + 1,
+      });
+    } catch (erro) {
+      print(erro);
     }
   }
 }
