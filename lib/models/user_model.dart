@@ -1511,8 +1511,7 @@ class UserModel extends Model {
       try {
         print(cartProducts.length);
         print("ok");
-        if (cartProducts.length == 0) return null;
-
+        if (cartProducts.length == 0 && comboCartList.length == 0) return null;
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
             .collection("users")
             .doc(firebaseUser.uid)
@@ -1535,8 +1534,16 @@ class UserModel extends Model {
               .replaceAll("State of ", "")
               .replaceAll("Brazil", "Brasil"),
           "storeId": storeData.id,
-          "products":
-              cartProducts.map((cartProduct) => cartProduct.toMap()).toList(),
+          "products": cartProducts
+              .map(
+                (cartProduct) => cartProduct.toMap(),
+              )
+              .toList(),
+          "combos": comboCartList
+              .map(
+                (combo) => combo.toComboProductMap(),
+              )
+              .toList(),
           "shipPrice": shipePrice,
           "StoreName": storeData.name,
           "storeImage": storeData.image,
@@ -1549,6 +1556,7 @@ class UserModel extends Model {
           'paymentType': "Pagamento na Entrega"
         });
         cartProducts.clear();
+        comboCartList.clear();
         hasProductInCart = false;
         onSuccess();
         notifyListeners();

@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -20,6 +21,7 @@ class OrderData {
   String storeImage;
   double totalPrice;
   List<ProductData> products = [];
+  List<ComboData> combos = [];
 
   OrderData.fromQueryDocument(QueryDocumentSnapshot queryDoc) {
     id = queryDoc.id;
@@ -39,6 +41,9 @@ class OrderData {
     totalPrice = queryDoc.get("totalPrice");
     for (LinkedHashMap p in queryDoc.data()["products"]) {
       products.add(ProductData.fromLinkedHashMap(p));
+    }
+    for (LinkedHashMap combo in queryDoc.data()["combos"]) {
+      combos.add(ComboData.fromLinkedHashMap(combo));
     }
   }
 }

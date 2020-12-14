@@ -53,6 +53,16 @@ class ComboData {
     type = queryDoc.get("type");
     description = queryDoc.get("description");
   }
+
+  ComboData.fromLinkedHashMap(LinkedHashMap combo) {
+    title = combo["comboTitle"];
+    image = combo["comboImage"];
+    price = combo["price"];
+    quantity = combo["quantity"];
+    type = combo["type"];
+    description = combo["description"];
+  }
+
   Map<String, dynamic> toMap() {
     return {
       "image": image,

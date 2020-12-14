@@ -1,3 +1,4 @@
+import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/order_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -187,7 +188,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 4.0),
+                        padding: const EdgeInsets.only(top: 0.0),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -199,7 +200,14 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                           ],
                         ),
                       ),
-                      _buildProductsAndComplements(widget.orderData.products),
+                      widget.orderData.products.length > 0
+                          ? _buildProductsAndComplements(
+                              widget.orderData.products)
+                          : Container(
+                              height: 0,
+                              width: 0,
+                            ),
+                      _buildComboText(widget.orderData.combos),
                       SizedBox(
                         height: 4.0,
                       ),
@@ -338,6 +346,26 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
           ),
         )
       ],
+    );
+  }
+
+  Widget _buildComboText(List<ComboData> comboList) {
+    return Column(
+      children: comboList
+          .map(
+            (combo) => ListTile(
+              contentPadding: EdgeInsets.zero,
+              dense: true,
+              title: Text(
+                combo.quantity.toString() +
+                    " x " +
+                    combo.title +
+                    " (R\$ ${combo.price.toStringAsFixed(2)})",
+                textAlign: TextAlign.center,
+              ),
+            ),
+          )
+          .toList(),
     );
   }
 

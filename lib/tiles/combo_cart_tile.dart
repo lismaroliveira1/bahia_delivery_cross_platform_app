@@ -189,11 +189,13 @@ class _ComboCartTileState extends State<ComboCartTile> {
                             Icons.remove,
                             color: Colors.black54,
                           ),
-                          onPressed: () {
-                            UserModel.of(context).decComboCartItem(
-                              cartComboData: comboData,
-                            );
-                          },
+                          onPressed: comboData.quantity > 0
+                              ? () {
+                                  UserModel.of(context).decComboCartItem(
+                                    cartComboData: comboData,
+                                  );
+                                }
+                              : null,
                         ),
                         ScopedModelDescendant<UserModel>(
                             builder: (context, child, model) {
