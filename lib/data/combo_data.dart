@@ -44,12 +44,14 @@ class ComboData {
   }
 
   ComboData.fromCartQueryDocument(QueryDocumentSnapshot queryDoc) {
+    id = queryDoc.id;
     title = queryDoc.get("comboTitle");
     image = queryDoc.get("comboImage");
     price = queryDoc.get("price");
     quantity = queryDoc.get("quantity");
     storeId = queryDoc.get("storeId");
     type = queryDoc.get("type");
+    description = queryDoc.get("description");
   }
   Map<String, dynamic> toMap() {
     return {
@@ -84,6 +86,7 @@ class ComboData {
       "comboTitle": title,
       "quantity": quantity,
       "price": price,
+      "description": description,
     };
   }
 }

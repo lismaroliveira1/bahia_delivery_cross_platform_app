@@ -1,30 +1,19 @@
-import 'package:bd_app_full/data/cart_product.dart';
+import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class CartTile extends StatefulWidget {
-  final CartProduct cartProduct;
-  final VoidCallback noProduct;
-  CartTile({
-    @required this.cartProduct,
-    @required this.noProduct,
-  });
-
+class ComboCartTile extends StatefulWidget {
+  final ComboData comboData;
+  ComboCartTile(this.comboData);
   @override
-  _CartTileState createState() => _CartTileState();
+  _ComboCartTileState createState() => _ComboCartTileState();
 }
 
-class _CartTileState extends State<CartTile> {
+class _ComboCartTileState extends State<ComboCartTile> {
+  double price = 0;
   int quantity = 0;
-  double price;
-  @override
-  void initState() {
-    super.initState();
-    price = widget.cartProduct.price;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -43,7 +32,7 @@ class _CartTileState extends State<CartTile> {
                 child: Row(
                   children: [
                     Text(
-                      widget.cartProduct.productTitle,
+                      widget.comboData.title,
                       style: TextStyle(
                         color: Colors.black87,
                         fontWeight: FontWeight.w500,
@@ -61,81 +50,16 @@ class _CartTileState extends State<CartTile> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
                       child: Image.network(
-                        widget.cartProduct.productImage,
+                        widget.comboData.image,
                         height: MediaQuery.of(context).size.width / 6.5,
                         width: MediaQuery.of(context).size.width / 6.5,
                         fit: BoxFit.cover,
                       ),
                     ),
                   ),
-                  widget.cartProduct.productOptionals.length > 0
-                      ? Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Complementos",
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              Container(
-                                child: Column(
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: widget
-                                          .cartProduct.productOptionals
-                                          .map(
-                                            (optionals) => Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 4.0,
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  Text(
-                                                    optionals.quantity
-                                                            .toString() +
-                                                        " x " +
-                                                        optionals.title,
-                                                    style: TextStyle(
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    optionals.price
-                                                        .toStringAsFixed(2),
-                                                    style: TextStyle(
-                                                      color: Colors.black54,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                          .toList(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : Container(
-                          height: 0,
-                          width: 0,
-                          child: Text(
-                            "no products",
-                            style: TextStyle(
-                              color: Colors.amber,
-                            ),
-                          ),
-                        ),
+                  Text(
+                    widget.comboData.description,
+                  ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 3.0),
                     child: Container(
@@ -145,7 +69,7 @@ class _CartTileState extends State<CartTile> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Text(
-                            "R\$ ${widget.cartProduct.productPrice.toStringAsFixed(2)}",
+                            "R\$ ${widget.comboData.price.toStringAsFixed(2)}",
                             style: TextStyle(
                               color: Colors.black54,
                               fontSize: 16,
@@ -165,14 +89,7 @@ class _CartTileState extends State<CartTile> {
                                           padding: EdgeInsets.zero,
                                           child: Text("Remover"),
                                           textColor: Colors.grey[500],
-                                          onPressed: () {
-                                            UserModel.of(context)
-                                                .removeCartItem(
-                                              cartProduct: widget.cartProduct,
-                                              onSuccess: _onSuccess,
-                                              onFail: _onFail,
-                                            );
-                                          },
+                                          onPressed: () {},
                                         );
                                       })
                                 ],
@@ -200,7 +117,7 @@ class _CartTileState extends State<CartTile> {
                                                 .firebaseUser
                                                 .uid)
                                             .collection("cart")
-                                            .doc(widget.cartProduct.cId)
+                                            .doc(widget.comboData.id)
                                             .snapshots(),
                                         builder: (context, snapshot) {
                                           if (!snapshot.hasData) {
@@ -209,7 +126,7 @@ class _CartTileState extends State<CartTile> {
                                               width: 0,
                                             );
                                           } else {
-                                            price = snapshot.data["totalPrice"];
+                                            //price = snapshot.data["price"];
                                             return Container(
                                               child: Text(
                                                 "R\$ ${price.toStringAsFixed(2)}",
@@ -247,12 +164,7 @@ class _CartTileState extends State<CartTile> {
                             Icons.remove,
                             color: Colors.black54,
                           ),
-                          onPressed: widget.cartProduct.quantify > 1
-                              ? () {
-                                  UserModel.of(context)
-                                      .decProduct(widget.cartProduct);
-                                }
-                              : null,
+                          onPressed: () {},
                         ),
                         ScopedModelDescendant<UserModel>(
                             builder: (context, child, model) {
@@ -266,7 +178,7 @@ class _CartTileState extends State<CartTile> {
                                     .collection("users")
                                     .doc(UserModel.of(context).firebaseUser.uid)
                                     .collection("cart")
-                                    .doc(widget.cartProduct.cId)
+                                    .doc(widget.comboData.id)
                                     .snapshots(),
                                 builder: (context, snapshot) {
                                   if (!snapshot.hasData) {
@@ -288,10 +200,7 @@ class _CartTileState extends State<CartTile> {
                         }),
                         IconButton(
                           padding: EdgeInsets.zero,
-                          onPressed: () {
-                            UserModel.of(context)
-                                .incProduct(widget.cartProduct);
-                          },
+                          onPressed: () {},
                           icon: Icon(
                             Icons.add,
                             color: Colors.black54,
@@ -311,12 +220,4 @@ class _CartTileState extends State<CartTile> {
       ],
     );
   }
-
-  void _onSuccess() {
-    if (!(UserModel.of(context).cartProducts.length == 0)) {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    }
-  }
-
-  void _onFail() {}
 }

@@ -3,6 +3,7 @@ import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/cart_screen.dart';
 import 'package:bd_app_full/screens/category_store_screen.dart';
 import 'package:bd_app_full/screens/combo_screnn.dart';
+import 'package:bd_app_full/screens/sales_off_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:page_transition/page_transition.dart';
@@ -93,30 +94,50 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                                   MediaQuery.of(context).size.width / 4;
                               return Padding(
                                 padding: const EdgeInsets.all(4.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    Container(
-                                      height: imageSize,
-                                      width: imageSize,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(8),
-                                        image: new DecorationImage(
-                                          image: NetworkImage(
-                                            off.image,
+                                child: FlatButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      PageTransition(
+                                        type: PageTransitionType.rightToLeft,
+                                        child: SalesOffScreen(
+                                          widget.storeData,
+                                          off,
+                                        ),
+                                        inheritTheme: true,
+                                        duration: Duration(
+                                          milliseconds: 350,
+                                        ),
+                                        ctx: context,
+                                      ),
+                                    );
+                                  },
+                                  child: Column(
+                                    children: <Widget>[
+                                      Container(
+                                        height: imageSize,
+                                        width: imageSize,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          image: new DecorationImage(
+                                            image: NetworkImage(
+                                              off.image,
+                                            ),
+                                            fit: BoxFit.cover,
                                           ),
-                                          fit: BoxFit.cover,
                                         ),
                                       ),
-                                    ),
-                                    Text(
-                                      off.title,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
+                                      Text(
+                                        off.title,
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
                                       ),
-                                    ),
-                                    Text(off.description),
-                                  ],
+                                      Text(off.description),
+                                    ],
+                                  ),
                                 ),
                               );
                             }).toList(),

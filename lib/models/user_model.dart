@@ -1731,6 +1731,7 @@ class UserModel extends Model {
             .doc(firebaseUser.uid)
             .collection("cart")
             .get();
+        comboCartList.clear();
         comboQuery.docs.map((queryDoc) {
           if (queryDoc.get("type") == "combo") {
             comboCartList.add(

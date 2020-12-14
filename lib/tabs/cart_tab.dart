@@ -1,6 +1,7 @@
 import 'package:bd_app_full/data/store_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/tiles/cart_tile.dart';
+import 'package:bd_app_full/tiles/combo_cart_tile.dart';
 import 'package:bd_app_full/widgets/cart_price.dart';
 import 'package:bd_app_full/widgets/discount_cart.dart';
 import 'package:bd_app_full/widgets/payment_cart.dart';
@@ -56,15 +57,24 @@ class _CartTabState extends State<CartTab> {
                   width: 0,
                 );
               } else {
-                return Center(
-                  child: Column(
-                    children: model.cartProducts.map((product) {
-                      return CartTile(
-                        cartProduct: product,
-                        noProduct: _noProductInCart,
-                      );
-                    }).toList(),
-                  ),
+                return Column(
+                  children: [
+                    Column(
+                      children: model.cartProducts.map((product) {
+                        return CartTile(
+                          cartProduct: product,
+                          noProduct: _noProductInCart,
+                        );
+                      }).toList(),
+                    ),
+                    Column(
+                      children: model.comboCartList
+                          .map(
+                            (combo) => ComboCartTile(combo),
+                          )
+                          .toList(),
+                    )
+                  ],
                 );
               }
             }),

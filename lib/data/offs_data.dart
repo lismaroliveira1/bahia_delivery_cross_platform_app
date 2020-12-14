@@ -11,6 +11,9 @@ class OffData {
   String title;
   ProductData productData;
   File imageFile;
+  double discountPercentage = 0;
+  int quantity = 1;
+  double price = 0;
 
   OffData({
     @required this.description,
@@ -19,6 +22,9 @@ class OffData {
     @required this.productData,
     @required this.imageFile,
     this.id,
+    this.discountPercentage,
+    this.quantity,
+    this.price,
   });
 
   OffData.fromQueryDocument(QueryDocumentSnapshot queryDoc) {

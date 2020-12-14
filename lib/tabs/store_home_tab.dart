@@ -1,7 +1,7 @@
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/category_store_partner_screen.dart';
 import 'package:bd_app_full/screens/combo_partner_screen.dart';
-import 'package:bd_app_full/screens/off_sales_screnn.dart';
+import 'package:bd_app_full/screens/off_sales_partner_screnn.dart';
 import 'package:bd_app_full/screens/order_partner_screnn.dart';
 import 'package:bd_app_full/screens/product_store_screnn.dart';
 import 'package:bd_app_full/screens/report_store_screem.dart';
@@ -345,7 +345,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
       context,
       PageTransition(
         type: PageTransitionType.rightToLeft,
-        child: SalesOffScreen(),
+        child: SalesOffPartnerScreen(),
         inheritTheme: true,
         duration: Duration(
           milliseconds: 350,
