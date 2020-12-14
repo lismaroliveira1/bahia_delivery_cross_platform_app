@@ -1765,4 +1765,44 @@ class UserModel extends Model {
       print(erro);
     }
   }
+
+  void decComboCartItem({
+    @required ComboData cartComboData,
+  }) async {
+    if (isLoggedIn()) {
+      try {
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .collection("cart")
+            .doc(cartComboData.id)
+            .update({
+          "quantity": cartComboData.quantity - 1,
+        });
+      } catch (erro) {}
+    }
+  }
+
+  void removeComboCartItem({
+    @required ComboData cartComboData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    try {
+      comboCartList.remove(cartComboData);
+      notifyListeners();
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(firebaseUser.uid)
+          .collection("cart")
+          .doc(cartComboData.id)
+          .delete();
+
+      onSuccess();
+      notifyListeners();
+    } catch (erro) {
+      onFail();
+      notifyListeners();
+    }
+  }
 }

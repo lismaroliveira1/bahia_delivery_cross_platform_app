@@ -17,7 +17,6 @@ class _ComboCartTileState extends State<ComboCartTile> {
   int quantity = 0;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     comboData = widget.comboData;
   }
@@ -108,7 +107,14 @@ class _ComboCartTileState extends State<ComboCartTile> {
                                           padding: EdgeInsets.zero,
                                           child: Text("Remover"),
                                           textColor: Colors.grey[500],
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            UserModel.of(context)
+                                                .removeComboCartItem(
+                                              cartComboData: comboData,
+                                              onSuccess: _onSuccess,
+                                              onFail: _onFail,
+                                            );
+                                          },
                                         );
                                       })
                                 ],
@@ -183,7 +189,11 @@ class _ComboCartTileState extends State<ComboCartTile> {
                             Icons.remove,
                             color: Colors.black54,
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            UserModel.of(context).decComboCartItem(
+                              cartComboData: comboData,
+                            );
+                          },
                         ),
                         ScopedModelDescendant<UserModel>(
                             builder: (context, child, model) {
@@ -244,4 +254,7 @@ class _ComboCartTileState extends State<ComboCartTile> {
       ],
     );
   }
+
+  void _onSuccess() {}
+  void _onFail() {}
 }
