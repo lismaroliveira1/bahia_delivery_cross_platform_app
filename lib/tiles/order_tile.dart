@@ -77,7 +77,6 @@ class _OrderTileState extends State<OrderTile> {
                   );
                 } else {
                   int status = snapshot.data["status"];
-                  double totalPrice = snapshot.data["totalPrice"];
                   switch (status) {
                     case 1:
                       firtstatus = "Aceitar \n Pedido";
@@ -337,7 +336,6 @@ class _OrderTileState extends State<OrderTile> {
 
   Widget _buildProductsAndComplements(List<ProductData> productsList) {
     products.clear();
-    double shipPrice = widget.orderData.shipPrice;
     for (ProductData product in productsList) {
       products.add(product);
     }

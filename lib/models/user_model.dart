@@ -124,7 +124,6 @@ class UserModel extends Model {
     getPaymentUserForms();
     isLoading = false;
     isReady = true;
-
     notifyListeners();
   }
 

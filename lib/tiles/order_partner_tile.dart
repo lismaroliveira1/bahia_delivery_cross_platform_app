@@ -80,7 +80,6 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                   );
                 } else {
                   int status = snapshot.data["status"];
-                  double totalPrice = snapshot.data["totalPrice"];
                   switch (status) {
                     case 1:
                       firtstatus = "Aceitar \n Pedido";
