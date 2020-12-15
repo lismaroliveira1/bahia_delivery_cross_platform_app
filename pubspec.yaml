@@ -58,6 +58,9 @@ dependencies:
   geodesy: ^0.3.2
   overlay_support: ^1.0.5
   sliverbar_with_card: ^0.1.5
+  syncfusion_flutter_datepicker: ^18.3.53-beta
+  intl: ^0.16.1
+  giffy_dialog: ^1.8.0
 
 dev_dependencies:
   flutter_test:
