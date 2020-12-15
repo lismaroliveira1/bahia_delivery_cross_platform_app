@@ -1,4 +1,7 @@
+import 'package:bd_app_full/screens/register_address_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class RegisterPartnerWithCPFTab extends StatefulWidget {
@@ -194,7 +197,9 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                 ),
                 Container(
                   child: FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _onYesPressed();
+                    },
                     child: Column(
                       children: [
                         Padding(
@@ -281,5 +286,20 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
           _selectedDate.year.toString();
     });
     Navigator.of(context).pop();
+  }
+
+  void _onYesPressed() {
+    Navigator.push(
+      context,
+      PageTransition(
+        type: PageTransitionType.rightToLeft,
+        child: RegisterAddressScreen(),
+        inheritTheme: true,
+        duration: Duration(
+          milliseconds: 350,
+        ),
+        ctx: context,
+      ),
+    );
   }
 }

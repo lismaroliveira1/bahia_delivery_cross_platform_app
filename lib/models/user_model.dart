@@ -82,7 +82,7 @@ class UserModel extends Model {
   void addListener(VoidCallback listener) async {
     super.addListener(listener);
     _loadCurrentUser();
-    getPurchasedStoresList();
+    await getLocationDevice();
   }
 
   bool isLoggedIn() {
@@ -1638,6 +1638,7 @@ class UserModel extends Model {
   }
 
   Future<void> getLocationDevice() async {
+    print("asdfdas");
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
@@ -1654,8 +1655,8 @@ class UserModel extends Model {
       }
     }
     _locationData = await location.getLocation();
-    userData.latitude = _locationData.latitude;
-    userData.longitude = _locationData.longitude;
+    print(_locationData.latitude);
+    print(_locationData.longitude);
     await getAddressFromLatLng(
       lat: _locationData.latitude,
       lng: _locationData.longitude,

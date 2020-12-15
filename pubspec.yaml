@@ -61,6 +61,8 @@ dependencies:
   syncfusion_flutter_datepicker: ^18.3.53-beta
   intl: ^0.16.1
   giffy_dialog: ^1.8.0
+  google_place: ^0.3.3
+  dotenv: ^2.0.0
 
 dev_dependencies:
   flutter_test:
