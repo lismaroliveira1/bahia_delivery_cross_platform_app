@@ -24,7 +24,6 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
   void initState() {
     _textDate = "";
     super.initState();
-    print("ok");
   }
 
   @override

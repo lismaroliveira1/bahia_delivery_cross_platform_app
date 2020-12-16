@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +39,12 @@ class MyApp extends StatelessWidget {
           } else {
             return OverlaySupport(
                 child: MaterialApp(
+              localizationsDelegates: [
+                GlobalWidgetsLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: [Locale('pt', 'BR')],
               title: 'Bahia Delivery',
               theme: ThemeData(
                 primarySwatch: Colors.blue,
