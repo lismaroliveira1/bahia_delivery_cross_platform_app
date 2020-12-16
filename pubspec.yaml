@@ -62,7 +62,7 @@ dependencies:
   intl: ^0.16.1
   giffy_dialog: ^1.8.0
   google_place: ^0.3.3
-  dotenv: ^2.0.0
+  google_maps_webservice: ^0.0.18
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 
-class AdressData {
+class AddressData {
   double altitude;
   String zipCode;
   double longitude;
@@ -10,8 +11,22 @@ class AdressData {
   String state;
   String district;
   String complement;
+  String country;
 
-  AdressData.fromResponse(Response<Map<String, dynamic>> response) {
+  AddressData({
+    @required this.altitude,
+    @required this.zipCode,
+    @required this.longitude,
+    @required this.city,
+    @required this.complement,
+    @required this.district,
+    @required this.latitude,
+    @required this.state,
+    @required this.street,
+    this.country,
+  });
+
+  AddressData.fromResponse(Response<Map<String, dynamic>> response) {
     altitude = response.data["altitude"];
     zipCode = response.data["cep"];
     longitude = double.parse(response.data["longitude"]);

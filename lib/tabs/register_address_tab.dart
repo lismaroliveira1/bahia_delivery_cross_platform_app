@@ -1,6 +1,7 @@
+import 'package:bd_app_full/data/address_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:google_place/google_place.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -10,13 +11,15 @@ class RegisterAddressTab extends StatefulWidget {
 }
 
 class _RegisterAddressTabState extends State<RegisterAddressTab> {
+  final places =
+      new GoogleMapsPlaces(apiKey: "AIzaSyB9QAT4C-TwvJu8pmNMxbRnGp_am3j76xI");
   int textLenght = 0;
   GooglePlace googlePlace;
   bool isSeted = false;
   List<AutocompletePrediction> predictions = [];
   final TextEditingController addressController = TextEditingController();
   bool close = false;
-
+  AddressData addressData;
   @override
   void initState() {
     super.initState();
@@ -126,6 +129,17 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
                                                 setState(() {
                                                   textLenght = 0;
                                                 });
+                                                PlacesDetailsResponse response =
+                                                    await places
+                                                        .getDetailsByPlaceId(
+                                                  predictions[index].placeId,
+                                                );
+                                                response
+                                                    .result.addressComponents
+                                                    .map((e) {
+                                                  print(e.longName);
+                                                }).toList();
+                                                closeTab();
                                               },
                                             ),
                                           ),
@@ -148,9 +162,7 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
   }
 
   void autoCompleteSearch(String value) async {
-    print(value);
     var result = await googlePlace.autocomplete.get(value);
-
     if (result != null && result.predictions != null && mounted) {
       setState(() {
         predictions = result.predictions;
@@ -160,4 +172,7 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
 
   void _onSuccess() {}
   void _onFail() {}
+  void closeTab() {
+    Navigator.of(context).pop();
+  }
 }

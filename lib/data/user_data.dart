@@ -17,7 +17,7 @@ class UserData {
   String phoneNumber;
   double latitude;
   double longitude;
-  AdressData userAdress;
+  AddressData userAdress;
   LatLng latLng;
 
   UserData({

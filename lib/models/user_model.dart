@@ -1685,7 +1685,7 @@ class UserModel extends Model {
         city = cepAbertoAddress.city.nome;
       }*/
       if (response.data != null) {
-        userData.userAdress = AdressData.fromResponse(response);
+        userData.userAdress = AddressData.fromResponse(response);
         userData.latLng = LatLng(
           userData.userAdress.latitude,
           userData.userAdress.longitude,

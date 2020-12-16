@@ -1,4 +1,5 @@
 import 'package:bd_app_full/screens/register_address_screen.dart';
+import 'package:bd_app_full/screens/register_store_details_from_partner_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -245,7 +246,20 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                         ),
                       ),
                       FlatButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.rightToLeft,
+                              child: RegisterStoreDetailsScreen(),
+                              inheritTheme: true,
+                              duration: Duration(
+                                milliseconds: 350,
+                              ),
+                              ctx: context,
+                            ),
+                          );
+                        },
                         padding: EdgeInsets.zero,
                         child: Container(
                           height: 50,
