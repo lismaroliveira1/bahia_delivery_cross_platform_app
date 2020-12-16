@@ -65,6 +65,7 @@ class UserModel extends Model {
   List<CreditDebitCardData> creditDebitCardList = [];
   List<PaymentFormData> paymentFormsList = [];
   List<ComboData> comboCartList = [];
+  String addressToRegisterPartner = '';
 
   Location location = new Location();
   bool _serviceEnabled;
@@ -1804,5 +1805,10 @@ class UserModel extends Model {
       onFail();
       notifyListeners();
     }
+  }
+
+  void setAddressToRegister(String address) {
+    addressToRegisterPartner = address;
+    notifyListeners();
   }
 }

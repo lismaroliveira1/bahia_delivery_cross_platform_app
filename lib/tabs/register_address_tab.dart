@@ -125,6 +125,13 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
                                                   .description
                                                   .replaceAll("State of", "")),
                                               onTap: () async {
+                                                UserModel.of(context)
+                                                    .setAddressToRegister(
+                                                  predictions[index]
+                                                      .description
+                                                      .replaceAll(
+                                                          "State of", ""),
+                                                );
                                                 addressController.clear();
                                                 setState(() {
                                                   textLenght = 0;
@@ -139,6 +146,7 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
                                                     .map((e) {
                                                   print(e.longName);
                                                 }).toList();
+
                                                 closeTab();
                                               },
                                             ),

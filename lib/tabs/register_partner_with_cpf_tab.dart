@@ -1,8 +1,10 @@
+import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/register_address_screen.dart';
 import 'package:bd_app_full/screens/register_store_details_from_partner_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:scoped_model/scoped_model.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class RegisterPartnerWithCPFTab extends StatefulWidget {
@@ -22,6 +24,7 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
   void initState() {
     _textDate = "";
     super.initState();
+    print("ok");
   }
 
   @override
@@ -182,21 +185,35 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 28.0),
+                          padding: const EdgeInsets.only(top: 16.0),
                           child: Icon(
                             Icons.perm_contact_calendar,
-                            size: MediaQuery.of(context).size.width / 3.5,
+                            size: MediaQuery.of(context).size.width / 4,
                             color: Colors.black45,
                           ),
                         ),
                         Text(
-                          "Nascimento\n$_textDate",
+                          "Nascimento",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text(
+                          _textDate,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black45,
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
                 Container(
+                  width: MediaQuery.of(context).size.width / 2.5,
                   child: FlatButton(
                     onPressed: () {
                       _onYesPressed();
@@ -204,16 +221,36 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                     child: Column(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 28.0),
+                          padding: const EdgeInsets.only(top: 8.0),
                           child: Icon(
                             Icons.location_on_rounded,
-                            size: MediaQuery.of(context).size.width / 3.5,
+                            size: MediaQuery.of(context).size.width / 4,
                             color: Colors.black45,
                           ),
                         ),
-                        Text(
-                          "Localização",
-                        ),
+                        ScopedModelDescendant<UserModel>(
+                            builder: (context, child, model) {
+                          return Column(
+                            children: [
+                              Text(
+                                "Localização",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
+                              ),
+                              Text(
+                                "${model.addressToRegisterPartner}",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                            ],
+                          );
+                        })
                       ],
                     ),
                   ),
