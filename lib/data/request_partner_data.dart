@@ -1,4 +1,3 @@
-import 'package:bd_app_full/data/address_data.dart';
 import 'package:flutter/cupertino.dart';
 
 class RequestPartnerData {
@@ -6,7 +5,7 @@ class RequestPartnerData {
   String cpf;
   String cnpj;
   DateTime birthDay;
-  AddressData storeAddress;
+  String storeAddress;
   RequestPartnerData({
     @required this.ownerName,
     @required this.birthDay,

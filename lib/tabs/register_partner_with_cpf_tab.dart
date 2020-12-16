@@ -1,6 +1,9 @@
+import 'package:bd_app_full/blocs/register_partner_block.dart';
+import 'package:bd_app_full/input_formaters/cpf_input_formaters.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/register_address_screen.dart';
 import 'package:bd_app_full/screens/register_store_details_from_partner_screen.dart';
+import 'package:cnpj_cpf_formatter/cnpj_cpf_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -14,6 +17,7 @@ class RegisterPartnerWithCPFTab extends StatefulWidget {
 }
 
 class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
+  final _registerPartnerBloc = RegisterPartnerBloc();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _cpfController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -65,30 +69,50 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 18),
-                  child: TextField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                      hintText: "Fulano de tal",
-                      labelText: 'Nome Completo',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
+                  child: StreamBuilder<Object>(
+                      stream: _registerPartnerBloc.outOwnerName,
+                      builder: (context, snapshot) {
+                        return TextField(
+                          controller: _nameController,
+                          onChanged: _registerPartnerBloc.changeOWnerName,
+                          decoration: InputDecoration(
+                            hintText: "Fulano de tal",
+                            labelText: 'Nome Completo',
+                            errorText:
+                                snapshot.hasError ? snapshot.error : null,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        );
+                      }),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 18),
-                  child: TextField(
-                    controller: _cpfController,
-                    decoration: InputDecoration(
-                      hintText: '000.000.000-00',
-                      labelText: 'CPF',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                ),
+                StreamBuilder<String>(
+                    stream: _registerPartnerBloc.outCPF,
+                    builder: (context, snapshot) {
+                      return Container(
+                        margin: EdgeInsets.only(top: 18),
+                        child: TextField(
+                          onChanged: _registerPartnerBloc.changeCPF,
+                          controller: _cpfController,
+                          inputFormatters: [
+                            CnpjCpfFormatter(
+                              eDocumentType: EDocumentType.CPF,
+                            )
+                          ],
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                            hintText: '000.000.000-00',
+                            labelText: 'CPF',
+                            errorText:
+                                snapshot.hasError ? snapshot.error : null,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
                 Container(
                   child: FlatButton(
                     onPressed: () {

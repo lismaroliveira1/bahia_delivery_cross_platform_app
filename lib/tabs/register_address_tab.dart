@@ -178,8 +178,6 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
     }
   }
 
-  void _onSuccess() {}
-  void _onFail() {}
   void closeTab() {
     Navigator.of(context).pop();
   }
