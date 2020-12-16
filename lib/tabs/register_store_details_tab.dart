@@ -1,3 +1,5 @@
+import 'package:bd_app_full/data/category_data.dart';
+import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -10,8 +12,21 @@ class RegisterStoreDetailsTab extends StatefulWidget {
 class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
+  String _dropdownInitValue;
+  List<String> _dropdownsItens;
+  @override
+  void initState() {
+    _dropdownsItens = [];
+    UserModel.of(context).categoryList.forEach((category) {
+      _dropdownsItens.add(category.title);
+    });
+    _dropdownInitValue = _dropdownsItens[0];
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(UserModel.of(context).categoryList.length);
     double _imageSize = MediaQuery.of(context).size.width / 3;
     return Form(
       key: _formKey,
@@ -59,6 +74,41 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                       ),
                     ),
                   ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 18),
+                  child: TextField(
+                    controller: _nameController,
+                    maxLines: 3,
+                    decoration: InputDecoration(
+                      hintText: "Loja tal",
+                      labelText: 'Descrição',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
+                DropdownButton<String>(
+                  value: _dropdownInitValue,
+                  icon: Icon(Icons.arrow_downward),
+                  elevation: 16,
+                  iconSize: 16,
+                  underline: Container(
+                    height: 2,
+                    color: Colors.red,
+                  ),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      _dropdownInitValue = newValue;
+                    });
+                  },
+                  items: _dropdownsItens.map((String category) {
+                    return DropdownMenuItem<String>(
+                      value: category,
+                      child: Text(category),
+                    );
+                  }).toList(),
                 ),
                 Spacer(),
                 Padding(
