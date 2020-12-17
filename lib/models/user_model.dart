@@ -66,6 +66,7 @@ class UserModel extends Model {
   List<PaymentFormData> paymentFormsList = [];
   List<ComboData> comboCartList = [];
   String addressToRegisterPartner = '';
+  bool isLocationChoosedOnRegisterPartner = false;
 
   Location location = new Location();
   bool _serviceEnabled;
@@ -1639,7 +1640,6 @@ class UserModel extends Model {
   }
 
   Future<void> getLocationDevice() async {
-    print("asdfdas");
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
@@ -1809,6 +1809,7 @@ class UserModel extends Model {
 
   void setAddressToRegister(String address) {
     addressToRegisterPartner = address;
+    isLocationChoosedOnRegisterPartner = true;
     notifyListeners();
   }
 }

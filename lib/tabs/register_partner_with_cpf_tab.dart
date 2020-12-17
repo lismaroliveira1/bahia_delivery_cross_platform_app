@@ -1,5 +1,4 @@
 import 'package:bd_app_full/blocs/register_partner_block.dart';
-import 'package:bd_app_full/input_formaters/cpf_input_formaters.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/register_address_screen.dart';
 import 'package:bd_app_full/screens/register_store_details_from_partner_screen.dart';
@@ -23,10 +22,15 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime _selectedDate;
   String _textDate;
+  bool isBirthDayChoosed;
+  bool isLocationChoosed;
 
   @override
   void initState() {
     _textDate = "";
+    isBirthDayChoosed = false;
+    isLocationChoosed =
+        UserModel.of(context).isLocationChoosedOnRegisterPartner;
     super.initState();
   }
 
@@ -305,39 +309,65 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                           ),
                         ),
                       ),
-                      FlatButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.rightToLeft,
-                              child: RegisterStoreDetailsScreen(),
-                              inheritTheme: true,
-                              duration: Duration(
-                                milliseconds: 350,
-                              ),
-                              ctx: context,
-                            ),
-                          );
+                      ScopedModelDescendant<UserModel>(
+                        builder: (context, child, model) {
+                          return StreamBuilder<bool>(
+                              stream: _registerPartnerBloc.outSubmitValidCPF,
+                              builder: (context, snapshot) {
+                                return FlatButton(
+                                  onPressed: snapshot.hasData
+                                      ? () {
+                                          if (!isBirthDayChoosed) {
+                                            noChoosedBiryhDay();
+                                          } else if (!model
+                                              .isLocationChoosedOnRegisterPartner) {
+                                            noChoosedLocation();
+                                          } else if (!isLocationChoosed &&
+                                              !isBirthDayChoosed) {
+                                            noChoosedLocationAndBirthDay();
+                                          } else {
+                                            Navigator.push(
+                                              context,
+                                              PageTransition(
+                                                type: PageTransitionType
+                                                    .rightToLeft,
+                                                child:
+                                                    RegisterStoreDetailsScreen(),
+                                                inheritTheme: true,
+                                                duration: Duration(
+                                                  milliseconds: 350,
+                                                ),
+                                                ctx: context,
+                                              ),
+                                            );
+                                          }
+                                        }
+                                      : null,
+                                  padding: EdgeInsets.zero,
+                                  child: Container(
+                                    height: 50,
+                                    width:
+                                        MediaQuery.of(context).size.width / 3.5,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      color: snapshot.hasData
+                                          ? Colors.red
+                                          : Colors.grey[300],
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "Próximo",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              });
                         },
-                        padding: EdgeInsets.zero,
-                        child: Container(
-                          height: 50,
-                          width: MediaQuery.of(context).size.width / 3.5,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Colors.red),
-                          child: Center(
-                            child: Text(
-                              "Próximo",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
                       )
                     ],
                   ),
@@ -358,6 +388,7 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
           _selectedDate.month.toString() +
           '/' +
           _selectedDate.year.toString();
+      isBirthDayChoosed = true;
     });
     Navigator.of(context).pop();
   }
@@ -373,6 +404,45 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
           milliseconds: 350,
         ),
         ctx: context,
+      ),
+    );
+  }
+
+  void noChoosedBiryhDay() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Escolha a data de nascimento",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void noChoosedLocation() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Escolha a localização da loja",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void noChoosedLocationAndBirthDay() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Escolha a localização da loja e a sua data de nascimento",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
       ),
     );
   }

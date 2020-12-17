@@ -25,6 +25,12 @@ class RegisterPartnerBloc extends BlocBase with RegisterPartnerValidators {
   Function(String) get changeDesription => _descriptionStoreController.sink.add;
   Function(String) get changeCNPJ => _cnpjController.sink.add;
 
+  Stream<bool> get outSubmitValidCPF => Rx.combineLatest2(
+        outOwnerName,
+        outCPF,
+        (a, b) => true,
+      );
+
   @override
   void dispose() {
     _ownerNameController.close();
