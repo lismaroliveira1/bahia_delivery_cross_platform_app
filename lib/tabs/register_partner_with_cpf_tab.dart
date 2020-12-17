@@ -1,4 +1,5 @@
 import 'package:bd_app_full/blocs/register_partner_block.dart';
+import 'package:bd_app_full/data/request_partner_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/register_address_screen.dart';
 import 'package:bd_app_full/screens/register_store_details_from_partner_screen.dart';
@@ -343,13 +344,23 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                                               .isLocationChoosedOnRegisterPartner) {
                                             noChoosedLocation();
                                           } else {
+                                            final requestPartnerData =
+                                                RequestPartnerData(
+                                              companyName: _nameController.text,
+                                              cnpj: _cpfController.text,
+                                              expedtionDate: _selectedDate,
+                                              location: UserModel.of(context)
+                                                  .addressToRegisterPartner,
+                                            );
                                             Navigator.push(
                                               context,
                                               PageTransition(
                                                 type: PageTransitionType
                                                     .rightToLeft,
                                                 child:
-                                                    RegisterStoreDetailsScreen(),
+                                                    RegisterStoreDetailsScreen(
+                                                  requestPartnerData,
+                                                ),
                                                 inheritTheme: true,
                                                 duration: Duration(
                                                   milliseconds: 350,

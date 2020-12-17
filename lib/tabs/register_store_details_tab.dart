@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:bd_app_full/blocs/register_partner_block.dart';
+import 'package:bd_app_full/data/request_partner_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class RegisterStoreDetailsTab extends StatefulWidget {
+  final RequestPartnerData requestPartnerData;
+  RegisterStoreDetailsTab(this.requestPartnerData);
   @override
   _RegisterStoreDetailsTabState createState() =>
       _RegisterStoreDetailsTabState();
@@ -24,8 +30,17 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
   bool isCategorySelected;
   bool isStoreOpenTimeSelected;
   bool isStoreCloseTimeSelected;
+  bool isImageChoosed;
+  File imageFile;
+  String closeTime;
+  String openTime;
+  final picker = ImagePicker();
+  RequestPartnerData requestPartnerData;
+  final String imageUrl = "https://meuvidraceiro.com.br/images/sem-imagem.png";
   @override
   void initState() {
+    requestPartnerData = widget.requestPartnerData;
+    isImageChoosed = false;
     Intl.defaultLocale = 'pt_BR';
     _dropdownsItens = [];
     UserModel.of(context).categoryList.forEach((category) {
@@ -68,12 +83,67 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 25.0),
+                      padding: const EdgeInsets.only(top: 12.0),
                       child: Text(
                         'Agora vamos falar \ndo seu negócio',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 26,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12.0,
+                      ),
+                      child: Center(
+                        child: Container(
+                          height: _imageSize,
+                          width: _imageSize,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Stack(
+                            children: <Widget>[
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: isImageChoosed
+                                    ? Image.file(
+                                        imageFile,
+                                        isAntiAlias: false,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                3,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                3,
+                                        fit: BoxFit.cover,
+                                      )
+                                    : Image.network(
+                                        imageUrl,
+                                        height:
+                                            MediaQuery.of(context).size.width /
+                                                3,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                3,
+                                        fit: BoxFit.cover,
+                                      ),
+                              ),
+                              Positioned(
+                                bottom: 4.0,
+                                right: 4.0,
+                                child: IconButton(
+                                  onPressed: () {
+                                    _onEditImagePressed();
+                                  },
+                                  icon: Icon(
+                                    Icons.camera_alt,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -144,6 +214,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                               onChanged: (String newValue) {
                                 setState(() {
                                   _dropdownInitValue = newValue;
+                                  requestPartnerData.category = newValue;
                                   isCategorySelected = true;
                                 });
                               },
@@ -185,6 +256,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                   ),
                                   onChanged: (val) => setState(() {
                                     _valueChanged4 = val;
+                                    requestPartnerData.openTime = val;
                                     isStoreOpenTimeSelected = true;
                                   }),
                                   validator: (val) {
@@ -222,6 +294,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                   ),
                                   onChanged: (val) => setState(() {
                                     _valueChanged4 = val;
+                                    requestPartnerData.closeTime = val;
                                     isStoreCloseTimeSelected = true;
                                   }),
                                   validator: (val) {
@@ -274,7 +347,21 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                         isStoreOpenTimeSelected &&
                                         isStoreCloseTimeSelected
                                     ? () {
-                                        onButtonSendPressed();
+                                        setState(() {
+                                          requestPartnerData.fantasyName =
+                                              _nameController.text;
+                                          requestPartnerData.description =
+                                              _descriptionController.text;
+                                        });
+                                        UserModel.of(context)
+                                            .sendRequestForNewPartner(
+                                          requestPartnerData:
+                                              requestPartnerData,
+                                          onSuccess: _onSuccess,
+                                          onFail: _onFail,
+                                          onFailImage: _onFailImage,
+                                        );
+                                        //onButtonSendPressed();
                                       }
                                     : null,
                                 padding: EdgeInsets.zero,
@@ -331,6 +418,111 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
         content: Container(
           height: MediaQuery.of(context).size.height * 0.8,
         ),
+      ),
+    );
+  }
+
+  void _onEditImagePressed() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.redAccent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
+        ),
+        content: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height / 12,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              FlatButton(
+                padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width / 18,
+                ),
+                onPressed: () async {
+                  try {
+                    final _pickedFile = await picker.getImage(
+                      source: ImageSource.gallery,
+                      maxHeight: 500,
+                      maxWidth: 500,
+                    );
+                    if (_pickedFile == null) return;
+                    imageFile = File(_pickedFile.path);
+                    requestPartnerData.imageFile = File(_pickedFile.path);
+                    if (imageFile == null) return;
+                    setState(() {
+                      isImageChoosed = true;
+                    });
+                  } catch (e) {
+                    setState(() {
+                      isImageChoosed = false;
+                    });
+                  }
+                },
+                child: Container(
+                  child: Image.asset(
+                    "images/gallery_image.png",
+                  ),
+                  height: 50,
+                  width: 50,
+                ),
+              ),
+              FlatButton(
+                padding: EdgeInsets.only(
+                  right: MediaQuery.of(context).size.width / 18,
+                ),
+                onPressed: () async {
+                  try {
+                    final _pickedFile = await picker.getImage(
+                      source: ImageSource.camera,
+                      maxHeight: 500,
+                      maxWidth: 500,
+                    );
+                    if (_pickedFile == null) return;
+                    imageFile = File(_pickedFile.path);
+                    requestPartnerData.imageFile = File(_pickedFile.path);
+                    if (imageFile == null) return;
+                    setState(() {
+                      isImageChoosed = true;
+                    });
+                  } catch (e) {
+                    setState(() {
+                      isImageChoosed = false;
+                    });
+                  }
+                },
+                child: Container(
+                  child: Image.asset(
+                    "images/camera_image.png",
+                  ),
+                  height: 50,
+                  width: 50,
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _onSuccess() {
+    Navigator.of(context).pop();
+  }
+
+  void _onFail() {}
+  void _onFailImage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "É necessário fazer o upload da imagem",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
       ),
     );
   }

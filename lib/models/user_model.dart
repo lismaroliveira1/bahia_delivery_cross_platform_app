@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:bd_app_full/data/address_data.dart';
@@ -14,6 +15,7 @@ import 'package:bd_app_full/data/order_data.dart';
 import 'package:bd_app_full/data/payment_form_data.dart';
 import 'package:bd_app_full/data/payment_on_delivery_date.dart';
 import 'package:bd_app_full/data/product_data.dart';
+import 'package:bd_app_full/data/request_partner_data.dart';
 import 'package:bd_app_full/data/store_data.dart';
 import 'package:bd_app_full/data/subsection_data.dart';
 import 'package:bd_app_full/data/user_data.dart';
@@ -67,6 +69,9 @@ class UserModel extends Model {
   List<ComboData> comboCartList = [];
   String addressToRegisterPartner = '';
   bool isLocationChoosedOnRegisterPartner = false;
+  double _latPartnerRequest;
+  double _lngPartnerRequest;
+  String _addresId;
 
   Location location = new Location();
   bool _serviceEnabled;
@@ -1807,9 +1812,51 @@ class UserModel extends Model {
     }
   }
 
-  void setAddressToRegister(String address) {
+  void setAddressToRegister({
+    @required String address,
+    double lat,
+    double lng,
+    String addressId,
+  }) {
     addressToRegisterPartner = address;
+    _latPartnerRequest = lat;
+    _lngPartnerRequest = lng;
+    _addresId = addressId;
     isLocationChoosedOnRegisterPartner = true;
     notifyListeners();
+  }
+
+  void sendRequestForNewPartner({
+    @required RequestPartnerData requestPartnerData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+    @required VoidCallback onFailImage,
+  }) async {
+    if (isLoggedIn()) {
+      requestPartnerData.lat = _latPartnerRequest;
+      requestPartnerData.lng = _lngPartnerRequest;
+      requestPartnerData.locationId = _addresId;
+      requestPartnerData.storeAddress = addressToRegisterPartner;
+      if (requestPartnerData.imageFile == null) {
+        onFailImage();
+      } else {
+        try {
+          Reference ref = FirebaseStorage.instance.ref().child("images").child(
+                DateTime.now().millisecond.toString(),
+              );
+          UploadTask uploadTask = ref.putFile(requestPartnerData.imageFile);
+          await uploadTask.then((task) async {
+            requestPartnerData.image = await task.ref.getDownloadURL();
+            await FirebaseFirestore.instance.collection("requests").add(
+                  requestPartnerData.toMap(),
+                );
+          });
+          onSuccess();
+          notifyListeners();
+        } catch (erro) {
+          print(erro);
+        }
+      }
+    }
   }
 }

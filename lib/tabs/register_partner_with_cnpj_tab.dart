@@ -1,4 +1,5 @@
 import 'package:bd_app_full/blocs/register_partner_block.dart';
+import 'package:bd_app_full/data/request_partner_data.dart';
 import 'package:cnpj_cpf_formatter/cnpj_cpf_formatter.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/register_address_screen.dart';
@@ -17,8 +18,8 @@ class RegisterPartnerWithCNPJTab extends StatefulWidget {
 class _RegisterPartnerWithCNPJTabState
     extends State<RegisterPartnerWithCNPJTab> {
   final _registerPartnerBloc = RegisterPartnerBloc();
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _cpfController = TextEditingController();
+  TextEditingController _companyNameController = TextEditingController();
+  TextEditingController _cnpjController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime _selectedDate;
   String _textDate;
@@ -78,7 +79,7 @@ class _RegisterPartnerWithCNPJTabState
                         stream: _registerPartnerBloc.outOwnerName,
                         builder: (context, snapshot) {
                           return TextField(
-                            controller: _nameController,
+                            controller: _companyNameController,
                             onChanged: _registerPartnerBloc.changeOWnerName,
                             decoration: InputDecoration(
                               hintText: "Fulano de tal",
@@ -99,7 +100,7 @@ class _RegisterPartnerWithCNPJTabState
                           margin: EdgeInsets.only(top: 18),
                           child: TextField(
                             onChanged: _registerPartnerBloc.changeCNPJ,
-                            controller: _cpfController,
+                            controller: _cnpjController,
                             keyboardType: TextInputType.number,
                             inputFormatters: [
                               CnpjCpfFormatter(
@@ -325,13 +326,23 @@ class _RegisterPartnerWithCNPJTabState
                                           model
                                               .isLocationChoosedOnRegisterPartner
                                       ? () {
+                                          final requestPartnerData =
+                                              RequestPartnerData(
+                                            companyName:
+                                                _companyNameController.text,
+                                            cnpj: _cnpjController.text,
+                                            expedtionDate: _selectedDate,
+                                            location: UserModel.of(context)
+                                                .addressToRegisterPartner,
+                                          );
                                           Navigator.push(
                                             context,
                                             PageTransition(
                                               type: PageTransitionType
                                                   .rightToLeft,
-                                              child:
-                                                  RegisterStoreDetailsScreen(),
+                                              child: RegisterStoreDetailsScreen(
+                                                requestPartnerData,
+                                              ),
                                               inheritTheme: true,
                                               duration: Duration(
                                                 milliseconds: 350,

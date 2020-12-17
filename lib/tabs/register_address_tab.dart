@@ -125,28 +125,28 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
                                                   .description
                                                   .replaceAll("State of", "")),
                                               onTap: () async {
-                                                UserModel.of(context)
-                                                    .setAddressToRegister(
-                                                  predictions[index]
-                                                      .description
-                                                      .replaceAll(
-                                                          "State of", ""),
-                                                );
-                                                addressController.clear();
-                                                setState(() {
-                                                  textLenght = 0;
-                                                });
                                                 PlacesDetailsResponse response =
                                                     await places
                                                         .getDetailsByPlaceId(
                                                   predictions[index].placeId,
                                                 );
-                                                response
-                                                    .result.addressComponents
-                                                    .map((e) {
-                                                  print(e.longName);
-                                                }).toList();
-
+                                                UserModel.of(context)
+                                                    .setAddressToRegister(
+                                                  address: predictions[index]
+                                                      .description
+                                                      .replaceAll(
+                                                          "State of", ""),
+                                                  lat: response.result.geometry
+                                                      .location.lat,
+                                                  lng: response.result.geometry
+                                                      .location.lng,
+                                                  addressId: predictions[index]
+                                                      .placeId,
+                                                );
+                                                addressController.clear();
+                                                setState(() {
+                                                  textLenght = 0;
+                                                });
                                                 closeTab();
                                               },
                                             ),

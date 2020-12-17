@@ -19,7 +19,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
         children: [
           FlatButton(
             onPressed: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
+              Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => PartnerRegisterScreen(),
               ));
             },
@@ -36,7 +36,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
           ),
           FlatButton(
             onPressed: () {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
+              Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => DeliveryManRegisterScreen(),
               ));
             },

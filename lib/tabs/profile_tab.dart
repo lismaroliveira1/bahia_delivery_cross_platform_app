@@ -322,7 +322,7 @@ class _ProfileTabState extends State<ProfileTab> {
                                                                       .pop();
                                                                   Navigator.of(
                                                                           context)
-                                                                      .push(
+                                                                      .pushReplacement(
                                                                           MaterialPageRoute(
                                                                     builder:
                                                                         (context) =>
