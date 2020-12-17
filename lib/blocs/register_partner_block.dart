@@ -31,6 +31,18 @@ class RegisterPartnerBloc extends BlocBase with RegisterPartnerValidators {
         (a, b) => true,
       );
 
+  Stream<bool> get outSubmitValidCNPJ => Rx.combineLatest2(
+        outOwnerName,
+        outCNPJ,
+        (a, b) => true,
+      );
+
+  Stream<bool> get outSubmitValidSend => Rx.combineLatest2(
+        outFantasyStoreName,
+        outStoreDescription,
+        (a, b) => true,
+      );
+
   @override
   void dispose() {
     _ownerNameController.close();

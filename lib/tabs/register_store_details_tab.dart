@@ -2,7 +2,6 @@ import 'package:bd_app_full/blocs/register_partner_block.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class RegisterStoreDetailsTab extends StatefulWidget {
   @override
@@ -22,6 +21,9 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
   String _valueToValidate4 = '';
   String _valueSaved4 = '';
   String _valueChanged4 = '';
+  bool isCategorySelected;
+  bool isStoreOpenTimeSelected;
+  bool isStoreCloseTimeSelected;
   @override
   void initState() {
     Intl.defaultLocale = 'pt_BR';
@@ -29,6 +31,9 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
     UserModel.of(context).categoryList.forEach((category) {
       _dropdownsItens.add(category.title);
     });
+    isCategorySelected = false;
+    isStoreOpenTimeSelected = false;
+    isStoreCloseTimeSelected = false;
     _dropdownInitValue = _dropdownsItens[0];
     super.initState();
   }
@@ -139,6 +144,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                               onChanged: (String newValue) {
                                 setState(() {
                                   _dropdownInitValue = newValue;
+                                  isCategorySelected = true;
                                 });
                               },
                               items: _dropdownsItens.map((String category) {
@@ -177,14 +183,19 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                     Icons.access_time,
                                     size: 55,
                                   ),
-                                  onChanged: (val) =>
-                                      setState(() => _valueChanged4 = val),
+                                  onChanged: (val) => setState(() {
+                                    _valueChanged4 = val;
+                                    isStoreOpenTimeSelected = true;
+                                  }),
                                   validator: (val) {
-                                    setState(() => _valueToValidate4 = val);
+                                    setState(() {
+                                      _valueToValidate4 = val;
+                                    });
                                     return null;
                                   },
-                                  onSaved: (val) =>
-                                      setState(() => _valueSaved4 = val),
+                                  onSaved: (val) => setState(() {
+                                    _valueSaved4 = val;
+                                  }),
                                 ),
                               ),
                             ],
@@ -209,14 +220,17 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                     Icons.access_time,
                                     size: 55,
                                   ),
-                                  onChanged: (val) =>
-                                      setState(() => _valueChanged4 = val),
+                                  onChanged: (val) => setState(() {
+                                    _valueChanged4 = val;
+                                    isStoreCloseTimeSelected = true;
+                                  }),
                                   validator: (val) {
                                     setState(() => _valueToValidate4 = val);
                                     return null;
                                   },
-                                  onSaved: (val) =>
-                                      setState(() => _valueSaved4 = val),
+                                  onSaved: (val) => setState(() {
+                                    _valueSaved4 = val;
+                                  }),
                                 ),
                               ),
                             ],
@@ -251,29 +265,46 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                               ),
                             ),
                           ),
-                          FlatButton(
-                            onPressed: () {
-                              onButtonSendPressed();
-                            },
-                            padding: EdgeInsets.zero,
-                            child: Container(
-                              height: 50,
-                              width: MediaQuery.of(context).size.width / 3.5,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: Colors.red),
-                              child: Center(
-                                child: Text(
-                                  "Enviar",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                          StreamBuilder<bool>(
+                            stream: _registerPartnerBloc.outSubmitValidSend,
+                            builder: (context, snapshot) {
+                              return FlatButton(
+                                onPressed: snapshot.hasData &&
+                                        isCategorySelected &&
+                                        isStoreOpenTimeSelected &&
+                                        isStoreCloseTimeSelected
+                                    ? () {
+                                        onButtonSendPressed();
+                                      }
+                                    : null,
+                                padding: EdgeInsets.zero,
+                                child: Container(
+                                  height: 50,
+                                  width:
+                                      MediaQuery.of(context).size.width / 3.5,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: snapshot.hasData &&
+                                            isCategorySelected &&
+                                            isStoreOpenTimeSelected &&
+                                            isStoreCloseTimeSelected
+                                        ? Colors.red
+                                        : Colors.grey[300],
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      "Enviar",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                          )
+                              );
+                            },
+                          ),
                         ],
                       ),
                     )
@@ -286,10 +317,6 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
       ),
     );
   }
-
-  void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {}
-
-  void _onYesPressed() {}
 
   void onButtonSendPressed() {
     ScaffoldMessenger.of(context).showSnackBar(
