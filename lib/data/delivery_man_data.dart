@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
+
 class DeliveryManData {
   File imageFile;
   String name;
@@ -10,17 +12,19 @@ class DeliveryManData {
   double lng;
   String locationId;
   String image;
-  DeliveryManData(
-    this.birthDay,
-    this.cpf,
-    this.imageFile,
-    this.lat,
-    this.lng,
-    this.location,
-    this.locationId,
-    this.name,
-    this.image,
-  );
+  String userId;
+  DeliveryManData({
+    @required this.birthDay,
+    @required this.cpf,
+    @required this.imageFile,
+    @required this.lat,
+    @required this.lng,
+    @required this.location,
+    @required this.locationId,
+    @required this.name,
+    @required this.image,
+    this.userId,
+  });
 
   Map<String, dynamic> toRequestMap() {
     return {
@@ -32,6 +36,7 @@ class DeliveryManData {
       "lat": lat,
       "lng": lng,
       "image": image,
+      "userId": userId,
     };
   }
 }

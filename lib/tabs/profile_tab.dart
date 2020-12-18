@@ -164,6 +164,19 @@ class _ProfileTabState extends State<ProfileTab> {
                             subtitle =
                                 "Venda seus produtos através do Bahia Delivery";
                             break;
+                          case 4:
+                            title =
+                                "Sua Conta BD partner está temporariamente suspensa";
+                            subtitle = "Analisando seus dados";
+                            break;
+                          case 5:
+                            title = "Proposta enviada";
+                            subtitle = "Analisando seus dados";
+                            break;
+                          case 6:
+                            title = "Delivery";
+                            subtitle = "Gerencie suas corridas";
+                            break;
                         }
                         return Padding(
                           padding: const EdgeInsets.symmetric(
@@ -283,14 +296,14 @@ class _ProfileTabState extends State<ProfileTab> {
                       },
                       leading: Icon(Icons.notifications_active),
                       title: Text(
-                        "Seja um entregador",
+                        "Chats",
                         style: TextStyle(
                           fontWeight: FontWeight.w700,
                           color: Colors.black54,
                         ),
                       ),
                       subtitle: Text(
-                        "Trabalhe conosco entregando mercadorias",
+                        "Acesse o sue histórico de chats",
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           color: Colors.black45,

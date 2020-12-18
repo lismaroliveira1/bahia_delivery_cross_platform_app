@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:bd_app_full/blocs/register_partner_block.dart';
+import 'package:bd_app_full/data/delivery_man_data.dart';
 import 'package:bd_app_full/data/request_partner_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/register_address_screen.dart';
@@ -387,33 +388,29 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                                                 .isLocationChoosedOnRegisterPartner) {
                                               noChoosedLocation();
                                             } else {
-                                              final requestPartnerData =
-                                                  RequestPartnerData(
-                                                companyName:
-                                                    _nameController.text,
-                                                ownerName: _nameController.text,
-                                                cpf: _cpfController.text,
-                                                birthDay: _selectedDate,
-                                                isJuridicPerson: false,
-                                                location: UserModel.of(context)
-                                                    .addressToRegisterPartner,
-                                              );
-                                              Navigator.push(
-                                                context,
-                                                PageTransition(
-                                                  type: PageTransitionType
-                                                      .rightToLeft,
-                                                  child:
-                                                      RegisterStoreDetailsScreen(
-                                                    requestPartnerData,
-                                                  ),
-                                                  inheritTheme: true,
-                                                  duration: Duration(
-                                                    milliseconds: 350,
-                                                  ),
-                                                  ctx: context,
-                                                ),
-                                              );
+                                              if (isImageChoosed) {
+                                                final deliveryManDatta =
+                                                    DeliveryManData(
+                                                  birthDay: _selectedDate,
+                                                  cpf: _cpfController.text,
+                                                  imageFile: imageFile,
+                                                  lat: null,
+                                                  lng: null,
+                                                  location: null,
+                                                  locationId: null,
+                                                  name: _nameController.text,
+                                                  image: null,
+                                                );
+                                                UserModel.of(context)
+                                                    .sendRequestForNewDeliveryMan(
+                                                  deliveryManData:
+                                                      deliveryManDatta,
+                                                  onSuccess: _onSuccess,
+                                                  onFail: _onFail,
+                                                );
+                                              } else {
+                                                _onFailImage();
+                                              }
                                             }
                                           }
                                         : null,
@@ -603,4 +600,23 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
       ),
     );
   }
+
+  void _onFailImage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "É necessário fazer o upload da imagem",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _onSuccess() {
+    Navigator.of(context).pop();
+  }
+
+  void _onFail() {}
 }

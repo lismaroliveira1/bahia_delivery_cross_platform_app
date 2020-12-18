@@ -8,6 +8,7 @@ import 'package:bd_app_full/data/category_store_data.dart';
 import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/credit_debit_card_Item.dart';
 import 'package:bd_app_full/data/credit_debit_card_data.dart';
+import 'package:bd_app_full/data/delivery_man_data.dart';
 import 'package:bd_app_full/data/incremental_options_data.dart';
 import 'package:bd_app_full/data/offs_data.dart';
 import 'package:bd_app_full/data/order_data.dart';
@@ -1880,5 +1881,47 @@ class UserModel extends Model {
       }
     }
   }
-  
+
+  void sendRequestForNewDeliveryMan({
+    @required DeliveryManData deliveryManData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    isLoading = true;
+    notifyListeners();
+    if (isLoggedIn()) {
+      try {
+        deliveryManData.userId = firebaseUser.uid;
+        deliveryManData.lat = _latPartnerRequest;
+        deliveryManData.lng = _lngPartnerRequest;
+        deliveryManData.locationId = _addresId;
+        deliveryManData.location = addressToRegisterPartner;
+        Reference ref = FirebaseStorage.instance.ref().child("images").child(
+              DateTime.now().millisecond.toString(),
+            );
+        UploadTask uploadTask = ref.putFile(deliveryManData.imageFile);
+        await uploadTask.then((task) async {
+          deliveryManData.image = await task.ref.getDownloadURL();
+          await FirebaseFirestore.instance
+              .collection("requestsDeliveryMans")
+              .add(
+                deliveryManData.toRequestMap(),
+              );
+          await FirebaseFirestore.instance
+              .collection("users")
+              .doc(firebaseUser.uid)
+              .update({
+            "isPartner": 5,
+          });
+          onSuccess();
+          isLoading = false;
+          notifyListeners();
+        });
+      } catch (erro) {
+        isLoading = false;
+        notifyListeners();
+        print(erro);
+      }
+    }
+  }
 }
