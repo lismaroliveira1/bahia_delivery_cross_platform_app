@@ -294,113 +294,119 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                         ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-              Positioned(
-                bottom: 0,
-                left: 20,
-                right: 20,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(20, 0, 20, 26),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      FlatButton(
-                        onPressed: () {},
-                        padding: EdgeInsets.zero,
-                        child: Container(
-                          height: 50,
-                          width: MediaQuery.of(context).size.width / 3.5,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color: Colors.red),
-                          child: Center(
-                            child: Text(
-                              "Cancelar",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(20, 80, 20, 26),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          FlatButton(
+                            onPressed: () {},
+                            padding: EdgeInsets.zero,
+                            child: Container(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width / 3.5,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: Colors.red),
+                              child: Center(
+                                child: Text(
+                                  "Cancelar",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                      ScopedModelDescendant<UserModel>(
-                        builder: (context, child, model) {
-                          return StreamBuilder<bool>(
-                              stream: _registerPartnerBloc.outSubmitValidCPF,
-                              builder: (context, snapshot) {
-                                return FlatButton(
-                                  onPressed: snapshot.hasData
-                                      ? () {
-                                          if (!isLocationChoosed &&
-                                              !isBirthDayChoosed) {
-                                            noChoosedLocationAndBirthDay();
-                                          } else if (!isBirthDayChoosed) {
-                                            noChoosedBiryhDay();
-                                          } else if (!model
-                                              .isLocationChoosedOnRegisterPartner) {
-                                            noChoosedLocation();
-                                          } else {
-                                            final requestPartnerData =
-                                                RequestPartnerData(
-                                              companyName: _nameController.text,
-                                              cnpj: _cpfController.text,
-                                              expedtionDate: _selectedDate,
-                                              location: UserModel.of(context)
-                                                  .addressToRegisterPartner,
-                                            );
-                                            Navigator.push(
-                                              context,
-                                              PageTransition(
-                                                type: PageTransitionType
-                                                    .rightToLeft,
-                                                child:
-                                                    RegisterStoreDetailsScreen(
-                                                  requestPartnerData,
-                                                ),
-                                                inheritTheme: true,
-                                                duration: Duration(
-                                                  milliseconds: 350,
-                                                ),
-                                                ctx: context,
-                                              ),
-                                            );
-                                          }
-                                        }
-                                      : null,
-                                  padding: EdgeInsets.zero,
-                                  child: Container(
-                                    height: 50,
-                                    width:
-                                        MediaQuery.of(context).size.width / 3.5,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      color: snapshot.hasData
-                                          ? Colors.red
-                                          : Colors.grey[300],
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        "Próximo",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
+                          ScopedModelDescendant<UserModel>(
+                            builder: (context, child, model) {
+                              return StreamBuilder<bool>(
+                                  stream:
+                                      _registerPartnerBloc.outSubmitValidCPF,
+                                  builder: (context, snapshot) {
+                                    return FlatButton(
+                                      onPressed: snapshot.hasData
+                                          ? () {
+                                              if (!isLocationChoosed &&
+                                                  !isBirthDayChoosed) {
+                                                noChoosedLocationAndBirthDay();
+                                              } else if (!isBirthDayChoosed) {
+                                                noChoosedBiryhDay();
+                                              } else if (!model
+                                                  .isLocationChoosedOnRegisterPartner) {
+                                                noChoosedLocation();
+                                              } else {
+                                                final requestPartnerData =
+                                                    RequestPartnerData(
+                                                  companyName:
+                                                      _nameController.text,
+                                                  ownerName:
+                                                      _nameController.text,
+                                                  cpf: _cpfController.text,
+                                                  birthDay: _selectedDate,
+                                                  isJuridicPerson: false,
+                                                  location: UserModel.of(
+                                                          context)
+                                                      .addressToRegisterPartner,
+                                                );
+                                                Navigator.push(
+                                                  context,
+                                                  PageTransition(
+                                                    type: PageTransitionType
+                                                        .rightToLeft,
+                                                    child:
+                                                        RegisterStoreDetailsScreen(
+                                                      requestPartnerData,
+                                                    ),
+                                                    inheritTheme: true,
+                                                    duration: Duration(
+                                                      milliseconds: 350,
+                                                    ),
+                                                    ctx: context,
+                                                  ),
+                                                );
+                                              }
+                                            }
+                                          : null,
+                                      padding: EdgeInsets.zero,
+                                      child: Container(
+                                        height: 50,
+                                        width:
+                                            MediaQuery.of(context).size.width /
+                                                3.5,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          color: snapshot.hasData &&
+                                                  isBirthDayChoosed &&
+                                                  model
+                                                      .isLocationChoosedOnRegisterPartner
+                                              ? Colors.red
+                                              : Colors.grey[300],
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            "Próximo",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                );
-                              });
-                        },
-                      )
-                    ],
-                  ),
+                                    );
+                                  });
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              )
+              ),
             ],
           ),
         ),

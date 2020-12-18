@@ -12,7 +12,7 @@ const cieloParams: CieloConstructor = {
     merchantId: merchantId,
     merchantKey: merchantkey,
     sandbox: true,
-    debug: true
+    debug: true,
 };
 
 const cielo = new Cielo(cieloParams);
@@ -23,8 +23,8 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
             "success": false,
             "error": {
                 "code": -1,
-                "message": "Dados não informados"
-            }
+                "message": "Dados não informados",
+            },
         };
     }
     if (!context.auth) {
@@ -33,8 +33,8 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
             "success": false,
             "error": {
                 "code": -1,
-                "message": "Nenhum Usuário Logado"
-            }
+                "message": "Nenhum Usuário Logado",
+            },
         };
     }
 
@@ -84,8 +84,8 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                 "success": false,
                 "error": {
                     "code": -1,
-                    "message": "Cartão não suportado: " + data.creditCard.brand
-                }
+                    "message": "Cartão não suportado: " + data.creditCard.brand,
+                },
             };
     }
     const saleData: TransactionCreditCardRequestModel = {
@@ -103,8 +103,8 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                 city: userData.address.city,
                 state: userData.address.state,
                 country: "BRA",
-                district: userData.address.district
-            }
+                district: userData.address.district,
+            },
         },
 
         payment: {
@@ -119,9 +119,9 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                 cardNumber: data.creditCard.cardNumber,
                 holder: data.creditCard.holder,
                 expirationDate: data.creditCard.expirationDate,
-                brand: brand
-            }
-        }
+                brand: brand,
+            },
+        },
     }
 
     try {
@@ -131,7 +131,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
         if (transaction.payment.status === 1) {
             return {
                 "success": true,
-                "paymentId": transaction.payment.paymentId
+                "paymentId": transaction.payment.paymentId,
             };
         } else {
             let message = '';
@@ -160,8 +160,8 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                 "status": transaction.payment.status,
                 "error": {
                     "code": transaction.payment.returnCode,
-                    "message": message
-                }
+                    "message": message,
+                },
             };
         }
     } catch (e) {
@@ -169,8 +169,8 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
             "success": false,
             "error": {
                 'code': e.response[0],
-                'message': e.response[0]
-            }
+                'message': e.response[0],
+            },
         };
     }
 
@@ -178,19 +178,19 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
 
 export const helloWorld = functions.https.onCall((data, context) => {
     return {
-        data: "Hello from cloud functions!!!!"
+        data: "Hello from cloud functions!!!!",
     };
 });
 
 export const getUserData = functions.https.onCall(async (data, context) => {
     if (!context.auth) {
         return {
-            "data": "Nenhum Usuário logado"
+            "data": "Nenhum Usuário logado",
         };
     }
     const snapshot = await admin.firestore().collection("users").doc(context.auth.uid).get();
     return {
-        "data": snapshot.data()
+        "data": snapshot.data(),
     };
 });
 
@@ -216,9 +216,9 @@ async function sendPushFCM(tokens: string[], title: string, message: string) {
             notification: {
                 title: title,
                 body: message,
-                click_action: 'FLUTTER_NOTIFICATION_CLICK'
+                click_action: 'FLUTTER_NOTIFICATION_CLICK',
 
-            }
+            },
         };
         return admin.messaging().sendToDevice(tokens, payload);
     } return;
@@ -229,7 +229,7 @@ const orderStatus = new Map([
     [2, "Tudo ok! Seu pedido já está em preparação."],
     [3, "Opa! Seu pedido saiu para entrega"],
     [4, "Parabéns!!! O pedido foi entregue"],
-    [5, "Por algum motivo, seu pedido foi cancelado pela loja"]
+    [5, "Por algum motivo, seu pedido foi cancelado pela loja"],
 ]);
 export const onOrderStatusChanged = functions
     .firestore.document("/orders/{orderId}").onUpdate(async (snapshot, contexxt) => {
@@ -250,21 +250,17 @@ const partnerStatus = new Map([
     [1, "Parabéns!! Seja bem vindo! Agora você é um Parceiro Bahia Delivery!!"],
     [2, "Agora é so esperar, sua proposta está em análise"],
     [3, "Você está na modalidade somente usuário"],
-    [4, "Sua conta Parceiro Bahia Delivey está temporariamente suspensa."]
+    [4, "Sua conta Parceiro Bahia Delivey está temporariamente suspensa."],
 
 ]);
-export const onParnerterStatusChanged = functions.firestore.document("/users/{isPartner}").onUpdate(async (snapshot, context) => {
+export const onPartnerStatusChanged = functions.firestore.document("/users/{isPartner}").onUpdate(async (snapshot, context) => {
     const beforeStatus = snapshot.before.data().isPartner;
     const afterStatus = snapshot.after.data().isPartner;
+    console.log(snapshot.before.id);
     console.log(beforeStatus);
     if (beforeStatus !== afterStatus) {
-        console.log("entrou na função");
-        const storeDataUser = await admin.firestore().collection("stores")
-            .doc(snapshot.after.data().storeId).get();
-        const newDataUser = storeDataUser.data() || {};
-        console.log(newDataUser.partnerId);
         const tokensPartnerUser = await admin.firestore().collection("users").
-            doc(newDataUser.partnerId).collection("tokens").get();
+            doc(snapshot.before.id).collection("tokens").get();
         const partnerTokens = tokensPartnerUser.docs.map(doc => doc.id);
         await sendPushFCM(partnerTokens, 'Nova Atualização',
             '' + partnerStatus.get(afterStatus));

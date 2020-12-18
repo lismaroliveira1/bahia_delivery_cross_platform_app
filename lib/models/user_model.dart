@@ -1,5 +1,4 @@
 import 'dart:collection';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:bd_app_full/data/address_data.dart';
@@ -1833,6 +1832,12 @@ class UserModel extends Model {
     @required VoidCallback onFailImage,
   }) async {
     if (isLoggedIn()) {
+      categoryList.forEach((element) {
+        if (element.title == requestPartnerData.category) {
+          requestPartnerData.categoryId = element.id;
+        }
+      });
+      requestPartnerData.userId = firebaseUser.uid;
       requestPartnerData.lat = _latPartnerRequest;
       requestPartnerData.lng = _lngPartnerRequest;
       requestPartnerData.locationId = _addresId;
@@ -1845,12 +1850,28 @@ class UserModel extends Model {
                 DateTime.now().millisecond.toString(),
               );
           UploadTask uploadTask = ref.putFile(requestPartnerData.imageFile);
-          await uploadTask.then((task) async {
-            requestPartnerData.image = await task.ref.getDownloadURL();
-            await FirebaseFirestore.instance.collection("requests").add(
-                  requestPartnerData.toMap(),
-                );
-          });
+          await uploadTask.then(
+            (task) async {
+              requestPartnerData.image = await task.ref.getDownloadURL();
+              await FirebaseFirestore.instance
+                  .collection("requests")
+                  .add(
+                    requestPartnerData.toMap(),
+                  )
+                  .then((value) {
+                requestPartnerData.id = value.id;
+              });
+              await FirebaseFirestore.instance
+                  .collection("users")
+                  .doc(firebaseUser.uid)
+                  .update(
+                {
+                  "isPartner": 2,
+                  "requestId": requestPartnerData.id,
+                },
+              );
+            },
+          );
           onSuccess();
           notifyListeners();
         } catch (erro) {
