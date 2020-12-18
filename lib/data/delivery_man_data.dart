@@ -13,6 +13,7 @@ class DeliveryManData {
   String locationId;
   String image;
   String userId;
+  
   DeliveryManData({
     @required this.birthDay,
     @required this.cpf,

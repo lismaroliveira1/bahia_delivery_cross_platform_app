@@ -1,6 +1,7 @@
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/be_a_partner_screen.dart';
 import 'package:bd_app_full/screens/coupon_screen.dart';
+import 'package:bd_app_full/screens/delivery_man_home_screen.dart';
 import 'package:bd_app_full/screens/notifications_screen.dart';
 import 'package:bd_app_full/screens/order_user_screen.dart';
 import 'package:bd_app_full/screens/payment_user_screen.dart';
@@ -174,7 +175,7 @@ class _ProfileTabState extends State<ProfileTab> {
                             subtitle = "Analisando seus dados";
                             break;
                           case 6:
-                            title = "Delivery";
+                            title = "Delivery Man";
                             subtitle = "Gerencie suas corridas";
                             break;
                         }
@@ -246,6 +247,19 @@ class _ProfileTabState extends State<ProfileTab> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
+                                    ),
+                                  );
+                                } else if (status == 6) {
+                                  Navigator.push(
+                                    context,
+                                    PageTransition(
+                                      type: PageTransitionType.rightToLeft,
+                                      child: DeliveryManHomeScreen(),
+                                      inheritTheme: true,
+                                      duration: Duration(
+                                        milliseconds: 350,
+                                      ),
+                                      ctx: context,
                                     ),
                                   );
                                 }

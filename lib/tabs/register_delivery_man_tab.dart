@@ -2,10 +2,8 @@ import 'dart:io';
 
 import 'package:bd_app_full/blocs/register_partner_block.dart';
 import 'package:bd_app_full/data/delivery_man_data.dart';
-import 'package:bd_app_full/data/request_partner_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/register_address_screen.dart';
-import 'package:bd_app_full/screens/register_store_details_from_partner_screen.dart';
 import 'package:cnpj_cpf_formatter/cnpj_cpf_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
