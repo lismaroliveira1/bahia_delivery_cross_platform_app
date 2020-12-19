@@ -1,4 +1,5 @@
 import 'package:bd_app_full/data/address_data.dart';
+import 'package:bd_app_full/data/delivery_man_data.dart';
 import 'package:geodesy/geodesy.dart';
 
 class UserData {
@@ -19,6 +20,8 @@ class UserData {
   double longitude;
   AddressData userAdress;
   LatLng latLng;
+  String deliveryManId;
+  DeliveryManData userDeliveryMan;
 
   UserData({
     this.currentAddress,
@@ -32,5 +35,7 @@ class UserData {
     this.storeId,
     this.userAdress,
     this.latLng,
+    this.deliveryManId,
+    this.userDeliveryMan,
   });
 }

@@ -112,7 +112,10 @@ class UserModel extends Model {
       email: firebaseUser.email,
       isPartner: docUser.get("isPartner"),
       storeId: docUser.get("isPartner") == 1 ? docUser.get("storeId") : "",
+      deliveryManId:
+          docUser.get("isPartner") == 6 ? docUser.get("deliveryManId") : "",
     );
+    getDeliveryManData();
     await getListOfCategory();
     await getListHomeStores();
     await getOrders();
@@ -1923,5 +1926,13 @@ class UserModel extends Model {
         print(erro);
       }
     }
+  }
+
+  Future<void> getDeliveryManData() async {
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+        .collection("deliveryMans")
+        .doc(userData.deliveryManId)
+        .get();
+    userData.userDeliveryMan = DeliveryManData.fromDocument(documentSnapshot);
   }
 }
