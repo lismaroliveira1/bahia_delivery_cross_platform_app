@@ -15,6 +15,12 @@ class DeliveryManData {
   String locationId;
   String image;
   String userId;
+  String vehycleType;
+  String vehycleColor;
+  String transitBoard;
+  String transitId;
+  String driverIdImage;
+  File driverImageFile;
   DeliveryManData.fromDocument(DocumentSnapshot docSnap) {
     id = docSnap.id;
     name = docSnap.get("name");
@@ -39,6 +45,12 @@ class DeliveryManData {
     @required this.name,
     @required this.image,
     this.userId,
+    @required this.vehycleColor,
+    @required this.vehycleType,
+    @required this.transitId,
+    @required this.transitBoard,
+    this.driverIdImage,
+    @required this.driverImageFile,
   });
 
   Map<String, dynamic> toRequestMap() {
@@ -52,6 +64,10 @@ class DeliveryManData {
       "lng": lng,
       "image": image,
       "userId": userId,
+      "vehicleColor": vehycleColor,
+      "vehycleType": vehycleType,
+      "transitId": transitId,
+      "driverIdImage": driverIdImage,
     };
   }
 }

@@ -1899,26 +1899,37 @@ class UserModel extends Model {
         deliveryManData.lng = _lngPartnerRequest;
         deliveryManData.locationId = _addresId;
         deliveryManData.location = addressToRegisterPartner;
+
         Reference ref = FirebaseStorage.instance.ref().child("images").child(
               DateTime.now().millisecond.toString(),
             );
         UploadTask uploadTask = ref.putFile(deliveryManData.imageFile);
         await uploadTask.then((task) async {
           deliveryManData.image = await task.ref.getDownloadURL();
-          await FirebaseFirestore.instance
-              .collection("requestsDeliveryMans")
-              .add(
-                deliveryManData.toRequestMap(),
-              );
-          await FirebaseFirestore.instance
-              .collection("users")
-              .doc(firebaseUser.uid)
-              .update({
-            "isPartner": 5,
+          Reference refDriver =
+              FirebaseStorage.instance.ref().child("images").child(
+                    DateTime.now().millisecond.toString(),
+                  );
+          UploadTask uploadDriverTask =
+              refDriver.putFile(deliveryManData.driverImageFile);
+          await uploadDriverTask.then((driverTask) async {
+            deliveryManData.driverIdImage =
+                await driverTask.ref.getDownloadURL();
+            await FirebaseFirestore.instance
+                .collection("requestsDeliveryMans")
+                .add(
+                  deliveryManData.toRequestMap(),
+                );
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(firebaseUser.uid)
+                .update({
+              "isPartner": 5,
+            });
+            onSuccess();
+            isLoading = false;
+            notifyListeners();
           });
-          onSuccess();
-          isLoading = false;
-          notifyListeners();
         });
       } catch (erro) {
         isLoading = false;
@@ -1929,10 +1940,15 @@ class UserModel extends Model {
   }
 
   Future<void> getDeliveryManData() async {
-    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
-        .collection("deliveryMans")
-        .doc(userData.deliveryManId)
-        .get();
-    userData.userDeliveryMan = DeliveryManData.fromDocument(documentSnapshot);
+    if (userData.isPartner == 6) {
+      try {
+        DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+            .collection("deliveryMans")
+            .doc(userData.deliveryManId)
+            .get();
+        userData.userDeliveryMan =
+            DeliveryManData.fromDocument(documentSnapshot);
+      } catch (erro) {}
+    }
   }
 }

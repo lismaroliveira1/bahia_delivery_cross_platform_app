@@ -20,21 +20,29 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
   final _registerPartnerBloc = RegisterPartnerBloc();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _cpfController = TextEditingController();
+  TextEditingController _transitBoardController = TextEditingController();
+  TextEditingController _vehicleColorController = TextEditingController();
+  TextEditingController _transitCardController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime _selectedDate;
   String _textDate;
   bool isBirthDayChoosed;
   bool isLocationChoosed;
   bool isImageChoosed;
+  bool isImageDriverChoosed;
+  File imageDriverFile;
   File imageFile;
   String _dropDownInitiValue;
+  bool isTypeVehicleChoosed;
   final picker = ImagePicker();
   List<String> dropdownList = [];
   @override
   void initState() {
+    isTypeVehicleChoosed = false;
     _textDate = "";
     isBirthDayChoosed = false;
     isImageChoosed = false;
+    isImageDriverChoosed = false;
     dropdownList = [
       "Tipo do Veículo",
       "Motorizado",
@@ -370,6 +378,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                           onChanged: (String value) {
                             setState(() {
                               _dropDownInitiValue = value;
+                              isTypeVehicleChoosed = true;
                             });
                           },
                           items: dropdownList
@@ -382,19 +391,124 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                       ],
                     ),
                     _dropDownInitiValue == "Motorizado"
-                        ? Container(
-                            child: Row(
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 20),
+                            child: Column(
                               children: [
-                                Column(
-                                  children: [
-                                    Container(
-                                      height:
-                                          MediaQuery.of(context).size.width /
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width / 3.2,
+                                  child: Column(
+                                    children: [
+                                      FlatButton(
+                                        padding: EdgeInsets.zero,
+                                        onPressed: () {
+                                          onPhotoDriverPressed();
+                                        },
+                                        child: Container(
+                                          margin: EdgeInsets.all(4),
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
                                               3.5,
-                                      width: MediaQuery.of(context).size.width /
-                                          3.5,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              3.5,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            border: Border.all(
+                                              color: Colors.black45,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                            image: DecorationImage(
+                                              image: isImageDriverChoosed
+                                                  ? FileImage(imageDriverFile)
+                                                  : AssetImage(
+                                                      'images/user_and_id.png',
+                                                    ),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        "Envie uma foto com seu documento de identificação",
+                                        textAlign: TextAlign.center,
+                                        softWrap: true,
+                                        overflow: TextOverflow.clip,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  child: Container(
+                                    width: 150,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          child: TextField(
+                                            controller: _transitBoardController,
+                                            decoration: InputDecoration(
+                                              labelText: 'Placa do veículo',
+                                              hintText: 'AAA-0000',
+                                              border: OutlineInputBorder(),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  child: Container(
+                                    width: 200,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          child: TextField(
+                                            controller: _transitCardController,
+                                            decoration: InputDecoration(
+                                              labelText:
+                                                  'Nº Cateira de habilitação',
+                                              hintText: '00123456789',
+                                              border: OutlineInputBorder(),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
+                                  child: Container(
+                                    width: 150,
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          child: TextField(
+                                            controller: _vehicleColorController,
+                                            decoration: InputDecoration(
+                                              labelText: 'Cor do veículo',
+                                              hintText: 'branca',
+                                              border: OutlineInputBorder(),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
@@ -445,58 +559,86 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                                             } else if (!model
                                                 .isLocationChoosedOnRegisterPartner) {
                                               noChoosedLocation();
+                                            } else if (!isImageChoosed) {
+                                              _onFailImage();
+                                            } else if (!isTypeVehicleChoosed) {
+                                              _onFailTypeVehycle();
+                                            } else if (_dropDownInitiValue ==
+                                                    "Motorizado" &&
+                                                !isImageDriverChoosed) {
+                                              _onFailDriverImage();
                                             } else {
-                                              if (isImageChoosed) {
-                                                final deliveryManDatta =
-                                                    DeliveryManData(
-                                                  birthDay: _selectedDate,
-                                                  cpf: _cpfController.text,
-                                                  imageFile: imageFile,
-                                                  lat: null,
-                                                  lng: null,
-                                                  location: null,
-                                                  locationId: null,
-                                                  name: _nameController.text,
-                                                  image: null,
-                                                );
-                                                UserModel.of(context)
-                                                    .sendRequestForNewDeliveryMan(
-                                                  deliveryManData:
-                                                      deliveryManDatta,
-                                                  onSuccess: _onSuccess,
-                                                  onFail: _onFail,
-                                                );
-                                              } else {
-                                                _onFailImage();
-                                              }
+                                              final deliveryManDatta =
+                                                  DeliveryManData(
+                                                driverImageFile:
+                                                    imageDriverFile,
+                                                transitBoard:
+                                                    _transitBoardController
+                                                        .text,
+                                                vehycleColor:
+                                                    _vehicleColorController
+                                                        .text,
+                                                vehycleType:
+                                                    _dropDownInitiValue,
+                                                transitId:
+                                                    _transitCardController.text,
+                                                birthDay: _selectedDate,
+                                                cpf: _cpfController.text,
+                                                imageFile: imageFile,
+                                                lat: null,
+                                                lng: null,
+                                                location: null,
+                                                locationId: null,
+                                                name: _nameController.text,
+                                                image: null,
+                                              );
+                                              UserModel.of(context)
+                                                  .sendRequestForNewDeliveryMan(
+                                                deliveryManData:
+                                                    deliveryManDatta,
+                                                onSuccess: _onSuccess,
+                                                onFail: _onFail,
+                                              );
                                             }
                                           }
                                         : null,
                                     padding: EdgeInsets.zero,
-                                    child: Container(
-                                      height: 50,
-                                      width: MediaQuery.of(context).size.width /
-                                          3.5,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(12),
-                                        color: snapshot.hasData &&
-                                                isBirthDayChoosed &&
-                                                model
-                                                    .isLocationChoosedOnRegisterPartner
-                                            ? Colors.red
-                                            : Colors.grey[300],
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          "Próximo",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white,
+                                    child: model.isLoading
+                                        ? Container(
+                                            height: 20,
+                                            width: 20,
+                                            child: Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            ),
+                                          )
+                                        : Container(
+                                            height: 50,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                3.5,
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                              color: snapshot.hasData &&
+                                                      isBirthDayChoosed &&
+                                                      model
+                                                          .isLocationChoosedOnRegisterPartner
+                                                  ? Colors.red
+                                                  : Colors.grey[300],
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                "Próximo",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                    ),
                                   );
                                 },
                               );
@@ -677,4 +819,120 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
   }
 
   void _onFail() {}
+
+  void onPhotoDriverPressed() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.redAccent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
+        ),
+        content: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height / 12,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              FlatButton(
+                padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width / 18,
+                ),
+                onPressed: () async {
+                  try {
+                    final _pickedFile = await picker.getImage(
+                      source: ImageSource.gallery,
+                      maxHeight: 500,
+                      maxWidth: 500,
+                    );
+                    if (_pickedFile == null) return;
+                    imageDriverFile = File(_pickedFile.path);
+
+                    if (imageDriverFile == null) return;
+                    setState(() {
+                      isImageDriverChoosed = true;
+                    });
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  } catch (e) {
+                    setState(() {
+                      isImageDriverChoosed = false;
+                    });
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  }
+                },
+                child: Container(
+                  child: Image.asset(
+                    "images/gallery_image.png",
+                  ),
+                  height: 50,
+                  width: 50,
+                ),
+              ),
+              FlatButton(
+                padding: EdgeInsets.only(
+                  right: MediaQuery.of(context).size.width / 18,
+                ),
+                onPressed: () async {
+                  try {
+                    final _pickedFile = await picker.getImage(
+                      source: ImageSource.camera,
+                      maxHeight: 500,
+                      maxWidth: 500,
+                    );
+                    if (_pickedFile == null) return;
+                    imageDriverFile = File(_pickedFile.path);
+                    if (imageDriverFile == null) return;
+                    setState(() {
+                      isImageDriverChoosed = true;
+                    });
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  } catch (e) {
+                    setState(() {
+                      isImageChoosed = false;
+                    });
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  }
+                },
+                child: Container(
+                  child: Image.asset(
+                    "images/camera_image.png",
+                  ),
+                  height: 50,
+                  width: 50,
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _onFailDriverImage() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "É necessário fazer o upload da sua foto com a sua carteira de motorista",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _onFailTypeVehycle() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "É necessário Escolher o tipo do veículo",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
 }
