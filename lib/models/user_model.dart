@@ -21,7 +21,6 @@ import 'package:bd_app_full/data/subsection_data.dart';
 import 'package:bd_app_full/data/user_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -725,7 +724,21 @@ class UserModel extends Model {
     }
   }
 
-  void editNewSection({
+  void insertNewSection({
+    @required CategoryStoreData categoryStoreData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) {
+    if (isLoggedIn()) {
+      isLoading = true;
+      notifyListeners();
+      try {} catch (error) {
+        print(error);
+      }
+    }
+  }
+
+  void editSection({
     @required String sectionId,
     @required String title,
     @required String description,
@@ -1666,43 +1679,6 @@ class UserModel extends Model {
     _locationData = await location.getLocation();
     print(_locationData.latitude);
     print(_locationData.longitude);
-    await getAddressFromLatLng(
-      lat: _locationData.latitude,
-      lng: _locationData.longitude,
-    );
-  }
-
-  Future<void> getAddressFromLatLng(
-      {@required double lat, @required double lng}) async {
-    isLoading = true;
-    notifyListeners();
-    final endPoint = "https://www.cepaberto.com/api/v3/nearest";
-    final Dio dio = Dio();
-    dio.options.headers[HttpHeaders.authorizationHeader] = 'Token token=$token';
-    try {
-      final response = await dio.get<Map<String, dynamic>>(endPoint,
-          queryParameters: {'lat': lat, 'lng': lng});
-      if (response.data.isEmpty) {
-        return Future.error('Dados Inválidos');
-      }
-      //final cepAbertoAddress = CepAbertoAddress.fromMap(response.data);
-      /*if (cepAbertoAddress != null) {
-        street = cepAbertoAddress.logradouro;
-        state = cepAbertoAddress.state.sigla;
-        zipCode = cepAbertoAddress.cep;
-        district = cepAbertoAddress.bairro;
-        city = cepAbertoAddress.city.nome;
-      }*/
-      if (response.data != null) {
-        userData.userAdress = AddressData.fromResponse(response);
-        userData.latLng = LatLng(
-          userData.userAdress.latitude,
-          userData.userAdress.longitude,
-        );
-      }
-    } on DioError {}
-    isLoading = false;
-    notifyListeners();
   }
 
   void addComboToCart({

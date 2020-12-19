@@ -60,7 +60,7 @@ class CreditDebitCardData {
       'cardNumber': cardNumber.replaceAll(" ", ""),
       'holder': cardOwnerName,
       'expirationDate': validateDate,
-      'secuityCode': cvv,
+      'securityCode': cvv,
       'brand': brand,
     };
   }

@@ -241,7 +241,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                   height: 45,
                   child: FlatButton(
                     onPressed: () {
-                      UserModel.of(context).editNewSection(
+                      UserModel.of(context).editSection(
                         sectionId: id,
                         title: _nameController.text,
                         description: _descriptionController.text,

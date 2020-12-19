@@ -5,11 +5,12 @@ import 'package:flutter/cupertino.dart';
 
 class CieloPayment {
   final FirebaseFunctions functions = FirebaseFunctions.instance;
-  void authorized(
-      {@required CreditDebitCardData creditDebitCardData,
-      @required num price,
-      @required String orderId,
-      @required UserData user}) async {
+  void authorized({
+    @required CreditDebitCardData creditDebitCardData,
+    @required num price,
+    @required String orderId,
+    @required UserData user,
+  }) async {
     final Map<String, dynamic> dataSale = {
       'merchantOrderId': orderId,
       'amount': (100 * price).toInt(),
