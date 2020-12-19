@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
-class ChatDeliveryManTab extends StatefulWidget {
+class SetupDeliveryManTab extends StatefulWidget {
   @override
-  _ChatDeliveryManTabState createState() => _ChatDeliveryManTabState();
+  _SetupDeliveryManTabState createState() => _SetupDeliveryManTabState();
 }
 
-class _ChatDeliveryManTabState extends State<ChatDeliveryManTab> {
+class _SetupDeliveryManTabState extends State<SetupDeliveryManTab> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: NestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBosIsScrolled) {
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrooled) {
           return <Widget>[
             SliverAppBar(
-              title: Text("Chats"),
+              title: Text("Configurações"),
               centerTitle: true,
               backgroundColor: Colors.transparent,
             ),

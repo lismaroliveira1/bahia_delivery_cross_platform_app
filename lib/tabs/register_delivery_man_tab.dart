@@ -27,12 +27,20 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
   bool isLocationChoosed;
   bool isImageChoosed;
   File imageFile;
+  String _dropDownInitiValue;
   final picker = ImagePicker();
+  List<String> dropdownList = [];
   @override
   void initState() {
     _textDate = "";
     isBirthDayChoosed = false;
     isImageChoosed = false;
+    dropdownList = [
+      "Tipo do Veículo",
+      "Motorizado",
+      "Não motorizado",
+    ];
+    _dropDownInitiValue = dropdownList[0];
     isLocationChoosed =
         UserModel.of(context).isLocationChoosedOnRegisterPartner;
     super.initState();
@@ -230,10 +238,11 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                                                           .width /
                                                       3.5,
                                                   decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                      color: Colors.red),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            12),
+                                                    color: Colors.red,
+                                                  ),
                                                   child: Center(
                                                     child: Text(
                                                       "Cancelar",
@@ -343,6 +352,57 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                         ),
                       ),
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        DropdownButton<String>(
+                          value: _dropDownInitiValue,
+                          icon: Icon(
+                            Icons.arrow_downward,
+                          ),
+                          elevation: 16,
+                          iconSize: 16,
+                          underline: Container(
+                            height: 2,
+                            width: MediaQuery.of(context).size.width / 2,
+                            color: Colors.red,
+                          ),
+                          onChanged: (String value) {
+                            setState(() {
+                              _dropDownInitiValue = value;
+                            });
+                          },
+                          items: dropdownList
+                              .map((type) => DropdownMenuItem<String>(
+                                    value: type,
+                                    child: Text(type),
+                                  ))
+                              .toList(),
+                        ),
+                      ],
+                    ),
+                    _dropDownInitiValue == "Motorizado"
+                        ? Container(
+                            child: Row(
+                              children: [
+                                Column(
+                                  children: [
+                                    Container(
+                                      height:
+                                          MediaQuery.of(context).size.width /
+                                              3.5,
+                                      width: MediaQuery.of(context).size.width /
+                                          3.5,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container(
+                            height: 0,
+                            width: 0,
+                          ),
                     Padding(
                       padding: EdgeInsets.fromLTRB(20, 20, 20, 26),
                       child: Row(

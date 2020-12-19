@@ -35,6 +35,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 100.0),
+                      child: SizedBox(
+                        height: 200,
+                        width: 200,
+                        child: Image.asset('images/logo_full.png'),
+                      ),
+                    ),
                     Container(
                       margin: EdgeInsets.only(top: 100, bottom: 4),
                       child: StreamBuilder<String>(
