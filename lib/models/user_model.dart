@@ -789,112 +789,10 @@ class UserModel extends Model {
   }
 
   void editSection({
-    @required String sectionId,
-    @required String title,
-    @required String description,
-    @required int order,
-    @required int x,
-    @required int y,
-    @required String imageUrl,
+    @required CategoryStoreData section,
     @required VoidCallback onSuccess,
     @required VoidCallback onFail,
-    @required File imageFile,
-    @required int olderPos,
-  }) async {
-    if (isLoggedIn()) {
-      List<CategoryStoreData> sectionStoreListFlag = sectionsStorePartnerList;
-      isLoading = true;
-      print(olderPos);
-      notifyListeners();
-      if (userData.isPartner == 1) {
-        String url = imageUrl;
-        try {
-          if (imageFile == null) {
-            url = imageUrl;
-            for (var i = 0; i < order - 1; i++) {
-              sectionStoreListFlag[i] = sectionsStorePartnerList[i];
-              sectionStoreListFlag[i].order = i;
-              print(sectionStoreListFlag[i].title);
-              print(sectionStoreListFlag[i].order);
-            }
-
-            sectionStoreListFlag[order - 1] =
-                sectionsStorePartnerList[olderPos];
-            sectionStoreListFlag[order - 1].order = order - 1;
-            print(sectionStoreListFlag[order - 1].title);
-            print(sectionStoreListFlag[order - 1].order);
-
-            for (var i = 0; i < sectionsStorePartnerList.length; i++) {
-              if (sectionsStorePartnerList[i].id == sectionId) {
-                sectionsStorePartnerList.remove(sectionsStorePartnerList[i]);
-                break;
-              }
-            }
-            for (var i = order - 1; i < sectionsStorePartnerList.length; i++) {
-              if (sectionsStorePartnerList[i].id != sectionId) {
-                sectionStoreListFlag[i] = sectionsStorePartnerList[i];
-                sectionStoreListFlag[i].order = i + 1;
-                print(sectionStoreListFlag[i].title);
-                print(sectionStoreListFlag[i].order);
-              }
-            }
-            sectionStoreListFlag.forEach((element) async {
-              await FirebaseFirestore.instance
-                  .collection("stores")
-                  .doc(userData.storeId)
-                  .collection("categories")
-                  .doc(sectionId)
-                  .update({
-                "title": element.title,
-                "description": element.description,
-                "order": element.order,
-                "x": element.x,
-                "y": element.y,
-                "image": element.image,
-              });
-            });
-            await getSectionList();
-            isLoading = false;
-            onSuccess();
-            notifyListeners();
-          } else {
-            isLoading = true;
-            notifyListeners();
-            Reference ref =
-                FirebaseStorage.instance.ref().child("images").child(
-                      DateTime.now().millisecond.toString(),
-                    );
-            UploadTask uploadTask = ref.putFile(imageFile);
-            uploadTask.then((value) async {
-              url = await value.ref.getDownloadURL();
-              await FirebaseFirestore.instance
-                  .collection("stores")
-                  .doc(userData.storeId)
-                  .collection("categories")
-                  .doc(sectionId)
-                  .update({
-                "title": title,
-                "description": description,
-                "order": order - 1,
-                "x": x,
-                "y": y,
-                "image": url,
-              });
-              await getSectionList();
-              isLoading = false;
-              onSuccess();
-              notifyListeners();
-            });
-          }
-        } catch (erro) {
-          print(erro);
-          isLoading = false;
-          onFail();
-          notifyListeners();
-        }
-      }
-    }
-  }
+  }) async {}
 
   void insertNewSubsection({
     @required SubSectionData subSectionData,
@@ -933,6 +831,7 @@ class UserModel extends Model {
           }).toList();
           section.subSectionsList = subsectionList;
         });
+        await getSectionList();
         onSucess();
         isLoading = false;
         notifyListeners();

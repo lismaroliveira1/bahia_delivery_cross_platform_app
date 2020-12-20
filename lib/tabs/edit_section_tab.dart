@@ -32,12 +32,12 @@ class _EditSectionTabState extends State<EditSectionTab> {
   void initState() {
     isImageChoosed = false;
     imageFile = null;
-    super.initState();
     id = widget.categoryStoreData.id;
     position = widget.categoryStoreData.order + 1;
     olderPos = position;
     x = widget.categoryStoreData.x;
     y = widget.categoryStoreData.y;
+    super.initState();
   }
 
   @override
@@ -212,6 +212,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                           child: SubSectionStoreScren(
                             widget.categoryStoreData.subSectionsList,
                             widget.categoryStoreData.id,
+                            false,
                           ),
                           inheritTheme: true,
                           duration: Duration(
@@ -240,21 +241,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                   ),
                   height: 45,
                   child: FlatButton(
-                    onPressed: () {
-                      UserModel.of(context).editSection(
-                        sectionId: id,
-                        title: _nameController.text,
-                        description: _descriptionController.text,
-                        order: position,
-                        x: x,
-                        y: y,
-                        imageUrl: widget.categoryStoreData.image,
-                        onSuccess: _onSuccess,
-                        onFail: _onFail,
-                        imageFile: isImageChoosed ? imageFile : null,
-                        olderPos: olderPos,
-                      );
-                    },
+                    onPressed: () {},
                     child: ScopedModelDescendant<UserModel>(
                       builder: (context, child, model) {
                         if (model.isLoading) {

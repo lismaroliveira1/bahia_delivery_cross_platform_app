@@ -41,6 +41,9 @@ class CategoryStoreData {
       "title": title,
       "x": x,
       "y": y,
+      "subsections": subSectionsList.map((subsectionData) {
+        return subsectionData.toMap();
+      }).toList()
     };
   }
 }

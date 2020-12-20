@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 class SubSectionStoreScren extends StatelessWidget {
   final List<SubSectionData> subsections;
   final String sectionId;
-  SubSectionStoreScren(this.subsections, this.sectionId);
+  final bool isFirstSubsection;
+  SubSectionStoreScren(
+      this.subsections, this.sectionId, this.isFirstSubsection);
 
   @override
   Widget build(BuildContext context) {
