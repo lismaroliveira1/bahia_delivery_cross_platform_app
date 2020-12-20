@@ -177,7 +177,11 @@ class _CartPriceState extends State<CartPrice> {
                                   onPressed: () async {
                                     if (userModel.payOnApp) {
                                       print("payOnApp");
-                                      userModel.finishOrder(
+                                      userModel.finishOrderWithPayOnApp(
+                                        onSuccess: _onSuccessPayOnApp,
+                                        onFail: _onFailOnApp,
+                                      );
+                                      /* userModel.finishOrder(
                                         discount: discount,
                                         onSuccess: _onSuccessPayOnApp,
                                         onFail: _onFailOnApp,
@@ -185,7 +189,7 @@ class _CartPriceState extends State<CartPrice> {
                                         storeData: widget.storeData,
                                         creditDebitCardData: userModel
                                             .currentCreditDebitCardData,
-                                      );
+                                      );*/
                                     } else {
                                       userModel.finishOrderWithPayOnDelivery(
                                         discount: discount,

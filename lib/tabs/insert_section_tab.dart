@@ -2,8 +2,9 @@ import 'dart:io';
 
 import 'package:bd_app_full/blocs/partner_section_bloc.dart';
 import 'package:bd_app_full/data/category_store_data.dart';
+import 'package:bd_app_full/data/subsection_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/susctions_screen.dart';
+import 'package:bd_app_full/screens/subsections_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
@@ -28,6 +29,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
   String id = "";
   bool isFirstPostion;
   bool isSizeSelected;
+  List<SubSectionData> subsections = [];
   @override
   void initState() {
     isSizeSelected = false;

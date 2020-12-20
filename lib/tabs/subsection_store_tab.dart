@@ -6,9 +6,11 @@ import 'package:page_transition/page_transition.dart';
 class SubSectionStoreTab extends StatefulWidget {
   final List<SubSectionData> subsections;
   final String sectionId;
+  final bool isFirstSection;
   SubSectionStoreTab(
     this.subsections,
     this.sectionId,
+    this.isFirstSection,
   );
   @override
   _SubSectionStoreTabState createState() => _SubSectionStoreTabState();
@@ -56,10 +58,8 @@ class _SubSectionStoreTabState extends State<SubSectionStoreTab> {
                         context,
                         PageTransition(
                           type: PageTransitionType.rightToLeft,
-                          child: InsertNewSubSectionScreen(
-                            widget.subsections,
-                            widget.sectionId,
-                          ),
+                          child: InsertNewSubSectionScreen(widget.subsections,
+                              widget.sectionId, widget.isFirstSection),
                           inheritTheme: true,
                           duration: Duration(
                             milliseconds: 350,

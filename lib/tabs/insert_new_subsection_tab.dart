@@ -6,9 +6,11 @@ import 'package:scoped_model/scoped_model.dart';
 class InsertNewSubSectionTab extends StatefulWidget {
   final List<SubSectionData> subsections;
   final String sectionId;
+  final bool isFirstSection;
   InsertNewSubSectionTab(
     this.subsections,
     this.sectionId,
+    this.isFirstSection,
   );
   @override
   _InsertNewSubSectionTabState createState() => _InsertNewSubSectionTabState();
