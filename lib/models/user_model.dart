@@ -1,7 +1,6 @@
 import 'dart:collection';
 import 'dart:io';
 
-import 'package:bd_app_full/data/address_data.dart';
 import 'package:bd_app_full/data/cart_product.dart';
 import 'package:bd_app_full/data/category_data.dart';
 import 'package:bd_app_full/data/category_store_data.dart';
@@ -725,15 +724,66 @@ class UserModel extends Model {
   }
 
   void insertNewSection({
-    @required CategoryStoreData categoryStoreData,
+    @required CategoryStoreData section,
     @required VoidCallback onSuccess,
     @required VoidCallback onFail,
-  }) {
+  }) async {
     if (isLoggedIn()) {
       isLoading = true;
       notifyListeners();
-      try {} catch (error) {
-        print(error);
+      try {
+        Reference ref = FirebaseStorage.instance.ref().child("images").child(
+              DateTime.now().millisecond.toString(),
+            );
+        UploadTask uploadTask = ref.putFile(section.imageFile);
+        uploadTask.then((task) async {
+          section.image = await task.ref.getDownloadURL();
+          if (section.order == sectionsStorePartnerList.length) {
+            await FirebaseFirestore.instance
+                .collection("stores")
+                .doc(userData.storeId)
+                .collection("categories")
+                .add(
+                  section.toMap(),
+                );
+          } else {
+            List<CategoryStoreData> flagSectionList = [];
+            flagSectionList =
+                sectionsStorePartnerList.sublist(0, section.order);
+            sectionsStorePartnerList.forEach((sectStore) {
+              if (sectStore.order >= section.order) {
+                sectStore.order = sectStore.order + 1;
+                flagSectionList.add(sectStore);
+              }
+            });
+            await FirebaseFirestore.instance
+                .collection("stores")
+                .doc(userData.storeId)
+                .collection("categories")
+                .add(
+                  section.toMap(),
+                );
+            flagSectionList.forEach((sectionToDataBase) async {
+              print(sectionToDataBase.order);
+              await FirebaseFirestore.instance
+                  .collection("stores")
+                  .doc(userData.storeId)
+                  .collection("categories")
+                  .doc(sectionToDataBase.id)
+                  .update(
+                    sectionToDataBase.toMap(),
+                  );
+            });
+          }
+          await getSectionList();
+          onSuccess();
+          isLoading = false;
+          notifyListeners();
+        });
+      } catch (error) {
+        onFail();
+        isLoading = true;
+        notifyListeners();
       }
     }
   }
@@ -745,7 +795,7 @@ class UserModel extends Model {
     @required int order,
     @required int x,
     @required int y,
-    @required imageUrl,
+    @required String imageUrl,
     @required VoidCallback onSuccess,
     @required VoidCallback onFail,
     @required File imageFile,

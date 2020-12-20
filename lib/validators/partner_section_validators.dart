@@ -3,10 +3,10 @@ import 'dart:async';
 class PartnerSectionValidators {
   final validateName =
       StreamTransformer<String, String>.fromHandlers(handleData: (name, sink) {
-    if (name.trim().split(" ").length >= 2) {
+    if (name.length > 0) {
       sink.add(name);
     } else {
-      sink.addError("Insira nome e sobrenome");
+      sink.addError("Insira um nome");
     }
   });
   final validateDescription =

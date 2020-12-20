@@ -116,6 +116,7 @@ class _CategoryStorePartnerTabState extends State<CategoryStorePartnerTab> {
                               ),
                             ),
                             child: ListTile(
+                              contentPadding: EdgeInsets.all(4),
                               onTap: () {
                                 Navigator.push(
                                   context,
@@ -130,7 +131,7 @@ class _CategoryStorePartnerTabState extends State<CategoryStorePartnerTab> {
                                   ),
                                 );
                               },
-                              dense: true,
+                              isThreeLine: true,
                               title: Text(
                                 section.title,
                                 style: TextStyle(
@@ -144,8 +145,8 @@ class _CategoryStorePartnerTabState extends State<CategoryStorePartnerTab> {
                                 ),
                               ),
                               leading: Container(
-                                height: 60,
-                                width: 60,
+                                height: 80,
+                                width: 80,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   image: DecorationImage(
@@ -156,7 +157,10 @@ class _CategoryStorePartnerTabState extends State<CategoryStorePartnerTab> {
                                   ),
                                 ),
                               ),
-                              trailing: Text("${section.order + 1}º"),
+                              trailing: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Text("${section.order + 1}º"),
+                              ),
                             ),
                           ),
                         );

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bd_app_full/data/subsection_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -10,15 +12,17 @@ class CategoryStoreData {
   String title;
   int x;
   int y;
+  File imageFile;
   List<SubSectionData> subSectionsList = [];
   CategoryStoreData({
     @required this.description,
-    @required this.image,
+    this.image,
     @required this.order,
     @required this.title,
     @required this.x,
     @required this.y,
-    @required id,
+    id,
+    @required this.imageFile,
   });
   CategoryStoreData.fromQueryDocument(QueryDocumentSnapshot query) {
     id = query.id;
@@ -29,7 +33,7 @@ class CategoryStoreData {
     x = query.get("x");
     y = query.get("y");
   }
-  Map<String, dynamic> toMao() {
+  Map<String, dynamic> toMap() {
     return {
       "description": description,
       "image": image,
