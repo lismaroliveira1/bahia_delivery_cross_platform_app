@@ -204,12 +204,12 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                                 labelText: "Validade",
                                 errorText:
                                     snapshot.hasError ? snapshot.error : null,
-                                hintText: "MM/AA",
+                                hintText: "MM/AAAA",
                                 border: OutlineInputBorder(),
                               ),
                               inputFormatters: [
                                 MaskedTextInputFormatter(
-                                    mask: 'xx/xx', separator: '/')
+                                    mask: 'xx/xxxx', separator: '/')
                               ],
                             );
                           },
