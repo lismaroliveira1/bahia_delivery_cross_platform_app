@@ -18,6 +18,7 @@ const cieloParams: CieloConstructor = {
 const cielo = new Cielo(cieloParams);
 
 export const authorizedCreditCard = functions.https.onCall(async (data, context) => {
+    
     if (data === null) {
         return {
             "success": false,
@@ -36,6 +37,9 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
             },
         };
     } else {
+        const userId = context.auth.uid;
+        const snapshot = await admin.firestore().collection("users").doc(userId).get();
+        const userData = snapshot.data() || {};
         let brand: EnumBrands;
         switch (data.creditCard.brand) {
             case "visa":
@@ -80,9 +84,6 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                     },
                 };
         }
-        const userId = context.auth.uid;
-        const snapshot = await admin.firestore().collection("users").doc(userId).get();
-        const userData = snapshot.data() || {};
         const vendaParams: TransactionCreditCardRequestModel = {
             customer: {
                 name: userData.name,
@@ -98,7 +99,7 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
                     
                 },
                 installments: 1,
-                softDescriptor: "Bahia Delivery",
+                softDescriptor: "Banzeh",
                 type: EnumCardType.CREDIT,
                 capture: false,
             },

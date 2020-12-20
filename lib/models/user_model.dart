@@ -1371,13 +1371,18 @@ class UserModel extends Model {
   }
 
   Future<void> finishOrderWithPayOnApp({
+    @required double discount,
     @required VoidCallback onSuccess,
     @required VoidCallback onFail,
+    @required double shipePrice,
+    @required StoreData storeData,
+    @required VoidCallback onCartExpired,
   }) async {
     double totalPrice = 0;
-    double productPrice = 10.99;
+    double productPrice = 18.00;
     double comboPrice = 0;
     double offPrice = 0;
+    Map response = {};
     try {
       if (cartProducts.length == 0 && comboCartList.length == 0) return null;
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -1386,12 +1391,61 @@ class UserModel extends Model {
           .collection("cart")
           .get();
       totalPrice = productPrice + comboPrice + offPrice;
-      final cieloPayment = CieloPayment();
-      cieloPayment.authorized(
+      final cieloPayment = new CieloPayment();
+      response = await cieloPayment.authorized(
         creditDebitCardData: currentCreditDebitCardData,
         price: totalPrice,
       );
-    } catch (erro) {}
+      if (response["payment"]["returnMessage"] == "Operation Successful") {
+        await FirebaseFirestore.instance.collection("orders").add({
+          "client": firebaseUser.uid,
+          "clientName": userData.name,
+          "clientImage": userData.image,
+          "clientAddress": "" //currentAddressDataFromGoogle.description
+              .replaceAll("State of ", "")
+              .replaceAll("Brazil", "Brasil"),
+          "storeId": storeData.id,
+          "products": cartProducts
+              .map(
+                (cartProduct) => cartProduct.toMap(),
+              )
+              .toList(),
+          "combos": comboCartList
+              .map(
+                (combo) => combo.toComboProductMap(),
+              )
+              .toList(),
+          "shipPrice": shipePrice,
+          "StoreName": storeData.name,
+          "storeImage": storeData.image,
+          "storeDescription": "storeDescrition",
+          "discount": discount,
+          "totalPrice": totalPrice,
+          "status": 1,
+          'createdAt': FieldValue.serverTimestamp(),
+          'platform': Platform.operatingSystem,
+          'paymentType': "Pagamento na Entrega"
+        });
+        cartProducts.clear();
+        comboCartList.clear();
+        hasProductInCart = false;
+        onSuccess();
+        notifyListeners();
+        for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+          doc.reference.delete();
+        }
+        await getListOfCategory();
+        await getOrders();
+        await getListHomeStores();
+        getcartProductList();
+        await updateFavoritList();
+      } else if (response["payment"]["returnMessage"] == "Card Expired") {
+        onCartExpired();
+      }
+    } catch (erro) {
+      onFail();
+      print(erro);
+    }
   }
 
   Future<void> finishOrderWithPayOnDelivery({

@@ -180,6 +180,10 @@ class _CartPriceState extends State<CartPrice> {
                                       userModel.finishOrderWithPayOnApp(
                                         onSuccess: _onSuccessPayOnApp,
                                         onFail: _onFailOnApp,
+                                        shipePrice: ship,
+                                        storeData: widget.storeData,
+                                        discount: discount,
+                                        onCartExpired: _onCardExpired,
                                       );
                                       /* userModel.finishOrder(
                                         discount: discount,
@@ -231,4 +235,18 @@ class _CartPriceState extends State<CartPrice> {
   }
 
   void _onFailOnApp() {}
+
+  _onCardExpired() {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Cartão inválido",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
 }

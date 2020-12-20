@@ -5,13 +5,14 @@ import 'package:random_string/random_string.dart';
 
 class CieloPayment {
   final FirebaseFunctions functions = FirebaseFunctions.instance;
-  void authorized({
+
+  dynamic authorized({
     @required CreditDebitCardData creditDebitCardData,
     @required double price,
   }) async {
     print(price.toString());
     final Map<String, dynamic> dataSale = {
-      'merchantOrderId': randomNumeric(10),
+      'merchantOrderId': randomAlphaNumeric(20),
       'amount': (100 * price).toInt(),
       'softDescriptor': 'Bahia Delivery',
       'installments': 1,
@@ -22,6 +23,6 @@ class CieloPayment {
     final HttpsCallable callable =
         functions.httpsCallable('authorizedCreditCard');
     final response = await callable.call(dataSale);
-    print(response.data);
+    return response.data;
   }
 }
