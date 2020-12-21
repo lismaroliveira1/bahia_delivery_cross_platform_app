@@ -1,13 +1,17 @@
+import 'package:animated_button/animated_button.dart';
 import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/order_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
+import 'package:bd_app_full/data/set_delivery_man_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class OrderPartnerTile extends StatefulWidget {
   final OrderData orderData;
-  OrderPartnerTile(this.orderData);
+  final VoidCallback setDeliveryMan;
+  OrderPartnerTile(this.orderData, this.setDeliveryMan);
 
   @override
   _OrderPartnerTileState createState() => _OrderPartnerTileState();
@@ -248,6 +252,24 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                               ],
                             ),
                           ],
+                        ),
+                      ),
+                      Center(
+                        child: AnimatedButton(
+                          color: Colors.red,
+                          width: MediaQuery.of(context).size.width * 0.25,
+                          height: 40,
+                          onPressed: () {
+                            widget.setDeliveryMan();
+                          },
+                          child: Text(
+                            'Entregador',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
                       ),
                       Center(

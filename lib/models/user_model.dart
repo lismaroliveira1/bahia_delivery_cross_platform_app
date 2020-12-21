@@ -70,6 +70,7 @@ class UserModel extends Model {
   double _lngPartnerRequest;
   String _addresId;
   SubSectionData newSubsectionData;
+  List<DeliveryManData> deliveryMans = [];
 
   Location location = new Location();
   bool _serviceEnabled;
@@ -121,6 +122,7 @@ class UserModel extends Model {
     getComboCartItens();
     getPaymentUserForms();
     await updateFavoritList();
+    getDeliveryPartnersList();
     await getPartnerData();
     await getProductsPartnerList();
     await getSectionList();
@@ -2058,5 +2060,38 @@ class UserModel extends Model {
   void setDebitCard(bool isDebit) {
     currentCreditDebitCardData.isDebit = isDebit;
     notifyListeners();
+  }
+
+  void getDeliveryPartnersList() async {
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        try {
+          QuerySnapshot deliveryQuery =
+              await FirebaseFirestore.instance.collection("deliveryMans").get();
+          deliveryMans.clear();
+          deliveryQuery.docs
+              .map(
+                (docSnap) => deliveryMans.add(
+                  DeliveryManData.fromQuerySnapshot(docSnap),
+                ),
+              )
+              .toList();
+          notifyListeners();
+        } catch (erro) {}
+      }
+    }
+  }
+
+  void setDeliveryManToOrder({
+    @required DeliveryManData deliveryManData,
+    @required String orderId,
+  }) async {
+    if (isLoggedIn()) {
+      await FirebaseFirestore.instance.collection("orders").doc(orderId).update(
+        {
+          "deliveryMan": deliveryManData.toRequestMap(),
+        },
+      );
+    }
   }
 }

@@ -33,6 +33,18 @@ class DeliveryManData {
     userId = docSnap.get("userId");
     image = docSnap.get("image");
   }
+  DeliveryManData.fromQuerySnapshot(QueryDocumentSnapshot docSnap) {
+    id = docSnap.id;
+    name = docSnap.get("name");
+    birthDay = (docSnap.get("birthDay") as Timestamp).toDate();
+    cpf = docSnap.get("cpf");
+    location = docSnap.get("location");
+    lat = docSnap.get("lat");
+    lng = docSnap.get("lng");
+    locationId = docSnap.get("locationId");
+    userId = docSnap.get("userId");
+    image = docSnap.get("image");
+  }
 
   DeliveryManData({
     @required this.birthDay,
