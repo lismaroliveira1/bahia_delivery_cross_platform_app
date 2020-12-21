@@ -22,6 +22,7 @@ class OrderData {
   double totalPrice;
   List<ProductData> products = [];
   List<ComboData> combos = [];
+  String vehicleType;
 
   OrderData.fromQueryDocument(QueryDocumentSnapshot queryDoc) {
     id = queryDoc.id;
@@ -39,7 +40,7 @@ class OrderData {
     storeId = queryDoc.get("storeId");
     storeImage = queryDoc.get("storeImage");
     totalPrice = queryDoc.get("shipPrice");
-
+      
     for (LinkedHashMap p in queryDoc.data()["products"]) {
       products.add(ProductData.fromLinkedHashMap(p));
       totalPrice += p["totalPrice"];

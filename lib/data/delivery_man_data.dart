@@ -44,6 +44,12 @@ class DeliveryManData {
     locationId = docSnap.get("locationId");
     userId = docSnap.get("userId");
     image = docSnap.get("image");
+    vehycleType = docSnap.get("vehicleType");
+    if (vehycleType == 'Motorizado') {
+      vehycleColor = docSnap.get("vehicleColor");
+      transitId = docSnap.get("transitId");
+      driverIdImage = docSnap.get("driverIdImage");
+    }
   }
 
   DeliveryManData({

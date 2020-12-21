@@ -5,12 +5,13 @@ import 'package:bd_app_full/data/product_data.dart';
 import 'package:bd_app_full/data/set_delivery_man_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class OrderPartnerTile extends StatefulWidget {
   final OrderData orderData;
-  final VoidCallback setDeliveryMan;
+  final Function(String) setDeliveryMan;
   OrderPartnerTile(this.orderData, this.setDeliveryMan);
 
   @override
@@ -25,6 +26,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
   List<ProductData> products = [];
   @override
   Widget build(BuildContext context) {
+    double _imageSize = MediaQuery.of(context).size.width / 3;
     String month = '';
     switch (widget.orderData.createdAt.toDate().month) {
       case 1:
@@ -260,7 +262,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                           width: MediaQuery.of(context).size.width * 0.25,
                           height: 40,
                           onPressed: () {
-                            widget.setDeliveryMan();
+                            widget.setDeliveryMan(widget.orderData.id);
                           },
                           child: Text(
                             'Entregador',
@@ -271,6 +273,44 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                             ),
                           ),
                         ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                        ),
+                        child: snapshot.data["deliveryMan"] != null
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Container(
+                                        height: _imageSize,
+                                        width: _imageSize,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                              snapshot.data["deliveryMan"]
+                                                  ["image"],
+                                            ),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Text(snapshot.data["deliveryMan"]
+                                            ["name"]),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : Container(
+                                height: 100,
+                                color: Colors.blue,
+                              ),
                       ),
                       Center(
                         child: Text(

@@ -58,12 +58,13 @@ class _OrderPartnerTabState extends State<OrderPartnerTab> {
     );
   }
 
-  void setDeliveryMan() {
+  void setDeliveryMan(String orderId) {
+    print(orderId);
     Navigator.push(
       context,
       new PageTransition(
         type: PageTransitionType.rightToLeft,
-        child: new SetDeliveryManScreen(),
+        child: new SetDeliveryManScreen(orderId),
         inheritTheme: true,
         duration: new Duration(
           milliseconds: 350,

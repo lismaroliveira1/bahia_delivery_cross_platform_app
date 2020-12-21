@@ -1443,6 +1443,7 @@ class UserModel extends Model {
           comboCartList.clear();
           hasProductInCart = false;
           getcartProductList();
+          notifyListeners();
         } else {
           notifyListeners();
           onFailDebitCard();
@@ -1522,7 +1523,7 @@ class UserModel extends Model {
         cartProducts.clear();
         comboCartList.clear();
         hasProductInCart = false;
-        getcartProductList();
+        notifyListeners();
       } else if (response["payment"]["returnMessage"] == "Card Expired") {
         onCartExpired();
         notifyListeners();
@@ -1596,11 +1597,10 @@ class UserModel extends Model {
         for (QueryDocumentSnapshot doc in querySnapshot.docs) {
           doc.reference.delete();
         }
-        await getListOfCategory();
         await getOrders();
         await getListHomeStores();
-        getcartProductList();
         await updateFavoritList();
+        notifyListeners();
       } catch (e) {
         onFail();
         print(e);
@@ -2085,13 +2085,25 @@ class UserModel extends Model {
   void setDeliveryManToOrder({
     @required DeliveryManData deliveryManData,
     @required String orderId,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
   }) async {
     if (isLoggedIn()) {
-      await FirebaseFirestore.instance.collection("orders").doc(orderId).update(
-        {
-          "deliveryMan": deliveryManData.toRequestMap(),
-        },
-      );
+      try {
+        await FirebaseFirestore.instance
+            .collection("orders")
+            .doc(orderId)
+            .update(
+          {
+            "deliveryMan": deliveryManData.toRequestMap(),
+          },
+        );
+        onSuccess();
+        notifyListeners();
+      } catch (error) {
+        onFail();
+        notifyListeners();
+      }
     }
   }
 }

@@ -1,14 +1,21 @@
+import 'dart:async';
+
 import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/order_partner_screnn.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class SetDeliveryManTab extends StatefulWidget {
+  final String orderId;
+  SetDeliveryManTab(this.orderId);
   @override
   _SetDeliveryManTabState createState() => _SetDeliveryManTabState();
 }
 
 class _SetDeliveryManTabState extends State<SetDeliveryManTab> {
   bool isSearching = false;
+
   @override
   Widget build(BuildContext context) {
     double imageSize = MediaQuery.of(context).size.height * 0.15;
@@ -66,7 +73,14 @@ class _SetDeliveryManTabState extends State<SetDeliveryManTab> {
                     children: model.deliveryMans
                         .map(
                           (delivery) => FlatButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              model.setDeliveryManToOrder(
+                                deliveryManData: delivery,
+                                orderId: widget.orderId,
+                                onSuccess: _onSuccess,
+                                onFail: _onFail,
+                              );
+                            },
                             padding: EdgeInsets.zero,
                             child: Card(
                               elevation: 8,
@@ -117,5 +131,24 @@ class _SetDeliveryManTabState extends State<SetDeliveryManTab> {
         ),
       ),
     );
+  }
+
+  void _onFail() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Algo saiu errado, tente novamente",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _onSuccess() async {
+    Timer(Duration(milliseconds: 2000), () {
+      Navigator.of(context).pop();
+    });
   }
 }
