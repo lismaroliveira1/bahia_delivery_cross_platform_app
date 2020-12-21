@@ -1370,17 +1370,83 @@ class UserModel extends Model {
     return getProductsPrice() * discountPercentage / 100;
   }
 
-  Future<void> finishOrderWithPayOnAppByDebitCard() async {
-    final cieloPayment = new CieloPayment();
-    double totalPrice = 0;
-    double productPrice = 18.00;
-    double comboPrice = 0;
-    double offPrice = 0;
-    Map response = {};
-    cieloPayment.authorizedDebitCard(
-      creditDebitCardData: currentCreditDebitCardData,
-      price: totalPrice,
-    );
+  Future<void> finishOrderWithPayOnAppByDebitCard({
+    @required double discount,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+    @required double shipePrice,
+    @required StoreData storeData,
+    @required VoidCallback onCartExpired,
+    @required VoidCallback onTimeOut,
+    @required VoidCallback onFailDebitCard,
+  }) async {
+    if (isLoggedIn()) {
+      final cieloPayment = new CieloPayment();
+      double totalPrice = 10000;
+      double productPrice = 18.00;
+      double comboPrice = 0;
+      double offPrice = 0;
+      Map response = {};
+      response = await cieloPayment.authorizedDebitCard(
+        creditDebitCardData: currentCreditDebitCardData,
+        price: totalPrice,
+      );
+      try {
+        QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .collection("cart")
+            .get();
+        if (response["payment"]["authenticate"] == true) {
+          await FirebaseFirestore.instance.collection("orders").add({
+            "client": firebaseUser.uid,
+            "clientName": userData.name,
+            "clientImage": userData.image,
+            "clientAddress": "" //currentAddressDataFromGoogle.description
+                .replaceAll("State of ", "")
+                .replaceAll("Brazil", "Brasil"),
+            "storeId": storeData.id,
+            "products": cartProducts
+                .map(
+                  (cartProduct) => cartProduct.toMap(),
+                )
+                .toList(),
+            "combos": comboCartList
+                .map(
+                  (combo) => combo.toComboProductMap(),
+                )
+                .toList(),
+            "shipPrice": shipePrice,
+            "StoreName": storeData.name,
+            "storeImage": storeData.image,
+            "storeDescription": "storeDescrition",
+            "discount": discount,
+            "totalPrice": totalPrice,
+            "status": 1,
+            'createdAt': FieldValue.serverTimestamp(),
+            'platform': Platform.operatingSystem,
+            'paymentType': "Pagamento no app",
+            "method": "debitCard",
+            "dataSale": response,
+          });
+          getListOfCategory();
+          getListHomeStores();
+          await getOrders();
+          onSuccess();
+          notifyListeners();
+          for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+            doc.reference.delete();
+          }
+          cartProducts.clear();
+          comboCartList.clear();
+          hasProductInCart = false;
+          getcartProductList();
+        } else {
+          notifyListeners();
+          onFailDebitCard();
+        }
+      } catch (erro) {}
+    }
   }
 
   Future<void> finishOrderWithPayOnAppByCretditCard({
@@ -1457,8 +1523,10 @@ class UserModel extends Model {
         getcartProductList();
       } else if (response["payment"]["returnMessage"] == "Card Expired") {
         onCartExpired();
+        notifyListeners();
       } else if (response["payment"]["returnMessage"] == "Timeout") {
         onTimeOut();
+        notifyListeners();
       }
     } catch (erro) {
       onFail();
@@ -1920,5 +1988,10 @@ class UserModel extends Model {
       print(e.errors[0].message);
       print(e.errors[0].code);
     }
+  }
+
+  void setDebitCard(bool isDebit) {
+    currentCreditDebitCardData.isDebit = isDebit;
+    notifyListeners();
   }
 }

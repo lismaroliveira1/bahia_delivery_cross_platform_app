@@ -40,7 +40,7 @@ class CieloPayment {
       'paymentType': 'DeditCard',
     };
     final HttpsCallable callable =
-        functions.httpsCallable('authorizedDeditCard');
+        functions.httpsCallable('authorizedDebitCard');
     final response = await callable.call(dataSale);
     print(response.data);
     return response.data;

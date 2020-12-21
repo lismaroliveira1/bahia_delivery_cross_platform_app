@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:bd_app_full/data/store_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/services/cielo_payment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class CartPrice extends StatefulWidget {
@@ -14,6 +17,19 @@ class CartPrice extends StatefulWidget {
 
 class _CartPriceState extends State<CartPrice> {
   final CieloPayment cieloPayment = CieloPayment();
+  final RoundedLoadingButtonController _btnController =
+      new RoundedLoadingButtonController();
+
+  void _doSomething() async {
+    Timer(Duration(seconds: 3), () {
+      _btnController.error();
+    });
+  }
+
+  Future<void> waitForAndFail([int seconds = 2]) async {
+    await Future.delayed(Duration(seconds: seconds));
+    throw Exception();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,42 +185,66 @@ class _CartPriceState extends State<CartPrice> {
                             SizedBox(
                               height: 12.0,
                             ),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12.0),
-                              child: Container(
-                                height: 60,
-                                child: RaisedButton(
-                                  onPressed: () async {
-                                    if (userModel.payOnApp) {
-                                      print("payOnApp");
-                                      userModel
-                                          .finishOrderWithPayOnAppByDebitCard();
-                                      /*userModel
-                                          .finishOrderWithPayOnAppByCretditCard(
-                                        onSuccess: _onSuccessPayOnApp,
-                                        onFail: _onFailOnApp,
-                                        shipePrice: ship,
-                                        storeData: widget.storeData,
-                                        discount: discount,
-                                        onCartExpired: _onCardExpired,
-                                        onTimeOut: _onTimeOut,
-                                      );*/
-                                    } else {
-                                      userModel.finishOrderWithPayOnDelivery(
-                                        discount: discount,
-                                        onSuccess: _onSuccessPay,
-                                        shipePrice: ship,
-                                        storeData: widget.storeData,
-                                        onFail: _onFailPay,
-                                      );
-                                    }
-                                  },
-                                  child: Text("Finalizar Pedido"),
-                                  textColor: Colors.white,
-                                  color: Colors.red,
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    RoundedLoadingButton(
+                                      color: Colors.red,
+                                      child: Text(
+                                        'Finalizar Pedido',
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                      controller: _btnController,
+                                      onPressed: () async {
+                                        if (userModel.payOnApp) {
+                                          print("payOnApp");
+                                          if (userModel
+                                              .currentCreditDebitCardData
+                                              .isDebit) {
+                                            print("debit");
+                                            await userModel
+                                                .finishOrderWithPayOnAppByDebitCard(
+                                              onSuccess: _onSuccessPayOnApp,
+                                              onFail: _onFailOnApp,
+                                              shipePrice: ship,
+                                              storeData: widget.storeData,
+                                              discount: discount,
+                                              onCartExpired: _onCardExpired,
+                                              onTimeOut: _onTimeOut,
+                                              onFailDebitCard: _onFailDebitCard,
+                                            );
+                                          } else {
+                                            await userModel
+                                                .finishOrderWithPayOnAppByCretditCard(
+                                              onSuccess: _onSuccessPayOnApp,
+                                              onFail: _onFailOnApp,
+                                              shipePrice: ship,
+                                              storeData: widget.storeData,
+                                              discount: discount,
+                                              onCartExpired: _onCardExpired,
+                                              onTimeOut: _onTimeOut,
+                                            );
+                                          }
+                                        } else {
+                                          await userModel
+                                              .finishOrderWithPayOnDelivery(
+                                            discount: discount,
+                                            onSuccess: _onSuccessPay,
+                                            shipePrice: ship,
+                                            storeData: widget.storeData,
+                                            onFail: _onFailPay,
+                                          );
+                                        }
+                                      },
+                                      width: 200,
+                                    ),
+                                  ],
                                 ),
                               ),
-                            )
+                            ),
                           ],
                         );
                       }
@@ -251,6 +291,20 @@ class _CartPriceState extends State<CartPrice> {
       SnackBar(
         content: Text(
           "Tempo expirado tente novamente",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _onFailDebitCard() {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Tente usar outro cartão de débito",
           textAlign: TextAlign.center,
         ),
         backgroundColor: Colors.green,

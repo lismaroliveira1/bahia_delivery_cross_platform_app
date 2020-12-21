@@ -10,6 +10,7 @@ class CreditDebitCardData {
   String cvv;
   String image;
   String brand;
+  bool isDebit = false;
 
   CreditDebitCardData.fromCreditDebitCardItem(CreditDebitCard creditDebitCard) {
     cardNumber = creditDebitCard.cardNumber;

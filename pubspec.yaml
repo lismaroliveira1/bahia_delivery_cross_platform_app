@@ -66,6 +66,7 @@ dependencies:
   date_time_picker: "^1.1.0"
   cnpj_cpf_formatter: ^1.0.8
   cielo_ecommerce: ^1.0.4
+  rounded_loading_button: ^1.0.17
 
 dev_dependencies:
   flutter_test:

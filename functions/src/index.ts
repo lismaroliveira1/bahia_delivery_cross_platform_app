@@ -17,29 +17,95 @@ const cieloParams: CieloConstructor = {
 
 const cielo = new Cielo(cieloParams);
 
-export const authorizedDeditCard = functions.https.onCall(async (data, context) => { 
-    const debitCardTransactionParams: DebitCardSimpleTransactionRequestModel = {
-        merchantOrderId: "2014121201",
-        customer: {
-            name: "Paulo Henrique",
-        },
-        payment: {
-            type: EnumCardType.DEBIT,
-            amount: 15700,
-            provider: "Simulado",
-            returnUrl: "http://www.google.com.br",
-            debitCard: {
-                cardNumber: "4532117080573703",
-                holder: "Teste Holder",
-                expirationDate: "12/2022",
-                securityCode: "023",
-                brand: EnumBrands.VISA,
+export const authorizedDebitCard = functions.https.onCall(async (data, context) => { 
+    if (data === null) {
+        return {
+            "success": false,
+            "error": {
+                "code": -1,
+                "message": "Dados não informados",
             },
-        },
+        };
     }
-
-    const debitTransaction = cielo.debitCard.createSimpleTransaction(debitCardTransactionParams);
-    return debitTransaction;
+    else if (!context.auth) {
+        return {
+            "success": false,
+            "error": {
+                "code": -1,
+                "message": "Nenhum Usuário Logado",
+            },
+        };
+    } else {
+        const userId = context.auth.uid;
+        const snapshot = await admin.firestore().collection("users").doc(userId).get();
+        const userData = snapshot.data() || {};
+        console.log(userData.name);
+        let brand: EnumBrands;
+        switch (data.creditCard.brand) {
+            case "visa":
+                brand = EnumBrands.VISA;
+                break;
+            case "mastercard":
+                brand = EnumBrands.MASTER;
+                break;
+            case "dinersclub":
+                brand = EnumBrands.DINERS;
+                break;
+            case "americamexpress":
+                brand = EnumBrands.AMEX
+                break;
+            case "discover":
+                brand = EnumBrands.DISCOVER;
+                break;
+            case "jcb":
+                brand = EnumBrands.JCB;
+                break;
+            case "maestro":
+                brand = EnumBrands.MASTER;
+                break;
+            case "hipercard":
+                brand = EnumBrands.HIPERCARD;
+                break;
+            case "elo":
+                brand = EnumBrands.ELO;
+                break;
+            case "aura":
+                brand = EnumBrands.AURA;
+                break;
+            case "discovery":
+                brand = EnumBrands.DISCOVERY;
+                break;
+            default:
+                return {
+                    "success": false,
+                    "error": {
+                        "code": -1,
+                        "message": "Cartão não suportado: " + data.creditCard.brand,
+                    },
+                };
+        }
+        const debitCardTransactionParams: DebitCardSimpleTransactionRequestModel = {
+            merchantOrderId: data.merchantOrderId,
+            customer: {
+                name: userData.name,
+            },
+            payment: {
+                type: EnumCardType.DEBIT,
+                amount: data.amount,
+                provider: "Simulado",
+                returnUrl: "http://www.google.com.br",
+                debitCard: {
+                    cardNumber: data.creditCard.cardNumber,
+                    holder: data.creditCard.holder,
+                    expirationDate: data.creditCard.expirationDate,
+                    securityCode: data.creditCard.cvv,
+                    brand: brand,
+                },
+            },
+        }
+        const debitTransaction = cielo.debitCard.createSimpleTransaction(debitCardTransactionParams);
+        return debitTransaction;
+    }
 });
 
 export const authorizedCreditCard = functions.https.onCall(async (data, context) => {
