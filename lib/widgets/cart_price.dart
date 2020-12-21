@@ -184,6 +184,7 @@ class _CartPriceState extends State<CartPrice> {
                                         storeData: widget.storeData,
                                         discount: discount,
                                         onCartExpired: _onCardExpired,
+                                        onTimeOut: _onTimeOut,
                                       );
                                       /* userModel.finishOrder(
                                         discount: discount,
@@ -244,7 +245,21 @@ class _CartPriceState extends State<CartPrice> {
           "Cartão inválido",
           textAlign: TextAlign.center,
         ),
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _onTimeOut() {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Tempo expirado tente novamente",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.green,
         duration: Duration(seconds: 2),
       ),
     );

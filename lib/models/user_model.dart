@@ -1377,6 +1377,7 @@ class UserModel extends Model {
     @required double shipePrice,
     @required StoreData storeData,
     @required VoidCallback onCartExpired,
+    @required VoidCallback onTimeOut,
   }) async {
     double totalPrice = 0;
     double productPrice = 18.00;
@@ -1396,6 +1397,7 @@ class UserModel extends Model {
         creditDebitCardData: currentCreditDebitCardData,
         price: totalPrice,
       );
+      print(response);
       if (response["payment"]["returnMessage"] == "Operation Successful") {
         await FirebaseFirestore.instance.collection("orders").add({
           "client": firebaseUser.uid,
@@ -1424,23 +1426,26 @@ class UserModel extends Model {
           "status": 1,
           'createdAt': FieldValue.serverTimestamp(),
           'platform': Platform.operatingSystem,
-          'paymentType': "Pagamento na Entrega"
+          'paymentType': "Pagamento no app",
+          "method": "creditCard",
+          "dataSale": response,
         });
-        cartProducts.clear();
-        comboCartList.clear();
-        hasProductInCart = false;
+        getListOfCategory();
+        getListHomeStores();
+        await getOrders();
         onSuccess();
         notifyListeners();
         for (QueryDocumentSnapshot doc in querySnapshot.docs) {
           doc.reference.delete();
         }
-        await getListOfCategory();
-        await getOrders();
-        await getListHomeStores();
+        cartProducts.clear();
+        comboCartList.clear();
+        hasProductInCart = false;
         getcartProductList();
-        await updateFavoritList();
       } else if (response["payment"]["returnMessage"] == "Card Expired") {
         onCartExpired();
+      } else if (response["payment"]["returnMessage"] == "Timeout") {
+        onTimeOut();
       }
     } catch (erro) {
       onFail();
