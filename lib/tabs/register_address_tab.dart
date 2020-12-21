@@ -22,9 +22,9 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
   AddressData addressData;
   @override
   void initState() {
-    super.initState();
     String apiKey = "AIzaSyB9QAT4C-TwvJu8pmNMxbRnGp_am3j76xI";
     googlePlace = GooglePlace(apiKey);
+    super.initState();
   }
 
   @override
@@ -130,8 +130,11 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
                                                         .getDetailsByPlaceId(
                                                   predictions[index].placeId,
                                                 );
+                                                addressController.clear();
                                                 UserModel.of(context)
                                                     .setAddressToRegister(
+                                                  onFail: _onFail,
+                                                  onSuccess: _onSuccess,
                                                   address: predictions[index]
                                                       .description
                                                       .replaceAll(
@@ -143,11 +146,6 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
                                                   addressId: predictions[index]
                                                       .placeId,
                                                 );
-                                                addressController.clear();
-                                                setState(() {
-                                                  textLenght = 0;
-                                                });
-                                                closeTab();
                                               },
                                             ),
                                           ),
@@ -180,5 +178,25 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
 
   void closeTab() {
     Navigator.of(context).pop();
+  }
+
+  void _onSuccess() {
+    setState(() {
+      textLenght = 0;
+    });
+    closeTab();
+  }
+
+  void _onFail() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Algo saiu errado, tente novamente",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 }

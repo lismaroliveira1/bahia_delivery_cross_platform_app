@@ -1813,12 +1813,77 @@ class UserModel extends Model {
     double lat,
     double lng,
     String addressId,
-  }) {
+    VoidCallback onSuccess,
+    VoidCallback onFail,
+  }) async {
     addressToRegisterPartner = address;
     _latPartnerRequest = lat;
     _lngPartnerRequest = lng;
     _addresId = addressId;
     isLocationChoosedOnRegisterPartner = true;
+    addressSeted = true;
+    LatLng latLngDevice = LatLng(
+      lat,
+      lng,
+    );
+    try {
+      storeHomeList.clear();
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection("stores").get();
+      querySnapshot.docs.map((queryDoc) {
+        storeHomeList.add(StoreData.fromQueryDocument(queryDoc));
+      }).toList();
+      storeHomeList.forEach((storeElement) async {
+        List<ProductData> purchasedProducts = [];
+
+        storeElement.productsOff = await getOffStores(storeElement.id);
+        storeElement.products = await getProductsStore(storeElement.id);
+        storeElement.storesCombos =
+            await getComboStoreHomeList(storeElement.id);
+
+        storeElement.products.forEach((element) async {
+          element.incrementalOptionalsList = await getIncrementalByProduct(
+              storeId: storeElement.id, productId: element.pId);
+        });
+        storeElement.storeCategoryList =
+            await getCategoryByStore(storeElement.id);
+        for (OrderData orderData in listUserOrders) {
+          for (ProductData productData in orderData.products) {
+            for (ProductData productDataStore in storeElement.products) {
+              if (productDataStore.pId == productData.pId) {
+                if (purchasedProducts.length == 0) {
+                  purchasedProducts.add(productDataStore);
+                } else {
+                  bool hasThisProduct = false;
+                  for (ProductData purchasedProductElement
+                      in purchasedProducts) {
+                    if (productDataStore.pId == purchasedProductElement.pId) {
+                      hasThisProduct = true;
+                      break;
+                    }
+                  }
+                  if (!hasThisProduct) purchasedProducts.add(productDataStore);
+                }
+              }
+            }
+          }
+        }
+        storeElement.purchasedProducts = purchasedProducts;
+        storeElement.distance = geodesy.distanceBetweenTwoGeoPoints(
+          storeElement.latLng,
+          latLngDevice,
+        );
+        storeElement.deliveryTime = calctime(storeElement.distance);
+      });
+      onSuccess();
+      notifyListeners();
+    } catch (erro) {
+      sendErrorMessageToADM(
+        errorFromUser: erro.toString(),
+      );
+      onFail();
+      notifyListeners();
+    }
     notifyListeners();
   }
 

@@ -1,6 +1,11 @@
+import 'dart:async';
+
+import 'package:animated_button/animated_button.dart';
 import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/register_address_screen.dart';
 import 'package:bd_app_full/screens/welcome_store_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_place/google_place.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -12,15 +17,16 @@ class HomeTab extends StatefulWidget {
 
 class _HomeTabState extends State<HomeTab> {
   String permissionStatus;
-
-  @override
+  bool isAddressSeted;
   void initState() {
+    isAddressSeted = false;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
+      double addressWidgetWidth = MediaQuery.of(context).size.width * 0.15;
       if (model.isLoading) {
         return Center(
           child: CircularProgressIndicator(),
@@ -75,6 +81,67 @@ class _HomeTabState extends State<HomeTab> {
                 ),
                 SliverList(
                   delegate: SliverChildListDelegate([
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: addressWidgetWidth,
+                      ),
+                      child: FlatButton(
+                        padding: EdgeInsets.zero,
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          Timer(Duration(milliseconds: 500), () {
+                            Navigator.push(
+                              context,
+                              new PageTransition(
+                                type: PageTransitionType.rightToLeft,
+                                child: new RegisterAddressScreen(),
+                                inheritTheme: true,
+                                duration: new Duration(
+                                  milliseconds: 350,
+                                ),
+                                ctx: context,
+                              ),
+                            );
+                          });
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14.0),
+                          ),
+                          elevation: 4,
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Container(
+                              height: 25,
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black12,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Center(
+                                child: ScopedModelDescendant<UserModel>(
+                                  builder: (context, child, model) {
+                                    return Container(
+                                      child: Text(
+                                        model.addressSeted
+                                            ? UserModel.of(context)
+                                                    .addressToRegisterPartner
+                                                    .substring(0, 40) +
+                                                "..."
+                                            : "Endereço de entrega",
+                                        overflow: TextOverflow.clip,
+                                        softWrap: true,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     Container(
                       margin: EdgeInsets.only(
                         top: 8,
@@ -236,18 +303,21 @@ class _HomeTabState extends State<HomeTab> {
                               FlatButton(
                                 padding: EdgeInsets.zero,
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    PageTransition(
-                                      type: PageTransitionType.rightToLeft,
-                                      child: WelcomeStoreScreen(store),
-                                      inheritTheme: true,
-                                      duration: Duration(
-                                        milliseconds: 350,
-                                      ),
-                                      ctx: context,
-                                    ),
-                                  );
+                                  model.addressSeted
+                                      ? Navigator.push(
+                                          context,
+                                          PageTransition(
+                                            type:
+                                                PageTransitionType.rightToLeft,
+                                            child: WelcomeStoreScreen(store),
+                                            inheritTheme: true,
+                                            duration: Duration(
+                                              milliseconds: 350,
+                                            ),
+                                            ctx: context,
+                                          ),
+                                        )
+                                      : loadAddres();
                                 },
                                 child: Container(
                                     decoration: BoxDecoration(
@@ -333,5 +403,65 @@ class _HomeTabState extends State<HomeTab> {
         );
       }
     });
+  }
+
+  void loadAddres() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.grey[100],
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        content: Container(
+            height: 200,
+            child: Column(
+              children: [
+                Text(
+                  "Antes de começar\nvamos definir seu endereço...",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 18,
+                  ),
+                ),
+                Spacer(),
+                Center(
+                  child: AnimatedButton(
+                    height: 50,
+                    color: Colors.red,
+                    child: Text(
+                      'Ok, vamos lá!',
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      Timer(Duration(milliseconds: 500), () {
+                        Navigator.push(
+                          context,
+                          new PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child: new RegisterAddressScreen(),
+                            inheritTheme: true,
+                            duration: new Duration(
+                              milliseconds: 350,
+                            ),
+                            ctx: context,
+                          ),
+                        );
+                      });
+                    },
+                  ),
+                ),
+              ],
+            )),
+      ),
+    );
   }
 }

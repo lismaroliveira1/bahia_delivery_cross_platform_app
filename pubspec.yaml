@@ -67,6 +67,7 @@ dependencies:
   cnpj_cpf_formatter: ^1.0.8
   cielo_ecommerce: ^1.0.4
   rounded_loading_button: ^1.0.17
+  animated_button: ^0.1.3
 
 dev_dependencies:
   flutter_test:
