@@ -1370,7 +1370,20 @@ class UserModel extends Model {
     return getProductsPrice() * discountPercentage / 100;
   }
 
-  Future<void> finishOrderWithPayOnApp({
+  Future<void> finishOrderWithPayOnAppByDebitCard() async {
+    final cieloPayment = new CieloPayment();
+    double totalPrice = 0;
+    double productPrice = 18.00;
+    double comboPrice = 0;
+    double offPrice = 0;
+    Map response = {};
+    cieloPayment.authorizedDebitCard(
+      creditDebitCardData: currentCreditDebitCardData,
+      price: totalPrice,
+    );
+  }
+
+  Future<void> finishOrderWithPayOnAppByCretditCard({
     @required double discount,
     @required VoidCallback onSuccess,
     @required VoidCallback onFail,

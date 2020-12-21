@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin'
-import { CieloConstructor, Cielo, TransactionCreditCardRequestModel, EnumBrands, EnumCardType } from 'cielo';
+import { CieloConstructor, Cielo, TransactionCreditCardRequestModel, EnumBrands, EnumCardType, DebitCardSimpleTransactionRequestModel } from 'cielo';
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -16,6 +16,31 @@ const cieloParams: CieloConstructor = {
 };
 
 const cielo = new Cielo(cieloParams);
+
+export const authorizedDeditCard = functions.https.onCall(async (data, context) => { 
+    const debitCardTransactionParams: DebitCardSimpleTransactionRequestModel = {
+        merchantOrderId: "2014121201",
+        customer: {
+            name: "Paulo Henrique",
+        },
+        payment: {
+            type: EnumCardType.DEBIT,
+            amount: 15700,
+            provider: "Simulado",
+            returnUrl: "http://www.google.com.br",
+            debitCard: {
+                cardNumber: "4532117080573703",
+                holder: "Teste Holder",
+                expirationDate: "12/2022",
+                securityCode: "023",
+                brand: EnumBrands.VISA,
+            },
+        },
+    }
+
+    const debitTransaction = cielo.debitCard.createSimpleTransaction(debitCardTransactionParams);
+    return debitTransaction;
+});
 
 export const authorizedCreditCard = functions.https.onCall(async (data, context) => {
     

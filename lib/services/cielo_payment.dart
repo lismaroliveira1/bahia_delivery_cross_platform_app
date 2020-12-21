@@ -25,4 +25,24 @@ class CieloPayment {
     final response = await callable.call(dataSale);
     return response.data;
   }
+
+  dynamic authorizedDebitCard({
+    @required CreditDebitCardData creditDebitCardData,
+    @required double price,
+  }) async {
+    final Map<String, dynamic> dataSale = {
+      'merchantOrderId': randomAlphaNumeric(20),
+      'amount': (100 * price).toInt(),
+      'softDescriptor': 'Bahia Delivery',
+      'installments': 1,
+      'creditCard': creditDebitCardData.toJson(),
+      'cpf': creditDebitCardData.cpf,
+      'paymentType': 'DeditCard',
+    };
+    final HttpsCallable callable =
+        functions.httpsCallable('authorizedDeditCard');
+    final response = await callable.call(dataSale);
+    print(response.data);
+    return response.data;
+  }
 }
