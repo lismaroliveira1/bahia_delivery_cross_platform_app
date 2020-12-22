@@ -68,7 +68,7 @@ class UserModel extends Model {
   bool isLocationChoosedOnRegisterPartner = false;
   double _latPartnerRequest;
   double _lngPartnerRequest;
-  String _addresId;
+  String userAddresId;
   SubSectionData newSubsectionData;
   List<DeliveryManData> deliveryMans = [];
   LatLng latLngDevice;
@@ -77,7 +77,7 @@ class UserModel extends Model {
   bool _serviceEnabled;
   PermissionStatus _permissionGranted;
   LocationData _locationData;
-
+  List<OrderData> deliveryManRacers = [];
   Geodesy geodesy = Geodesy();
 
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -87,8 +87,8 @@ class UserModel extends Model {
 
   @override
   void addListener(VoidCallback listener) async {
-    super.addListener(listener);
     _loadCurrentUser();
+    super.addListener(listener);
   }
 
   bool isLoggedIn() {
@@ -120,14 +120,14 @@ class UserModel extends Model {
     getcartProductList();
     getComboCartItens();
     getPaymentUserForms();
-    await updateFavoritList();
+    updateFavoritList();
     getDeliveryPartnersList();
-    await getPartnerData();
-    await getProductsPartnerList();
-    await getSectionList();
-    await getPartnerOffSales();
-    await getComboList();
-    await getPartnerOrderList();
+    getPartnerData();
+    getProductsPartnerList();
+    getSectionList();
+    getPartnerOffSales();
+    getComboList();
+    getPartnerOrderList();
     getPurchasedStoresList();
     getAllProductsToList();
     getPaymentUserForms();
@@ -260,6 +260,7 @@ class UserModel extends Model {
     await _auth.signOut();
     firebaseUser = null;
     onSuccess();
+    isLoading = false;
     notifyListeners();
     firebaseUser = null;
     categoryList = [];
@@ -279,7 +280,6 @@ class UserModel extends Model {
     dataSale = {};
     creditDebitCardList = [];
     paymentFormsList = [];
-    isLoading = false;
   }
 
   void signInWithGoogle({
@@ -368,6 +368,11 @@ class UserModel extends Model {
         querySnapshot.docs.map((queryDoc) async {
           if (queryDoc.get("client") == firebaseUser.uid) {
             listUserOrders.add(OrderData.fromQueryDocument(queryDoc));
+          }
+          if (queryDoc.get("deliveryMan") != "none") {
+            if (queryDoc.data()["deliveryMan"]["userId"] == firebaseUser.uid) {
+              deliveryManRacers.add(OrderData.fromQueryDocument(queryDoc));
+            }
           }
         }).toList();
         notifyListeners();
@@ -785,7 +790,7 @@ class UserModel extends Model {
         });
       } catch (error) {
         onFail();
-        isLoading = true;
+        isLoading = false;
         notifyListeners();
       }
     }
@@ -1154,6 +1159,7 @@ class UserModel extends Model {
             notifyListeners();
             getListHomeStores();
           } catch (errro) {
+            isLoading = false;
             onFail();
             notifyListeners();
           }
@@ -1405,9 +1411,14 @@ class UserModel extends Model {
             "client": firebaseUser.uid,
             "clientName": userData.name,
             "clientImage": userData.image,
-            "clientAddress": "" //currentAddressDataFromGoogle.description
-                .replaceAll("State of ", "")
-                .replaceAll("Brazil", "Brasil"),
+            "userLocation": {
+              "clientAddress": addressToRegisterPartner
+                  .replaceAll("State of ", "")
+                  .replaceAll("Brazil", "Brasil"),
+              "lat": latLngDevice.latitude,
+              "lng": latLngDevice.longitude,
+              "addressId": userAddresId,
+            },
             "storeId": storeData.id,
             "products": cartProducts
                 .map(
@@ -1426,6 +1437,14 @@ class UserModel extends Model {
             "discount": discount,
             "totalPrice": totalPrice,
             "status": 1,
+            "storeLocation": {
+              "storeAddress": storeData.storeAddress
+                  .replaceAll("State of ", "")
+                  .replaceAll("Brazil", "Brasil"),
+              "lat": storeData.latLng.latitude,
+              "lng": storeData.latLng.longitude,
+              "addressId": storeData.locationId,
+            },
             "deliveryMan": "none",
             'createdAt': FieldValue.serverTimestamp(),
             'platform': Platform.operatingSystem,
@@ -1487,9 +1506,14 @@ class UserModel extends Model {
           "client": firebaseUser.uid,
           "clientName": userData.name,
           "clientImage": userData.image,
-          "clientAddress": "" //currentAddressDataFromGoogle.description
-              .replaceAll("State of ", "")
-              .replaceAll("Brazil", "Brasil"),
+          "userLocation": {
+            "clientAddress": addressToRegisterPartner
+                .replaceAll("State of ", "")
+                .replaceAll("Brazil", "Brasil"),
+            "lat": latLngDevice.latitude,
+            "lng": latLngDevice.longitude,
+            "addressId": userAddresId,
+          },
           "storeId": storeData.id,
           "products": cartProducts
               .map(
@@ -1505,6 +1529,14 @@ class UserModel extends Model {
           "StoreName": storeData.name,
           "storeImage": storeData.image,
           "storeDescription": "storeDescrition",
+          "storeLocation": {
+            "storeAddress": storeData.storeAddress
+                .replaceAll("State of ", "")
+                .replaceAll("Brazil", "Brasil"),
+            "lat": storeData.latLng.latitude,
+            "lng": storeData.latLng.longitude,
+            "addressId": storeData.locationId,
+          },
           "discount": discount,
           "totalPrice": totalPrice,
           "deliveryMan": "none",
@@ -1567,9 +1599,14 @@ class UserModel extends Model {
           "client": firebaseUser.uid,
           "clientName": userData.name,
           "clientImage": userData.image,
-          "clientAddress": "" //currentAddressDataFromGoogle.description
-              .replaceAll("State of ", "")
-              .replaceAll("Brazil", "Brasil"),
+          "userLocation": {
+            "clientAddress": addressToRegisterPartner
+                .replaceAll("State of ", "")
+                .replaceAll("Brazil", "Brasil"),
+            "lat": latLngDevice.latitude,
+            "lng": latLngDevice.longitude,
+            "addressId": userAddresId,
+          },
           "storeId": storeData.id,
           "products": cartProducts
               .map(
@@ -1585,6 +1622,14 @@ class UserModel extends Model {
           "StoreName": storeData.name,
           "storeImage": storeData.image,
           "storeDescription": "storeDescrition",
+          "storeLocation": {
+            "storeAddress": storeData.storeAddress
+                .replaceAll("State of ", "")
+                .replaceAll("Brazil", "Brasil"),
+            "lat": storeData.latLng.latitude,
+            "lng": storeData.latLng.longitude,
+            "addressId": storeData.locationId,
+          },
           "discount": discount,
           "deliveryMan": "none",
           "totalPrice": totalPrice,
@@ -1825,10 +1870,10 @@ class UserModel extends Model {
     addressToRegisterPartner = address;
     _latPartnerRequest = lat;
     _lngPartnerRequest = lng;
-    _addresId = addressId;
+    userAddresId = addressId;
     isLocationChoosedOnRegisterPartner = true;
     addressSeted = true;
-    LatLng latLngDevice = LatLng(
+    latLngDevice = LatLng(
       lat,
       lng,
     );
@@ -1910,7 +1955,7 @@ class UserModel extends Model {
       requestPartnerData.userId = firebaseUser.uid;
       requestPartnerData.lat = _latPartnerRequest;
       requestPartnerData.lng = _lngPartnerRequest;
-      requestPartnerData.locationId = _addresId;
+      requestPartnerData.locationId = userAddresId;
       requestPartnerData.storeAddress = addressToRegisterPartner;
       if (requestPartnerData.imageFile == null) {
         onFailImage();
@@ -1963,7 +2008,7 @@ class UserModel extends Model {
         deliveryManData.userId = firebaseUser.uid;
         deliveryManData.lat = _latPartnerRequest;
         deliveryManData.lng = _lngPartnerRequest;
-        deliveryManData.locationId = _addresId;
+        deliveryManData.locationId = userAddresId;
         deliveryManData.location = addressToRegisterPartner;
 
         Reference ref = FirebaseStorage.instance.ref().child("images").child(
@@ -2109,6 +2154,14 @@ class UserModel extends Model {
       } catch (error) {
         onFail();
         notifyListeners();
+      }
+    }
+  }
+
+  void getDeliveryManRacers(OrderData delioveyManOrder) {
+    if (isLoggedIn()) {
+      if (userData.isPartner == 6) {
+        deliveryManRacers.add(delioveyManOrder);
       }
     }
   }

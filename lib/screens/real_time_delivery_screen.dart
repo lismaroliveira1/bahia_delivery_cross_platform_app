@@ -1,9 +1,11 @@
 import 'package:animated_button/animated_button.dart';
+import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/order_data.dart';
+import 'package:bd_app_full/data/product_data.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_mapbox_navigation/library.dart';
 import 'package:location/location.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 class RealTimeDeliveryScreen extends StatefulWidget {
   final OrderData orderData;
@@ -19,15 +21,9 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
       latitude: 38.91040213277608,
       longitude: -77.03848242759705);
 
-  final _stop1 = WayPoint(
-    name: "Way Point 2",
-    latitude: -13.0127,
-    longitude: -38.4742,
-  );
-
+  List<ProductData> products = [];
   MapBoxNavigation _directions;
   MapBoxOptions _options;
-
   bool _arrived = false;
   bool _isMultipleStop = false;
   double _distanceRemaining, _durationRemaining;
@@ -36,12 +32,11 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
   bool _isNavigating = false;
   LocationData _locationData;
   Location location = new Location();
+  List<WayPoint> wayPoints = [];
   @override
   void initState() {
     super.initState();
     getDeviceLocation();
-    SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
     initialize();
   }
 
@@ -71,6 +66,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
       longPressDestinationEnabled: true,
       language: "pt",
     );
+    _controller.initialize();
   }
 
   @override
@@ -107,118 +103,72 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                   SizedBox(
                     height: 10,
                   ),
-                  Container(
-                    color: Colors.grey,
-                    width: double.infinity,
-                    child: Padding(
-                      padding: EdgeInsets.all(10),
-                      child: (Text(
-                        "Full Screen Navigation",
-                        style: TextStyle(color: Colors.white),
-                        textAlign: TextAlign.center,
-                      )),
-                    ),
+                  Row(
+                    children: [
+                      Container(
+                        color: Colors.white,
+                        child: Padding(
+                          padding: EdgeInsets.all(10),
+                          child: Text(
+                            "Pedido: ${widget.orderData.id.substring(0, 6)}",
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   Center(
-                    child: AnimatedButton(
-                      color: Colors.red,
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      height: 40,
-                      onPressed: () async {
-                        var wayPoints = List<WayPoint>();
-                        final userOrigin = WayPoint(
-                          name: "Way Point 3",
-                          latitude: _locationData.latitude,
-                          longitude: _locationData.longitude,
-                        );
-                        wayPoints.add(userOrigin);
-                        wayPoints.add(_stop1);
-
-                        await _directions.startNavigation(
-                          wayPoints: wayPoints,
-                          options: MapBoxOptions(
-                            mode: MapBoxNavigationMode.walking,
-                            simulateRoute: false,
-                            language: "pt",
-                            allowsUTurnAtWayPoints: true,
-                            units: VoiceUnits.metric,
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Iniciar a corrida',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w500,
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12)),
+                      height: MediaQuery.of(context).size.height / 15,
+                      width: MediaQuery.of(context).size.height / 15,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: FadeInImage.memoryNetwork(
+                          placeholder: kTransparentImage,
+                          image: widget.orderData.storeImage,
+                          fit: BoxFit.cover,
                         ),
                       ),
                     ),
                   ),
-                  Container(
-                    color: Colors.grey,
-                    width: double.infinity,
-                    child: Padding(
-                      padding: EdgeInsets.all(10),
-                      child: (Text(
-                        "Embedded Navigation",
-                        style: TextStyle(color: Colors.white),
-                        textAlign: TextAlign.center,
-                      )),
+                  Center(
+                    child: Text(
+                      widget.orderData.storeName,
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      RaisedButton(
-                        child: Text(_routeBuilt && !_isNavigating
-                            ? "Clear Route"
-                            : "Build Route"),
-                        onPressed: _isNavigating
-                            ? null
-                            : () {
-                                if (_routeBuilt) {
-                                  _controller.clearRoute();
-                                } else {
-                                  var wayPoints = List<WayPoint>();
-                                  wayPoints.add(_origin);
-                                  wayPoints.add(_stop1);
-                                }
-                              },
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      RaisedButton(
-                        child: Text("Start "),
-                        onPressed: _routeBuilt && !_isNavigating
-                            ? () {
-                                _controller.startNavigation();
-                              }
-                            : null,
-                      ),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      RaisedButton(
-                        child: Text("Cancel "),
-                        onPressed: _isNavigating
-                            ? () {
-                                _controller.finishNavigation();
-                              }
-                            : null,
-                      )
-                    ],
+                  SizedBox(
+                    height: 4.0,
                   ),
                   Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(10),
-                      child: Text(
-                        "Long-Press Embedded Map to Set Destination",
-                        textAlign: TextAlign.center,
-                      ),
+                    child: Text(
+                      "Itens",
+                      style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ),
+                  SizedBox(
+                    height: 4.0,
+                  ),
+                  widget.orderData.products.length > 0
+                      ? _buildProductsAndComplements(widget.orderData.products)
+                      : Container(
+                          height: 0,
+                          width: 0,
+                        ),
+                  widget.orderData.combos.length > 0
+                      ? _buildComboText(widget.orderData.combos)
+                      : Container(
+                          height: 0,
+                          width: 0,
+                        ),
                   Container(
                     color: Colors.grey,
                     width: double.infinity,
@@ -226,7 +176,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                       padding: EdgeInsets.all(10),
                       child: (Text(
                         _instruction == null || _instruction.isEmpty
-                            ? "Banner Instruction Here"
+                            ? "Localização atual"
                             : _instruction,
                         style: TextStyle(color: Colors.white),
                         textAlign: TextAlign.center,
@@ -241,7 +191,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Text("Duration Remaining: "),
+                            Text("Tempo estimado: "),
                             Text(_durationRemaining != null
                                 ? "${(_durationRemaining / 60).toStringAsFixed(0)} minutes"
                                 : "---")
@@ -249,7 +199,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                         ),
                         Row(
                           children: <Widget>[
-                            Text("Distance Remaining: "),
+                            Text("Distancia: "),
                             Text(_distanceRemaining != null
                                 ? "${(_distanceRemaining / 1000).toStringAsFixed(1)} Km"
                                 : "---")
@@ -258,22 +208,67 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                       ],
                     ),
                   ),
-                  Divider()
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      height: 200,
+                      color: Colors.grey,
+                      child: MapBoxNavigationView(
+                        options: _options,
+                        onRouteEvent: _onEmbeddedRouteEvent,
+                        onCreated:
+                            (MapBoxNavigationViewController controller) async {
+                          _controller = controller;
+                          controller.initialize();
+                        },
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 18.0),
+                    child: Center(
+                      child: AnimatedButton(
+                        color: Colors.red,
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: 40,
+                        onPressed: () async {
+                          final userOrigin = WayPoint(
+                            name: "Way Point 3",
+                            latitude: _locationData.latitude,
+                            longitude: _locationData.longitude,
+                          );
+                          final _stop1 = WayPoint(
+                            name: "Way Point 2",
+                            latitude: widget.orderData.clientLat,
+                            longitude: widget.orderData.clientLng,
+                          );
+                          wayPoints.add(userOrigin);
+                          wayPoints.add(_stop1);
+
+                          await _directions.startNavigation(
+                            wayPoints: wayPoints,
+                            options: MapBoxOptions(
+                              mode: MapBoxNavigationMode.walking,
+                              simulateRoute: false,
+                              language: "pt",
+                              allowsUTurnAtWayPoints: true,
+                              units: VoiceUnits.metric,
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Iniciar o envio',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            ),
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              color: Colors.grey,
-              child: MapBoxNavigationView(
-                  options: _options,
-                  onRouteEvent: _onEmbeddedRouteEvent,
-                  onCreated: (MapBoxNavigationViewController controller) async {
-                    _controller = controller;
-                    controller.initialize();
-                  }),
             ),
           ),
         ],
@@ -329,5 +324,117 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
 
   void getDeviceLocation() async {
     _locationData = await location.getLocation();
+  }
+
+  Widget _buildComboText(List<ComboData> comboList) {
+    return Column(
+      children: comboList
+          .map(
+            (combo) => Column(
+              children: [
+                ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  dense: true,
+                  title: Text(
+                    combo.quantity.toString() +
+                        " x " +
+                        combo.title +
+                        " (R\$ ${combo.price.toStringAsFixed(2)})",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Total: ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "R\$ ${(combo.price * combo.quantity).toStringAsFixed(2)}",
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  Widget _buildProductsAndComplements(List<ProductData> productsList) {
+    products.clear();
+    for (ProductData product in productsList) {
+      products.add(product);
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: products.map((product) {
+        return ListTile(
+          contentPadding: EdgeInsets.zero,
+          dense: true,
+          title: Text(
+            product.quantity.toString() +
+                " x " +
+                product.productTitle +
+                " (R\$ ${product.productPrice})",
+            textAlign: TextAlign.center,
+          ),
+          subtitle: product.complementProducts.length > 0
+              ? Column(
+                  children: [
+                    Text(
+                      "Complementos:",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: product.complementProducts.map((complement) {
+                        return Text(
+                          complement.quantity.toString() +
+                              " x " +
+                              complement.title +
+                              " (R\$ ${complement.price.toStringAsFixed(2)})",
+                        );
+                      }).toList(),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Total: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text("R\$ ${product.totalPrice.toStringAsFixed(2)}"),
+                      ],
+                    ),
+                  ],
+                )
+              : Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Total: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text("R\$ ${product.totalPrice.toStringAsFixed(2)}"),
+                      ],
+                    ),
+                  ],
+                ),
+        );
+      }).toList(),
+    );
   }
 }

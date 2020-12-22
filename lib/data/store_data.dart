@@ -29,6 +29,8 @@ class StoreData {
   double distance;
   LatLng latLng;
   double deliveryTime;
+  String locationId;
+  String storeAddress;
 
   StoreData(
     this.description,
@@ -59,6 +61,8 @@ class StoreData {
       geopoint.latitude,
       geopoint.longitude,
     );
+    locationId = queryDoc.data()["address"]["locationId"];
+    storeAddress = queryDoc.data()["address"]["storeAddress"];
     try {
       p = queryDoc.data()["closingTime"];
       closingTimeHour = p["hour"];

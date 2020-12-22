@@ -8,7 +8,10 @@ class OrderData {
   String id;
   String storeName;
   String client;
-  String clientAdrress;
+  String clientAddress;
+  String clientAddressId;
+  double clientLat;
+  double clientLng;
   String clientImage;
   String clientName;
   Timestamp createdAt;
@@ -18,6 +21,10 @@ class OrderData {
   int status;
   String storeDescription;
   String storeId;
+  String storeAddress;
+  String storeAdressId;
+  double storeLat;
+  double storeLng;
   String storeImage;
   double totalPrice;
   List<ProductData> products = [];
@@ -28,7 +35,6 @@ class OrderData {
     id = queryDoc.id;
     storeName = queryDoc.get("StoreName");
     client = queryDoc.get("client");
-    clientAdrress = queryDoc.get("clientAddress");
     clientImage = queryDoc.get("clientImage");
     clientName = queryDoc.get("clientName");
     createdAt = queryDoc.get("createdAt");
@@ -40,7 +46,17 @@ class OrderData {
     storeId = queryDoc.get("storeId");
     storeImage = queryDoc.get("storeImage");
     totalPrice = queryDoc.get("shipPrice");
-      
+    clientAddress = queryDoc.data()["userLocation"]["clientAddress"];
+    clientAddressId = queryDoc.data()["userLocation"]["addressId"];
+    clientLat = queryDoc.data()["userLocation"]["lat"];
+    clientLng = queryDoc.data()["userLocation"]["lng"];
+    storeAddress = queryDoc.data()["storeLocation"]["storeAddress"];
+    storeAdressId = queryDoc.data()["storeLocation"]["addressId"];
+    storeLat = queryDoc.data()["storeLocation"]["lat"];
+    storeLng = queryDoc.data()["storeLocation"]["lng"];
+    if (queryDoc.get("deliveryMan") != "none") {
+      print("ok");
+    }
     for (LinkedHashMap p in queryDoc.data()["products"]) {
       products.add(ProductData.fromLinkedHashMap(p));
       totalPrice += p["totalPrice"];

@@ -184,7 +184,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                         child: ListTile(
                           contentPadding: EdgeInsets.zero,
                           subtitle: Text(
-                            snapshot.data["clientAddress"],
+                            widget.orderData.clientAddress,
                             textAlign: TextAlign.center,
                           ),
                         ),
