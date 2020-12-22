@@ -2,6 +2,7 @@ import 'package:animated_button/animated_button.dart';
 import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/order_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
+import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mapbox_navigation/library.dart';
 import 'package:location/location.dart';
@@ -32,12 +33,14 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
   bool _isNavigating = false;
   LocationData _locationData;
   Location location = new Location();
+  bool _navigationFinished;
   List<WayPoint> wayPoints = [];
   @override
   void initState() {
     super.initState();
     getDeviceLocation();
     initialize();
+    _navigationFinished = false;
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -244,7 +247,10 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                           );
                           wayPoints.add(userOrigin);
                           wayPoints.add(_stop1);
-
+                          UserModel.of(context).setStatusOrder(
+                            orderData: widget.orderData,
+                            status: 2,
+                          );
                           await _directions.startNavigation(
                             wayPoints: wayPoints,
                             options: MapBoxOptions(
@@ -257,7 +263,26 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                           );
                         },
                         child: Text(
-                          'Iniciar o envio',
+                          'Entregar',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 18.0),
+                    child: Center(
+                      child: AnimatedButton(
+                        color: _navigationFinished ? Colors.red : Colors.grey,
+                        width: MediaQuery.of(context).size.width * 0.25,
+                        height: 40,
+                        onPressed: _navigationFinished ? () async {} : null,
+                        child: Text(
+                          'Finalizar',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,
@@ -283,6 +308,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
       case MapBoxEvent.progress_change:
         var progressEvent = e.data as RouteProgressEvent;
         _arrived = progressEvent.arrived;
+        
         if (progressEvent.currentStepInstruction != null)
           _instruction = progressEvent.currentStepInstruction;
         break;
@@ -310,6 +336,10 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
         } else {}
         break;
       case MapBoxEvent.navigation_finished:
+        setState(() {
+          _navigationFinished = true;
+        });
+        break;
       case MapBoxEvent.navigation_cancelled:
         setState(() {
           _routeBuilt = false;

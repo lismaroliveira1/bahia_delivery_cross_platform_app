@@ -2165,4 +2165,16 @@ class UserModel extends Model {
       }
     }
   }
+
+  void setStatusOrder(
+      {@required OrderData orderData, @required int status}) async {
+    if (isLoggedIn()) {
+      await FirebaseFirestore.instance
+          .collection("orders")
+          .doc(orderData.id)
+          .update({
+        "status": status,
+      });
+    }
+  }
 }
