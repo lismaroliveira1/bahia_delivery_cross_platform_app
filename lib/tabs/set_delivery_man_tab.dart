@@ -1,9 +1,6 @@
 import 'dart:async';
-
 import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/order_partner_screnn.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class SetDeliveryManTab extends StatefulWidget {

@@ -1,8 +1,11 @@
+import 'package:animated_button/animated_button.dart';
 import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/order_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
+import 'package:bd_app_full/screens/real_time_delivery_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class OrderTile extends StatefulWidget {
@@ -196,6 +199,73 @@ class _OrderTileState extends State<OrderTile> {
                               ],
                             ),
                           ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                        ),
+                        child: snapshot.data["deliveryMan"] != "none"
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Container(
+                                        height: 80,
+                                        width: 80,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                            image: NetworkImage(
+                                              snapshot.data["deliveryMan"]
+                                                  ["image"],
+                                            ),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(4.0),
+                                        child: Text(snapshot.data["deliveryMan"]
+                                            ["name"]),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                            : Container(
+                                height: 0,
+                                width: 0,
+                              ),
+                      ),
+                      Center(
+                        child: AnimatedButton(
+                          color: Colors.red,
+                          width: MediaQuery.of(context).size.width * 0.25,
+                          height: 40,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.rightToLeft,
+                                child: RealTimeDeliveryScreen(widget.orderData),
+                                inheritTheme: true,
+                                duration: new Duration(
+                                  milliseconds: 350,
+                                ),
+                                ctx: context,
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'Acompanhar Pedido',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
                         ),
                       ),
                       Text(

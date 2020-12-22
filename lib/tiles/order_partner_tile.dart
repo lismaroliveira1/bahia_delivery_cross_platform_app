@@ -2,11 +2,8 @@ import 'package:animated_button/animated_button.dart';
 import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/order_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
-import 'package:bd_app_full/data/set_delivery_man_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class OrderPartnerTile extends StatefulWidget {
@@ -278,7 +275,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                         padding: const EdgeInsets.symmetric(
                           vertical: 12,
                         ),
-                        child: snapshot.data["deliveryMan"] != null
+                        child: snapshot.data["deliveryMan"] != "none"
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -308,8 +305,8 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                                 ],
                               )
                             : Container(
-                                height: 100,
-                                color: Colors.blue,
+                                height: 0,
+                                width: 0,
                               ),
                       ),
                       Center(

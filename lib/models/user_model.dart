@@ -71,6 +71,7 @@ class UserModel extends Model {
   String _addresId;
   SubSectionData newSubsectionData;
   List<DeliveryManData> deliveryMans = [];
+  LatLng latLngDevice;
 
   Location location = new Location();
   bool _serviceEnabled;
@@ -88,7 +89,6 @@ class UserModel extends Model {
   void addListener(VoidCallback listener) async {
     super.addListener(listener);
     _loadCurrentUser();
-    await getLocationDevice();
   }
 
   bool isLoggedIn() {
@@ -114,7 +114,6 @@ class UserModel extends Model {
       deliveryManId:
           docUser.get("isPartner") == 6 ? docUser.get("deliveryManId") : "",
     );
-    getDeliveryManData();
     await getListOfCategory();
     await getListHomeStores();
     await getOrders();
@@ -132,6 +131,7 @@ class UserModel extends Model {
     getPurchasedStoresList();
     getAllProductsToList();
     getPaymentUserForms();
+    getDeliveryManData();
     isLoading = false;
     isReady = true;
     notifyListeners();
@@ -338,6 +338,7 @@ class UserModel extends Model {
           .toList();
       notifyListeners();
     } catch (erro) {
+      print(erro);
       sendErrorMessageToADM(
         errorFromUser: erro.toString(),
       );
@@ -383,7 +384,7 @@ class UserModel extends Model {
     if (isLoggedIn()) {
       storeHomeList.clear();
       _locationData = await location.getLocation();
-      LatLng latLngDevice = LatLng(
+      latLngDevice = LatLng(
         _locationData.latitude,
         _locationData.longitude,
       );
@@ -1425,6 +1426,7 @@ class UserModel extends Model {
             "discount": discount,
             "totalPrice": totalPrice,
             "status": 1,
+            "deliveryMan": "none",
             'createdAt': FieldValue.serverTimestamp(),
             'platform': Platform.operatingSystem,
             'paymentType': "Pagamento no app",
@@ -1505,6 +1507,7 @@ class UserModel extends Model {
           "storeDescription": "storeDescrition",
           "discount": discount,
           "totalPrice": totalPrice,
+          "deliveryMan": "none",
           "status": 1,
           'createdAt': FieldValue.serverTimestamp(),
           'platform': Platform.operatingSystem,
@@ -1583,6 +1586,7 @@ class UserModel extends Model {
           "storeImage": storeData.image,
           "storeDescription": "storeDescrition",
           "discount": discount,
+          "deliveryMan": "none",
           "totalPrice": totalPrice,
           "status": 1,
           'createdAt': FieldValue.serverTimestamp(),
@@ -1828,6 +1832,7 @@ class UserModel extends Model {
       lat,
       lng,
     );
+    onSuccess();
     try {
       storeHomeList.clear();
       QuerySnapshot querySnapshot =
@@ -1877,12 +1882,13 @@ class UserModel extends Model {
         );
         storeElement.deliveryTime = calctime(storeElement.distance);
       });
-      onSuccess();
+
       notifyListeners();
     } catch (erro) {
       sendErrorMessageToADM(
         errorFromUser: erro.toString(),
       );
+      print(erro);
       onFail();
       notifyListeners();
     }

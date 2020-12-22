@@ -5,7 +5,6 @@ import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/register_address_screen.dart';
 import 'package:bd_app_full/screens/welcome_store_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:google_place/google_place.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
