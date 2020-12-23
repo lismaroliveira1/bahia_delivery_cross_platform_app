@@ -1451,6 +1451,7 @@ class UserModel extends Model {
             'paymentType': "Pagamento no app",
             "method": "debitCard",
             "dataSale": response,
+            "realTimeDeliveryManLocation": {},
           });
           getListOfCategory();
           getListHomeStores();
@@ -1546,6 +1547,7 @@ class UserModel extends Model {
           'paymentType': "Pagamento no app",
           "method": "creditCard",
           "dataSale": response,
+          "realTimeDeliveryManLocation": {},
         });
         getListOfCategory();
         getListHomeStores();
@@ -1636,7 +1638,9 @@ class UserModel extends Model {
           "status": 1,
           'createdAt': FieldValue.serverTimestamp(),
           'platform': Platform.operatingSystem,
-          'paymentType': "Pagamento na Entrega"
+          'paymentType': "Pagamento na Entrega",
+          'dataSale': {},
+          "realTimeDeliveryManLocation": {},
         });
         cartProducts.clear();
         comboCartList.clear();
@@ -2167,6 +2171,18 @@ class UserModel extends Model {
   }
 
   void setStatusOrder(
+      {@required OrderData orderData, @required int status}) async {
+    if (isLoggedIn()) {
+      await FirebaseFirestore.instance
+          .collection("orders")
+          .doc(orderData.id)
+          .update({
+        "status": status,
+      });
+    }
+  }
+
+  void setLocationdDeliveryManOrder(
       {@required OrderData orderData, @required int status}) async {
     if (isLoggedIn()) {
       await FirebaseFirestore.instance

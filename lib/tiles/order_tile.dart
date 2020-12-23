@@ -3,6 +3,7 @@ import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/order_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:bd_app_full/screens/real_time_delivery_screen.dart';
+import 'package:bd_app_full/screens/real_time_delivery_user_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -249,9 +250,7 @@ class _OrderTileState extends State<OrderTile> {
                               context,
                               PageTransition(
                                 type: PageTransitionType.rightToLeft,
-                                child: RealTimeDeliveryScreen(
-                                  widget.orderData,
-                                ),
+                                child: RealTimeDeliveryUserScreen(),
                                 inheritTheme: true,
                                 duration: new Duration(
                                   milliseconds: 350,

@@ -33,6 +33,8 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
   bool _isNavigating = false;
   LocationData _locationData;
   Location location = new Location();
+  String longitudeText = '';
+  String latitudeText = '';
   bool _navigationFinished;
   List<WayPoint> wayPoints = [];
   @override
@@ -69,6 +71,12 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
       longPressDestinationEnabled: true,
       language: "pt",
     );
+    location.onLocationChanged.listen((locationData) {
+      setState(() {
+        longitudeText = locationData.longitude.toStringAsFixed(8);
+        latitudeText = locationData.latitude.toStringAsFixed(8);
+      });
+    });
     _controller.initialize();
   }
 
@@ -103,6 +111,14 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  Text(
+                    longitudeText,
+                    style: TextStyle(fontSize: 26),
+                  ),
+                  Text(
+                    latitudeText,
+                    style: TextStyle(fontSize: 26),
+                  ),
                   SizedBox(
                     height: 10,
                   ),
@@ -308,7 +324,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
       case MapBoxEvent.progress_change:
         var progressEvent = e.data as RouteProgressEvent;
         _arrived = progressEvent.arrived;
-        
+
         if (progressEvent.currentStepInstruction != null)
           _instruction = progressEvent.currentStepInstruction;
         break;
