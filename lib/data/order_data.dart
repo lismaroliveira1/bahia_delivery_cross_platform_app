@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:bd_app_full/data/combo_data.dart';
+import 'package:bd_app_full/data/delivery_man_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -30,7 +31,9 @@ class OrderData {
   List<ProductData> products = [];
   List<ComboData> combos = [];
   String vehicleType;
-
+  DeliveryManData deliveryManData;
+  String paymentOnAppType;
+  String paymentInfo;
   OrderData.fromQueryDocument(QueryDocumentSnapshot queryDoc) {
     id = queryDoc.id;
     storeName = queryDoc.get("StoreName");
@@ -54,6 +57,20 @@ class OrderData {
     storeAdressId = queryDoc.data()["storeLocation"]["addressId"];
     storeLat = queryDoc.data()["storeLocation"]["lat"];
     storeLng = queryDoc.data()["storeLocation"]["lng"];
+    if (paymentType == "Pagamento no app") {
+      paymentOnAppType = queryDoc.data()["dataSale"]["payment"]["type"];
+      if (paymentOnAppType == 'DebitCard') {
+        paymentInfo = queryDoc.data()["dataSale"]["payment"]['debitCard']
+                ["brand"] +
+            " - " +
+            queryDoc.data()["dataSale"]["payment"]['debitCard']["cardNumber"];
+      } else if (paymentOnAppType == 'CreditCard') {
+        paymentInfo = queryDoc.data()["dataSale"]["payment"]['creditCard']
+                ["brand"] +
+            " - " +
+            queryDoc.data()["dataSale"]["payment"]['creditCard']["cardNumber"];
+      }
+    }
     if (queryDoc.get("deliveryMan") != "none") {
       print("ok");
     }

@@ -365,6 +365,7 @@ class UserModel extends Model {
               descending: true,
             )
             .get();
+        listUserOrders.clear();
         querySnapshot.docs.map((queryDoc) async {
           if (queryDoc.get("client") == firebaseUser.uid) {
             listUserOrders.add(OrderData.fromQueryDocument(queryDoc));
@@ -2182,14 +2183,21 @@ class UserModel extends Model {
     }
   }
 
-  void setLocationdDeliveryManOrder(
-      {@required OrderData orderData, @required int status}) async {
+  void setLocationdDeliveryManOrder({
+    @required OrderData orderData,
+    @required double lat,
+    @required double lng,
+  }) async {
     if (isLoggedIn()) {
+      print("ok");
       await FirebaseFirestore.instance
           .collection("orders")
           .doc(orderData.id)
           .update({
-        "status": status,
+        "realTimeDeliveryManLocation": {
+          "lat": lat,
+          "lng": lng,
+        },
       });
     }
   }

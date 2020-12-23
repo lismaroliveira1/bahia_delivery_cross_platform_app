@@ -250,7 +250,8 @@ class _OrderTileState extends State<OrderTile> {
                               context,
                               PageTransition(
                                 type: PageTransitionType.rightToLeft,
-                                child: RealTimeDeliveryUserScreen(),
+                                child: RealTimeDeliveryUserScreen(
+                                    widget.orderData),
                                 inheritTheme: true,
                                 duration: new Duration(
                                   milliseconds: 350,

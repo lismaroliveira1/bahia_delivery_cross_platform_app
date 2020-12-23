@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:animated_button/animated_button.dart';
 import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/order_data.dart';
@@ -17,11 +19,8 @@ class RealTimeDeliveryScreen extends StatefulWidget {
 
 class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
   String _instruction = "";
-  final _origin = WayPoint(
-      name: "Way Point 3",
-      latitude: 38.91040213277608,
-      longitude: -77.03848242759705);
 
+  bool isDeliverySending;
   List<ProductData> products = [];
   MapBoxNavigation _directions;
   MapBoxOptions _options;
@@ -43,6 +42,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
     getDeviceLocation();
     initialize();
     _navigationFinished = false;
+    isDeliverySending = true;
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -72,6 +72,13 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
       language: "pt",
     );
     location.onLocationChanged.listen((locationData) {
+      if (isDeliverySending) {
+        UserModel.of(context).setLocationdDeliveryManOrder(
+          orderData: widget.orderData,
+          lat: locationData.latitude,
+          lng: locationData.longitude,
+        );
+      }
       setState(() {
         longitudeText = locationData.longitude.toStringAsFixed(8);
         latitudeText = locationData.latitude.toStringAsFixed(8);
@@ -267,6 +274,9 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                             orderData: widget.orderData,
                             status: 2,
                           );
+                          setState(() {
+                            isDeliverySending = true;
+                          });
                           await _directions.startNavigation(
                             wayPoints: wayPoints,
                             options: MapBoxOptions(
@@ -332,6 +342,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
       case MapBoxEvent.route_built:
         setState(() {
           _routeBuilt = true;
+          isDeliverySending = true;
         });
         break;
       case MapBoxEvent.route_build_failed:
@@ -342,6 +353,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
       case MapBoxEvent.navigation_running:
         setState(() {
           _isNavigating = true;
+          isDeliverySending = true;
         });
         break;
       case MapBoxEvent.on_arrival:
