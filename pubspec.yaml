@@ -71,6 +71,8 @@ dependencies:
   flutter_mapbox_navigation: ^0.0.19
   google_maps_flutter: ^1.0.6
   flutter_map: ^0.10.1+1
+  flutter_polyline_points: ^0.2.4
+  firebase_database: ^4.4.0
 
 dev_dependencies:
   flutter_test:

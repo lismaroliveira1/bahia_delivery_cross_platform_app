@@ -21,6 +21,8 @@ import 'package:bd_app_full/services/cielo_payment.dart';
 import 'package:cielo_ecommerce/cielo_ecommerce.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -72,6 +74,7 @@ class UserModel extends Model {
   SubSectionData newSubsectionData;
   List<DeliveryManData> deliveryMans = [];
   LatLng latLngDevice;
+  LatLng realTimeDeliveryManCoordinates;
 
   Location location = new Location();
   bool _serviceEnabled;
@@ -79,7 +82,7 @@ class UserModel extends Model {
   LocationData _locationData;
   List<OrderData> deliveryManRacers = [];
   Geodesy geodesy = Geodesy();
-
+  FirebaseApp app;
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   static UserModel of(BuildContext context) =>
@@ -101,19 +104,30 @@ class UserModel extends Model {
     if (firebaseUser == null) {
       firebaseUser = _auth.currentUser;
     }
-    DocumentSnapshot docUser = await FirebaseFirestore.instance
-        .collection("users")
-        .doc(firebaseUser.uid)
-        .get();
-    userData = UserData(
-      name: docUser.get("name"),
-      image: docUser.get("image"),
-      email: firebaseUser.email,
-      isPartner: docUser.get("isPartner"),
-      storeId: docUser.get("isPartner") == 1 ? docUser.get("storeId") : "",
-      deliveryManId:
-          docUser.get("isPartner") == 6 ? docUser.get("deliveryManId") : "",
-    );
+    try {
+      app = await Firebase.initializeApp(
+        options: FirebaseOptions(
+          appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
+          apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
+          messagingSenderId: '411754724192',
+          projectId: 'bahia-delivery-app-cp',
+          databaseURL: 'bahia-delivery-app-cp.appspot.com',
+        ),
+      );
+      DocumentSnapshot docUser = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(firebaseUser.uid)
+          .get();
+      userData = UserData(
+        name: docUser.get("name"),
+        image: docUser.get("image"),
+        email: firebaseUser.email,
+        isPartner: docUser.get("isPartner"),
+        storeId: docUser.get("isPartner") == 1 ? docUser.get("storeId") : "",
+        deliveryManId:
+            docUser.get("isPartner") == 6 ? docUser.get("deliveryManId") : "",
+      );
+    } catch (erro) {}
     await getListOfCategory();
     await getListHomeStores();
     await getOrders();
@@ -2189,16 +2203,25 @@ class UserModel extends Model {
     @required double lng,
   }) async {
     if (isLoggedIn()) {
-      print("ok");
-      await FirebaseFirestore.instance
-          .collection("orders")
-          .doc(orderData.id)
-          .update({
-        "realTimeDeliveryManLocation": {
+      DatabaseReference coordinates = FirebaseDatabase.instance
+          .reference()
+          .child("orders")
+          .child(orderData.id)
+          .child("deliveryRealTimeLocation");
+      await coordinates.runTransaction((MutableData mutableData) async {
+        mutableData.value = {
           "lat": lat,
           "lng": lng,
-        },
+        };
+        return mutableData;
       });
+
+      print("ok");
     }
+  }
+
+  void getRealTimeDeliveryManPosition({@required lat, @required lng}) {
+    realTimeDeliveryManCoordinates = LatLng(lat, lng);
+    notifyListeners();
   }
 }

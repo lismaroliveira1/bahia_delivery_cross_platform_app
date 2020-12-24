@@ -73,6 +73,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
     );
     location.onLocationChanged.listen((locationData) {
       if (isDeliverySending) {
+        
         UserModel.of(context).setLocationdDeliveryManOrder(
           orderData: widget.orderData,
           lat: locationData.latitude,
