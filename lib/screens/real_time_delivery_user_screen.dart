@@ -1,7 +1,6 @@
 import 'package:bd_app_full/data/order_data.dart';
 import 'package:bd_app_full/screens/chat_user_order_screen.dart';
 import 'package:bd_app_full/screens/details_user_order_screnn.dart';
-import 'package:bd_app_full/tabs/details_order_user_tab.dart';
 import 'package:bd_app_full/tabs/real_time_delivery_user_tab.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
