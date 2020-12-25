@@ -71,9 +71,7 @@ class OrderData {
             queryDoc.data()["dataSale"]["payment"]['creditCard']["cardNumber"];
       }
     }
-    if (queryDoc.get("deliveryMan") != "none") {
-      print("ok");
-    }
+    if (queryDoc.get("deliveryMan") != "none") {}
     for (LinkedHashMap p in queryDoc.data()["products"]) {
       products.add(ProductData.fromLinkedHashMap(p));
       totalPrice += p["totalPrice"];

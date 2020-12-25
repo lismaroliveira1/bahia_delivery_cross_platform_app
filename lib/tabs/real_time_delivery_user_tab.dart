@@ -7,9 +7,16 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:scoped_model/scoped_model.dart';
+import 'package:map_polyline_draw/map_polyline_draw.dart';
+
+const double CAMERA_ZOOM = 16;
+const double CAMERA_TILT = 80;
+const double CAMERA_BEARING = 30;
+const LatLng SOURCE_LOCATION = LatLng(42.747932, -71.167889);
+const LatLng DEST_LOCATION = LatLng(37.335685, -122.0605916);
 
 class RealTimeDeliveryUserTab extends StatefulWidget {
   final OrderData orderData;
@@ -21,13 +28,29 @@ class RealTimeDeliveryUserTab extends StatefulWidget {
 }
 
 class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
+  double _originLatitude = 6.5212402, _originLongitude = 3.3679965;
+  double _destLatitude = 6.849660, _destLongitude = 3.648190;
+
+  Completer<GoogleMapController> _controller = Completer();
+  Set<Polyline> _polylines = Set<Polyline>();
+  List<LatLng> polylineCoordinates = [];
+  PolylinePoints polylinePoints;
+  String googleAPIKey = 'AIzaSyB9QAT4C-TwvJu8pmNMxbRnGp_am3j76xI';
+
+  BitmapDescriptor sourceIcon;
+  BitmapDescriptor destinationIcon;
+
+  LocationData currentLocation;
+
+  LocationData destinationLocation;
+  int text;
   int status;
   double deliveryRealTimeLat;
   double deliveryRealTimeLng;
   bool _serviceEnabled;
   PermissionStatus _permissionGranted;
   LocationData _locationData;
-  Location location = new Location();
+  Location location = Location();
   GoogleMapController googleMapController;
   Set<Marker> _markers = HashSet<Marker>();
   Set<Circle> _circles = HashSet<Circle>();
@@ -37,14 +60,14 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
   FirebaseApp firebaseApp;
   StreamSubscription<Event> _locationSubscription;
   FirebaseDatabase database;
+  LatLng _deliveryManRealTimeLatLng;
 
+  DatabaseReference _deliveryManRealTimeLocation;
   @override
   void initState() {
     status = 1;
-    deliveryRealTimeLat = 0;
-    deliveryRealTimeLng = 0;
     _checkLocationPermission();
-
+    realTimeInit();
     super.initState();
   }
 
@@ -184,86 +207,6 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                                 _buildCircle("3", "Entrega", status, 3),
                               ],
                             ),
-                            status == 3
-                                ? Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 12,
-                                    ),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.4,
-                                      child: ScopedModelDescendant<UserModel>(
-                                        builder: (context, child, model) {
-                                          _markers.clear();
-                                          _circles.clear();
-                                          _deliveryManRealTimeMarker = Marker(
-                                            markerId:
-                                                MarkerId("veliveryManMarkerId"),
-                                            position: LatLng(
-                                              model
-                                                  .realTimeDeliveryManCoordinates
-                                                  .latitude,
-                                              model
-                                                  .realTimeDeliveryManCoordinates
-                                                  .longitude,
-                                            ),
-                                            zIndex: 2,
-                                            draggable: false,
-                                            flat: true,
-                                            anchor: Offset(0.5, 0.5),
-                                            icon:
-                                                BitmapDescriptor.defaultMarker,
-                                          );
-                                          _deliveryManCircle = Circle(
-                                            circleId:
-                                                CircleId("veliveryManCicleId"),
-                                            center: LatLng(
-                                              model
-                                                  .realTimeDeliveryManCoordinates
-                                                  .latitude,
-                                              model
-                                                  .realTimeDeliveryManCoordinates
-                                                  .longitude,
-                                            ),
-                                            radius: 2,
-                                            zIndex: 2,
-                                          );
-                                          _circles.add(_deliveryManCircle);
-                                          _markers
-                                              .add(_deliveryManRealTimeMarker);
-                                          return GoogleMap(
-                                            initialCameraPosition:
-                                                new CameraPosition(
-                                              target: LatLng(
-                                                model
-                                                    .realTimeDeliveryManCoordinates
-                                                    .latitude,
-                                                model
-                                                    .realTimeDeliveryManCoordinates
-                                                    .longitude,
-                                              ),
-                                              zoom: 15.0,
-                                            ),
-                                            mapType: MapType.hybrid,
-                                            markers: _markers,
-                                            circles: _circles,
-                                            onMapCreated: (GoogleMapController
-                                                controller) {
-                                              googleMapController = controller;
-                                            },
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  )
-                                : Container(
-                                    height: 0,
-                                    width: 0,
-                                  ),
                           ],
                         );
                       } else {
@@ -275,6 +218,24 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                     },
                   ),
                 ),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.6,
+                  child: GoogleMap(
+                    myLocationButtonEnabled: true,
+                    compassEnabled: true,
+                    markers: _markers,
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(
+                        widget.orderData.clientLat,
+                        widget.orderData.clientLng,
+                      ),
+                      zoom: 16,
+                    ),
+                    onMapCreated: (GoogleMapController mapController) {
+                      _controller.complete(mapController);
+                    },
+                  ),
+                )
               ],
             ),
           ),
@@ -343,5 +304,46 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
     _locationData = await location.getLocation();
   }
 
-  void realTimeInit() async {}
+  void realTimeInit() async {
+    _deliveryManRealTimeLocation = FirebaseDatabase.instance
+        .reference()
+        .child("orders")
+        .child(widget.orderData.id)
+        .child("deliveryRealTimeLocation");
+    _deliveryManRealTimeLocation.onValue.listen((event) async {
+      showMarkers(
+        lat: event.snapshot.value['lat'],
+        lng: event.snapshot.value['lng'],
+      );
+    });
+  }
+
+  void showMarkers({
+    @required double lat,
+    @required double lng,
+  }) {
+    Set<Marker> flag = HashSet<Marker>();
+    flag.clear();
+    flag.add(
+      Marker(
+        markerId: MarkerId("destinationId"),
+        position: LatLng(
+          lat,
+          lng,
+        ),
+      ),
+    );
+    flag.add(
+      Marker(
+        markerId: MarkerId("sourceId"),
+        position: LatLng(
+          widget.orderData.clientLat,
+          widget.orderData.clientLng,
+        ),
+      ),
+    );
+    setState(() {
+      _markers = flag;
+    });
+  }
 }
