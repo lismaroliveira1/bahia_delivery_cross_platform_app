@@ -321,7 +321,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
   void showMarkers({
     @required double lat,
     @required double lng,
-  }) {
+  }) async {
     Set<Marker> flag = HashSet<Marker>();
     flag.clear();
     flag.add(
@@ -345,5 +345,16 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
     setState(() {
       _markers = flag;
     });
+    CameraPosition cPosition = CameraPosition(
+      tilt: 60,
+      bearing: CAMERA_BEARING,
+      target: LatLng(
+        lat,
+        lng,
+      ),
+      zoom: 18,
+    );
+    final GoogleMapController controller = await _controller.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
   }
 }
