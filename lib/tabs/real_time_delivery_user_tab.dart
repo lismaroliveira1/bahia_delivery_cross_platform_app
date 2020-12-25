@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:map_polyline_draw/map_polyline_draw.dart';
 
 const double CAMERA_ZOOM = 16;
 const double CAMERA_TILT = 80;
@@ -41,7 +40,8 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
   BitmapDescriptor destinationIcon;
 
   LocationData currentLocation;
-
+  double durationRemaining;
+  double distanceRemaining;
   LocationData destinationLocation;
   int text;
   int status;
@@ -51,21 +51,16 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
   PermissionStatus _permissionGranted;
   LocationData _locationData;
   Location location = Location();
-  GoogleMapController googleMapController;
   Set<Marker> _markers = HashSet<Marker>();
-  Set<Circle> _circles = HashSet<Circle>();
-  Marker _deliveryManRealTimeMarker;
-  Circle _deliveryManCircle;
-  DatabaseReference _locationDeliveryRef;
   FirebaseApp firebaseApp;
-  StreamSubscription<Event> _locationSubscription;
   FirebaseDatabase database;
-  LatLng _deliveryManRealTimeLatLng;
 
   DatabaseReference _deliveryManRealTimeLocation;
   @override
   void initState() {
     status = 1;
+    durationRemaining = 0;
+    distanceRemaining = 0;
     _checkLocationPermission();
     realTimeInit();
     super.initState();
@@ -95,13 +90,17 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListView(
+              padding: EdgeInsets.zero,
               children: [
                 Row(
                   children: [
-                    Text(
-                      "Pedido: ${widget.orderData.id.substring(0, 6)}",
-                      style: TextStyle(
-                        fontSize: 24,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 2.0),
+                      child: Text(
+                        "Pedido: ${widget.orderData.id.substring(0, 6)}",
+                        style: TextStyle(
+                          fontSize: 24,
+                        ),
                       ),
                     ),
                   ],
@@ -110,59 +109,96 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                   padding: const EdgeInsets.symmetric(
                     vertical: 8,
                   ),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.width / 4,
-                        width: MediaQuery.of(context).size.width / 4,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          image: DecorationImage(
-                            image: NetworkImage(
-                              widget.orderData.storeImage,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Row(
+                      children: [
+                        Container(
+                          height: MediaQuery.of(context).size.width / 4,
+                          width: MediaQuery.of(context).size.width / 4,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            image: DecorationImage(
+                              image: NetworkImage(
+                                widget.orderData.storeImage,
+                              ),
+                              fit: BoxFit.cover,
                             ),
-                            fit: BoxFit.cover,
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.orderData.storeName,
+                                style: TextStyle(
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.clip,
+                                softWrap: true,
+                              ),
+                              Text(
+                                widget.orderData.storeDescription,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.clip,
+                                softWrap: true,
+                              ),
+                              Text(
+                                "Total: R\$${(widget.orderData.totalPrice + widget.orderData.shipPrice).toStringAsFixed(2)}",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.clip,
+                                softWrap: true,
+                              ),
+                            ],
+                          ),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.orderData.storeName,
-                              style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.w600,
+                        Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: FlatButton(
+                            onPressed: () {
+                              onProductListPressed();
+                            },
+                            child: Card(
+                              elevation: 8,
+                              child: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  image: DecorationImage(
+                                    image:
+                                        AssetImage('images/product_list.png'),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               ),
-                              overflow: TextOverflow.clip,
-                              softWrap: true,
                             ),
-                            Text(
-                              widget.orderData.storeDescription,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              overflow: TextOverflow.clip,
-                              softWrap: true,
-                            ),
-                            Text(
-                              "Total: R\$${(widget.orderData.totalPrice + widget.orderData.shipPrice).toStringAsFixed(2)}",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                              overflow: TextOverflow.clip,
-                              softWrap: true,
-                            ),
-                          ],
+                          ),
                         ),
-                      )
-                    ],
+                      ],
+                    ),
+                  ),
+                ),
+                Icon(Icons.location_on),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width * 0.2),
+                  child: Text(
+                    "${widget.orderData.clientAddress}",
+                    textAlign: TextAlign.center,
                   ),
                 ),
                 Padding(
@@ -218,22 +254,87 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                     },
                   ),
                 ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.6,
-                  child: GoogleMap(
-                    myLocationButtonEnabled: true,
-                    compassEnabled: true,
-                    markers: _markers,
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(
-                        widget.orderData.clientLat,
-                        widget.orderData.clientLng,
-                      ),
-                      zoom: 16,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                      child: Text(
+                    "Entregador",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
                     ),
-                    onMapCreated: (GoogleMapController mapController) {
-                      _controller.complete(mapController);
-                    },
+                  )),
+                ),
+                Center(
+                  child: Container(
+                    height: MediaQuery.of(context).size.width / 4,
+                    width: MediaQuery.of(context).size.width / 4,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          widget.orderData.deliveryManData.image,
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                      child: Text(
+                    widget.orderData.deliveryManData.name,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.black54,
+                    ),
+                  )),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                              "Tempo: ${(durationRemaining / 60).toStringAsFixed(0)} min"),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                              "Distância: ${(distanceRemaining / 1000).toStringAsFixed(1)} Km"),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(25)),
+                    child: GoogleMap(
+                      scrollGesturesEnabled: true,
+                      myLocationButtonEnabled: true,
+                      compassEnabled: true,
+                      markers: _markers,
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(
+                          widget.orderData.clientLat,
+                          widget.orderData.clientLng,
+                        ),
+                        zoom: 16,
+                      ),
+                      onMapCreated: (GoogleMapController mapController) {
+                        _controller.complete(mapController);
+                      },
+                    ),
                   ),
                 )
               ],
@@ -311,6 +412,10 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
         .child(widget.orderData.id)
         .child("deliveryRealTimeLocation");
     _deliveryManRealTimeLocation.onValue.listen((event) async {
+      setState(() {
+        distanceRemaining = event.snapshot.value["distanceRemaining"];
+        durationRemaining = event.snapshot.value["durationRemaining"];
+      });
       showMarkers(
         lat: event.snapshot.value['lat'],
         lng: event.snapshot.value['lng'],
@@ -356,5 +461,127 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
     );
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
+  }
+
+  void onProductListPressed() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25),
+            topRight: Radius.circular(25),
+          ),
+        ),
+        duration: Duration(minutes: 1),
+        content: Container(
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(14.0),
+                    child: Text(
+                      "Produtos",
+                      style: TextStyle(
+                        color: Colors.black54,
+                        fontSize: 26,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      children: widget.orderData.products
+                          .map(
+                            (product) => Column(
+                              children: [
+                                ListTile(
+                                  title: Text(
+                                    product.productTitle,
+                                    style: TextStyle(
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                  subtitle: Text(
+                                    "${product.quantity.toStringAsFixed(0)} x ${product.productPrice}",
+                                    style: TextStyle(
+                                      color: Colors.black38,
+                                    ),
+                                  ),
+                                  trailing: Text(
+                                    "R\$${product.totalPrice.toStringAsFixed(2)}",
+                                    style: TextStyle(
+                                      color: Colors.black38,
+                                    ),
+                                  ),
+                                  leading: Container(
+                                    height: 80,
+                                    width: 80,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                        image: NetworkImage(
+                                          product.productImage,
+                                        ),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 12,
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Taxa de entrega: R\$ ${widget.orderData.shipPrice.toStringAsFixed(2)}",
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 8,
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Total: R\$ ${widget.orderData.totalPrice.toStringAsFixed(2)}",
+                                      style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                right: 2,
+                top: 2,
+                child: IconButton(
+                  icon: Icon(
+                    Icons.close_fullscreen_rounded,
+                    color: Colors.black54,
+                    size: 15,
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

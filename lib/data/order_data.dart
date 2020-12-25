@@ -71,6 +71,10 @@ class OrderData {
             queryDoc.data()["dataSale"]["payment"]['creditCard']["cardNumber"];
       }
     }
+    if (queryDoc.get("deliveryMan") != "none") {
+      deliveryManData =
+          DeliveryManData.fromDynamic(queryDoc.data()["deliveryMan"]);
+    }
     if (queryDoc.get("deliveryMan") != "none") {}
     for (LinkedHashMap p in queryDoc.data()["products"]) {
       products.add(ProductData.fromLinkedHashMap(p));

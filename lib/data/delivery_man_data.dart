@@ -33,6 +33,10 @@ class DeliveryManData {
     userId = docSnap.get("userId");
     image = docSnap.get("image");
   }
+  DeliveryManData.fromDynamic(dynamic docSnap) {
+    name = docSnap["name"];
+    image = docSnap["image"];
+  }
   DeliveryManData.fromQuerySnapshot(QueryDocumentSnapshot docSnap) {
     id = docSnap.id;
     name = docSnap.get("name");
