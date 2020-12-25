@@ -74,6 +74,7 @@ dependencies:
   flutter_polyline_points: ^0.2.4
   firebase_database: ^4.4.0
   map_polyline_draw: ^1.0.2
+  floating_action_bubble: ^1.1.2
 
 dev_dependencies:
   flutter_test:
