@@ -71,13 +71,16 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
       longPressDestinationEnabled: true,
       language: "pt",
     );
-    location.onLocationChanged.listen((locationData) {
+    location.onLocationChanged.listen((locationData) async {
       if (isDeliverySending) {
-        
+        _distanceRemaining = await _directions.distanceRemaining;
+        _durationRemaining = await _directions.durationRemaining;
         UserModel.of(context).setLocationdDeliveryManOrder(
           orderData: widget.orderData,
           lat: locationData.latitude,
           lng: locationData.longitude,
+          distanceRemaining: _distanceRemaining,
+          durationRemaining: _durationRemaining,
         );
       }
       setState(() {

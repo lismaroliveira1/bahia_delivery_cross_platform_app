@@ -2201,6 +2201,8 @@ class UserModel extends Model {
     @required OrderData orderData,
     @required double lat,
     @required double lng,
+    @required double distanceRemaining,
+    @required double durationRemaining,
   }) async {
     if (isLoggedIn()) {
       DatabaseReference coordinates = FirebaseDatabase.instance
@@ -2212,6 +2214,8 @@ class UserModel extends Model {
         mutableData.value = {
           "lat": lat,
           "lng": lng,
+          "distanceRemaining": distanceRemaining,
+          "durationRemaining": durationRemaining,
         };
         return mutableData;
       });
