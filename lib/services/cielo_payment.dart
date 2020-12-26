@@ -45,4 +45,26 @@ class CieloPayment {
     print(response.data);
     return response.data;
   }
+
+  dynamic cancelPayByCard({@required paymentId, int amount}) async {
+    final Map<String, dynamic> data = {
+      'paymentId': paymentId,
+      'amount': amount, // Caso
+    };
+    final HttpsCallable callable = functions.httpsCallable('cancelPaybyCard');
+    final response = await callable.call(data);
+    print(response.data);
+    return response.data;
+  }
+
+  dynamic capturePayByCard({@required paymentId, int amount}) async {
+    final Map<String, dynamic> data = {
+      'paymentId': paymentId,
+      'amount': amount, // Caso
+    };
+    final HttpsCallable callable = functions.httpsCallable('capturePayByCard');
+    final response = await callable.call(data);
+    print(response.data);
+    return response.data;
+  }
 }

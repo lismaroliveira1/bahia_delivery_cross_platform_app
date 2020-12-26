@@ -2,6 +2,7 @@ import 'package:animated_button/animated_button.dart';
 import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/order_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
+import 'package:bd_app_full/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -324,17 +325,22 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                         children: <Widget>[
                           FlatButton(
                             padding: EdgeInsets.zero,
-                            onPressed: () async {
-                              await FirebaseFirestore.instance
-                                  .collection("orders")
-                                  .doc(widget.orderData.id)
-                                  .update({
-                                "status": 2,
-                              });
-                              setState(() {
-                                firtstatus = "Pedido aceito";
-                              });
-                            },
+                            onPressed: status == 1
+                                ? () async {
+                                    UserModel.of(context).authorizePayByPartner(
+                                      orderData: widget.orderData,
+                                    );
+                                    await FirebaseFirestore.instance
+                                        .collection("orders")
+                                        .doc(widget.orderData.id)
+                                        .update({
+                                      "status": 2,
+                                    });
+                                    setState(() {
+                                      firtstatus = "Pedido aceito";
+                                    });
+                                  }
+                                : null,
                             child: _buildCircle("1", firtstatus, status, 1),
                           ),
                           Spacer(),

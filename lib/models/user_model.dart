@@ -1501,6 +1501,7 @@ class UserModel extends Model {
     double comboPrice = 0;
     double offPrice = 0;
     Map response = {};
+
     try {
       if (cartProducts.length == 0 && comboCartList.length == 0) return null;
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
@@ -2080,51 +2081,6 @@ class UserModel extends Model {
     }
   }
 
-  Future<void> paymentWithCardCielo() async {
-    final CieloEcommerce cielo = CieloEcommerce(
-      environment: Environment.sandbox,
-      merchant: Merchant(
-        merchantId: "0593b1cb-f5ee-460b-ad11-fe7fcc7c1470",
-        merchantKey: "RZDIDQLJGQNCYTUCDSBLRLCGMBGUFUFXUXFSNGEQ",
-      ),
-    );
-    print("Transação Simples");
-    print("Iniciando pagamento....");
-    //Objeto de venda
-    Sale sale = Sale(
-      merchantOrderId: "2020032601", // Numero de identificação do Pedido
-      customer: Customer(
-        name: "Comprador crédito simples", // Nome do Comprador
-      ),
-      payment: Payment(
-        type: TypePayment.creditCard, // Tipo do Meio de Pagamento
-        amount: 9, // Valor do Pedido (ser enviado em centavos)
-        installments: 1, // Número de Parcelas
-        softDescriptor:
-            "Mensagem", // Descrição que aparecerá no extrato do usuário. Apenas 15 caracteres
-        creditCard: CreditCard(
-          cardNumber: "4024007153763191", // Número do Cartão do Comprador
-          holder: 'Teste accept', // Nome do Comprador impresso no cartão
-          expirationDate: '08/2030', // Data de validade impresso no cartão
-          securityCode:
-              '123', // Código de segurança impresso no verso do cartão
-          brand: 'Visa', // Bandeira do cartão
-        ),
-      ),
-    );
-
-    try {
-      var response = await cielo.createSale(sale);
-
-      print('paymentId ${response.payment.paymentId}');
-    } on CieloException catch (e) {
-      print(e);
-      print(e.message);
-      print(e.errors[0].message);
-      print(e.errors[0].code);
-    }
-  }
-
   void setDebitCard(bool isDebit) {
     currentCreditDebitCardData.isDebit = isDebit;
     notifyListeners();
@@ -2256,5 +2212,33 @@ class UserModel extends Model {
           .collection("chat")
           .add(message.toJson());
     });
+  }
+
+  Future<void> authorizePayByPartner({
+    @required OrderData orderData,
+  }) async {
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        try {
+          DocumentSnapshot orderDoc = await FirebaseFirestore.instance
+              .collection("orders")
+              .doc(orderData.id)
+              .get();
+          if (orderData.paymentType == 'Pagamento no app') {
+            Map response = {};
+            String paymentId =
+                orderDoc.data()["dataSale"]["payment"]["paymentId"];
+            final cieloPayment = new CieloPayment();
+            response = await cieloPayment.capturePayByCard(
+              paymentId: paymentId,
+              amount: (orderData.totalPrice * 100).toInt(),
+            );
+          }
+          orderDoc.reference.update({
+            "status": 2,
+          });
+        } catch (erro) {}
+      }
+    }
   }
 }
