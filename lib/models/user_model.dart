@@ -18,7 +18,6 @@ import 'package:bd_app_full/data/store_data.dart';
 import 'package:bd_app_full/data/subsection_data.dart';
 import 'package:bd_app_full/data/user_data.dart';
 import 'package:bd_app_full/services/cielo_payment.dart';
-import 'package:cielo_ecommerce/cielo_ecommerce.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat/dash_chat.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -345,13 +344,17 @@ class UserModel extends Model {
 
   Future<void> getListOfCategory() async {
     try {
-      QuerySnapshot querySnashot =
-          await FirebaseFirestore.instance.collection("categories").get();
-      querySnashot.docs
-          .map((queryDoc) =>
-              categoryList.add(CategoryData.fromQueryDocument(queryDoc)))
-          .toList();
-      notifyListeners();
+      FirebaseFirestore.instance
+          .collection("categories")
+          .snapshots()
+          .listen((querySnashot) {
+        categoryList.clear();
+        querySnashot.docs
+            .map((queryDoc) =>
+                categoryList.add(CategoryData.fromQueryDocument(queryDoc)))
+            .toList();
+        notifyListeners();
+      });
     } catch (erro) {
       print(erro);
       sendErrorMessageToADM(
@@ -373,6 +376,28 @@ class UserModel extends Model {
   Future<void> getOrders() async {
     if (isLoggedIn()) {
       try {
+        FirebaseFirestore.instance
+            .collection("orders")
+            .orderBy(
+              "createdAt",
+              descending: true,
+            )
+            .snapshots()
+            .listen((querySnapshot) {
+          listUserOrders.clear();
+          querySnapshot.docs.map((queryDoc) async {
+            if (queryDoc.get("client") == firebaseUser.uid) {
+              listUserOrders.add(OrderData.fromQueryDocument(queryDoc));
+            }
+            if (queryDoc.get("deliveryMan") != "none") {
+              if (queryDoc.data()["deliveryMan"]["userId"] ==
+                  firebaseUser.uid) {
+                deliveryManRacers.add(OrderData.fromQueryDocument(queryDoc));
+              }
+            }
+          }).toList();
+          notifyListeners();
+        });
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
             .collection("orders")
             .orderBy(
@@ -412,6 +437,7 @@ class UserModel extends Model {
       try {
         QuerySnapshot querySnapshot =
             await FirebaseFirestore.instance.collection("stores").get();
+        storeHomeList.clear();
         querySnapshot.docs.map((queryDoc) {
           storeHomeList.add(StoreData.fromQueryDocument(queryDoc));
         }).toList();
@@ -1253,10 +1279,25 @@ class UserModel extends Model {
               descending: true,
             )
             .get();
+        partnerOrderList.clear();
         querySnapshot.docs.map((queryDoc) {
           partnerOrderList.add(OrderData.fromQueryDocument(queryDoc));
         }).toList();
       }
+      FirebaseFirestore.instance
+          .collection("orders")
+          .orderBy(
+            "createdAt",
+            descending: true,
+          )
+          .snapshots()
+          .listen((querySnapshot) {
+        print("foi");
+        partnerOrderList.clear();
+        querySnapshot.docs.map((queryDoc) {
+          partnerOrderList.add(OrderData.fromQueryDocument(queryDoc));
+        }).toList();
+      });
     }
   }
 
@@ -1945,7 +1986,7 @@ class UserModel extends Model {
         );
         storeElement.deliveryTime = calctime(storeElement.distance);
       });
-
+      updateFavoritList();
       notifyListeners();
     } catch (erro) {
       sendErrorMessageToADM(
@@ -2233,11 +2274,53 @@ class UserModel extends Model {
               paymentId: paymentId,
               amount: (orderData.totalPrice * 100).toInt(),
             );
+            print(response);
+            if (response['returnMessage'] == 'Operation Successful') {
+              orderDoc.reference.update({
+                "status": 2,
+              });
+            }
+          } else {
+            orderDoc.reference.update({
+              "status": 2,
+            });
           }
-          orderDoc.reference.update({
-            "status": 2,
-          });
         } catch (erro) {}
+      }
+    }
+  }
+
+  Future<void> cancelPayByPartner({
+    @required OrderData orderData,
+  }) async {
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        try {
+          DocumentSnapshot orderDoc = await FirebaseFirestore.instance
+              .collection("orders")
+              .doc(orderData.id)
+              .get();
+          if (orderData.paymentType == 'Pagamento no app') {
+            Map response = {};
+            String paymentId =
+                orderDoc.data()["dataSale"]["payment"]["paymentId"];
+            final cieloPayment = new CieloPayment();
+            response = await cieloPayment.cancelPayByCard(
+              paymentId: paymentId,
+              amount: (orderData.totalPrice * 100).toInt(),
+            );
+            print(response);
+            if (response['returnMessage'] == 'Operation Successful') {
+              orderDoc.reference.update({
+                "status": 5,
+              });
+            }
+          } else {
+            orderDoc.reference.update({
+              "status": 5,
+            });
+          }
+        } catch (error) {}
       }
     }
   }

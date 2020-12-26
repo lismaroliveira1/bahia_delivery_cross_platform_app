@@ -367,6 +367,30 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: AnimatedButton(
+                            color: Colors.red,
+                            width: MediaQuery.of(context).size.width * 0.25,
+                            height: 40,
+                            onPressed: () {
+                              UserModel.of(context).cancelPayByPartner(
+                                orderData: widget.orderData,
+                              );
+                            },
+                            child: Text(
+                              'Cancelar Pedido',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
                             Text(
