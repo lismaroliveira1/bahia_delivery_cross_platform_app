@@ -76,6 +76,7 @@ dependencies:
   map_polyline_draw: ^1.0.2
   floating_action_bubble: ^1.1.2
   dash_chat: ^1.1.15
+  primary_secondary_progress_bar: ^0.1.1
 
 dev_dependencies:
   flutter_test:

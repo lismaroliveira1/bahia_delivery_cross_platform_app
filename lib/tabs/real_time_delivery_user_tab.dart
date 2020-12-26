@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:bd_app_full/data/order_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -35,10 +34,10 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints;
   String googleAPIKey = 'AIzaSyB9QAT4C-TwvJu8pmNMxbRnGp_am3j76xI';
-
+  OrderData orderData;
   BitmapDescriptor sourceIcon;
   BitmapDescriptor destinationIcon;
-
+  bool hasRealTimeDistance;
   LocationData currentLocation;
   double durationRemaining;
   double distanceRemaining;
@@ -48,17 +47,26 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
   double deliveryRealTimeLat;
   double deliveryRealTimeLng;
   bool _serviceEnabled;
+  String photoDeliveryMan;
+  String deliveryName;
   PermissionStatus _permissionGranted;
   LocationData _locationData;
   Location location = Location();
   Set<Marker> _markers = HashSet<Marker>();
   FirebaseApp firebaseApp;
   FirebaseDatabase database;
-
+  bool isSending;
+  bool hasDelivery;
   DatabaseReference _deliveryManRealTimeLocation;
   @override
   void initState() {
     status = 1;
+    hasRealTimeDistance = false;
+    deliveryName = '';
+    photoDeliveryMan = '';
+    orderData = widget.orderData;
+    isSending = false;
+    hasDelivery = false;
     durationRemaining = 0;
     distanceRemaining = 0;
     _checkLocationPermission();
@@ -97,7 +105,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 2.0),
                       child: Text(
-                        "Pedido: ${widget.orderData.id.substring(0, 6)}",
+                        "Pedido: ${orderData.id.substring(0, 6)}",
                         style: TextStyle(
                           fontSize: 24,
                         ),
@@ -120,7 +128,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                             borderRadius: BorderRadius.circular(12),
                             image: DecorationImage(
                               image: NetworkImage(
-                                widget.orderData.storeImage,
+                                orderData.storeImage,
                               ),
                               fit: BoxFit.cover,
                             ),
@@ -134,7 +142,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.orderData.storeName,
+                                orderData.storeName,
                                 style: TextStyle(
                                   fontSize: 35,
                                   fontWeight: FontWeight.w600,
@@ -143,7 +151,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                                 softWrap: true,
                               ),
                               Text(
-                                widget.orderData.storeDescription,
+                                orderData.storeDescription,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
@@ -152,7 +160,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                                 softWrap: true,
                               ),
                               Text(
-                                "Total: R\$${(widget.orderData.totalPrice + widget.orderData.shipPrice).toStringAsFixed(2)}",
+                                "Total: R\$${(orderData.totalPrice + orderData.shipPrice).toStringAsFixed(2)}",
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600,
@@ -197,7 +205,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                   padding: EdgeInsets.symmetric(
                       horizontal: MediaQuery.of(context).size.width * 0.2),
                   child: Text(
-                    "${widget.orderData.clientAddress}",
+                    "${orderData.clientAddress}",
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -208,39 +216,34 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                   child: StreamBuilder<DocumentSnapshot>(
                     stream: FirebaseFirestore.instance
                         .collection("orders")
-                        .doc(widget.orderData.id)
+                        .doc(orderData.id)
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         int status = snapshot.data["status"];
-                        if (snapshot.data['realTimeDeliveryManLocation'] !=
-                            {}) {
-                          deliveryRealTimeLat = snapshot
-                              .data["realTimeDeliveryManLocation"]["lat"];
-                          deliveryRealTimeLng = snapshot
-                              .data["realTimeDeliveryManLocation"]["lng"];
-                          UserModel.of(context).getRealTimeDeliveryManPosition(
-                              lat: deliveryRealTimeLat,
-                              lng: deliveryRealTimeLng);
-                        }
                         return Column(
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
-                                _buildCircle("1", "Preparação", status, 1),
+                                _buildCircle(
+                                  "1",
+                                  "Aguradando \nreposta da loja",
+                                  status,
+                                  1,
+                                ),
                                 Container(
                                   height: 1.0,
                                   width: 40.0,
                                   color: Colors.red,
                                 ),
-                                _buildCircle("2", "Transporte", status, 2),
+                                _buildCircle("2", "Preparação", status, 2),
                                 Container(
                                   height: 1.0,
                                   width: 40.0,
                                   color: Colors.red,
                                 ),
-                                _buildCircle("3", "Entrega", status, 3),
+                                _buildCircle("3", "", status, 3),
                               ],
                             ),
                           ],
@@ -254,89 +257,109 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                     },
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                      child: Text(
-                    "Entregador",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  )),
-                ),
-                Center(
-                  child: Container(
-                    height: MediaQuery.of(context).size.width / 4,
-                    width: MediaQuery.of(context).size.width / 4,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          widget.orderData.deliveryManData.image,
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Center(
-                      child: Text(
-                    widget.orderData.deliveryManData.name,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black54,
-                    ),
-                  )),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                hasDelivery
+                    ? Column(
                         children: [
-                          Text(
-                              "Tempo: ${(durationRemaining / 60).toStringAsFixed(0)} min"),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                                child: Text(
+                              "Entregador",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            )),
+                          ),
+                          Center(
+                            child: Container(
+                              height: MediaQuery.of(context).size.width / 4,
+                              width: MediaQuery.of(context).size.width / 4,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                    photoDeliveryMan,
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(
+                                child: Text(
+                              deliveryName,
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black54,
+                              ),
+                            )),
+                          ),
                         ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                      )
+                    : Container(),
+                isSending
+                    ? Column(
                         children: [
-                          Text(
-                              "Distância: ${(distanceRemaining / 1000).toStringAsFixed(1)} Km"),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: hasRealTimeDistance
+                                ? Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                              "Tempo: ${(durationRemaining / 60).toStringAsFixed(0)} min"),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                              "Distância: ${(distanceRemaining / 1000).toStringAsFixed(1)} Km"),
+                                        ],
+                                      ),
+                                    ],
+                                  )
+                                : Container(
+                                    height: 0,
+                                    width: 0,
+                                  ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.4,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25)),
+                              child: GoogleMap(
+                                scrollGesturesEnabled: true,
+                                myLocationButtonEnabled: true,
+                                compassEnabled: true,
+                                markers: _markers,
+                                initialCameraPosition: CameraPosition(
+                                  target: LatLng(
+                                    orderData.clientLat,
+                                    orderData.clientLng,
+                                  ),
+                                  zoom: 16,
+                                ),
+                                onMapCreated:
+                                    (GoogleMapController mapController) {
+                                  _controller.complete(mapController);
+                                },
+                              ),
+                            ),
+                          )
                         ],
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(25)),
-                    child: GoogleMap(
-                      scrollGesturesEnabled: true,
-                      myLocationButtonEnabled: true,
-                      compassEnabled: true,
-                      markers: _markers,
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(
-                          widget.orderData.clientLat,
-                          widget.orderData.clientLng,
-                        ),
-                        zoom: 16,
-                      ),
-                      onMapCreated: (GoogleMapController mapController) {
-                        _controller.complete(mapController);
-                      },
-                    ),
-                  ),
-                )
+                      )
+                    : Container(),
               ],
             ),
           ),
@@ -353,6 +376,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
       backColor = Colors.grey[500];
       child = Text(
         title,
+        textAlign: TextAlign.center,
         style: TextStyle(color: Colors.white),
       );
     } else if (status == thisStatus) {
@@ -362,6 +386,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
         children: <Widget>[
           Text(
             title,
+            textAlign: TextAlign.center,
             style: TextStyle(color: Colors.white),
           ),
           CircularProgressIndicator(
@@ -380,7 +405,10 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
           backgroundColor: backColor,
           child: child,
         ),
-        Text(subtitle)
+        Text(
+          subtitle,
+          textAlign: TextAlign.center,
+        )
       ],
     );
   }
@@ -409,17 +437,51 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
     _deliveryManRealTimeLocation = FirebaseDatabase.instance
         .reference()
         .child("orders")
-        .child(widget.orderData.id)
+        .child(orderData.id)
         .child("deliveryRealTimeLocation");
     _deliveryManRealTimeLocation.onValue.listen((event) async {
-      setState(() {
-        distanceRemaining = event.snapshot.value["distanceRemaining"];
-        durationRemaining = event.snapshot.value["durationRemaining"];
-      });
-      showMarkers(
-        lat: event.snapshot.value['lat'],
-        lng: event.snapshot.value['lng'],
-      );
+      double distance = 0;
+      double duration = 0;
+      double latEvent;
+      double lngEvent;
+
+      try {
+        distance = event.snapshot.value["distanceRemaining"];
+        duration = event.snapshot.value["durationRemaining"];
+      } catch (erro) {}
+      if (distance != null && duration != null) {
+        setState(() {
+          hasRealTimeDistance = true;
+        });
+        setState(() {
+          durationRemaining = duration;
+          distanceRemaining = distance;
+        });
+      }
+      print(event.snapshot.value['lat']);
+      try {
+        latEvent = event.snapshot.value['lat'];
+        lngEvent = event.snapshot.value['lng'];
+        showMarkers(
+          lat: latEvent,
+          lng: lngEvent,
+        );
+      } catch (erro) {}
+    });
+    FirebaseFirestore.instance
+        .collection("orders")
+        .doc(orderData.id)
+        .snapshots()
+        .listen((event) {
+      if (event.get("deliveryMan") != "none") {
+        setState(() {
+          photoDeliveryMan = event.data()["deliveryMan"]["image"];
+          deliveryName = event.data()["deliveryMan"]["name"];
+        });
+        setState(() {
+          hasDelivery = true;
+        });
+      }
     });
   }
 
@@ -438,17 +500,22 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
         ),
       ),
     );
+
     flag.add(
       Marker(
         markerId: MarkerId("sourceId"),
         position: LatLng(
-          widget.orderData.clientLat,
-          widget.orderData.clientLng,
+          orderData.clientLat,
+          orderData.clientLng,
         ),
       ),
     );
+
     setState(() {
       _markers = flag;
+    });
+    setState(() {
+      isSending = true;
     });
     CameraPosition cPosition = CameraPosition(
       tilt: 60,
@@ -459,8 +526,10 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
       ),
       zoom: 18,
     );
+
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
+    print("ok");
   }
 
   void onProductListPressed() {
@@ -492,7 +561,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                   ),
                   Expanded(
                     child: ListView(
-                      children: widget.orderData.products
+                      children: orderData.products
                           .map(
                             (product) => Column(
                               children: [
@@ -535,7 +604,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                                 Row(
                                   children: [
                                     Text(
-                                      "Taxa de entrega: R\$ ${widget.orderData.shipPrice.toStringAsFixed(2)}",
+                                      "Taxa de entrega: R\$ ${orderData.shipPrice.toStringAsFixed(2)}",
                                       style: TextStyle(
                                         color: Colors.black54,
                                       ),
@@ -548,7 +617,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                                 Row(
                                   children: [
                                     Text(
-                                      "Total: R\$ ${widget.orderData.totalPrice.toStringAsFixed(2)}",
+                                      "Total: R\$ ${orderData.totalPrice.toStringAsFixed(2)}",
                                       style: TextStyle(
                                         color: Colors.black54,
                                         fontSize: 20,

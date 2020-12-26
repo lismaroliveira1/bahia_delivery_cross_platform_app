@@ -35,6 +35,39 @@ class OrderData {
   DeliveryManData deliveryManData;
   String paymentOnAppType;
   String paymentInfo;
+  String deliveryManString = '';
+
+  OrderData(
+    this.id,
+    this.storeName,
+    this.client,
+    this.clientAddress,
+    this.clientAddressId,
+    this.clientLat,
+    this.clientLng,
+    this.clientImage,
+    this.clientName,
+    this.createdAt,
+    this.discount,
+    this.paymentType,
+    this.shipPrice,
+    this.status,
+    this.storeDescription,
+    this.storeId,
+    this.storeAddress,
+    this.storeAdressId,
+    this.storeLat,
+    this.storeLng,
+    this.storeImage,
+    this.totalPrice,
+    this.products,
+    this.combos,
+    this.vehicleType,
+    this.deliveryManData,
+    this.paymentOnAppType,
+    this.paymentInfo,
+    this.deliveryManString,
+  );
 
   OrderData.fromQueryDocument(QueryDocumentSnapshot queryDoc) {
     id = queryDoc.id;
@@ -77,7 +110,6 @@ class OrderData {
       deliveryManData =
           DeliveryManData.fromDynamic(queryDoc.data()["deliveryMan"]);
     }
-    if (queryDoc.get("deliveryMan") != "none") {}
     for (LinkedHashMap p in queryDoc.data()["products"]) {
       products.add(ProductData.fromLinkedHashMap(p));
       totalPrice += p["totalPrice"];
