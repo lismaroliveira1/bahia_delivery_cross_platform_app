@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/delivery_man_data.dart';
@@ -34,6 +35,7 @@ class OrderData {
   DeliveryManData deliveryManData;
   String paymentOnAppType;
   String paymentInfo;
+
   OrderData.fromQueryDocument(QueryDocumentSnapshot queryDoc) {
     id = queryDoc.id;
     storeName = queryDoc.get("StoreName");

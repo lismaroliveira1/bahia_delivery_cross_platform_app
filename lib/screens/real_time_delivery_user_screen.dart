@@ -79,7 +79,7 @@ class _RealTimeDeliveryUserScreenState extends State<RealTimeDeliveryUserScreen>
                 context,
                 PageTransition(
                   type: PageTransitionType.rightToLeft,
-                  child: ChatUserOrderScreen(),
+                  child: ChatUserOrderScreen(widget.orderData),
                   inheritTheme: true,
                   duration: Duration(
                     milliseconds: 350,

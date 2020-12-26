@@ -1407,9 +1407,6 @@ class UserModel extends Model {
     if (isLoggedIn()) {
       final cieloPayment = new CieloPayment();
       double totalPrice = 10000;
-      double productPrice = 18.00;
-      double comboPrice = 0;
-      double offPrice = 0;
       Map response = {};
       response = await cieloPayment.authorizedDebitCard(
         creditDebitCardData: currentCreditDebitCardData,
@@ -2225,5 +2222,53 @@ class UserModel extends Model {
   void getRealTimeDeliveryManPosition({@required lat, @required lng}) {
     realTimeDeliveryManCoordinates = LatLng(lat, lng);
     notifyListeners();
+  }
+
+  void sendtextMessageByUser({
+    @required String text,
+    @required OrderData orderData,
+  }) async {
+    await FirebaseFirestore.instance
+        .collection("orders")
+        .doc(orderData.id)
+        .collection("chat")
+        .add({
+      "userId": firebaseUser.uid,
+      "text": text,
+      'createdAt': FieldValue.serverTimestamp(),
+      "read": false,
+      "from": "user",
+      "image": "",
+      "type": "text",
+    });
+  }
+
+  void sendImageMessageByUser({
+    @required File imageFile,
+    @required OrderData orderData,
+  }) async {
+    String urlImage;
+    if (imageFile == null) return;
+    Reference ref =
+        FirebaseStorage.instance.ref().child("chat").child("images").child(
+              DateTime.now().millisecond.toString(),
+            );
+    UploadTask uploadTask = ref.putFile(imageFile);
+    await uploadTask.then((task) async {
+      urlImage = await task.ref.getDownloadURL();
+      await FirebaseFirestore.instance
+          .collection("orders")
+          .doc(orderData.id)
+          .collection("chat")
+          .add({
+        "userId": firebaseUser.uid,
+        "image": urlImage,
+        'createdAt': FieldValue.serverTimestamp(),
+        "read": false,
+        "from:": "user",
+        "text": "",
+        "type": "image",
+      });
+    });
   }
 }
