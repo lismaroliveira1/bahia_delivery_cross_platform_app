@@ -1,8 +1,11 @@
-import 'package:bd_app_full/data/messages_chat_data.dart';
+import 'dart:io';
+
 import 'package:bd_app_full/data/order_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dash_chat/dash_chat.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatUserOrderTab extends StatefulWidget {
   final OrderData orderData;
@@ -12,14 +15,33 @@ class ChatUserOrderTab extends StatefulWidget {
 }
 
 class _ChatUserOrderTabState extends State<ChatUserOrderTab> {
+  File imageFile;
+  final String imageUrl = "https://meuvidraceiro.com.br/images/sem-imagem.png";
+  bool isImageChoosed = false;
+  final picker = ImagePicker();
   TextEditingController _messageController = TextEditingController();
-  List<MessageChatData> messages = [];
+  final GlobalKey<DashChatState> _chatViewKey = GlobalKey<DashChatState>();
+  List<ChatMessage> messages = List<ChatMessage>();
   bool isComposing;
+  ChatUser user;
+  ChatUser store;
   @override
   void initState() {
     isComposing = false;
     initRealTimeFirebase();
     super.initState();
+    user = ChatUser(
+      name: widget.orderData.clientName,
+      lastName: '',
+      uid: widget.orderData.client,
+      avatar: widget.orderData.clientImage,
+    );
+    store = ChatUser(
+      name: widget.orderData.storeName,
+      lastName: '',
+      uid: widget.orderData.storeId,
+      avatar: widget.orderData.storeImage,
+    );
   }
 
   @override
@@ -73,69 +95,56 @@ class _ChatUserOrderTabState extends State<ChatUserOrderTab> {
             ),
           ),
           Expanded(
-            child: ListView(
-              scrollDirection: Axis.vertical,
-              children: messages
-                  .map(
-                    (message) => ListTile(
-                      title: Text(
-                        message.text,
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-          Container(
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.camera_alt,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: DashChat(
+                key: _chatViewKey,
+                messages: messages,
+                messageContainerDecoration: BoxDecoration(
+                  color: Colors.black12,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(14),
+                    topRight: Radius.circular(14),
+                    bottomLeft: Radius.circular(14),
                   ),
                 ),
-                Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    onChanged: (text) {
-                      if (text.length == 0) {
-                        setState(() {
-                          isComposing = false;
-                        });
-                      } else {
-                        setState(() {
-                          isComposing = true;
-                        });
-                      }
-                      setState(() {
-                        isComposing = text.isNotEmpty;
-                      });
+                sendOnEnter: true,
+                inputDecoration: InputDecoration(
+                  isDense: true,
+                  labelText: 'mensagem',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                textInputAction: TextInputAction.send,
+                dateFormat: DateFormat('dd-MM-yyyy'),
+                timeFormat: DateFormat('HH:mm'),
+                user: user,
+                showUserAvatar: true,
+                showAvatarForEveryMessage: true,
+                scrollToBottom: true,
+                onSend: (ChatMessage message) {
+                  UserModel.of(context).sendtextMessageByUser(
+                    message: message,
+                    orderData: widget.orderData,
+                  );
+                },
+                onLoadEarlier: () {
+                  print("carregando...");
+                },
+                showTraillingBeforeSend: true,
+                leading: <Widget>[
+                  IconButton(
+                    icon: Icon(
+                      Icons.photo,
+                      color: Colors.blueGrey,
+                    ),
+                    onPressed: () {
+                      onSendImagePressed();
                     },
-                    decoration: InputDecoration.collapsed(
-                      hintText: 'Enviar mensagem',
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.send,
-                    color: isComposing ? Colors.red[400] : Colors.grey[300],
-                  ),
-                  onPressed: isComposing
-                      ? () {
-                          UserModel.of(context).sendtextMessageByUser(
-                            text: _messageController.text,
-                            orderData: widget.orderData,
-                          );
-                          setState(() {
-                            isComposing = false;
-                          });
-                          _messageController.clear();
-                        }
-                      : null,
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ],
@@ -155,13 +164,112 @@ class _ChatUserOrderTabState extends State<ChatUserOrderTab> {
         .snapshots()
         .listen((event) {
       messages.clear();
-      List<MessageChatData> flag = [];
+      List<ChatMessage> flag = [];
       event.docs.forEach((queryDoc) {
-        flag.add(MessageChatData.fromQueryDocumentSnaphot(queryDoc));
+        flag.add(
+          ChatMessage.fromJson(
+            queryDoc.data(),
+          ),
+        );
       });
       setState(() {
         messages = flag;
       });
     });
+  }
+
+  void onSendImagePressed() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.redAccent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
+        ),
+        content: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height / 12,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              FlatButton(
+                padding: EdgeInsets.only(
+                  left: MediaQuery.of(context).size.width / 18,
+                ),
+                onPressed: () async {
+                  try {
+                    final _pickedFile = await picker.getImage(
+                      source: ImageSource.gallery,
+                      maxHeight: 500,
+                      maxWidth: 500,
+                    );
+                    if (_pickedFile == null) return;
+                    imageFile = File(_pickedFile.path);
+                    if (imageFile == null) return;
+                    setState(() {
+                      isImageChoosed = true;
+                    });
+                    UserModel.of(context).sendImageMessageByUser(
+                      imageFile: imageFile,
+                      orderData: widget.orderData,
+                      user: user,
+                    );
+                  } catch (e) {
+                    setState(() {
+                      isImageChoosed = false;
+                    });
+                  }
+                },
+                child: Container(
+                  child: Image.asset(
+                    "images/gallery_image.png",
+                  ),
+                  height: 50,
+                  width: 50,
+                ),
+              ),
+              FlatButton(
+                padding: EdgeInsets.only(
+                  right: MediaQuery.of(context).size.width / 18,
+                ),
+                onPressed: () async {
+                  try {
+                    final _pickedFile = await picker.getImage(
+                      source: ImageSource.camera,
+                      maxHeight: 500,
+                      maxWidth: 500,
+                    );
+                    if (_pickedFile == null) return;
+                    imageFile = File(_pickedFile.path);
+                    if (imageFile == null) return;
+                    setState(() {
+                      isImageChoosed = true;
+                    });
+                    UserModel.of(context).sendImageMessageByUser(
+                      imageFile: imageFile,
+                      orderData: widget.orderData,
+                      user: user,
+                    );
+                  } catch (e) {
+                    setState(() {
+                      isImageChoosed = false;
+                    });
+                  }
+                },
+                child: Container(
+                  child: Image.asset(
+                    "images/camera_image.png",
+                  ),
+                  height: 50,
+                  width: 50,
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

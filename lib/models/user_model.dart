@@ -20,6 +20,7 @@ import 'package:bd_app_full/data/user_data.dart';
 import 'package:bd_app_full/services/cielo_payment.dart';
 import 'package:cielo_ecommerce/cielo_ecommerce.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dash_chat/dash_chat.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -2225,29 +2226,21 @@ class UserModel extends Model {
   }
 
   void sendtextMessageByUser({
-    @required String text,
+    @required ChatMessage message,
     @required OrderData orderData,
   }) async {
     await FirebaseFirestore.instance
         .collection("orders")
         .doc(orderData.id)
         .collection("chat")
-        .add({
-      "userId": firebaseUser.uid,
-      "text": text,
-      'createdAt': FieldValue.serverTimestamp(),
-      "read": false,
-      "from": "user",
-      "image": "",
-      "type": "text",
-    });
+        .add(message.toJson());
   }
 
   void sendImageMessageByUser({
     @required File imageFile,
     @required OrderData orderData,
+    @required ChatUser user,
   }) async {
-    String urlImage;
     if (imageFile == null) return;
     Reference ref =
         FirebaseStorage.instance.ref().child("chat").child("images").child(
@@ -2255,20 +2248,13 @@ class UserModel extends Model {
             );
     UploadTask uploadTask = ref.putFile(imageFile);
     await uploadTask.then((task) async {
-      urlImage = await task.ref.getDownloadURL();
+      String url = await task.ref.getDownloadURL();
+      ChatMessage message = ChatMessage(text: "", user: user, image: url);
       await FirebaseFirestore.instance
           .collection("orders")
           .doc(orderData.id)
           .collection("chat")
-          .add({
-        "userId": firebaseUser.uid,
-        "image": urlImage,
-        'createdAt': FieldValue.serverTimestamp(),
-        "read": false,
-        "from:": "user",
-        "text": "",
-        "type": "image",
-      });
+          .add(message.toJson());
     });
   }
 }
