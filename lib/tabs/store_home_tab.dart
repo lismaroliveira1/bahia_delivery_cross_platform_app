@@ -184,6 +184,33 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                                 ),
                                 child: ListTile(
                                   onTap: () {
+                                    _onCuponWidgetPressed();
+                                  },
+                                  dense: true,
+                                  leading: Icon(Icons.bolt),
+                                  title: Text(
+                                    "Cupons",
+                                  ),
+                                  subtitle: Text(
+                                    "Gerencie os cupons da sua loja",
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.black45,
+                                  ),
+                                ),
+                                child: ListTile(
+                                  onTap: () {
                                     _onCombofWidgetPressed();
                                   },
                                   dense: true,
@@ -399,4 +426,6 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
       ),
     );
   }
+
+  void _onCuponWidgetPressed() {}
 }

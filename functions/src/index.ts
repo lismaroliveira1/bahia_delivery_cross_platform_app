@@ -222,7 +222,6 @@ export const authorizedCreditCard = functions.https.onCall(async (data, context)
         const transaction = await cielo.creditCard.transaction(vendaParams)
         return transaction;
     }
-
 });
 
 

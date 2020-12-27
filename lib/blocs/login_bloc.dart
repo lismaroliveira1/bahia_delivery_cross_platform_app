@@ -28,6 +28,7 @@ class LoginBloc extends BlocBase with LoginValidators {
   Function(String) get changeConfirmedPassoword =>
       _confirmedPasswordController.sink.add;
   @override
+
   void dispose() {
     super.dispose();
     _emailController.close();

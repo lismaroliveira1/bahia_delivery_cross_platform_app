@@ -161,12 +161,14 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                                                     .single,
                                             initialSelectedRange:
                                                 PickerDateRange(
-                                                    DateTime.now().subtract(
-                                                        const Duration(
-                                                            days: 4)),
-                                                    DateTime.now()
-                                                        .add(const Duration(
-                                                            days: 3))),
+                                              DateTime.now().subtract(
+                                                  const Duration(days: 4)),
+                                              DateTime.now().add(
+                                                const Duration(
+                                                  days: 3,
+                                                ),
+                                              ),
+                                            ),
                                           ),
                                         ),
                                       ),
