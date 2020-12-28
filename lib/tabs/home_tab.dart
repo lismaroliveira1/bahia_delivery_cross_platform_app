@@ -293,7 +293,8 @@ class _HomeTabState extends State<HomeTab> {
                     Column(
                       children: model.storeHomeList.map((store) {
                         store.coupons.forEach((coupon) {
-                          if (coupon.discount > store.discount) {
+                          if (coupon.discount > store.discount &&
+                              coupon.start.isBefore(DateTime.now())) {
                             store.discount = coupon.discount;
                           }
                         });

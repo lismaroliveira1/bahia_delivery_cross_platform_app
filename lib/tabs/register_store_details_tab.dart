@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:bd_app_full/blocs/register_partner_block.dart';
 import 'package:bd_app_full/data/request_partner_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -41,7 +40,6 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
   void initState() {
     requestPartnerData = widget.requestPartnerData;
     isImageChoosed = false;
-    Intl.defaultLocale = 'pt_BR';
     _dropdownsItens = [];
     UserModel.of(context).categoryList.forEach((category) {
       _dropdownsItens.add(category.title);
@@ -244,7 +242,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                   color: Colors.black87,
                                 ),
                               ),
-                              Container(
+                              /*Container(
                                 width: MediaQuery.of(context).size.width / 3,
                                 child: DateTimePicker(
                                   type: DateTimePickerType.time,
@@ -269,7 +267,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                     _valueSaved4 = val;
                                   }),
                                 ),
-                              ),
+                              ),*/
                             ],
                           ),
                           Column(
@@ -282,7 +280,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                   color: Colors.black87,
                                 ),
                               ),
-                              Container(
+                              /*   Container(
                                 width: MediaQuery.of(context).size.width / 3,
                                 child: DateTimePicker(
                                   type: DateTimePickerType.time,
@@ -305,7 +303,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                     _valueSaved4 = val;
                                   }),
                                 ),
-                              ),
+                              ),*/
                             ],
                           ),
                         ],

@@ -34,7 +34,7 @@ dependencies:
   scoped_model: ^1.1.0
   bloc_pattern: ^2.5.1
   rxdart: ^0.24.1
-  cloud_firestore: ^0.14.3+1
+  cloud_firestore: ^0.14.4
   firebase_auth: ^0.18.3
   firebase_core: ^0.5.2
   transparent_image: ^1.0.0
@@ -63,7 +63,6 @@ dependencies:
   giffy_dialog: ^1.8.0
   google_place: ^0.3.3
   google_maps_webservice: ^0.0.18
-  date_time_picker: "^1.1.0"
   cnpj_cpf_formatter: ^1.0.8
   cielo_ecommerce: ^1.0.4
   rounded_loading_button: ^1.0.17
@@ -77,6 +76,7 @@ dependencies:
   floating_action_bubble: ^1.1.2
   dash_chat: ^1.1.15
   primary_secondary_progress_bar: ^0.1.1
+  flutter_plugin_android_lifecycle: ^1.0.11
 
 dev_dependencies:
   flutter_test:
