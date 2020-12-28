@@ -446,7 +446,6 @@ class UserModel extends Model {
         }).toList();
         storeHomeList.forEach((storeElement) async {
           List<ProductData> purchasedProducts = [];
-
           storeElement.productsOff = await getOffStores(storeElement.id);
           storeElement.products = await getProductsStore(storeElement.id);
           storeElement.storesCombos =
@@ -486,6 +485,7 @@ class UserModel extends Model {
             latLngDevice,
           );
           storeElement.deliveryTime = calctime(storeElement.distance);
+          storeElement.coupons = await getListOfCouponsByStore(storeElement.id);
         });
       } catch (erro) {
         sendErrorMessageToADM(
@@ -2369,5 +2369,23 @@ class UserModel extends Model {
         } catch (error) {}
       }
     }
+  }
+
+  Future<List<CouponData>> getListOfCouponsByStore(String storeid) async {
+    List<CouponData> couponData = [];
+    if (isLoggedIn()) {
+      int discount = 0;
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection("stores")
+          .doc(storeid)
+          .collection("coupons")
+          .get();
+      querySnapshot.docs.map((queryDoc) {
+        couponData.add(
+          CouponData.fromQueryDocumentSnapshot(queryDoc),
+        );
+      }).toList();
+    }
+    return couponData;
   }
 }

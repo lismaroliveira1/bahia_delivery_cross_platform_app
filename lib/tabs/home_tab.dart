@@ -292,6 +292,11 @@ class _HomeTabState extends State<HomeTab> {
                     ),
                     Column(
                       children: model.storeHomeList.map((store) {
+                        store.coupons.forEach((coupon) {
+                          if (coupon.discount > store.discount) {
+                            store.discount = coupon.discount;
+                          }
+                        });
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,
@@ -388,7 +393,38 @@ class _HomeTabState extends State<HomeTab> {
                                         : Colors.grey,
                                   ),
                                 ),
-                              )
+                              ),
+                              store.discount > 0
+                                  ? Positioned(
+                                      right: 8,
+                                      bottom: 8,
+                                      child: Container(
+                                        height: 15,
+                                        width: 45,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            4,
+                                          ),
+                                          color: Colors.green[600],
+                                          border: Border.all(
+                                            color: Colors.green[600],
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            "-${store.discount.toStringAsFixed(0)}",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : Container(
+                                      height: 0,
+                                      width: 0,
+                                    ),
                             ],
                           ),
                         );

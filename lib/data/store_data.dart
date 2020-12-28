@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:bd_app_full/data/category_store_data.dart';
 import 'package:bd_app_full/data/combo_data.dart';
+import 'package:bd_app_full/data/coupon_data.dart';
 import 'package:bd_app_full/data/offs_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -31,6 +32,8 @@ class StoreData {
   double deliveryTime;
   String locationId;
   String storeAddress;
+  List<CouponData> coupons = [];
+  int discount = 0;
 
   StoreData(
     this.description,

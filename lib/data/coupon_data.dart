@@ -27,7 +27,7 @@ class CouponData {
     start =
         (queryDoc.data()["expirationDate"]["startAt"] as Timestamp).toDate();
     end = (queryDoc.data()["expirationDate"]["endAt"] as Timestamp).toDate();
-    discount = queryDoc.get("discount");
+discount = queryDoc.get("discount");
   }
 
   Map<String, dynamic> toMap() {
