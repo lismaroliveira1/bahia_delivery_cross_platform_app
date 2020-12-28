@@ -4,6 +4,7 @@ import 'package:bd_app_full/data/cart_product.dart';
 import 'package:bd_app_full/data/category_data.dart';
 import 'package:bd_app_full/data/category_store_data.dart';
 import 'package:bd_app_full/data/combo_data.dart';
+import 'package:bd_app_full/data/coupon_data.dart';
 import 'package:bd_app_full/data/credit_debit_card_Item.dart';
 import 'package:bd_app_full/data/credit_debit_card_data.dart';
 import 'package:bd_app_full/data/delivery_man_data.dart';
@@ -84,6 +85,7 @@ class UserModel extends Model {
   Geodesy geodesy = Geodesy();
   FirebaseApp app;
   FirebaseAuth _auth = FirebaseAuth.instance;
+  List<CouponData> couponsList = [];
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -146,6 +148,7 @@ class UserModel extends Model {
     getAllProductsToList();
     getPaymentUserForms();
     getDeliveryManData();
+    getListOfCoupons();
     isLoading = false;
     isReady = true;
     notifyListeners();
@@ -2320,6 +2323,49 @@ class UserModel extends Model {
               "status": 5,
             });
           }
+        } catch (error) {}
+      }
+    }
+  }
+
+  void getListOfCoupons() {
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        try {
+          FirebaseFirestore.instance
+              .collection("stores")
+              .doc(userData.storeId)
+              .collection("coupons")
+              .snapshots()
+              .listen((querySnapshot) {
+            couponsList.clear();
+            querySnapshot.docs.map((queryDoc) {
+              couponsList.add(
+                CouponData.fromQueryDocumentSnapshot(queryDoc),
+              );
+            }).toList();
+            notifyListeners();
+          });
+        } catch (error) {}
+      }
+    }
+  }
+
+  void createNewCouponData({
+    @required CouponData couponData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        try {
+          await FirebaseFirestore.instance
+              .collection("stores")
+              .doc(userData.storeId)
+              .collection("coupons")
+              .add(
+                couponData.toMap(),
+              );
         } catch (error) {}
       }
     }

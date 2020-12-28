@@ -6,6 +6,7 @@ import 'package:bd_app_full/screens/order_partner_screnn.dart';
 import 'package:bd_app_full/screens/product_store_screnn.dart';
 import 'package:bd_app_full/screens/report_store_screem.dart';
 import 'package:bd_app_full/screens/setup_partner_screen.dart';
+import 'package:bd_app_full/screens/store_coupons_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -427,5 +428,18 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
     );
   }
 
-  void _onCuponWidgetPressed() {}
+  void _onCuponWidgetPressed() {
+    Navigator.push(
+      context,
+      PageTransition(
+        child: StoreCouponsScreen(),
+        type: PageTransitionType.rightToLeft,
+        inheritTheme: true,
+        duration: Duration(
+          milliseconds: 350,
+        ),
+        ctx: context,
+      ),
+    );
+  }
 }
