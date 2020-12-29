@@ -1,6 +1,7 @@
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/category_store_partner_screen.dart';
 import 'package:bd_app_full/screens/combo_partner_screen.dart';
+import 'package:bd_app_full/screens/delivery_man_for_partner_screen.dart';
 import 'package:bd_app_full/screens/off_sales_partner_screnn.dart';
 import 'package:bd_app_full/screens/order_partner_screnn.dart';
 import 'package:bd_app_full/screens/product_store_screnn.dart';
@@ -268,7 +269,7 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                                 ),
                                 child: ListTile(
                                   onTap: () {
-                                    _onProductWidgetPressed();
+                                    _onDeliveryManWidgetPressed();
                                   },
                                   dense: true,
                                   leading: Icon(
@@ -433,6 +434,21 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
       context,
       PageTransition(
         child: StoreCouponsScreen(),
+        type: PageTransitionType.rightToLeft,
+        inheritTheme: true,
+        duration: Duration(
+          milliseconds: 350,
+        ),
+        ctx: context,
+      ),
+    );
+  }
+
+  _onDeliveryManWidgetPressed() {
+    Navigator.push(
+      context,
+      PageTransition(
+        child: DeliveryManForPartnerScreen(),
         type: PageTransitionType.rightToLeft,
         inheritTheme: true,
         duration: Duration(

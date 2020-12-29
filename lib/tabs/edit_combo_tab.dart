@@ -24,7 +24,6 @@ class _EditComboTabState extends State<EditComboTab> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _discountPercentageController =
       TextEditingController();
-  final TextEditingController _discountCoinController = TextEditingController();
   List<ProductData> products = [];
   @override
   void initState() {
@@ -34,7 +33,6 @@ class _EditComboTabState extends State<EditComboTab> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.comboData.id);
     double sizeImage = MediaQuery.of(context).size.width / 3;
     return Container(
       color: Colors.black26,
@@ -57,7 +55,7 @@ class _EditComboTabState extends State<EditComboTab> {
                 topRight: Radius.circular(20),
               ),
             ),
-            child: Column(
+            child: ListView(
               children: [
                 Center(
                   child: Container(
@@ -68,20 +66,20 @@ class _EditComboTabState extends State<EditComboTab> {
                     ),
                     child: Stack(
                       children: <Widget>[
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: isImageChoosed
-                              ? Image.file(
-                                  imageFile,
-                                  isAntiAlias: false,
-                                  height: MediaQuery.of(context).size.width / 3,
-                                  width: MediaQuery.of(context).size.width / 3,
-                                  fit: BoxFit.fill,
-                                )
-                              : Image.network(
-                                  widget.comboData.image,
-                                  fit: BoxFit.cover,
-                                ),
+                        Container(
+                          height: sizeImage,
+                          width: sizeImage,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                              image: isImageChoosed
+                                  ? FileImage(imageFile)
+                                  : NetworkImage(
+                                      widget.comboData.image,
+                                    ),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
                         Positioned(
                           bottom: 4.0,
@@ -224,7 +222,7 @@ class _EditComboTabState extends State<EditComboTab> {
                   ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(
@@ -236,31 +234,9 @@ class _EditComboTabState extends State<EditComboTab> {
                         child: Padding(
                           padding: EdgeInsets.only(right: 3),
                           child: TextField(
-                            controller: _discountCoinController
-                              ..text = widget.comboData.discountCoin
-                                  .toStringAsFixed(2),
-                            decoration: InputDecoration(
-                              hintText: "R\$ 19,99",
-                              labelText: "Desconto",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.0,
-                        horizontal: 8.0,
-                      ),
-                      child: Container(
-                        width: 110,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 3),
-                          child: TextField(
-                            controller: _discountPercentageController,
+                            controller: _discountPercentageController
+                              ..text = widget.comboData.discountPercentage
+                                  .toString(),
                             decoration: InputDecoration(
                               hintText: "20%",
                               labelText: "Desconto",
@@ -300,7 +276,7 @@ class _EditComboTabState extends State<EditComboTab> {
                 ),
                 products.isNotEmpty
                     ? Expanded(
-                        child: ListView(
+                        child: Column(
                           children: products.map((product) {
                             return Padding(
                               padding: const EdgeInsets.all(8.0),
@@ -342,15 +318,12 @@ class _EditComboTabState extends State<EditComboTab> {
                   onPressed: () {
                     double discountPercentage =
                         double.parse(_discountPercentageController.text);
-                    double discountCoin =
-                        double.parse(_discountCoinController.text);
                     final comboData = ComboData(
                       id: widget.comboData.id,
                       image: imageUrl,
                       title: _nameController.text,
                       description: _descriptionController.text,
                       discountPercentage: discountPercentage,
-                      discountCoin: discountCoin,
                       products: products,
                     );
                     UserModel.of(context).editPartnerCombo(
