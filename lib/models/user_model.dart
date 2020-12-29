@@ -1103,6 +1103,8 @@ class UserModel extends Model {
     @required VoidCallback onFail,
     @required File imageFile,
   }) async {
+    isLoading = true;
+    notifyListeners();
     if (imageFile != null) {
       try {
         Reference ref = FirebaseStorage.instance.ref().child("images").child(
@@ -1120,6 +1122,7 @@ class UserModel extends Model {
               );
           await getProductsPartnerList();
           onSuccess();
+          isLoading = false;
           notifyListeners();
         });
       } catch (erro) {}
@@ -1134,6 +1137,7 @@ class UserModel extends Model {
             );
         await getProductsPartnerList();
         onSuccess();
+        isLoading = false;
         notifyListeners();
         getListHomeStores();
       } catch (erro) {
@@ -1150,7 +1154,6 @@ class UserModel extends Model {
   }) async {
     if (isLoggedIn()) {
       if (userData.isPartner == 1) {
-        print("ok");
         isLoading = true;
         notifyListeners();
         try {
@@ -1344,11 +1347,12 @@ class UserModel extends Model {
           )
           .snapshots()
           .listen((querySnapshot) {
-        print("foi");
-        partnerOrderList.clear();
-        querySnapshot.docs.map((queryDoc) {
-          partnerOrderList.add(OrderData.fromQueryDocument(queryDoc));
-        }).toList();
+        if (!isLoading) {
+          partnerOrderList.clear();
+          querySnapshot.docs.map((queryDoc) {
+            partnerOrderList.add(OrderData.fromQueryDocument(queryDoc));
+          }).toList();
+        }
       });
     }
   }
@@ -1696,7 +1700,6 @@ class UserModel extends Model {
 
       try {
         print(cartProducts.length);
-        print("ok");
         if (cartProducts.length == 0 && comboCartList.length == 0) return null;
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
             .collection("users")
@@ -1915,7 +1918,6 @@ class UserModel extends Model {
   void incComboCartItem({
     @required ComboData cartComboData,
   }) async {
-    print("ok");
     try {
       await FirebaseFirestore.instance
           .collection("users")

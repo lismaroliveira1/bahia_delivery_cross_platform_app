@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bd_app_full/blocs/partner_section_bloc.dart';
 import 'package:bd_app_full/data/offs_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
@@ -13,6 +14,7 @@ class NewSalesOffPartnerTab extends StatefulWidget {
 }
 
 class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
+  final _partnerBloc = PartnerSectionBloc();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   File imageFile;
   final String imageUrl = "https://meuvidraceiro.com.br/images/sem-imagem.png";
@@ -24,6 +26,13 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
       TextEditingController();
   final TextEditingController _discountCoinController = TextEditingController();
   ProductData productData;
+  bool isProductSelected;
+  @override
+  void initState() {
+    isProductSelected = false;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double sizeImage = MediaQuery.of(context).size.width / 3;
@@ -48,7 +57,8 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                 topRight: Radius.circular(20),
               ),
             ),
-            child: Column(
+            child: ListView(
+              scrollDirection: Axis.vertical,
               children: [
                 Center(
                   child: Container(
@@ -189,32 +199,46 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                     vertical: 4.0,
                     horizontal: 8.0,
                   ),
-                  child: TextField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                        labelText: "Nome",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        )),
-                  ),
+                  child: StreamBuilder<String>(
+                      stream: _partnerBloc.outName,
+                      builder: (context, snapshot) {
+                        return TextField(
+                          onChanged: _partnerBloc.changeName,
+                          controller: _nameController,
+                          decoration: InputDecoration(
+                              errorText:
+                                  snapshot.hasError ? snapshot.error : null,
+                              labelText: "Nome",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              )),
+                        );
+                      }),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: 4.0,
                     horizontal: 8.0,
                   ),
-                  child: TextField(
-                    controller: _descriptionController,
-                    decoration: InputDecoration(
-                      labelText: "Descrição",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
+                  child: StreamBuilder<String>(
+                      stream: _partnerBloc.outDescription,
+                      builder: (context, snapshot) {
+                        return TextField(
+                          onChanged: _partnerBloc.changeDescription,
+                          controller: _descriptionController,
+                          decoration: InputDecoration(
+                            errorText:
+                                snapshot.hasError ? snapshot.error : null,
+                            labelText: "Descrição",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        );
+                      }),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(
@@ -225,38 +249,25 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                         width: 110,
                         child: Padding(
                           padding: EdgeInsets.only(right: 3),
-                          child: TextField(
-                            controller: _discountCoinController,
-                            decoration: InputDecoration(
-                              hintText: "R\$ 19,99",
-                              labelText: "Desconto",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.0,
-                        horizontal: 8.0,
-                      ),
-                      child: Container(
-                        width: 110,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 3),
-                          child: TextField(
-                            controller: _discountPercentageController,
-                            decoration: InputDecoration(
-                              hintText: "20%",
-                              labelText: "Desconto",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
+                          child: StreamBuilder<String>(
+                              stream: _partnerBloc.outDiscount,
+                              builder: (context, snapshot) {
+                                return TextField(
+                                  onChanged: _partnerBloc.changeDiscount,
+                                  controller: _discountPercentageController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    errorText: snapshot.hasError
+                                        ? snapshot.error
+                                        : null,
+                                    hintText: "20%",
+                                    labelText: "Desconto",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                );
+                              }),
                         ),
                       ),
                     ),
@@ -264,7 +275,7 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(
-                    vertical: 4.0,
+                    vertical: 8.0,
                   ),
                   child: FlatButton(
                     onPressed: () {
@@ -330,52 +341,72 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                         height: 0,
                         width: 0,
                       ),
-                FlatButton(
-                  padding: EdgeInsets.only(top: 20),
-                  onPressed: () {
-                    final offSale = OffData(
-                      description: _descriptionController.text,
-                      image: imageUrl,
-                      title: _nameController.text,
-                      productData: productData,
-                      imageFile: isImageChoosed ? imageFile : null,
-                    );
-                    UserModel.of(context).insertNewOffSale(
-                      offData: offSale,
-                      onFail: _onFail,
-                      onSuccess: _onSuccess,
-                    );
-                  },
-                  child: Container(
-                    height: 55,
-                    width: MediaQuery.of(context).size.width / 3,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: ScopedModelDescendant<UserModel>(
-                        builder: (context, child, model) {
-                          if (model.isLoading) {
-                            return Container(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(),
-                            );
-                          } else {
-                            return Text(
-                              "Enviar",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w900,
-                                  fontSize: 16),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                ),
+                StreamBuilder<bool>(
+                    stream: _partnerBloc.outSubmitedOff,
+                    builder: (context, snapshot) {
+                      return FlatButton(
+                        padding: EdgeInsets.only(top: 20),
+                        onPressed: snapshot.hasData
+                            ? () {
+                                if (isProductSelected) {
+                                  final offSale = OffData(
+                                    description: _descriptionController.text,
+                                    image: imageUrl,
+                                    title: _nameController.text,
+                                    productData: productData,
+                                    imageFile:
+                                        isImageChoosed ? imageFile : null,
+                                  );
+                                  UserModel.of(context).insertNewOffSale(
+                                    offData: offSale,
+                                    onFail: _onFail,
+                                    onSuccess: _onSuccess,
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        "É necessário escolher o produto",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      backgroundColor: Colors.red,
+                                      duration: Duration(seconds: 1),
+                                    ),
+                                  );
+                                }
+                              }
+                            : null,
+                        child: Container(
+                          height: 55,
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(
+                            color: snapshot.hasData ? Colors.red : Colors.grey,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Center(
+                            child: ScopedModelDescendant<UserModel>(
+                              builder: (context, child, model) {
+                                if (model.isLoading) {
+                                  return Container(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else {
+                                  return Text(
+                                    "Enviar",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 16),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
               ],
             ),
           ),
@@ -443,6 +474,7 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                                     onTap: () {
                                       setState(() {
                                         productData = product;
+                                        isProductSelected = true;
                                       });
                                       ScaffoldMessenger.of(context)
                                           .hideCurrentSnackBar();

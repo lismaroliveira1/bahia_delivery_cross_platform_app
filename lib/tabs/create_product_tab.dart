@@ -4,7 +4,6 @@ import 'package:bd_app_full/blocs/partner_section_bloc.dart';
 import 'package:bd_app_full/data/category_store_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:bd_app_full/data/subsection_data.dart';
-import 'package:bd_app_full/input_formaters/masked_text_input_formater.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -369,52 +368,63 @@ class _CreateProductTabState extends State<CreateProductTab> {
                     padding: EdgeInsets.symmetric(
                       vertical: 16.0,
                     ),
-                    child: FlatButton(
-                      onPressed: () {
-                        productData.productTitle = _nameController.text;
-                        productData.productDescription =
-                            _descriptionController.text;
-                        productData.fullDescription =
-                            _longDescriptionController.text;
-                        productData.productPrice = double.parse(
-                          _priceController.text.replaceAll(",", "."),
-                        );
+                    child: StreamBuilder<bool>(
+                        stream: _partnerBloc.outSubmitedProduct,
+                        builder: (context, snapshot) {
+                          return FlatButton(
+                            onPressed: snapshot.hasData
+                                ? () {
+                                    productData.productTitle =
+                                        _nameController.text;
+                                    productData.productDescription =
+                                        _descriptionController.text;
+                                    productData.fullDescription =
+                                        _longDescriptionController.text;
+                                    productData.productPrice = double.parse(
+                                      _priceController.text
+                                          .replaceAll(",", "."),
+                                    );
 
-                        UserModel.of(context).insertNewProduct(
-                          productData: productData,
-                          onSuccess: _onSuccess,
-                          onFail: _onFail,
-                          imageFile: isImageChoosed ? imageFile : null,
-                        );
-                      },
-                      child: Container(
-                        height: 55,
-                        width: MediaQuery.of(context).size.width / 3,
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Center(child: ScopedModelDescendant<UserModel>(
-                          builder: (context, child, model) {
-                            if (model.isLoading) {
-                              return Container(
-                                height: 20,
-                                width: 20,
-                                child: CircularProgressIndicator(),
-                              );
-                            } else {
-                              return Text(
-                                "Enviar",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w900,
-                                    fontSize: 16),
-                              );
-                            }
-                          },
-                        )),
-                      ),
-                    ),
+                                    UserModel.of(context).insertNewProduct(
+                                      productData: productData,
+                                      onSuccess: _onSuccess,
+                                      onFail: _onFail,
+                                      imageFile:
+                                          isImageChoosed ? imageFile : null,
+                                    );
+                                  }
+                                : null,
+                            child: Container(
+                              height: 55,
+                              width: MediaQuery.of(context).size.width / 3,
+                              decoration: BoxDecoration(
+                                color:
+                                    snapshot.hasData ? Colors.red : Colors.grey,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Center(
+                                  child: ScopedModelDescendant<UserModel>(
+                                builder: (context, child, model) {
+                                  if (model.isLoading) {
+                                    return Container(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(),
+                                    );
+                                  } else {
+                                    return Text(
+                                      "Enviar",
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w900,
+                                          fontSize: 16),
+                                    );
+                                  }
+                                },
+                              )),
+                            ),
+                          );
+                        }),
                   ),
                 ],
               ),
@@ -544,16 +554,7 @@ class _CreateProductTabState extends State<CreateProductTab> {
 
   void _onSubSectionPressed() {
     if (sectionStore == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "Primeiro escolha a seção",
-            textAlign: TextAlign.center,
-          ),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 1),
-        ),
-      );
+      
       _onSectionPressed();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

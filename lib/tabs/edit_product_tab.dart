@@ -64,7 +64,7 @@ class _EditProductTabState extends State<EditProductTab> {
                   topRight: Radius.circular(20),
                 ),
               ),
-              child: Column(
+              child: ListView(
                 children: [
                   Center(
                     child: Container(
@@ -257,7 +257,7 @@ class _EditProductTabState extends State<EditProductTab> {
                   Padding(
                     padding: EdgeInsets.symmetric(
                       vertical: 4.0,
-                      horizontal: 8.0,
+                      horizontal: MediaQuery.of(context).size.width * 0.35,
                     ),
                     child: Container(
                       width: 110,
@@ -339,8 +339,8 @@ class _EditProductTabState extends State<EditProductTab> {
                         productData.productTitle = _nameController.text;
                         productData.productDescription =
                             _descriptionController.text;
-                        productData.productPrice =
-                            double.parse(_priceController.text);
+                        productData.productPrice = double.parse(
+                            _priceController.text.replaceAll(",", "."));
                         UserModel.of(context).editPartnerProduct(
                           imageFile: isImageChoosed ? imageFile : null,
                           productData: productData,

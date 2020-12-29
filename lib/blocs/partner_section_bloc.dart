@@ -8,6 +8,7 @@ class PartnerSectionBloc extends BlocBase with PartnerSectionValidators {
   final _descriptionController = BehaviorSubject<String>();
   final _longDescriptionController = BehaviorSubject<String>();
   final _priceController = BehaviorSubject<String>();
+  final _discountConntroller = BehaviorSubject<String>();
   Stream<String> get outName => _nameController.stream.transform(validateName);
   Stream<String> get outDescription =>
       _descriptionController.stream.transform(validateDescription);
@@ -15,6 +16,8 @@ class PartnerSectionBloc extends BlocBase with PartnerSectionValidators {
       _longDescriptionController.stream.transform(validateLongDescription);
   Stream<String> get outPrice =>
       _priceController.stream.transform(validatePrice);
+  Stream<String> get outDiscount =>
+      _discountConntroller.stream.transform(validateDiscount);
   Stream<bool> get outSubmitValid => Rx.combineLatest2(
         outName,
         outDescription,
@@ -27,17 +30,25 @@ class PartnerSectionBloc extends BlocBase with PartnerSectionValidators {
         outPrice,
         (a, b, c, d) => true,
       );
+  Stream<bool> get outSubmitedOff => Rx.combineLatest3(
+        outName,
+        outDescription,
+        outDiscount,
+        (a, b, c) => true,
+      );
   Function(String) get changeName => _nameController.sink.add;
   Function(String) get changeDescription => _descriptionController.sink.add;
   Function(String) get changeLongDescription =>
       _longDescriptionController.sink.add;
   Function(String) get changePrice => _priceController.sink.add;
+  Function(String) get changeDiscount => _discountConntroller.sink.add;
   @override
   void dispose() {
     _nameController.close();
     _priceController.close();
     _longDescriptionController.close();
     _descriptionController.close();
+    _discountConntroller.close();
     super.dispose();
   }
 }
