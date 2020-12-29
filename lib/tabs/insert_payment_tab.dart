@@ -255,7 +255,9 @@ class _InsertPaymentTabState extends State<InsertPaymentTab> {
                                           ),
                                           inputFormatters: [
                                             MaskedTextInputFormatter(
-                                                mask: 'xx/xxxx', separator: '/')
+                                              mask: 'xx/xxxx',
+                                              separator: '/',
+                                            ),
                                           ],
                                         );
                                       },

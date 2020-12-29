@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:bd_app_full/blocs/partner_section_bloc.dart';
 import 'package:bd_app_full/data/category_store_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:bd_app_full/data/subsection_data.dart';
+import 'package:bd_app_full/input_formaters/masked_text_input_formater.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,6 +16,7 @@ class CreateProductTab extends StatefulWidget {
 }
 
 class _CreateProductTabState extends State<CreateProductTab> {
+  final _partnerBloc = PartnerSectionBloc();
   final String imageUrl = "https://meuvidraceiro.com.br/images/sem-imagem.png";
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -41,6 +44,7 @@ class _CreateProductTabState extends State<CreateProductTab> {
     storeId: "",
     totalPrice: 0,
   );
+
   String teste;
   @override
   void initState() {
@@ -73,7 +77,7 @@ class _CreateProductTabState extends State<CreateProductTab> {
                   topRight: Radius.circular(20),
                 ),
               ),
-              child: Column(
+              child: ListView(
                 children: [
                   Center(
                     child: Container(
@@ -217,44 +221,65 @@ class _CreateProductTabState extends State<CreateProductTab> {
                       vertical: 4.0,
                       horizontal: 8.0,
                     ),
-                    child: TextField(
-                      controller: _nameController,
-                      decoration: InputDecoration(
-                          labelText: "Nome",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          )),
-                    ),
+                    child: StreamBuilder<String>(
+                        stream: _partnerBloc.outName,
+                        builder: (context, snapshot) {
+                          return TextField(
+                            onChanged: _partnerBloc.changeName,
+                            controller: _nameController,
+                            decoration: InputDecoration(
+                                errorText:
+                                    snapshot.hasError ? snapshot.error : null,
+                                labelText: "Nome",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                )),
+                          );
+                        }),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(
                       vertical: 4.0,
                       horizontal: 8.0,
                     ),
-                    child: TextField(
-                      controller: _descriptionController,
-                      decoration: InputDecoration(
-                        labelText: "Descrição curta",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
+                    child: StreamBuilder<String>(
+                        stream: _partnerBloc.outDescription,
+                        builder: (context, snapshot) {
+                          return TextField(
+                            onChanged: _partnerBloc.changeDescription,
+                            controller: _descriptionController,
+                            decoration: InputDecoration(
+                              errorText:
+                                  snapshot.hasError ? snapshot.error : null,
+                              labelText: "Descrição curta",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          );
+                        }),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(
                       vertical: 4.0,
                       horizontal: 8.0,
                     ),
-                    child: TextField(
-                      controller: _longDescriptionController,
-                      decoration: InputDecoration(
-                        labelText: "Descrição longa",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
+                    child: StreamBuilder<String>(
+                        stream: _partnerBloc.outLongDescription,
+                        builder: (context, snapshot) {
+                          return TextField(
+                            onChanged: _partnerBloc.changeLongDescription,
+                            controller: _longDescriptionController,
+                            decoration: InputDecoration(
+                              errorText:
+                                  snapshot.hasError ? snapshot.error : null,
+                              labelText: "Descrição longa",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          );
+                        }),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(
@@ -264,17 +289,26 @@ class _CreateProductTabState extends State<CreateProductTab> {
                     child: Container(
                       width: 110,
                       child: Padding(
-                        padding: EdgeInsets.only(right: 3),
-                        child: TextField(
-                          controller: _priceController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            labelText: "Preço",
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: MediaQuery.of(context).size.width * 0.35,
                         ),
+                        child: StreamBuilder<String>(
+                            stream: _partnerBloc.outPrice,
+                            builder: (context, snapshot) {
+                              return TextField(
+                                onChanged: _partnerBloc.changePrice,
+                                controller: _priceController,
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  errorText:
+                                      snapshot.hasError ? snapshot.error : null,
+                                  labelText: "Preço",
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              );
+                            }),
                       ),
                     ),
                   ),
@@ -342,8 +376,9 @@ class _CreateProductTabState extends State<CreateProductTab> {
                             _descriptionController.text;
                         productData.fullDescription =
                             _longDescriptionController.text;
-                        productData.productPrice =
-                            double.parse(_priceController.text);
+                        productData.productPrice = double.parse(
+                          _priceController.text.replaceAll(",", "."),
+                        );
 
                         UserModel.of(context).insertNewProduct(
                           productData: productData,
