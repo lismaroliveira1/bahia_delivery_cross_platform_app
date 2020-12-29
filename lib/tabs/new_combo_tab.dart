@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bd_app_full/blocs/partner_section_bloc.dart';
 import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
@@ -13,6 +14,7 @@ class NewComboTab extends StatefulWidget {
 }
 
 class _NewComboTabState extends State<NewComboTab> {
+  final _partnerBloc = PartnerSectionBloc();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   File imageFile;
   final String imageUrl = "https://meuvidraceiro.com.br/images/sem-imagem.png";
@@ -22,8 +24,14 @@ class _NewComboTabState extends State<NewComboTab> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _discountPercentageController =
       TextEditingController();
-  final TextEditingController _discountCoinController = TextEditingController();
   List<ProductData> products = [];
+  bool isProductConfigured;
+  @override
+  void initState() {
+    isProductConfigured = false;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double sizeImage = MediaQuery.of(context).size.width / 3;
@@ -48,7 +56,7 @@ class _NewComboTabState extends State<NewComboTab> {
                 topRight: Radius.circular(20),
               ),
             ),
-            child: Column(
+            child: ListView(
               children: [
                 Center(
                   child: Container(
@@ -67,7 +75,7 @@ class _NewComboTabState extends State<NewComboTab> {
                                   isAntiAlias: false,
                                   height: MediaQuery.of(context).size.width / 3,
                                   width: MediaQuery.of(context).size.width / 3,
-                                  fit: BoxFit.fill,
+                                  fit: BoxFit.cover,
                                 )
                               : Image.network(
                                   imageUrl,
@@ -189,32 +197,46 @@ class _NewComboTabState extends State<NewComboTab> {
                     vertical: 4.0,
                     horizontal: 8.0,
                   ),
-                  child: TextField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                        labelText: "Nome",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        )),
-                  ),
+                  child: StreamBuilder<String>(
+                      stream: _partnerBloc.outName,
+                      builder: (context, snapshot) {
+                        return TextField(
+                          onChanged: _partnerBloc.changeName,
+                          controller: _nameController,
+                          decoration: InputDecoration(
+                              errorText:
+                                  snapshot.hasError ? snapshot.error : null,
+                              labelText: "Nome",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              )),
+                        );
+                      }),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: 4.0,
                     horizontal: 8.0,
                   ),
-                  child: TextField(
-                    controller: _descriptionController,
-                    decoration: InputDecoration(
-                      labelText: "Descrição",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
+                  child: StreamBuilder<String>(
+                      stream: _partnerBloc.outDescription,
+                      builder: (context, snapshot) {
+                        return TextField(
+                          onChanged: _partnerBloc.changeDescription,
+                          controller: _descriptionController,
+                          decoration: InputDecoration(
+                            errorText:
+                                snapshot.hasError ? snapshot.error : null,
+                            labelText: "Descrição",
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        );
+                      }),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(
@@ -225,38 +247,25 @@ class _NewComboTabState extends State<NewComboTab> {
                         width: 110,
                         child: Padding(
                           padding: EdgeInsets.only(right: 3),
-                          child: TextField(
-                            controller: _discountCoinController,
-                            decoration: InputDecoration(
-                              hintText: "R\$ 19,99",
-                              labelText: "Desconto",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.0,
-                        horizontal: 8.0,
-                      ),
-                      child: Container(
-                        width: 110,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 3),
-                          child: TextField(
-                            controller: _discountPercentageController,
-                            decoration: InputDecoration(
-                              hintText: "20%",
-                              labelText: "Desconto",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
+                          child: StreamBuilder<String>(
+                              stream: _partnerBloc.outDiscount,
+                              builder: (context, snapshot) {
+                                return TextField(
+                                  onChanged: _partnerBloc.changeDiscount,
+                                  controller: _discountPercentageController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    errorText: snapshot.hasError
+                                        ? snapshot.error
+                                        : null,
+                                    hintText: "20%",
+                                    labelText: "Desconto",
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                  ),
+                                );
+                              }),
                         ),
                       ),
                     ),
@@ -288,10 +297,13 @@ class _NewComboTabState extends State<NewComboTab> {
                 ),
                 products.isNotEmpty
                     ? Expanded(
-                        child: ListView(
+                        child: Column(
                           children: products.map((product) {
                             return Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 4,
+                              ),
                               child: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12),
@@ -299,18 +311,22 @@ class _NewComboTabState extends State<NewComboTab> {
                                     color: Colors.black54,
                                   ),
                                 ),
-                                child: ListTile(
-                                  title: Text(product.productTitle),
-                                  subtitle: Text(product.productDescription),
-                                  leading: Container(
-                                    height: 65,
-                                    width: 65,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(
-                                          product.productImage,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: ListTile(
+                                    dense: true,
+                                    title: Text(product.productTitle),
+                                    subtitle: Text(product.productDescription),
+                                    leading: Container(
+                                      height: 65,
+                                      width: 65,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        image: DecorationImage(
+                                          fit: BoxFit.cover,
+                                          image: NetworkImage(
+                                            product.productImage,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -325,59 +341,69 @@ class _NewComboTabState extends State<NewComboTab> {
                         height: 0,
                         width: 0,
                       ),
-                FlatButton(
-                  padding: EdgeInsets.only(top: 20, bottom: 20),
-                  onPressed: () {
-                    double discountPercentage =
-                        double.parse(_discountPercentageController.text);
-                    double discountCoin =
-                        double.parse(_discountCoinController.text);
-                    final combData = ComboData(
-                      image: imageUrl,
-                      title: _nameController.text,
-                      description: _descriptionController.text,
-                      discountPercentage: discountPercentage,
-                      discountCoin: discountCoin,
-                      products: products,
-                    );
-                    UserModel.of(context).insertNewCombo(
-                      comboData: combData,
-                      onSuccess: _onSuccess,
-                      onFail: _onFail,
-                      imageFile: isImageChoosed ? imageFile : null,
-                    );
-                  },
-                  child: Container(
-                    height: 55,
-                    width: MediaQuery.of(context).size.width / 3,
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Center(
-                      child: ScopedModelDescendant<UserModel>(
-                        builder: (context, child, model) {
-                          if (model.isLoading) {
-                            return Container(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(),
-                            );
-                          } else {
-                            return Text(
-                              "Enviar",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900,
-                                fontSize: 16,
-                              ),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                ),
+                StreamBuilder<bool>(
+                    stream: _partnerBloc.outSubmitedOff,
+                    builder: (context, snapshot) {
+                      return FlatButton(
+                        padding: EdgeInsets.only(top: 20, bottom: 20),
+                        onPressed: snapshot.hasData
+                            ? () {
+                                if (isProductConfigured) {
+                                  double discountPercentage = double.parse(
+                                      _discountPercentageController.text
+                                          .replaceAll(",", '.'));
+
+                                  final combData = ComboData(
+                                    image: imageUrl,
+                                    title: _nameController.text,
+                                    description: _descriptionController.text,
+                                    discountPercentage: discountPercentage,
+                                    products: products,
+                                  );
+                                  UserModel.of(context).insertNewCombo(
+                                    comboData: combData,
+                                    onSuccess: _onSuccess,
+                                    onFail: _onFail,
+                                    imageFile:
+                                        isImageChoosed ? imageFile : null,
+                                  );
+                                } else {
+                                  noProductConfigured();
+                                }
+                              }
+                            : null,
+                        child: Container(
+                          height: 55,
+                          width: MediaQuery.of(context).size.width / 3,
+                          decoration: BoxDecoration(
+                            color: snapshot.hasData ? Colors.red : Colors.grey,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Center(
+                            child: ScopedModelDescendant<UserModel>(
+                              builder: (context, child, model) {
+                                if (model.isLoading) {
+                                  return Container(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else {
+                                  return Text(
+                                    "Enviar",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 16,
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
               ],
             ),
           ),
@@ -445,6 +471,7 @@ class _NewComboTabState extends State<NewComboTab> {
                                     onTap: () {
                                       setState(() {
                                         products.add(product);
+                                        isProductConfigured = true;
                                       });
                                       ScaffoldMessenger.of(context)
                                           .hideCurrentSnackBar();
@@ -471,7 +498,8 @@ class _NewComboTabState extends State<NewComboTab> {
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
                                           image: NetworkImage(
-                                              product.productImage),
+                                            product.productImage,
+                                          ),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -514,5 +542,17 @@ class _NewComboTabState extends State<NewComboTab> {
   }
 
   void _onFail() {}
-  
+
+  void noProductConfigured() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      new SnackBar(
+        content: new Text(
+          "Insira um ou mais produtos no combo",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
 }

@@ -1008,6 +1008,7 @@ class UserModel extends Model {
           }
         } catch (erro) {
           isLoading = false;
+          print(erro);
           onFail();
           notifyListeners();
         }

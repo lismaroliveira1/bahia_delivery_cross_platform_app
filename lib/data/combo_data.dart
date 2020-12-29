@@ -24,7 +24,7 @@ class ComboData {
     @required this.title,
     @required this.description,
     @required this.discountPercentage,
-    @required this.discountCoin,
+    this.discountCoin,
     @required this.products,
     this.id,
     this.quantity,
@@ -36,7 +36,6 @@ class ComboData {
     title = queryDoc.get("title");
     description = queryDoc.get("description");
     discountPercentage = queryDoc.get("discountPercentage");
-    discountCoin = queryDoc.get("discountCoin");
     image = queryDoc.get("image");
     for (LinkedHashMap linkedArray in queryDoc.get("products")) {
       products.add(ProductData.fromLinkedHashMap(linkedArray));
@@ -69,7 +68,6 @@ class ComboData {
       "title": title,
       "description": description,
       "discountPercentage": discountPercentage,
-      "discountCoin": discountCoin,
       "products": products.map((productData) {
         return {
           "pId": productData.pId,
