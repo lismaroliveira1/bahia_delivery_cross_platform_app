@@ -67,6 +67,7 @@ class UserModel extends Model {
   List<CreditDebitCardData> creditDebitCardList = [];
   List<PaymentFormData> paymentFormsList = [];
   List<ComboData> comboCartList = [];
+  List<OffData> offCartData = [];
   String addressToRegisterPartner = '';
   bool isLocationChoosedOnRegisterPartner = false;
   double _latPartnerRequest;
@@ -133,6 +134,7 @@ class UserModel extends Model {
     await getListOfCategory();
     await getListHomeStores();
     await getOrders();
+
     getcartProductList();
     getComboCartItens();
     getPaymentUserForms();
@@ -1505,8 +1507,16 @@ class UserModel extends Model {
   }) async {
     if (isLoggedIn()) {
       final cieloPayment = new CieloPayment();
-      double totalPrice = 10000;
+
       Map response = {};
+      double totalPrice = 0;
+      comboCartList.forEach((combo) {
+        totalPrice += (combo.price * combo.quantity);
+      });
+      cartProducts.forEach((product) {
+        totalPrice += product.price;
+      });
+      totalPrice += shipePrice; 
       response = await cieloPayment.authorizedDebitCard(
         creditDebitCardData: currentCreditDebitCardData,
         price: totalPrice,
@@ -1594,20 +1604,23 @@ class UserModel extends Model {
     @required VoidCallback onCartExpired,
     @required VoidCallback onTimeOut,
   }) async {
-    double totalPrice = 0;
-    double productPrice = 18.00;
-    double comboPrice = 0;
-    double offPrice = 0;
     Map response = {};
-
     try {
       if (cartProducts.length == 0 && comboCartList.length == 0) return null;
+      double totalPrice = 0;
+      comboCartList.forEach((combo) {
+        totalPrice += (combo.price * combo.quantity);
+      });
+      cartProducts.forEach((product) {
+        totalPrice += product.price;
+      });
+      totalPrice += shipePrice;
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection("users")
           .doc(firebaseUser.uid)
           .collection("cart")
           .get();
-      totalPrice = productPrice + comboPrice + offPrice;
+
       final cieloPayment = new CieloPayment();
       response = await cieloPayment.authorized(
         creditDebitCardData: currentCreditDebitCardData,
@@ -1694,20 +1707,22 @@ class UserModel extends Model {
     @required StoreData storeData,
   }) async {
     if (firebaseUser != null) {
-      double totalPrice = 0;
-      double productPrice = 0;
-      double comboPrice = 0;
-      double offPrice = 0;
-
       try {
-        print(cartProducts.length);
+        double totalPrice = 0;
+        comboCartList.forEach((combo) {
+          totalPrice += (combo.price * combo.quantity);
+        });
+        cartProducts.forEach((product) {
+          totalPrice += product.price;
+        });
+        totalPrice += shipePrice;
         if (cartProducts.length == 0 && comboCartList.length == 0) return null;
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
             .collection("users")
             .doc(firebaseUser.uid)
             .collection("cart")
             .get();
-        totalPrice = productPrice + comboPrice + offPrice;
+
         await FirebaseFirestore.instance.collection("orders").add({
           "client": firebaseUser.uid,
           "clientName": userData.name,
@@ -1901,10 +1916,16 @@ class UserModel extends Model {
             .collection("cart")
             .get();
         comboCartList.clear();
+        offCartData.clear();
         comboQuery.docs.map((queryDoc) {
           if (queryDoc.get("type") == "combo") {
             comboCartList.add(
               ComboData.fromCartQueryDocument(queryDoc),
+            );
+          }
+          if (queryDoc.get("type") == "off") {
+            offCartData.add(
+              OffData.fromQueryDocument(queryDoc),
             );
           }
         }).toList();
