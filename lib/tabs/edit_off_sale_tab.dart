@@ -4,6 +4,7 @@ import 'package:bd_app_full/data/offs_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -24,7 +25,6 @@ class _EditSaleOffTabState extends State<EditSaleOffTab> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _discountPercentageController =
       TextEditingController();
-  final TextEditingController _discountCoinController = TextEditingController();
   ProductData productData;
   @override
   void initState() {
@@ -56,7 +56,7 @@ class _EditSaleOffTabState extends State<EditSaleOffTab> {
                 topRight: Radius.circular(20),
               ),
             ),
-            child: Column(
+            child: ListView(
               children: [
                 Center(
                   child: Container(
@@ -222,54 +222,40 @@ class _EditSaleOffTabState extends State<EditSaleOffTab> {
                     ),
                   ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.0,
-                        horizontal: 8.0,
-                      ),
-                      child: Container(
-                        width: 110,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 3),
-                          child: TextField(
-                            controller: _discountCoinController,
-                            decoration: InputDecoration(
-                              hintText: "R\$ 19,99",
-                              labelText: "Desconto",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 4.0,
+                          horizontal: 8.0,
+                        ),
+                        child: Container(
+                          width: 110,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 3),
+                            child: TextField(
+                              controller: _discountPercentageController
+                                ..text = widget.offData.discountPercentage
+                                    .toString(),
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                hintText: "20%",
+                                labelText: "Desconto",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 4.0,
-                        horizontal: 8.0,
-                      ),
-                      child: Container(
-                        width: 110,
-                        child: Padding(
-                          padding: EdgeInsets.only(right: 3),
-                          child: TextField(
-                            controller: _discountPercentageController,
-                            decoration: InputDecoration(
-                              hintText: "20%",
-                              labelText: "Desconto",
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(
@@ -289,7 +275,9 @@ class _EditSaleOffTabState extends State<EditSaleOffTab> {
                         width: MediaQuery.of(context).size.width / 3,
                         padding: EdgeInsets.all(18),
                         child: Center(
-                          child: Text("Produto"),
+                          child: Text(
+                            "Produto",
+                          ),
                         ),
                       ),
                     ),
@@ -342,12 +330,16 @@ class _EditSaleOffTabState extends State<EditSaleOffTab> {
                 FlatButton(
                   padding: EdgeInsets.only(top: 20),
                   onPressed: () {
+                    print(_discountPercentageController.text);
                     final offSale = OffData(
                       id: widget.offData.id,
                       description: _descriptionController.text,
-                      image: imageUrl,
+                      image: widget.offData.image,
                       title: _nameController.text,
                       productData: productData,
+                      discountPercentage: double.parse(
+                        _discountPercentageController.text.replaceAll(",", "."),
+                      ),
                       imageFile: isImageChoosed ? imageFile : null,
                     );
                     UserModel.of(context).editSaleOff(

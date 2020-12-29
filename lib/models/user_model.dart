@@ -2439,4 +2439,31 @@ class UserModel extends Model {
     }
     return couponData;
   }
+
+  void insertOffCart({
+    @required OffData offData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    if (isLoggedIn()) {
+      isLoading = true;
+      notifyListeners();
+      try {
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .collection("cart")
+            .add(
+              offData.toOffCartMap(),
+            );
+        isLoading = false;
+        onSuccess();
+        notifyListeners();
+      } catch (error) {
+        onFail();
+        isLoading = false;
+        notifyListeners();
+      }
+    }
+  }
 }

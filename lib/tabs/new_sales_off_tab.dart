@@ -354,6 +354,10 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                                     image: imageUrl,
                                     title: _nameController.text,
                                     productData: productData,
+                                    discountPercentage: double.parse(
+                                      _discountPercentageController.text
+                                          .replaceAll(",", "."),
+                                    ),
                                     imageFile:
                                         isImageChoosed ? imageFile : null,
                                   );

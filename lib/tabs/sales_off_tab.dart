@@ -29,6 +29,7 @@ class _SalesOffTabState extends State<SalesOffTab> {
       imageFile: null,
       quantity: 1,
       price: widget.offData.productData.productPrice,
+      storeId: widget.storeData.id,
     );
   }
 
@@ -244,8 +245,8 @@ class _SalesOffTabState extends State<SalesOffTab> {
                 SizedBox(
                   width: 4.0,
                 ),
-                //Text("${offCartData.quantity}"),
-                //Text(offCartData.quantity > 1 ? "itens" : "item"),
+                Text("${offCartData.quantity}"),
+                Text(offCartData.quantity > 1 ? "itens" : "item"),
                 Text(" | "),
                 Text(
                   "${(offCartData.price * offCartData.quantity).toStringAsFixed(2)}",
@@ -270,21 +271,32 @@ class _SalesOffTabState extends State<SalesOffTab> {
                     ],
                   ),
                 ),
-                FlatButton(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Center(
-                        child: ScopedModelDescendant<UserModel>(
-                          builder: (context, child, model) {
-                            if (model.isLoading) {
-                              return CircularProgressIndicator();
-                            } else {
-                              return Padding(
+                ScopedModelDescendant<UserModel>(
+                  builder: (context, child, model) {
+                    if (model.isLoading) {
+                      return Center(
+                        child: Container(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    } else {
+                      return FlatButton(
+                        onPressed: () {
+                          model.insertOffCart(
+                            offData: offCartData,
+                            onSuccess: onSuccess,
+                            onFail: onFail,
+                          );
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Center(
+                              child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 3.5, horizontal: 9),
                                 child: Text(
@@ -292,15 +304,14 @@ class _SalesOffTabState extends State<SalesOffTab> {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(color: Colors.white),
                                 ),
-                              );
-                            }
-                          },
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                  onPressed: () {},
-                )
+                      );
+                    }
+                  },
+                ),
               ],
             ),
           ),
@@ -309,6 +320,32 @@ class _SalesOffTabState extends State<SalesOffTab> {
     );
   }
 
-  void decrementProduct() {}
-  void incrementProduct() {}
+  void decrementProduct() {
+    setState(() {
+      offCartData.quantity--;
+    });
+  }
+
+  void incrementProduct() {
+    setState(() {
+      offCartData.quantity++;
+    });
+  }
+
+  void onSuccess() {
+    Navigator.of(context).pop();
+  }
+
+  void onFail() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Algo deu errado tente novamente",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 1),
+      ),
+    );
+  }
 }
