@@ -2422,6 +2422,27 @@ class UserModel extends Model {
     }
   }
 
+  void editCouponData({
+    @required CouponData couponData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    if (isLoggedIn()) {
+      if (userData.isPartner == 1) {
+        try {
+          await FirebaseFirestore.instance
+              .collection("stores")
+              .doc(userData.storeId)
+              .collection("coupons")
+              .doc(couponData.id)
+              .update(
+                couponData.toMap(),
+              );
+        } catch (error) {}
+      }
+    }
+  }
+
   Future<List<CouponData>> getListOfCouponsByStore(String storeid) async {
     List<CouponData> couponData = [];
     if (isLoggedIn()) {

@@ -1,17 +1,16 @@
-import 'package:bd_app_full/blocs/partner_section_bloc.dart';
 import 'package:bd_app_full/data/coupon_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-class InsertNewCouponTab extends StatefulWidget {
+class EditCouponTab extends StatefulWidget {
+  final CouponData couponData;
+  EditCouponTab(this.couponData);
   @override
-  _InsertNewCouponTabState createState() => _InsertNewCouponTabState();
+  _EditCouponTabState createState() => _EditCouponTabState();
 }
 
-class _InsertNewCouponTabState extends State<InsertNewCouponTab> {
-  final _partnerBloc = PartnerSectionBloc();
+class _EditCouponTabState extends State<EditCouponTab> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _messageController = TextEditingController();
@@ -22,7 +21,11 @@ class _InsertNewCouponTabState extends State<InsertNewCouponTab> {
 
   @override
   void initState() {
-    isPeriodChoosed = false;
+    _selectedDate = PickerDateRange(
+      widget.couponData.start,
+      widget.couponData.end,
+    );
+    isPeriodChoosed = true;
     _textDate = '';
     super.initState();
   }
@@ -68,46 +71,34 @@ class _InsertNewCouponTabState extends State<InsertNewCouponTab> {
                   padding: const EdgeInsets.symmetric(
                     vertical: 4,
                   ),
-                  child: StreamBuilder<String>(
-                      stream: _partnerBloc.outName,
-                      builder: (context, snapshot) {
-                        return TextField(
-                          onChanged: _partnerBloc.changeName,
-                          controller: _titleController,
-                          decoration: InputDecoration(
-                            errorText:
-                                snapshot.hasError ? snapshot.error : null,
-                            isDense: true,
-                            labelText: 'Título',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        );
-                      }),
+                  child: TextField(
+                    controller: _titleController
+                      ..text = widget.couponData.title,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      labelText: 'Título',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     vertical: 4,
                   ),
-                  child: StreamBuilder<String>(
-                      stream: _partnerBloc.outDescription,
-                      builder: (context, snapshot) {
-                        return TextField(
-                          onChanged: _partnerBloc.changeDescription,
-                          controller: _descriptionController,
-                          maxLines: 2,
-                          decoration: InputDecoration(
-                            errorText:
-                                snapshot.hasError ? snapshot.error : null,
-                            isDense: true,
-                            labelText: 'Descrição',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        );
-                      }),
+                  child: TextField(
+                    controller: _descriptionController
+                      ..text = widget.couponData.description,
+                    maxLines: 2,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      labelText: 'Descrição',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -157,78 +148,67 @@ class _InsertNewCouponTabState extends State<InsertNewCouponTab> {
                   ),
                   child: Container(
                     width: 80,
-                    child: StreamBuilder<String>(
-                        stream: _partnerBloc.outDiscount,
-                        builder: (context, snapshot) {
-                          return TextField(
-                            onChanged: _partnerBloc.changeDiscount,
-                            controller: _discountController,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              errorText:
-                                  snapshot.hasError ? snapshot.error : null,
-                              isDense: true,
-                              labelText: 'Desconto',
-                              hintText: '%',
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                          );
-                        }),
+                    child: TextField(
+                      controller: _discountController
+                        ..text = widget.couponData.discount.toStringAsFixed(0),
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        labelText: 'Desconto',
+                        hintText: '%',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 40),
-                  child: StreamBuilder<bool>(
-                      stream: _partnerBloc.outSubmitedOff,
-                      builder: (context, snapshot) {
-                        return FlatButton(
-                          onPressed: snapshot.hasData
-                              ? () {
-                                  if (isPeriodChoosed) {
-                                    final couponData = CouponData(
-                                      title: _titleController.text,
-                                      description: _descriptionController.text,
-                                      message: _messageController.text,
-                                      discount:
-                                          int.parse(_discountController.text),
-                                      start: _selectedDate.startDate,
-                                      end: _selectedDate.endDate,
-                                    );
-                                    UserModel.of(context).createNewCouponData(
-                                      couponData: couponData,
-                                      onSuccess: _onSuccess,
-                                      onFail: _onFail,
-                                    );
-                                    Navigator.of(context).pop();
-                                  } else {
-                                    noPeriodConfigured();
-                                  }
-                                }
-                              : null,
-                          padding: EdgeInsets.zero,
-                          child: Container(
-                            height: 50,
-                            width: 120,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              color:
-                                  snapshot.hasData ? Colors.red : Colors.grey,
-                            ),
-                            child: Center(
-                              child: Text(
-                                "Enviar",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
+                  child: FlatButton(
+                    onPressed: () {
+                      if (isPeriodChoosed) {
+                        final couponData = CouponData(
+                          id: widget.couponData.id,
+                          title: _titleController.text,
+                          description: _descriptionController.text,
+                          message: _messageController.text,
+                          discount: int.parse(
+                            _discountController.text,
                           ),
+                          start: _selectedDate.startDate,
+                          end: _selectedDate.endDate,
                         );
-                      }),
+                        UserModel.of(context).editCouponData(
+                          couponData: couponData,
+                          onSuccess: _onSuccess,
+                          onFail: _onFail,
+                        );
+                        Navigator.of(context).pop();
+                      } else {
+                        noPeriodConfigured();
+                      }
+                    },
+                    padding: EdgeInsets.zero,
+                    child: Container(
+                      height: 50,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.red,
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Enviar",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

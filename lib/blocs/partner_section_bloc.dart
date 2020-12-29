@@ -36,6 +36,7 @@ class PartnerSectionBloc extends BlocBase with PartnerSectionValidators {
         outDiscount,
         (a, b, c) => true,
       );
+
   Function(String) get changeName => _nameController.sink.add;
   Function(String) get changeDescription => _descriptionController.sink.add;
   Function(String) get changeLongDescription =>

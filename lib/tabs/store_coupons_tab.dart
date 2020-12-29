@@ -1,4 +1,5 @@
 import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/edit_coupon_screnn.dart';
 import 'package:bd_app_full/screens/insert_new_coupon_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -113,7 +114,7 @@ class _StoreCouponsTabState extends State<StoreCouponsTab> {
                                     Navigator.push(
                                       context,
                                       PageTransition(
-                                        child: InsertNewCouponScreen(),
+                                        child: EditCouponScrenn(coupon),
                                         type: PageTransitionType.rightToLeft,
                                         inheritTheme: true,
                                         duration: Duration(milliseconds: 350),
