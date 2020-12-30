@@ -554,7 +554,6 @@ class _CreateProductTabState extends State<CreateProductTab> {
 
   void _onSubSectionPressed() {
     if (sectionStore == null) {
-      
       _onSectionPressed();
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

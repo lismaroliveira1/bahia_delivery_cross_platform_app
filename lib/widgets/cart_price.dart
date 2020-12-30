@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:bd_app_full/data/store_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/payment_screen.dart';
 import 'package:bd_app_full/services/cielo_payment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -19,12 +21,6 @@ class _CartPriceState extends State<CartPrice> {
   final CieloPayment cieloPayment = CieloPayment();
   final RoundedLoadingButtonController _btnController =
       new RoundedLoadingButtonController();
-
-  void _doSomething() async {
-    Timer(Duration(seconds: 3), () {
-      _btnController.error();
-    });
-  }
 
   Future<void> waitForAndFail([int seconds = 2]) async {
     await Future.delayed(Duration(seconds: seconds));
@@ -199,44 +195,61 @@ class _CartPriceState extends State<CartPrice> {
                                       ),
                                       controller: _btnController,
                                       onPressed: () async {
-                                        if (userModel.payOnApp) {
-                                          print("payOnApp");
-                                          if (userModel
-                                              .currentCreditDebitCardData
-                                              .isDebit) {
-                                            print("debit");
-                                            await userModel
-                                                .finishOrderWithPayOnAppByDebitCard(
-                                              onSuccess: _onSuccessPayOnApp,
-                                              onFail: _onFailOnApp,
-                                              shipePrice: ship,
-                                              storeData: widget.storeData,
-                                              discount: discount,
-                                              onCartExpired: _onCardExpired,
-                                              onTimeOut: _onTimeOut,
-                                              onFailDebitCard: _onFailDebitCard,
-                                            );
+                                        if (!userModel.paymentSet) {
+                                          _btnController.reset();
+                                          Navigator.push(
+                                            context,
+                                            PageTransition(
+                                              type: PageTransitionType
+                                                  .rightToLeft,
+                                              child: PaymentScreen(),
+                                              inheritTheme: true,
+                                              duration: Duration(
+                                                milliseconds: 350,
+                                              ),
+                                              ctx: context,
+                                            ),
+                                          );
+                                        } else {
+                                          if (userModel.payOnApp) {
+                                            if (userModel
+                                                .currentCreditDebitCardData
+                                                .isDebit) {
+                                              print("debit");
+                                              await userModel
+                                                  .finishOrderWithPayOnAppByDebitCard(
+                                                onSuccess: _onSuccessPayOnApp,
+                                                onFail: _onFailOnApp,
+                                                shipePrice: ship,
+                                                storeData: widget.storeData,
+                                                discount: discount,
+                                                onCartExpired: _onCardExpired,
+                                                onTimeOut: _onTimeOut,
+                                                onFailDebitCard:
+                                                    _onFailDebitCard,
+                                              );
+                                            } else {
+                                              await userModel
+                                                  .finishOrderWithPayOnAppByCretditCard(
+                                                onSuccess: _onSuccessPayOnApp,
+                                                onFail: _onFailOnApp,
+                                                shipePrice: ship,
+                                                storeData: widget.storeData,
+                                                discount: discount,
+                                                onCartExpired: _onCardExpired,
+                                                onTimeOut: _onTimeOut,
+                                              );
+                                            }
                                           } else {
                                             await userModel
-                                                .finishOrderWithPayOnAppByCretditCard(
-                                              onSuccess: _onSuccessPayOnApp,
-                                              onFail: _onFailOnApp,
+                                                .finishOrderWithPayOnDelivery(
+                                              discount: discount,
+                                              onSuccess: _onSuccessPay,
                                               shipePrice: ship,
                                               storeData: widget.storeData,
-                                              discount: discount,
-                                              onCartExpired: _onCardExpired,
-                                              onTimeOut: _onTimeOut,
+                                              onFail: _onFailPay,
                                             );
                                           }
-                                        } else {
-                                          await userModel
-                                              .finishOrderWithPayOnDelivery(
-                                            discount: discount,
-                                            onSuccess: _onSuccessPay,
-                                            shipePrice: ship,
-                                            storeData: widget.storeData,
-                                            onFail: _onFailPay,
-                                          );
                                         }
                                       },
                                       width: 200,
@@ -300,6 +313,20 @@ class _CartPriceState extends State<CartPrice> {
   }
 
   void _onFailDebitCard() {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "Tente usar outro cartão de débito",
+          textAlign: TextAlign.center,
+        ),
+        backgroundColor: Colors.green,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void noAddressConfigured() {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

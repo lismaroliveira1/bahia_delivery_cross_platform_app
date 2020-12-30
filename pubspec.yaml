@@ -76,12 +76,18 @@ dependencies:
   dash_chat: ^1.1.15
   primary_secondary_progress_bar: ^0.1.1
   flutter_plugin_android_lifecycle: ^1.0.11
-  
+  drawerbehavior: ^1.1.4
+  permission_handler: ^5.0.1
+  flutter_launcher_icons: ^0.8.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "images/logo.jpg"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

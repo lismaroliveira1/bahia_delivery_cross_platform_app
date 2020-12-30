@@ -263,6 +263,7 @@ async function sendPushFCM(tokens: string[], title: string, message: string) {
         return admin.messaging().sendToDevice(tokens, payload);
     } return;
 }
+
 const orderStatus = new Map([
     [1, "Aguardando reposta da Loja"],
     [2, "Tudo ok! Seu pedido já está em preparação."],

@@ -6,6 +6,7 @@ import 'package:bd_app_full/screens/register_address_screen.dart';
 import 'package:bd_app_full/screens/welcome_store_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -17,7 +18,11 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   String permissionStatus;
   bool isAddressSeted;
+
   void initState() {
+    Permission.locationWhenInUse.serviceStatus.isEnabled.then((value) async {
+      await Permission.locationWhenInUse.request();
+    });
     isAddressSeted = false;
     super.initState();
   }
@@ -52,7 +57,9 @@ class _HomeTabState extends State<HomeTab> {
                         children: [
                           new IconButton(
                             padding: EdgeInsets.zero,
-                            onPressed: () {},
+                            onPressed: () {
+                              Scaffold.of(context).openDrawer();
+                            },
                             icon: Icon(
                               Icons.sort,
                             ),

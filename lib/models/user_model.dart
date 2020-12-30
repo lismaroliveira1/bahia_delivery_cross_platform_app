@@ -134,7 +134,6 @@ class UserModel extends Model {
     await getListOfCategory();
     await getListHomeStores();
     await getOrders();
-
     getcartProductList();
     getComboCartItens();
     getPaymentUserForms();
@@ -1814,6 +1813,7 @@ class UserModel extends Model {
   void newCard(CreditDebitCard creditDebitCard) async {
     isLoading = true;
     notifyListeners();
+    creditDebitCardList.clear();
     final creditDebitCardData =
         CreditDebitCardData.fromCreditDebitCardItem(creditDebitCard);
     await FirebaseFirestore.instance
@@ -1843,12 +1843,12 @@ class UserModel extends Model {
 
   void getPaymentUserForms() async {
     if (isLoggedIn()) {
-      paymentFormsList.clear();
       QuerySnapshot paymentQuery = await FirebaseFirestore.instance
           .collection("users")
           .doc(firebaseUser.uid)
           .collection("paymentForms")
           .get();
+      paymentFormsList.clear();
       paymentQuery.docs.map((queryDoc) {
         paymentFormsList.add(
           PaymentFormData.fromQuerydocs(queryDoc),

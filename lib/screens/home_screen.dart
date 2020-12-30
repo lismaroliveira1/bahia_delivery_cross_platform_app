@@ -5,6 +5,7 @@ import 'package:bd_app_full/tabs/home_tab.dart';
 import 'package:bd_app_full/tabs/profile_tab.dart';
 import 'package:bd_app_full/tabs/search_tab.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:drawerbehavior/menu_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +21,17 @@ class _HomeScreenState extends State<HomeScreen> {
   final SearchTab _searchTab = SearchTab();
   final ProfileTab _profileTab = ProfileTab();
   Widget _showPage = new HomeTab();
-
+  List<MenuItem> itens = [
+    new MenuItem<int>(
+      id: 0,
+      title: "Title 1",
+      icon: Icons.fastfood,
+    )
+  ];
+  Menu menu;
   @override
   void initState() {
+    menu = Menu(items: itens);
     super.initState();
     configFCM();
   }
@@ -137,6 +146,46 @@ class _HomeScreenState extends State<HomeScreen> {
           });
         },
       ),
+    );
+  }
+
+  Widget headerView(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.fromLTRB(16, 12, 16, 0),
+          child: Row(
+            children: <Widget>[
+              new Container(
+                  width: 48.0,
+                  height: 48.0,
+                  decoration: new BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: new DecorationImage(
+                          fit: BoxFit.fill,
+                          image: AssetImage("assets/user1.jpg")))),
+              Container(
+                  margin: EdgeInsets.only(left: 16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        "John Witch",
+                      ),
+                      Text(
+                        "test123@gmail.com",
+                      )
+                    ],
+                  ))
+            ],
+          ),
+        ),
+        Divider(
+          color: Colors.white.withAlpha(200),
+          height: 16,
+        )
+      ],
     );
   }
 }
