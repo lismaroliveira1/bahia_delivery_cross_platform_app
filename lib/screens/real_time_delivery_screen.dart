@@ -5,6 +5,7 @@ import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/order_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mapbox_navigation/library.dart';
 import 'package:location/location.dart';
@@ -36,8 +37,14 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
   String latitudeText = '';
   bool _navigationFinished;
   List<WayPoint> wayPoints = [];
+  bool orderFinished;
   @override
   void initState() {
+    if (widget.orderData.status == 4) {
+      orderFinished = true;
+    } else {
+      orderFinished = false;
+    }
     super.initState();
     getDeviceLocation();
     initialize();
@@ -122,14 +129,6 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  Text(
-                    longitudeText,
-                    style: TextStyle(fontSize: 26),
-                  ),
-                  Text(
-                    latitudeText,
-                    style: TextStyle(fontSize: 26),
-                  ),
                   SizedBox(
                     height: 10,
                   ),
@@ -205,114 +204,142 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                     child: Padding(
                       padding: EdgeInsets.all(10),
                       child: (Text(
-                        _instruction == null || _instruction.isEmpty
-                            ? "Localização atual"
-                            : _instruction,
+                        orderFinished
+                            ? 'Pedido Finalizado'
+                            : _instruction == null || _instruction.isEmpty
+                                ? "Localização atual"
+                                : _instruction,
                         style: TextStyle(color: Colors.white),
                         textAlign: TextAlign.center,
                       )),
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: 20.0, right: 20, top: 20, bottom: 10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Text("Tempo estimado: "),
-                            Text(_durationRemaining != null
-                                ? "${(_durationRemaining / 60).toStringAsFixed(0)} minutes"
-                                : "---")
-                          ],
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Text("Distancia: "),
-                            Text(_distanceRemaining != null
-                                ? "${(_distanceRemaining / 1000).toStringAsFixed(1)} Km"
-                                : "---")
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      height: 200,
-                      color: Colors.grey,
-                      child: MapBoxNavigationView(
-                        options: _options,
-                        onRouteEvent: _onEmbeddedRouteEvent,
-                        onCreated:
-                            (MapBoxNavigationViewController controller) async {
-                          _controller = controller;
-                          controller.initialize();
-                        },
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 18.0),
-                    child: Center(
-                      child: AnimatedButton(
-                        color: Colors.red,
-                        width: MediaQuery.of(context).size.width * 0.25,
-                        height: 40,
-                        onPressed: () async {
-                          final userOrigin = WayPoint(
-                            name: "Way Point 3",
-                            latitude: _locationData.latitude,
-                            longitude: _locationData.longitude,
-                          );
-                          final _stop1 = WayPoint(
-                            name: "Way Point 2",
-                            latitude: widget.orderData.clientLat,
-                            longitude: widget.orderData.clientLng,
-                          );
-                          wayPoints.add(userOrigin);
-                          wayPoints.add(_stop1);
-                          UserModel.of(context).setStatusOrder(
-                            orderData: widget.orderData,
-                            status: 2,
-                          );
-                          setState(() {
-                            isDeliverySending = true;
-                          });
-                          await _directions.startNavigation(
-                            wayPoints: wayPoints,
-                            options: MapBoxOptions(
-                              mode: MapBoxNavigationMode.walking,
-                              simulateRoute: false,
-                              language: "pt",
-                              allowsUTurnAtWayPoints: true,
-                              units: VoiceUnits.metric,
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'Entregar',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w500,
+                  !orderFinished
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                              left: 20.0, right: 20, top: 20, bottom: 10),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Text("Tempo estimado: "),
+                                  Text(_durationRemaining != null
+                                      ? "${(_durationRemaining / 60).toStringAsFixed(0)} minutes"
+                                      : "---")
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  Text("Distancia: "),
+                                  Text(_distanceRemaining != null
+                                      ? "${(_distanceRemaining / 1000).toStringAsFixed(1)} Km"
+                                      : "---")
+                                ],
+                              ),
+                            ],
                           ),
+                        )
+                      : Container(
+                          height: 0,
+                          width: 0,
                         ),
-                      ),
-                    ),
-                  ),
+                  !orderFinished
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            height: 200,
+                            color: Colors.grey,
+                            child: MapBoxNavigationView(
+                              options: _options,
+                              onRouteEvent: _onEmbeddedRouteEvent,
+                              onCreated: (MapBoxNavigationViewController
+                                  controller) async {
+                                _controller = controller;
+                                controller.initialize();
+                              },
+                            ),
+                          ),
+                        )
+                      : Container(
+                          height: 0,
+                          width: 0,
+                        ),
+                  !orderFinished
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 18.0),
+                          child: Center(
+                            child: AnimatedButton(
+                              color: Colors.red,
+                              width: MediaQuery.of(context).size.width * 0.25,
+                              height: 40,
+                              onPressed: () async {
+                                final userOrigin = WayPoint(
+                                  name: "Way Point 3",
+                                  latitude: _locationData.latitude,
+                                  longitude: _locationData.longitude,
+                                );
+                                final _stop1 = WayPoint(
+                                  name: "Way Point 2",
+                                  latitude: widget.orderData.clientLat,
+                                  longitude: widget.orderData.clientLng,
+                                );
+                                wayPoints.add(userOrigin);
+                                wayPoints.add(_stop1);
+                                UserModel.of(context).setStatusOrder(
+                                  orderData: widget.orderData,
+                                  status: 2,
+                                );
+                                setState(() {
+                                  isDeliverySending = true;
+                                });
+                                await _directions.startNavigation(
+                                  wayPoints: wayPoints,
+                                  options: MapBoxOptions(
+                                    mode: MapBoxNavigationMode.walking,
+                                    simulateRoute: false,
+                                    language: "pt",
+                                    allowsUTurnAtWayPoints: true,
+                                    units: VoiceUnits.metric,
+                                  ),
+                                );
+                              },
+                              child: Text(
+                                'Entregar',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          height: 0,
+                          width: 0,
+                        ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 18.0),
                     child: Center(
                       child: AnimatedButton(
-                        color: _navigationFinished ? Colors.red : Colors.grey,
+                        color: _navigationFinished && !orderFinished
+                            ? Colors.red
+                            : Colors.grey,
                         width: MediaQuery.of(context).size.width * 0.25,
                         height: 40,
-                        onPressed: _navigationFinished ? () async {} : null,
+                        onPressed: _navigationFinished && !orderFinished
+                            ? () async {
+                                await FirebaseFirestore.instance
+                                    .collection("orders")
+                                    .doc(widget.orderData.id)
+                                    .update({
+                                  "status": 4,
+                                });
+                              }
+                            : null,
                         child: Text(
-                          'Finalizar',
+                          orderFinished ? 'Pedido\nFinalizado' : 'Finalizar',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,

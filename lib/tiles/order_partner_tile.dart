@@ -264,64 +264,77 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                           ],
                         ),
                       ),
-                      Center(
-                        child: AnimatedButton(
-                          color: status > 1 ? Colors.red : Colors.grey,
-                          width: MediaQuery.of(context).size.width * 0.25,
-                          height: 40,
-                          onPressed: status > 1
-                              ? () {
-                                  widget.setDeliveryMan(widget.orderData.id);
-                                }
-                              : null,
-                          child: Text(
-                            'Entregador',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 12,
-                        ),
-                        child: snapshot.data["deliveryMan"] != "none"
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Column(
-                                    children: [
-                                      Container(
-                                        height: _imageSize,
-                                        width: _imageSize,
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                              snapshot.data["deliveryMan"]
-                                                  ["image"],
-                                            ),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Text(snapshot.data["deliveryMan"]
-                                            ["name"]),
-                                      ),
-                                    ],
+                      status != 5
+                          ? Center(
+                              child: AnimatedButton(
+                                color: status > 1 ? Colors.red : Colors.grey,
+                                width: MediaQuery.of(context).size.width * 0.25,
+                                height: 40,
+                                onPressed: status > 1
+                                    ? () {
+                                        widget.setDeliveryMan(
+                                            widget.orderData.id);
+                                      }
+                                    : null,
+                                child: Text(
+                                  'Entregador',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
                                   ),
-                                ],
-                              )
-                            : Container(
-                                height: 0,
-                                width: 0,
+                                ),
                               ),
-                      ),
+                            )
+                          : Container(
+                              height: 0,
+                              width: 0,
+                            ),
+                      status != 5
+                          ? Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                              ),
+                              child: snapshot.data["deliveryMan"] != "none"
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Column(
+                                          children: [
+                                            Container(
+                                              height: _imageSize,
+                                              width: _imageSize,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                image: DecorationImage(
+                                                  image: NetworkImage(
+                                                    snapshot.data["deliveryMan"]
+                                                        ["image"],
+                                                  ),
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(4.0),
+                                              child: Text(snapshot
+                                                  .data["deliveryMan"]["name"]),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    )
+                                  : Container(
+                                      height: 0,
+                                      width: 0,
+                                    ),
+                            )
+                          : Container(
+                              height: 0,
+                              width: 0,
+                            ),
                       Center(
                         child: Text(
                           "Status",
@@ -332,53 +345,116 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                       SizedBox(
                         height: 8.0,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          FlatButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: status == 1
-                                ? () async {
-                                    UserModel.of(context).authorizePayByPartner(
-                                      orderData: widget.orderData,
-                                    );
-                                    await FirebaseFirestore.instance
-                                        .collection("orders")
-                                        .doc(widget.orderData.id)
-                                        .update({
-                                      "status": 2,
-                                    });
+                      status == 5
+                          ? Center(
+                              child: Column(
+                                children: [
+                                  Container(
+                                    height: 60,
+                                    width: 60,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(12),
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                            'images/delete_icon.png'),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                FlatButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: status == 1
+                                      ? () async {
+                                          UserModel.of(context)
+                                              .authorizePayByPartner(
+                                            orderData: widget.orderData,
+                                          );
+                                          await FirebaseFirestore.instance
+                                              .collection("orders")
+                                              .doc(widget.orderData.id)
+                                              .update({
+                                            "status": 2,
+                                          });
 
-                                    setState(() {
-                                      firtstatus = "Pedido aceito";
-                                      status = 2;
-                                    });
-                                  }
-                                : null,
-                            child: _buildCircle("1", firtstatus, status, 1),
-                          ),
-                          Spacer(),
-                          FlatButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () async {
-                              await FirebaseFirestore.instance
-                                  .collection("orders")
-                                  .doc(widget.orderData.id)
-                                  .update({
-                                "status": 3,
-                              });
-                              setState(() {
-                                secondStatus = "Pedido enviado";
-                              });
-                            },
-                            child: _buildCircle("2", secondStatus, status, 2),
-                          ),
-                          Spacer(),
-                          FlatButton(
-                              onPressed: () {},
-                              child: _buildCircle("3", thirdStatus, status, 3))
-                        ],
-                      ),
+                                          setState(() {
+                                            firtstatus = "Pedido aceito";
+                                            status = 2;
+                                          });
+                                        }
+                                      : null,
+                                  child:
+                                      _buildCircle("1", firtstatus, status, 1),
+                                ),
+                                Spacer(),
+                                FlatButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: status == 2
+                                      ? () async {
+                                          if (snapshot.data["deliveryMan"] ==
+                                              "none") {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  "Defina quem é o entregador",
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                                backgroundColor: Colors.red,
+                                                duration: Duration(seconds: 2),
+                                              ),
+                                            );
+                                          } else {
+                                            await FirebaseFirestore.instance
+                                                .collection("orders")
+                                                .doc(widget.orderData.id)
+                                                .update({
+                                              "status": 3,
+                                            });
+                                            setState(() {
+                                              secondStatus = "Pedido enviado";
+                                            });
+                                          }
+                                        }
+                                      : () {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                "Você deve aceitar o pedido antes",
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              backgroundColor: Colors.red,
+                                              duration: Duration(seconds: 2),
+                                            ),
+                                          );
+                                        },
+                                  child: _buildCircle(
+                                      "2", secondStatus, status, 2),
+                                ),
+                                Spacer(),
+                                FlatButton(
+                                    onPressed: () {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            "Aguardando o reposta do entregador",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          backgroundColor: Colors.red,
+                                          duration: Duration(seconds: 2),
+                                        ),
+                                      );
+                                    },
+                                    child: _buildCircle(
+                                        "3", thirdStatus, status, 3))
+                              ],
+                            ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Center(
@@ -386,13 +462,126 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                             color: Colors.red,
                             width: MediaQuery.of(context).size.width * 0.25,
                             height: 40,
-                            onPressed: () {
-                              UserModel.of(context).cancelPayByPartner(
-                                orderData: widget.orderData,
-                              );
-                            },
+                            onPressed: status == 5
+                                ? null
+                                : () {
+                                    if (status == 3) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                          backgroundColor: Colors.white,
+                                          content: Container(
+                                            color: Colors.white,
+                                            height: 100,
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      "O Pedido já esta a caminho...\nTem certeza que deseja cancelar?",
+                                                      textAlign:
+                                                          TextAlign.start,
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color: Colors.black45,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                    top: 12,
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      FlatButton(
+                                                        onPressed: () {
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .hideCurrentSnackBar();
+                                                        },
+                                                        child: Container(
+                                                          height: 35,
+                                                          width: 90,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        4),
+                                                            color: Colors.red,
+                                                          ),
+                                                          child: Center(
+                                                            child: Text(
+                                                              "Não",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 18,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      FlatButton(
+                                                        onPressed: () {
+                                                          ScaffoldMessenger.of(
+                                                                  context)
+                                                              .hideCurrentSnackBar();
+                                                          UserModel.of(context)
+                                                              .cancelPayByPartner(
+                                                            orderData: widget
+                                                                .orderData,
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          height: 35,
+                                                          width: 90,
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        4),
+                                                            color: Colors.red,
+                                                          ),
+                                                          child: Center(
+                                                            child: Text(
+                                                              "Sim",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 18,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          duration: Duration(seconds: 2),
+                                        ),
+                                      );
+                                    } else {
+                                      UserModel.of(context).cancelPayByPartner(
+                                        orderData: widget.orderData,
+                                      );
+                                    }
+                                  },
                             child: Text(
-                              'Cancelar Pedido',
+                              status == 5
+                                  ? "Pedido Cancelado"
+                                  : 'Cancelar Pedido',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 18,
