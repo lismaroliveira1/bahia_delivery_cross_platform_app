@@ -57,10 +57,11 @@ class CieloPayment {
     return response.data;
   }
 
-  dynamic capturePayByCard({@required paymentId, int amount}) async {
+  dynamic capturePayByCard({
+    @required paymentId,
+  }) async {
     final Map<String, dynamic> data = {
-      'paymentId': paymentId,
-      'amount': amount, // Caso
+      'paymentId': paymentId, // Caso
     };
     final HttpsCallable callable = functions.httpsCallable('capturePayByCard');
     final response = await callable.call(data);

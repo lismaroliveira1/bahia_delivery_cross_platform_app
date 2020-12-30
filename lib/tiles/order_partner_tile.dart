@@ -17,11 +17,18 @@ class OrderPartnerTile extends StatefulWidget {
 }
 
 class _OrderPartnerTileState extends State<OrderPartnerTile> {
+  int statusGeneral;
   String firtstatus = "Aceitar Pedido";
   String secondStatus = "Enviar";
   String thirdStatus = "";
   String noImage = "https://meuvidraceiro.com.br/images/sem-imagem.png";
   List<ProductData> products = [];
+  @override
+  void initState() {
+    statusGeneral = 1;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double _imageSize = MediaQuery.of(context).size.width / 3;
@@ -83,6 +90,9 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                     ),
                   );
                 } else {
+                  if (snapshot.data["deliveryMan"] != "none") {
+                    statusGeneral = 3;
+                  }
                   int status = snapshot.data["status"];
                   switch (status) {
                     case 1:
@@ -256,12 +266,14 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                       ),
                       Center(
                         child: AnimatedButton(
-                          color: Colors.red,
+                          color: status > 1 ? Colors.red : Colors.grey,
                           width: MediaQuery.of(context).size.width * 0.25,
                           height: 40,
-                          onPressed: () {
-                            widget.setDeliveryMan(widget.orderData.id);
-                          },
+                          onPressed: status > 1
+                              ? () {
+                                  widget.setDeliveryMan(widget.orderData.id);
+                                }
+                              : null,
                           child: Text(
                             'Entregador',
                             style: TextStyle(
@@ -336,8 +348,10 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                                         .update({
                                       "status": 2,
                                     });
+
                                     setState(() {
                                       firtstatus = "Pedido aceito";
+                                      status = 2;
                                     });
                                   }
                                 : null,
@@ -616,19 +630,28 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
       backColor = Colors.green;
       child = Icon(Icons.check);
     }
-    return Column(
-      children: <Widget>[
-        CircleAvatar(
-          radius: 16.0,
-          backgroundColor: backColor,
-          child: child,
+    return Card(
+      elevation: 4,
+      child: Container(
+        height: 60,
+        width: 60,
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              CircleAvatar(
+                radius: 16.0,
+                backgroundColor: backColor,
+                child: child,
+              ),
+              Text(
+                subtitle,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 9),
+              )
+            ],
+          ),
         ),
-        Text(
-          subtitle,
-          textAlign: TextAlign.center,
-          style: TextStyle(fontSize: 9),
-        )
-      ],
+      ),
     );
   }
 }

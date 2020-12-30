@@ -19,10 +19,8 @@ const cielo = new Cielo(cieloParams);
 
 export const capturePayByCard = functions.https.onCall(async (data) => { 
     console.log(data.paymentId);
-    console.log(data.amount);
     const capturaVendaParams: CaptureRequestModel = {
         paymentId: data.paymentId,
-        amount: data.amount, 
     };
     const captureTransaction = await cielo.creditCard.captureSaleTransaction(capturaVendaParams);
     return captureTransaction;
@@ -31,7 +29,6 @@ export const capturePayByCard = functions.https.onCall(async (data) => {
 export const cancelPaybyCard = functions.https.onCall(async (data, context) => {
     const cancelamentoVendaParams: CancelTransactionRequestModel = {
         paymentId: data.paymentId,
-        amount: data.amount, 
     };  
     
     const cancelTransaction = await cielo.creditCard.cancelTransaction(cancelamentoVendaParams);

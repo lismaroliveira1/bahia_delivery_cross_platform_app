@@ -1516,7 +1516,7 @@ class UserModel extends Model {
       cartProducts.forEach((product) {
         totalPrice += product.price;
       });
-      totalPrice += shipePrice; 
+      totalPrice += shipePrice;
       response = await cieloPayment.authorizedDebitCard(
         creditDebitCardData: currentCreditDebitCardData,
         price: totalPrice,
@@ -2348,7 +2348,6 @@ class UserModel extends Model {
             final cieloPayment = new CieloPayment();
             response = await cieloPayment.capturePayByCard(
               paymentId: paymentId,
-              amount: (orderData.totalPrice * 100).toInt(),
             );
             print(response);
             if (response['returnMessage'] == 'Operation Successful') {
@@ -2372,6 +2371,7 @@ class UserModel extends Model {
     if (isLoggedIn()) {
       if (userData.isPartner == 1) {
         try {
+          print("ok");
           DocumentSnapshot orderDoc = await FirebaseFirestore.instance
               .collection("orders")
               .doc(orderData.id)
@@ -2396,7 +2396,9 @@ class UserModel extends Model {
               "status": 5,
             });
           }
-        } catch (error) {}
+        } catch (error) {
+          print(error);
+        }
       }
     }
   }
