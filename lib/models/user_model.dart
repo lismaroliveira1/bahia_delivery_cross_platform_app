@@ -95,7 +95,7 @@ class UserModel extends Model {
 
   @override
   void addListener(VoidCallback listener) async {
-    _determinePosition();
+    await _determinePosition();
     _loadCurrentUser();
     super.addListener(listener);
   }
@@ -601,6 +601,7 @@ class UserModel extends Model {
   Future<void> getListHomeStores() async {
     if (isLoggedIn()) {
       storeHomeList.clear();
+      userPostion = await _determinePosition();
       latLngDevice = LatLng(
         userPostion.latitude,
         userPostion.longitude,
