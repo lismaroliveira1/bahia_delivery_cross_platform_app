@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bd_app_full/blocs/login_bloc.dart';
 import 'package:bd_app_full/data/user_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
@@ -234,25 +236,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _onSuccess() {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
-        "Usuário criado com sucesso",
+        "Usuário logado com sucesso",
         textAlign: TextAlign.center,
       ),
       backgroundColor: Colors.red,
       duration: Duration(seconds: 2),
     ));
     Future.delayed(Duration(seconds: 2)).then((_) {
-      Navigator.pushReplacement(
-        context,
-        PageTransition(
-          type: PageTransitionType.rightToLeft,
-          child: HomeScreen(),
-          inheritTheme: true,
-          duration: Duration(
-            milliseconds: 350,
-          ),
-          ctx: context,
-        ),
-      );
+      Navigator.of(context).pop();
     });
   }
 

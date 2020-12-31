@@ -21,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final SearchTab _searchTab = SearchTab();
   final ProfileTab _profileTab = ProfileTab();
   Widget _showPage = new HomeTab();
+
   List<MenuItem> itens = [
     new MenuItem<int>(
       id: 0,

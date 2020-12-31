@@ -52,6 +52,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
   PermissionStatus _permissionGranted;
   LocationData _locationData;
   Location location = Location();
+
   Set<Marker> _markers = HashSet<Marker>();
   FirebaseApp firebaseApp;
   FirebaseDatabase database;

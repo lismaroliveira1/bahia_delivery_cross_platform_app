@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:bd_app_full/blocs/login_bloc.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 
@@ -48,9 +51,11 @@ class _SetupUserTabState extends State<SetupUserTab> {
                         )),
                     child: ListTile(
                       onTap: () {
-                        UserModel.of(context).signOut(
-                          onSuccess: _onSuccess,
-                        );
+                        Timer(Duration(milliseconds: 500), () {
+                          UserModel.of(context).signOut(
+                            onSuccess: _onSuccess,
+                          );
+                        });
                       },
                       dense: true,
                       leading: Icon(

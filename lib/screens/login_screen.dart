@@ -1,10 +1,10 @@
+import 'dart:async';
+
 import 'package:bd_app_full/blocs/login_bloc.dart';
 import 'package:bd_app_full/data/user_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/home_screen.dart';
 import 'package:bd_app_full/screens/register_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -18,6 +18,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final UserData user = UserData();
+  
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -238,19 +243,9 @@ class _LoginScreenState extends State<LoginScreen> {
         duration: Duration(seconds: 2),
       ),
     );
-    Navigator.push(
-      context,
-      PageTransition(
-        type: PageTransitionType.rightToLeft,
-        child: HomeScreen(),
-        inheritTheme: true,
-        duration: Duration(
-          milliseconds: 350,
-        ),
-        ctx: context,
-      ),
-    );
-    Navigator.of(context).pop();
+    Timer(Duration(milliseconds: 2500), () {
+      Navigator.of(context).pop();
+    });
   }
 
   void _onFail() {

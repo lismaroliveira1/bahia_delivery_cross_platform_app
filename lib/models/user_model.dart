@@ -29,6 +29,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geodesy/geodesy.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:location/location.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -77,9 +78,9 @@ class UserModel extends Model {
   List<DeliveryManData> deliveryMans = [];
   LatLng latLngDevice;
   LatLng realTimeDeliveryManCoordinates;
-
+  bool isLogged = false;
   Location location = new Location();
-  bool _serviceEnabled;
+  bool _serviceEnabled = false;
   PermissionStatus _permissionGranted;
   LocationData _locationData;
   List<OrderData> deliveryManRacers = [];
@@ -87,12 +88,14 @@ class UserModel extends Model {
   FirebaseApp app;
   FirebaseAuth _auth = FirebaseAuth.instance;
   List<CouponData> couponsList = [];
+  Position userPostion;
 
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
 
   @override
   void addListener(VoidCallback listener) async {
+    _determinePosition();
     _loadCurrentUser();
     super.addListener(listener);
   }
@@ -106,31 +109,38 @@ class UserModel extends Model {
     notifyListeners();
     if (firebaseUser == null) {
       firebaseUser = _auth.currentUser;
+      if (_auth.currentUser != null) {
+        isLogged = true;
+      }
     }
-    try {
-      app = await Firebase.initializeApp(
-        options: FirebaseOptions(
-          appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
-          apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
-          messagingSenderId: '411754724192',
-          projectId: 'bahia-delivery-app-cp',
-          databaseURL: 'bahia-delivery-app-cp.appspot.com',
-        ),
-      );
-      DocumentSnapshot docUser = await FirebaseFirestore.instance
-          .collection("users")
-          .doc(firebaseUser.uid)
-          .get();
-      userData = UserData(
-        name: docUser.get("name"),
-        image: docUser.get("image"),
-        email: firebaseUser.email,
-        isPartner: docUser.get("isPartner"),
-        storeId: docUser.get("isPartner") == 1 ? docUser.get("storeId") : "",
-        deliveryManId:
-            docUser.get("isPartner") == 6 ? docUser.get("deliveryManId") : "",
-      );
-    } catch (erro) {}
+    if (isLoggedIn()) {
+      try {
+        app = await Firebase.initializeApp(
+          options: FirebaseOptions(
+            appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
+            apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
+            messagingSenderId: '411754724192',
+            projectId: 'bahia-delivery-app-cp',
+            databaseURL: 'bahia-delivery-app-cp.appspot.com',
+          ),
+        );
+        DocumentSnapshot docUser = await FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .get();
+        userData = UserData(
+          name: docUser.get("name"),
+          image: docUser.get("image"),
+          email: firebaseUser.email,
+          isPartner: docUser.get("isPartner"),
+          storeId: docUser.get("isPartner") == 1 ? docUser.get("storeId") : "",
+          deliveryManId:
+              docUser.get("isPartner") == 6 ? docUser.get("deliveryManId") : "",
+        );
+      } catch (erro) {
+        print(erro);
+      }
+    }
     await getListOfCategory();
     await getListHomeStores();
     await getOrders();
@@ -209,8 +219,13 @@ class UserModel extends Model {
       } else {
         onFailGoogle();
       }
-    } catch (erro) {
+    } catch (error) {
       onFail();
+      await FirebaseFirestore.instance.collection("errors").add({
+        "erro": "Google Sign up" + error.toString(),
+        "userId": firebaseUser.uid,
+        "errorAt": DateTime.now(),
+      });
     }
   }
 
@@ -220,7 +235,6 @@ class UserModel extends Model {
     @required VoidCallback onFail,
   }) async {
     try {
-      print(user.email);
       final UserCredential result = await _auth.createUserWithEmailAndPassword(
         email: user.email,
         password: user.password,
@@ -236,13 +250,56 @@ class UserModel extends Model {
         "name": user.name,
         "phoneNumber": "",
       });
+      userData = UserData(
+        name: user.name,
+        image: "https://meuvidraceiro.com.br/images/sem-imagem.png",
+        email: user.email,
+        isPartner: 3,
+        storeId: "",
+        deliveryManId: "",
+      );
       saveToken();
-      _loadCurrentUser();
+      app = await Firebase.initializeApp(
+        options: FirebaseOptions(
+          appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
+          apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
+          messagingSenderId: '411754724192',
+          projectId: 'bahia-delivery-app-cp',
+          databaseURL: 'bahia-delivery-app-cp.appspot.com',
+        ),
+      );
+      await getListOfCategory();
+      await getListHomeStores();
+      await getOrders();
+      getcartProductList();
+      getComboCartItens();
       onSuccess();
+      isLogged = true;
+      isLoading = false;
+      isReady = true;
       notifyListeners();
+      getPaymentUserForms();
+      updateFavoritList();
+      getDeliveryPartnersList();
+      getPartnerData();
+      getProductsPartnerList();
+      getSectionList();
+      getPartnerOffSales();
+      getComboList();
+      getPartnerOrderList();
+      getPurchasedStoresList();
+      getAllProductsToList();
+      getPaymentUserForms();
+      getDeliveryManData();
+      getListOfCoupons();
     } catch (error) {
       print(error);
       onFail();
+      await FirebaseFirestore.instance.collection("errors").add({
+        "erro": error.toString(),
+        "userId": firebaseUser.uid,
+        "errorAt": DateTime.now(),
+      });
     }
   }
 
@@ -265,9 +322,64 @@ class UserModel extends Model {
       );
       this.firebaseUser = result.user;
       saveToken();
-      _loadCurrentUser();
+      try {
+        app = await Firebase.initializeApp(
+          options: FirebaseOptions(
+            appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
+            apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
+            messagingSenderId: '411754724192',
+            projectId: 'bahia-delivery-app-cp',
+            databaseURL: 'bahia-delivery-app-cp.appspot.com',
+          ),
+        );
+        DocumentSnapshot docUser = await FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .get();
+        userData = UserData(
+          name: docUser.get("name"),
+          image: docUser.get("image"),
+          email: firebaseUser.email,
+          isPartner: docUser.get("isPartner"),
+          storeId: docUser.get("isPartner") == 1 ? docUser.get("storeId") : "",
+          deliveryManId:
+              docUser.get("isPartner") == 6 ? docUser.get("deliveryManId") : "",
+        );
+      } catch (erro) {
+        print(erro);
+      }
+      await getListOfCategory();
+      await getListHomeStores();
+      await getOrders();
+      getcartProductList();
+      getComboCartItens();
+      getPaymentUserForms();
+      updateFavoritList();
+      getDeliveryPartnersList();
+      getPartnerData();
+      getProductsPartnerList();
+      getSectionList();
+      getPartnerOffSales();
+      getComboList();
+      getPartnerOrderList();
+      getPurchasedStoresList();
+      getAllProductsToList();
+      getPaymentUserForms();
+      getDeliveryManData();
+      getListOfCoupons();
+      onSuccess();
+      isLogged = true;
+      isLoading = false;
+      isReady = true;
       notifyListeners();
-    } catch (erro) {}
+      notifyListeners();
+    } catch (error) {
+      await FirebaseFirestore.instance.collection("errors").add({
+        "erro": error.toString(),
+        "userId": firebaseUser.uid,
+        "errorAt": DateTime.now(),
+      });
+    }
   }
 
   void signOut({
@@ -278,6 +390,7 @@ class UserModel extends Model {
     await _auth.signOut();
     firebaseUser = null;
     onSuccess();
+    isLogged = false;
     isLoading = false;
     notifyListeners();
     firebaseUser = null;
@@ -333,10 +446,65 @@ class UserModel extends Model {
         "image": firebaseUser.photoURL,
       });
       saveToken();
-      _loadCurrentUser();
+      try {
+        app = await Firebase.initializeApp(
+          options: FirebaseOptions(
+            appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
+            apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
+            messagingSenderId: '411754724192',
+            projectId: 'bahia-delivery-app-cp',
+            databaseURL: 'bahia-delivery-app-cp.appspot.com',
+          ),
+        );
+        DocumentSnapshot docUser = await FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .get();
+        userData = UserData(
+          name: docUser.get("name"),
+          image: docUser.get("image"),
+          email: firebaseUser.email,
+          isPartner: docUser.get("isPartner"),
+          storeId: docUser.get("isPartner") == 1 ? docUser.get("storeId") : "",
+          deliveryManId:
+              docUser.get("isPartner") == 6 ? docUser.get("deliveryManId") : "",
+        );
+      } catch (error) {
+        await FirebaseFirestore.instance.collection("errors").add({
+          "erro": "Google Sign in" + error.toString(),
+          "userId": firebaseUser.uid,
+          "errorAt": DateTime.now(),
+        });
+      }
+      await getListOfCategory();
+      await getListHomeStores();
+      await getOrders();
+      getcartProductList();
+      getComboCartItens();
+      getPaymentUserForms();
+      updateFavoritList();
+      getDeliveryPartnersList();
+      getPartnerData();
+      getProductsPartnerList();
+      getSectionList();
+      getPartnerOffSales();
+      getComboList();
+      getPartnerOrderList();
+      getPurchasedStoresList();
+      getAllProductsToList();
+      getPaymentUserForms();
+      getDeliveryManData();
+      getListOfCoupons();
+      onSuccess();
+      isLoading = false;
+      isReady = true;
       notifyListeners();
-    } catch (erro) {
-      print(erro);
+    } catch (error) {
+      await FirebaseFirestore.instance.collection("errors").add({
+        "erro": "Google Sign in 2" + error.toString(),
+        "userId": firebaseUser.uid,
+        "errorAt": DateTime.now(),
+      });
     }
     notifyListeners();
   }
@@ -433,10 +601,9 @@ class UserModel extends Model {
   Future<void> getListHomeStores() async {
     if (isLoggedIn()) {
       storeHomeList.clear();
-      _locationData = await location.getLocation();
       latLngDevice = LatLng(
-        _locationData.latitude,
-        _locationData.longitude,
+        userPostion.latitude,
+        userPostion.longitude,
       );
       try {
         QuerySnapshot querySnapshot =
@@ -1875,8 +2042,33 @@ class UserModel extends Model {
       }
     }
     _locationData = await location.getLocation();
-    print(_locationData.latitude);
-    print(_locationData.longitude);
+  }
+
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permantly denied, we cannot request permissions.');
+    }
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission != LocationPermission.whileInUse &&
+          permission != LocationPermission.always) {
+        return Future.error(
+            'Location permissions are denied (actual value: $permission).');
+      }
+    }
+    userPostion = await Geolocator.getCurrentPosition();
+    return await Geolocator.getCurrentPosition();
   }
 
   void addComboToCart({
@@ -2186,15 +2378,17 @@ class UserModel extends Model {
   }
 
   Future<void> getDeliveryManData() async {
-    if (userData.isPartner == 6) {
-      try {
-        DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
-            .collection("deliveryMans")
-            .doc(userData.deliveryManId)
-            .get();
-        userData.userDeliveryMan =
-            DeliveryManData.fromDocument(documentSnapshot);
-      } catch (erro) {}
+    if (isLoggedIn()) {
+      if (userData.isPartner == 6) {
+        try {
+          DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+              .collection("deliveryMans")
+              .doc(userData.deliveryManId)
+              .get();
+          userData.userDeliveryMan =
+              DeliveryManData.fromDocument(documentSnapshot);
+        } catch (erro) {}
+      }
     }
   }
 
