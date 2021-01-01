@@ -94,7 +94,7 @@ class _HomeTabState extends State<HomeTab> {
                       child: FlatButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                          Scaffold.of(context).hideCurrentSnackBar();
                           Timer(Duration(milliseconds: 500), () {
                             Navigator.push(
                               context,
@@ -449,7 +449,7 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   void loadAddres() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.grey[100],
         shape: RoundedRectangleBorder(
@@ -484,7 +484,7 @@ class _HomeTabState extends State<HomeTab> {
                       ),
                     ),
                     onPressed: () {
-                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                      Scaffold.of(context).hideCurrentSnackBar();
                       Timer(Duration(milliseconds: 500), () {
                         Navigator.push(
                           context,

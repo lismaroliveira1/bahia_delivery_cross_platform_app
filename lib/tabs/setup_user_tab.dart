@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:bd_app_full/blocs/login_bloc.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 

@@ -18,7 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final UserData user = UserData();
-  
+
   @override
   void initState() {
     super.initState();
@@ -233,7 +233,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onSuccess() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Usuário logado com sucesso",
@@ -249,7 +249,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onFail() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text("Falha ao realizar login", textAlign: TextAlign.center),
         backgroundColor: Colors.red,
@@ -259,7 +259,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onFailGoogle() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Conta Google não registrada",
@@ -272,7 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onFailFacebook() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Conta Facebook não registrada",

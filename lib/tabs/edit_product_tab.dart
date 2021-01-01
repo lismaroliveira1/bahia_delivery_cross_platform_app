@@ -101,7 +101,7 @@ class _EditProductTabState extends State<EditProductTab> {
                             right: 4.0,
                             child: IconButton(
                               onPressed: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
+                                Scaffold.of(context).showSnackBar(
                                   SnackBar(
                                     backgroundColor: Colors.redAccent,
                                     shape: RoundedRectangleBorder(
@@ -387,7 +387,7 @@ class _EditProductTabState extends State<EditProductTab> {
   }
 
   void _onSectionPressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
@@ -420,7 +420,7 @@ class _EditProductTabState extends State<EditProductTab> {
                     ),
                     IconButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        Scaffold.of(context).hideCurrentSnackBar();
                       },
                       icon: Icon(
                         Icons.close_rounded,
@@ -456,8 +456,7 @@ class _EditProductTabState extends State<EditProductTab> {
                                 productData.category = section.title;
                                 productData.categoryId = section.id;
                               });
-                              ScaffoldMessenger.of(context)
-                                  .hideCurrentSnackBar();
+                              Scaffold.of(context).hideCurrentSnackBar();
                             },
                             title: Text(
                               section.title,
@@ -503,7 +502,7 @@ class _EditProductTabState extends State<EditProductTab> {
 
   void _onSubSectionPressed() {
     if (sectionStore == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      Scaffold.of(context).showSnackBar(
         SnackBar(
           content: Text(
             "Primeiro escolha a seção",
@@ -515,7 +514,7 @@ class _EditProductTabState extends State<EditProductTab> {
       );
       _onSectionPressed();
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
+      Scaffold.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
@@ -542,8 +541,7 @@ class _EditProductTabState extends State<EditProductTab> {
                                 subSectionData = subsection;
                                 productData.group = subsection.title;
                               });
-                              ScaffoldMessenger.of(context)
-                                  .hideCurrentSnackBar();
+                              Scaffold.of(context).hideCurrentSnackBar();
                             },
                             title: Text(
                               subsection.title,

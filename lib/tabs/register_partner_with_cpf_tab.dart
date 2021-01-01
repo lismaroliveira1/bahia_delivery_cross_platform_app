@@ -430,7 +430,7 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
   }
 
   void _onYesPressed() {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).hideCurrentSnackBar();
     Navigator.push(
       context,
       new PageTransition(
@@ -446,7 +446,7 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
   }
 
   void noChoosedBiryhDay() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       new SnackBar(
         content: new Text(
           "Escolha a data de nascimento",
@@ -461,7 +461,7 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
   }
 
   void noChoosedLocation() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       new SnackBar(
         content: new Text(
           "Escolha a localização da loja",
@@ -474,7 +474,7 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
   }
 
   void noChoosedLocationAndBirthDay() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       new SnackBar(
         content: new Text(
           "Escolha a localização da loja e a sua data de nascimento",

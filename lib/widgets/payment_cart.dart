@@ -24,7 +24,7 @@ class _PaymentCardState extends State<PaymentCard> {
         return FlatButton(
           padding: EdgeInsets.zero,
           onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            Scaffold.of(context).hideCurrentSnackBar();
             Duration(seconds: 10);
             Navigator.push(
               context,

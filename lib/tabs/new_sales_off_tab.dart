@@ -89,7 +89,7 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                           right: 4.0,
                           child: IconButton(
                             onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              Scaffold.of(context).showSnackBar(
                                 SnackBar(
                                   backgroundColor: Colors.redAccent,
                                   shape: RoundedRectangleBorder(
@@ -367,7 +367,7 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                                     onSuccess: _onSuccess,
                                   );
                                 } else {
-                                  ScaffoldMessenger.of(context).showSnackBar(
+                                  Scaffold.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
                                         "É necessário escolher o produto",
@@ -420,7 +420,7 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
   }
 
   void _onProductButtonPressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.white,
         duration: Duration(
@@ -480,7 +480,7 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                                         productData = product;
                                         isProductSelected = true;
                                       });
-                                      ScaffoldMessenger.of(context)
+                                      Scaffold.of(context)
                                           .hideCurrentSnackBar();
                                     },
                                     dense: true,
@@ -533,7 +533,7 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                   color: Colors.black54,
                 ),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  Scaffold.of(context).hideCurrentSnackBar();
                 },
               ),
             )

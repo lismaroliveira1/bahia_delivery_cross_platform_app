@@ -179,7 +179,7 @@ class _ChatUserOrderTabState extends State<ChatUserOrderTab> {
   }
 
   void onSendImagePressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.redAccent,
         shape: RoundedRectangleBorder(

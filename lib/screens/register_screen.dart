@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:bd_app_full/blocs/login_bloc.dart';
 import 'package:bd_app_full/data/user_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/home_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -137,7 +135,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         formKey.currentState.save();
                                         if (user.password !=
                                             user.confirmPassword) {
-                                          ScaffoldMessenger.of(context)
+                                          Scaffold.of(context)
                                               .showSnackBar(SnackBar(
                                             content: const Text(
                                                 'Senhas não coincidem!'),
@@ -234,7 +232,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _onSuccess() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    Scaffold.of(context).showSnackBar(SnackBar(
       content: Text(
         "Usuário logado com sucesso",
         textAlign: TextAlign.center,
@@ -248,7 +246,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _onFail() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    Scaffold.of(context).showSnackBar(SnackBar(
       content: Text("Falha ao criar o usuário", textAlign: TextAlign.center),
       backgroundColor: Colors.red,
       duration: Duration(seconds: 2),
@@ -256,7 +254,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _onFailGoogle() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    Scaffold.of(context).showSnackBar(SnackBar(
       content: Text(
         "Esta conta Google já foi registrada",
         textAlign: TextAlign.center,
@@ -267,7 +265,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _onFailFacebook() {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    Scaffold.of(context).showSnackBar(SnackBar(
       content: Text(
         "Esta conta Facebook já foi registrada",
         textAlign: TextAlign.center,

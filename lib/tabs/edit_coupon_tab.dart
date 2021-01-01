@@ -287,7 +287,7 @@ class _EditCouponTabState extends State<EditCouponTab> {
                           if (isPeriodChoosed) {
                             Navigator.of(context).pop();
                           } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            Scaffold.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
                                   "Selecione a data final",
@@ -349,7 +349,7 @@ class _EditCouponTabState extends State<EditCouponTab> {
   void _onSuccess() {}
   void _onFail() {}
   void noPeriodConfigured() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "É Necessário definir o período de vigência do cupom",

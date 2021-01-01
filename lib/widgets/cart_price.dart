@@ -285,8 +285,8 @@ class _CartPriceState extends State<CartPrice> {
   void _onFailOnApp() {}
 
   _onCardExpired() {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Cartão inválido",
@@ -299,8 +299,8 @@ class _CartPriceState extends State<CartPrice> {
   }
 
   void _onTimeOut() {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Tempo expirado tente novamente",
@@ -313,8 +313,8 @@ class _CartPriceState extends State<CartPrice> {
   }
 
   void _onFailDebitCard() {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Tente usar outro cartão de débito",
@@ -327,8 +327,8 @@ class _CartPriceState extends State<CartPrice> {
   }
 
   void noAddressConfigured() {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).hideCurrentSnackBar();
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Tente usar outro cartão de débito",

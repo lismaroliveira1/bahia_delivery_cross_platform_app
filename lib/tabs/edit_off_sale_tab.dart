@@ -87,7 +87,7 @@ class _EditSaleOffTabState extends State<EditSaleOffTab> {
                           right: 4.0,
                           child: IconButton(
                             onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              Scaffold.of(context).showSnackBar(
                                 SnackBar(
                                   backgroundColor: Colors.redAccent,
                                   shape: RoundedRectangleBorder(
@@ -387,7 +387,7 @@ class _EditSaleOffTabState extends State<EditSaleOffTab> {
   }
 
   void _onProductButtonPressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.white,
         duration: Duration(
@@ -448,7 +448,7 @@ class _EditSaleOffTabState extends State<EditSaleOffTab> {
                                       setState(() {
                                         productData = productFlagData;
                                       });
-                                      ScaffoldMessenger.of(context)
+                                      Scaffold.of(context)
                                           .hideCurrentSnackBar();
                                     },
                                     dense: true,
@@ -501,7 +501,7 @@ class _EditSaleOffTabState extends State<EditSaleOffTab> {
                   color: Colors.black54,
                 ),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  Scaffold.of(context).hideCurrentSnackBar();
                 },
               ),
             )

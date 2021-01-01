@@ -314,7 +314,7 @@ class _CartTileState extends State<CartTile> {
 
   void _onSuccess() {
     if (!(UserModel.of(context).cartProducts.length == 0)) {
-      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      Scaffold.of(context).hideCurrentSnackBar();
     }
   }
 

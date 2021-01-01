@@ -228,7 +228,7 @@ PODS:
     - Firebase/Firestore (~> 6.33.0)
     - firebase_core
     - Flutter
-  - cloud_functions (0.7.1):
+  - cloud_functions (0.7.2):
     - Firebase/CoreOnly (~> 6.33.0)
     - Firebase/Functions (~> 6.33.0)
     - firebase_core
@@ -253,7 +253,7 @@ PODS:
   - Firebase/Storage (6.33.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 3.9.0)
-  - firebase_auth (0.18.3-1):
+  - firebase_auth (0.18.4-1):
     - Firebase/Auth (~> 6.33.0)
     - Firebase/CoreOnly (~> 6.33.0)
     - firebase_core
@@ -271,7 +271,7 @@ PODS:
     - Firebase/Messaging (~> 6.33.0)
     - firebase_core
     - Flutter
-  - firebase_storage (5.1.0):
+  - firebase_storage (5.2.0):
     - Firebase/CoreOnly (~> 6.33.0)
     - Firebase/Storage (~> 6.33.0)
     - firebase_core
@@ -336,6 +336,8 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
+  - geolocator (6.1.9):
+    - Flutter
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps (< 3.10)
@@ -435,6 +437,8 @@ PODS:
   - nanopb/encode (1.30906.0)
   - path_provider (0.0.1):
     - Flutter
+  - "permission_handler (5.0.1+1)":
+    - Flutter
   - Polyline (4.2.1)
   - primary_secondary_progress_bar (0.0.1):
     - Flutter
@@ -456,11 +460,13 @@ DEPENDENCIES:
   - firebase_storage (from `.symlinks/plugins/firebase_storage/ios`)
   - Flutter (from `Flutter`)
   - flutter_mapbox_navigation (from `.symlinks/plugins/flutter_mapbox_navigation/ios`)
+  - geolocator (from `.symlinks/plugins/geolocator/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - location (from `.symlinks/plugins/location/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - primary_secondary_progress_bar (from `.symlinks/plugins/primary_secondary_progress_bar/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
 
@@ -524,6 +530,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_mapbox_navigation:
     :path: ".symlinks/plugins/flutter_mapbox_navigation/ios"
+  geolocator:
+    :path: ".symlinks/plugins/geolocator/ios"
   google_maps_flutter:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
   google_sign_in:
@@ -534,6 +542,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/location/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
   primary_secondary_progress_bar:
     :path: ".symlinks/plugins/primary_secondary_progress_bar/ios"
   sqflite:
@@ -544,13 +554,13 @@ SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   cloud_firestore: b8c0e15fa49dfff87c2817d288b577e5dca2df13
-  cloud_functions: c6286570d13cf0111ef76b0f708b369e06ae3741
+  cloud_functions: 322f7aacaf0d6736d4365a0d33eb93e74c0469a6
   Firebase: 8db6f2d1b2c5e2984efba4949a145875a8f65fe5
-  firebase_auth: cb33b01b51904969161403bbcb20036519f0c578
+  firebase_auth: d5159db3873478d1ac839af7b10d2f831516136a
   firebase_core: 5d6a02f3d85acd5f8321c2d6d62877626a670659
   firebase_database: a3737781469b5275f899e04fcb0aa556f37e400a
   firebase_messaging: 0aea2cd5885b65e19ede58ee3507f485c992cc75
-  firebase_storage: 617bd8f94dc9948a70dddb85ccc4d61a898735fd
+  firebase_storage: a023e199edb807d8481c8aa722c8516f462ffab2
   FirebaseAuth: c92d49ada7948d1a23466e3db17bc4c2039dddc3
   FirebaseCore: d889d9e12535b7f36ac8bfbf1713a0836a3012cd
   FirebaseCoreDiagnostics: 770ac5958e1372ce67959ae4b4f31d8e127c3ac1
@@ -564,6 +574,7 @@ SPEC CHECKSUMS:
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_mapbox_navigation: a66c99eb5caac2fba63df3284e87c23bbc998362
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
+  geolocator: 057a0c63a43e9c5296d8ad845a3ac8e6df23d899
   google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
   google_sign_in: 6bd214b9c154f881422f5fe27b66aaa7bbd580cc
   GoogleDataTransport: f56af7caa4ed338dc8e138a5d7c5973e66440833
@@ -587,6 +598,7 @@ SPEC CHECKSUMS:
   MapboxSpeech: 67a558a672dc2b6266a993f4624895f69e58d105
   nanopb: 59317e09cf1f1a0af72f12af412d54edf52603fc
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  permission_handler: eac8e15b4a1a3fba55b761d19f3f4e6b005d15b6
   Polyline: 0e9890790292741c8186201a536b6bb6a78d02dd
   primary_secondary_progress_bar: f04b551598aa0a205269583b685de3ba5d829ca9
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f

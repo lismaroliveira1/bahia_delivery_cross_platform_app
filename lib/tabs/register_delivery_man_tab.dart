@@ -671,7 +671,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
   }
 
   void noChoosedBiryhDay() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       new SnackBar(
         content: new Text(
           "Escolha a data de nascimento",
@@ -686,7 +686,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
   }
 
   void noChoosedLocation() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       new SnackBar(
         content: new Text(
           "Escolha a localização da loja",
@@ -699,7 +699,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
   }
 
   void noChoosedLocationAndBirthDay() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       new SnackBar(
         content: new Text(
           "Escolha a localização da loja e a sua data de nascimento",
@@ -712,7 +712,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
   }
 
   void _onEditImagePressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.redAccent,
         shape: RoundedRectangleBorder(
@@ -745,12 +745,12 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                     setState(() {
                       isImageChoosed = true;
                     });
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    Scaffold.of(context).hideCurrentSnackBar();
                   } catch (e) {
                     setState(() {
                       isImageChoosed = false;
                     });
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    Scaffold.of(context).hideCurrentSnackBar();
                   }
                 },
                 child: Container(
@@ -778,12 +778,12 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                     setState(() {
                       isImageChoosed = true;
                     });
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    Scaffold.of(context).hideCurrentSnackBar();
                   } catch (e) {
                     setState(() {
                       isImageChoosed = false;
                     });
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    Scaffold.of(context).hideCurrentSnackBar();
                   }
                 },
                 child: Container(
@@ -802,7 +802,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
   }
 
   void _onFailImage() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "É necessário fazer o upload da imagem",
@@ -821,7 +821,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
   void _onFail() {}
 
   void onPhotoDriverPressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.redAccent,
         shape: RoundedRectangleBorder(
@@ -854,12 +854,12 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                     setState(() {
                       isImageDriverChoosed = true;
                     });
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    Scaffold.of(context).hideCurrentSnackBar();
                   } catch (e) {
                     setState(() {
                       isImageDriverChoosed = false;
                     });
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    Scaffold.of(context).hideCurrentSnackBar();
                   }
                 },
                 child: Container(
@@ -887,12 +887,12 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                     setState(() {
                       isImageDriverChoosed = true;
                     });
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    Scaffold.of(context).hideCurrentSnackBar();
                   } catch (e) {
                     setState(() {
                       isImageChoosed = false;
                     });
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    Scaffold.of(context).hideCurrentSnackBar();
                   }
                 },
                 child: Container(
@@ -911,7 +911,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
   }
 
   void _onFailDriverImage() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "É necessário fazer o upload da sua foto com a sua carteira de motorista",
@@ -924,7 +924,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
   }
 
   void _onFailTypeVehycle() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "É necessário Escolher o tipo do veículo",

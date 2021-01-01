@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bd_app_full/blocs/register_partner_block.dart';
 import 'package:bd_app_full/data/request_partner_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -33,7 +35,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
   File imageFile;
   String closeTime;
   String openTime;
-  final picker = ImagePicker();
+  final ImagePicker _picker = ImagePicker();
   RequestPartnerData requestPartnerData;
   final String imageUrl = "https://meuvidraceiro.com.br/images/sem-imagem.png";
   @override
@@ -404,7 +406,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
   }
 
   void onButtonSendPressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
@@ -421,7 +423,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
   }
 
   void _onEditImagePressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.redAccent,
         shape: RoundedRectangleBorder(
@@ -442,10 +444,12 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                 ),
                 onPressed: () async {
                   try {
-                    final _pickedFile = await picker.getImage(
+                    Scaffold.of(context).hideCurrentSnackBar();
+                    PickedFile _pickedFile = await _picker.getImage(
                       source: ImageSource.gallery,
                       maxHeight: 500,
                       maxWidth: 500,
+                      imageQuality: 80,
                     );
                     if (_pickedFile == null) return;
                     imageFile = File(_pickedFile.path);
@@ -454,10 +458,17 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                     setState(() {
                       isImageChoosed = true;
                     });
-                  } catch (e) {
+                  } catch (error) {
+                    await FirebaseFirestore.instance.collection("errors").add({
+                      "erro": "No get image register store details - Gallery" +
+                          error.toString(),
+                      "userId": UserModel.of(context).firebaseUser.uid,
+                      "errorAt": DateTime.now(),
+                    });
                     setState(() {
                       isImageChoosed = false;
                     });
+                    retrieveLostData();
                   }
                 },
                 child: Container(
@@ -474,10 +485,12 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                 ),
                 onPressed: () async {
                   try {
-                    final _pickedFile = await picker.getImage(
+                    Scaffold.of(context).hideCurrentSnackBar();
+                    PickedFile _pickedFile = await _picker.getImage(
                       source: ImageSource.camera,
                       maxHeight: 500,
                       maxWidth: 500,
+                      imageQuality: 80,
                     );
                     if (_pickedFile == null) return;
                     imageFile = File(_pickedFile.path);
@@ -486,10 +499,17 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                     setState(() {
                       isImageChoosed = true;
                     });
-                  } catch (e) {
+                  } catch (error) {
+                    await FirebaseFirestore.instance.collection("errors").add({
+                      "erro": "No get image register store details - Camera" +
+                          error.toString(),
+                      "userId": UserModel.of(context).firebaseUser.uid,
+                      "errorAt": DateTime.now(),
+                    });
                     setState(() {
                       isImageChoosed = false;
                     });
+                    retrieveLostData();
                   }
                 },
                 child: Container(
@@ -513,7 +533,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
 
   void _onFail() {}
   void _onFailImage() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "É necessário fazer o upload da imagem",
@@ -523,5 +543,20 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
         duration: Duration(seconds: 2),
       ),
     );
+  }
+
+  Future<void> retrieveLostData() async {
+    final LostData response = await _picker.getLostData();
+    if (response.isEmpty) {
+      return;
+    }
+    if (response.file != null) {
+      imageFile = File(response.file.path);
+      setState(() {
+        isImageChoosed = true;
+      });
+    } else {
+      return;
+    }
   }
 }

@@ -181,6 +181,11 @@ class UserModel extends Model {
       final GoogleSignInAccount googleSignInAccount =
           await _googleSignIn.signIn();
       if (googleSignInAccount == null) {
+        await FirebaseFirestore.instance.collection("errors").add({
+          "erro": "Google Sign up" + "googleSignInAccount == null",
+          "userId": firebaseUser.uid,
+          "errorAt": DateTime.now(),
+        });
         return null;
       }
       final GoogleSignInAuthentication googleSignInAuthentication =
@@ -212,12 +217,25 @@ class UserModel extends Model {
           "name": firebaseUser.displayName,
           "phoneNumber": firebaseUser.phoneNumber,
         });
+        userData = UserData(
+          name: firebaseUser.displayName,
+          image: firebaseUser.photoURL,
+          email: firebaseUser.email,
+          isPartner: 3,
+          storeId: "",
+          deliveryManId: "",
+        );
         saveToken();
         _loadCurrentUser();
         onSuccess();
         notifyListeners();
       } else {
         onFailGoogle();
+        await FirebaseFirestore.instance.collection("errors").add({
+          "erro": "tem dados no banco",
+          "userId": firebaseUser.uid,
+          "errorAt": DateTime.now(),
+        });
       }
     } catch (error) {
       onFail();

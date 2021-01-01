@@ -86,7 +86,7 @@ class _EditComboTabState extends State<EditComboTab> {
                           right: 4.0,
                           child: IconButton(
                             onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
+                              Scaffold.of(context).showSnackBar(
                                 SnackBar(
                                   backgroundColor: Colors.redAccent,
                                   shape: RoundedRectangleBorder(
@@ -373,7 +373,7 @@ class _EditComboTabState extends State<EditComboTab> {
   }
 
   void _onProductButtonPressed() {
-    ScaffoldMessenger.of(context).showSnackBar(
+    Scaffold.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.white,
         duration: Duration(
@@ -432,7 +432,7 @@ class _EditComboTabState extends State<EditComboTab> {
                                       setState(() {
                                         products.add(product);
                                       });
-                                      ScaffoldMessenger.of(context)
+                                      Scaffold.of(context)
                                           .hideCurrentSnackBar();
                                     },
                                     dense: true,
@@ -485,7 +485,7 @@ class _EditComboTabState extends State<EditComboTab> {
                   color: Colors.black54,
                 ),
                 onPressed: () {
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  Scaffold.of(context).hideCurrentSnackBar();
                 },
               ),
             )
