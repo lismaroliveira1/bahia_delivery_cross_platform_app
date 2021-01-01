@@ -1,5 +1,6 @@
 import 'package:bd_app_full/data/address_data.dart';
 import 'package:bd_app_full/data/delivery_man_data.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geodesy/geodesy.dart';
 
 class UserData {
@@ -22,6 +23,7 @@ class UserData {
   LatLng latLng;
   String deliveryManId;
   DeliveryManData userDeliveryMan;
+  String uid;
 
   UserData({
     this.currentAddress,
@@ -38,4 +40,16 @@ class UserData {
     this.deliveryManId,
     this.userDeliveryMan,
   });
+  UserData.fromDocumentSnapshot(DocumentSnapshot docUser) {
+    uid = 
+    name = docUser.get("name");
+    email = docUser.get("email");
+    isPartner = docUser.get("isPartner");
+    print(isPartner);
+    if (isPartner == 1) {
+      storeId = docUser.get("isPartner");
+    } else if (isPartner == 6) {
+      deliveryManId = docUser.get("deliveryManId");
+    }
+  }
 }

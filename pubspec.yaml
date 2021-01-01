@@ -45,7 +45,7 @@ dependencies:
   curved_navigation_bar: ^0.3.4
   flurry_navigation: ^0.1.2
   firebase_storage: ^5.1.0
-  cloud_functions: ^0.7.1
+  cloud_functions: ^0.7.2
   random_string: ^2.1.0
   firebase_messaging: ^7.0.3
   flushbar: ^1.10.4
@@ -80,6 +80,7 @@ dependencies:
   permission_handler: ^5.0.1
   flutter_launcher_icons: ^0.8.1
   geolocator: ^6.1.13
+  date_time_picker: ^1.1.1
 
 dev_dependencies:
   flutter_test:

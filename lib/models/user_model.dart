@@ -96,7 +96,17 @@ class UserModel extends Model {
   @override
   void addListener(VoidCallback listener) async {
     await _determinePosition();
+
     _loadCurrentUser();
+    app = await Firebase.initializeApp(
+      options: FirebaseOptions(
+        appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
+        apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
+        messagingSenderId: '411754724192',
+        projectId: 'bahia-delivery-app-cp',
+        databaseURL: 'bahia-delivery-app-cp.appspot.com',
+      ),
+    );
     super.addListener(listener);
   }
 
@@ -109,34 +119,16 @@ class UserModel extends Model {
     notifyListeners();
     if (firebaseUser == null) {
       firebaseUser = _auth.currentUser;
-      if (_auth.currentUser != null) {
-        isLogged = true;
-      }
     }
     if (isLoggedIn()) {
       try {
-        app = await Firebase.initializeApp(
-          options: FirebaseOptions(
-            appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
-            apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
-            messagingSenderId: '411754724192',
-            projectId: 'bahia-delivery-app-cp',
-            databaseURL: 'bahia-delivery-app-cp.appspot.com',
-          ),
-        );
-        DocumentSnapshot docUser = await FirebaseFirestore.instance
+        await FirebaseFirestore.instance
             .collection("users")
             .doc(firebaseUser.uid)
-            .get();
-        userData = UserData(
-          name: docUser.get("name"),
-          image: docUser.get("image"),
-          email: firebaseUser.email,
-          isPartner: docUser.get("isPartner"),
-          storeId: docUser.get("isPartner") == 1 ? docUser.get("storeId") : "",
-          deliveryManId:
-              docUser.get("isPartner") == 6 ? docUser.get("deliveryManId") : "",
-        );
+            .get()
+            .then((value) {
+          userData = UserData.fromDocumentSnapshot(value);
+        });
       } catch (erro) {
         print(erro);
       }
@@ -253,6 +245,8 @@ class UserModel extends Model {
     @required VoidCallback onFail,
   }) async {
     try {
+      isLoading = true;
+      notifyListeners();
       final UserCredential result = await _auth.createUserWithEmailAndPassword(
         email: user.email,
         password: user.password,
@@ -277,15 +271,6 @@ class UserModel extends Model {
         deliveryManId: "",
       );
       saveToken();
-      app = await Firebase.initializeApp(
-        options: FirebaseOptions(
-          appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
-          apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
-          messagingSenderId: '411754724192',
-          projectId: 'bahia-delivery-app-cp',
-          databaseURL: 'bahia-delivery-app-cp.appspot.com',
-        ),
-      );
       await getListOfCategory();
       await getListHomeStores();
       await getOrders();
@@ -310,8 +295,19 @@ class UserModel extends Model {
       getPaymentUserForms();
       getDeliveryManData();
       getListOfCoupons();
+      app = await Firebase.initializeApp(
+        options: FirebaseOptions(
+          appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
+          apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
+          messagingSenderId: '411754724192',
+          projectId: 'bahia-delivery-app-cp',
+          databaseURL: 'bahia-delivery-app-cp.appspot.com',
+        ),
+      );
+      notifyListeners();
     } catch (error) {
-      print(error);
+      isLogged = false;
+      isLoading = false;
       onFail();
       await FirebaseFirestore.instance.collection("errors").add({
         "erro": error.toString(),
@@ -334,6 +330,8 @@ class UserModel extends Model {
     @required VoidCallback onFail,
   }) async {
     try {
+      isLoading = true;
+      notifyListeners();
       final UserCredential result = await _auth.signInWithEmailAndPassword(
         email: email,
         password: pass,
@@ -341,15 +339,6 @@ class UserModel extends Model {
       this.firebaseUser = result.user;
       saveToken();
       try {
-        app = await Firebase.initializeApp(
-          options: FirebaseOptions(
-            appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
-            apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
-            messagingSenderId: '411754724192',
-            projectId: 'bahia-delivery-app-cp',
-            databaseURL: 'bahia-delivery-app-cp.appspot.com',
-          ),
-        );
         DocumentSnapshot docUser = await FirebaseFirestore.instance
             .collection("users")
             .doc(firebaseUser.uid)
@@ -358,7 +347,7 @@ class UserModel extends Model {
           name: docUser.get("name"),
           image: docUser.get("image"),
           email: firebaseUser.email,
-          isPartner: docUser.get("isPartner"),
+          isPartner: 1,
           storeId: docUser.get("isPartner") == 1 ? docUser.get("storeId") : "",
           deliveryManId:
               docUser.get("isPartner") == 6 ? docUser.get("deliveryManId") : "",
@@ -369,6 +358,11 @@ class UserModel extends Model {
       await getListOfCategory();
       await getListHomeStores();
       await getOrders();
+      onSuccess();
+      isLogged = true;
+      isLoading = false;
+      isReady = true;
+      notifyListeners();
       getcartProductList();
       getComboCartItens();
       getPaymentUserForms();
@@ -385,13 +379,21 @@ class UserModel extends Model {
       getPaymentUserForms();
       getDeliveryManData();
       getListOfCoupons();
-      onSuccess();
-      isLogged = true;
-      isLoading = false;
-      isReady = true;
-      notifyListeners();
+      app = await Firebase.initializeApp(
+        options: FirebaseOptions(
+          appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
+          apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
+          messagingSenderId: '411754724192',
+          projectId: 'bahia-delivery-app-cp',
+          databaseURL: 'bahia-delivery-app-cp.appspot.com',
+        ),
+      );
       notifyListeners();
     } catch (error) {
+      isLogged = true;
+      isLoading = false;
+      onFail();
+      notifyListeners();
       await FirebaseFirestore.instance.collection("errors").add({
         "erro": error.toString(),
         "userId": firebaseUser.uid,
@@ -465,15 +467,6 @@ class UserModel extends Model {
       });
       saveToken();
       try {
-        app = await Firebase.initializeApp(
-          options: FirebaseOptions(
-            appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
-            apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
-            messagingSenderId: '411754724192',
-            projectId: 'bahia-delivery-app-cp',
-            databaseURL: 'bahia-delivery-app-cp.appspot.com',
-          ),
-        );
         DocumentSnapshot docUser = await FirebaseFirestore.instance
             .collection("users")
             .doc(firebaseUser.uid)
@@ -525,6 +518,15 @@ class UserModel extends Model {
       });
     }
     notifyListeners();
+    app = await Firebase.initializeApp(
+      options: FirebaseOptions(
+        appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
+        apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
+        messagingSenderId: '411754724192',
+        projectId: 'bahia-delivery-app-cp',
+        databaseURL: 'bahia-delivery-app-cp.appspot.com',
+      ),
+    );
   }
 
   void signInWithFacebook({
@@ -935,15 +937,10 @@ class UserModel extends Model {
 
   Future<void> getPartnerData() async {
     if (isLoggedIn()) {
-      DocumentSnapshot docUserSnapshot = await FirebaseFirestore.instance
-          .collection("users")
-          .doc(firebaseUser.uid)
-          .get();
-      userData.isPartner = docUserSnapshot.get("isPartner");
-      if (docUserSnapshot.get("isPartner") == 1) {
+      if (userData.isPartner == 1) {
         DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
             .collection("stores")
-            .doc(docUserSnapshot.get("storeId"))
+            .doc(userData.storeId)
             .get();
         userData.storeId = docSnapshot.id;
         userData.storeName = docSnapshot.get("title");

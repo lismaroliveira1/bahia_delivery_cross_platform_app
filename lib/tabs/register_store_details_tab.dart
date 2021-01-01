@@ -5,8 +5,10 @@ import 'package:bd_app_full/blocs/register_partner_block.dart';
 import 'package:bd_app_full/data/request_partner_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
 
 class RegisterStoreDetailsTab extends StatefulWidget {
   final RequestPartnerData requestPartnerData;
@@ -244,7 +246,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                   color: Colors.black87,
                                 ),
                               ),
-                              /*Container(
+                              Container(
                                 width: MediaQuery.of(context).size.width / 3,
                                 child: DateTimePicker(
                                   type: DateTimePickerType.time,
@@ -269,7 +271,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                     _valueSaved4 = val;
                                   }),
                                 ),
-                              ),*/
+                              ),
                             ],
                           ),
                           Column(
@@ -282,7 +284,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                   color: Colors.black87,
                                 ),
                               ),
-                              /*   Container(
+                              Container(
                                 width: MediaQuery.of(context).size.width / 3,
                                 child: DateTimePicker(
                                   type: DateTimePickerType.time,
@@ -305,7 +307,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                     _valueSaved4 = val;
                                   }),
                                 ),
-                              ),*/
+                              ),
                             ],
                           ),
                         ],

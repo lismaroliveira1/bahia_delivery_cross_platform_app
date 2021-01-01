@@ -4,7 +4,9 @@ import 'package:bd_app_full/blocs/login_bloc.dart';
 import 'package:bd_app_full/data/user_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/register_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -112,9 +114,21 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: RaisedButton(
                                 padding: EdgeInsets.zero,
                                 color: Colors.white,
-                                child: Text(
-                                  "Entrar",
-                                  style: TextStyle(fontSize: 18),
+                                child: ScopedModelDescendant<UserModel>(
+                                  builder: (context, child, model) {
+                                    if (model.isLoading) {
+                                      return Container(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    } else {
+                                      return Text(
+                                        "Entrar",
+                                        style: TextStyle(fontSize: 18),
+                                      );
+                                    }
+                                  },
                                 ),
                                 textColor: Colors.red,
                                 onPressed: snapshot.hasData
@@ -232,21 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _onSuccess() {
-    Scaffold.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "Usuário logado com sucesso",
-          textAlign: TextAlign.center,
-        ),
-        backgroundColor: Colors.red,
-        duration: Duration(seconds: 2),
-      ),
-    );
-    Timer(Duration(milliseconds: 2500), () {
-      Navigator.of(context).pop();
-    });
-  }
+  void _onSuccess() {}
 
   void _onFail() {
     Scaffold.of(context).showSnackBar(
