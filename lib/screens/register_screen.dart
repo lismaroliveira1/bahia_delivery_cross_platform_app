@@ -244,7 +244,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  void _onSuccess() {}
+  void _onSuccess() {
+    Navigator.of(context).pop();
+  }
 
   void _onFail() {}
 

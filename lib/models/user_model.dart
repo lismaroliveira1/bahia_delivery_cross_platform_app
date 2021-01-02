@@ -38,7 +38,7 @@ const token = '635289558f18ba4c749d6928e8cd0ba7';
 
 class UserModel extends Model {
   bool isLoading = false;
-  bool isReady = true;
+  bool isReady = false;
   User firebaseUser;
   UserData userData;
   List<CategoryData> categoryList = [];
@@ -89,14 +89,13 @@ class UserModel extends Model {
   FirebaseAuth _auth = FirebaseAuth.instance;
   List<CouponData> couponsList = [];
   Position userPostion;
-
+  bool listenChangeUser = false;
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
 
   @override
   void addListener(VoidCallback listener) async {
-    await _determinePosition();
-
+    _determinePosition();
     _loadCurrentUser();
     app = await Firebase.initializeApp(
       options: FirebaseOptions(
@@ -107,6 +106,7 @@ class UserModel extends Model {
         databaseURL: 'bahia-delivery-app-cp.appspot.com',
       ),
     );
+    updateUser();
     super.addListener(listener);
   }
 
@@ -119,42 +119,48 @@ class UserModel extends Model {
     notifyListeners();
     if (firebaseUser == null) {
       firebaseUser = _auth.currentUser;
+      isLogged = isLoggedIn();
     }
+    isLoggedIn();
     if (isLoggedIn()) {
       try {
+        listenChangeUser = true;
         await FirebaseFirestore.instance
             .collection("users")
             .doc(firebaseUser.uid)
             .get()
-            .then((value) {
+            .then((value) async {
           userData = UserData.fromDocumentSnapshot(value);
+
+          notifyListeners();
+          await getListOfCategory();
+          await getListHomeStores();
+          await getOrders();
+          getcartProductList();
+          getComboCartItens();
+          getPaymentUserForms();
+          updateFavoritList();
+          getDeliveryPartnersList();
+          getPartnerData();
+          getProductsPartnerList();
+          getSectionList();
+          getPartnerOffSales();
+          getComboList();
+          getPartnerOrderList();
+          getPurchasedStoresList();
+          getAllProductsToList();
+          getPaymentUserForms();
+          getDeliveryManData();
+          getListOfCoupons();
+          isLoading = false;
+          isReady = true;
+          listenChangeUser = false;
+          notifyListeners();
         });
       } catch (erro) {
         print(erro);
       }
     }
-    await getListOfCategory();
-    await getListHomeStores();
-    await getOrders();
-    getcartProductList();
-    getComboCartItens();
-    getPaymentUserForms();
-    updateFavoritList();
-    getDeliveryPartnersList();
-    getPartnerData();
-    getProductsPartnerList();
-    getSectionList();
-    getPartnerOffSales();
-    getComboList();
-    getPartnerOrderList();
-    getPurchasedStoresList();
-    getAllProductsToList();
-    getPaymentUserForms();
-    getDeliveryManData();
-    getListOfCoupons();
-    isLoading = false;
-    isReady = true;
-    notifyListeners();
   }
 
   Future<void> signUpWithGoogle({
@@ -209,26 +215,48 @@ class UserModel extends Model {
           "name": firebaseUser.displayName,
           "phoneNumber": firebaseUser.phoneNumber,
         });
-        userData = UserData(
-          name: firebaseUser.displayName,
-          image: firebaseUser.photoURL,
-          email: firebaseUser.email,
-          isPartner: 3,
-          storeId: "",
-          deliveryManId: "",
-        );
-        saveToken();
-        _loadCurrentUser();
-        onSuccess();
-        notifyListeners();
-      } else {
-        onFailGoogle();
+      }
+      saveToken();
+      try {
+        await FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .get()
+            .then((value) {
+          userData = UserData.fromDocumentSnapshot(value);
+        });
+      } catch (error) {
         await FirebaseFirestore.instance.collection("errors").add({
-          "erro": "tem dados no banco",
+          "erro": "Google Sign in" + error.toString(),
           "userId": firebaseUser.uid,
           "errorAt": DateTime.now(),
         });
       }
+      await getListOfCategory();
+      await getListHomeStores();
+      await getOrders();
+      isLogged = true;
+      notifyListeners();
+      getcartProductList();
+      getComboCartItens();
+      getPaymentUserForms();
+      updateFavoritList();
+      getDeliveryPartnersList();
+      getPartnerData();
+      getProductsPartnerList();
+      getSectionList();
+      getPartnerOffSales();
+      getComboList();
+      getPartnerOrderList();
+      getPurchasedStoresList();
+      getAllProductsToList();
+      getPaymentUserForms();
+      getDeliveryManData();
+      getListOfCoupons();
+      onSuccess();
+      isLoading = false;
+      isReady = true;
+      notifyListeners();
     } catch (error) {
       onFail();
       await FirebaseFirestore.instance.collection("errors").add({
@@ -467,19 +495,13 @@ class UserModel extends Model {
       });
       saveToken();
       try {
-        DocumentSnapshot docUser = await FirebaseFirestore.instance
+        await FirebaseFirestore.instance
             .collection("users")
             .doc(firebaseUser.uid)
-            .get();
-        userData = UserData(
-          name: docUser.get("name"),
-          image: docUser.get("image"),
-          email: firebaseUser.email,
-          isPartner: docUser.get("isPartner"),
-          storeId: docUser.get("isPartner") == 1 ? docUser.get("storeId") : "",
-          deliveryManId:
-              docUser.get("isPartner") == 6 ? docUser.get("deliveryManId") : "",
-        );
+            .get()
+            .then((value) {
+          userData = UserData.fromDocumentSnapshot(value);
+        });
       } catch (error) {
         await FirebaseFirestore.instance.collection("errors").add({
           "erro": "Google Sign in" + error.toString(),
@@ -490,6 +512,8 @@ class UserModel extends Model {
       await getListOfCategory();
       await getListHomeStores();
       await getOrders();
+      isLogged = true;
+      notifyListeners();
       getcartProductList();
       getComboCartItens();
       getPaymentUserForms();
@@ -1966,6 +1990,55 @@ class UserModel extends Model {
         onFail();
         print(e);
       }
+    }
+  }
+
+  void updateUser() async {
+    if (isLoggedIn()) {
+      FirebaseFirestore.instance
+          .collection("users")
+          .doc(firebaseUser.uid)
+          .snapshots()
+          .listen((queryDoc) async {
+        if (queryDoc.get("isPartner") != userData.isPartner) {
+          try {
+            listenChangeUser = true;
+            notifyListeners();
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(firebaseUser.uid)
+                .get()
+                .then((value) async {
+              userData = UserData.fromDocumentSnapshot(value);
+              await getListOfCategory();
+              await getListHomeStores();
+              await getOrders();
+              getcartProductList();
+              getComboCartItens();
+              getPaymentUserForms();
+              updateFavoritList();
+              getDeliveryPartnersList();
+              getPartnerData();
+              getProductsPartnerList();
+              getSectionList();
+              getPartnerOffSales();
+              getComboList();
+              getPartnerOrderList();
+              getPurchasedStoresList();
+              getAllProductsToList();
+              getPaymentUserForms();
+              getDeliveryManData();
+              getListOfCoupons();
+              listenChangeUser = false;
+              isLoading = false;
+              isReady = true;
+              notifyListeners();
+            });
+          } catch (erro) {
+            print(erro);
+          }
+        }
+      });
     }
   }
 

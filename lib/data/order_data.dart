@@ -33,7 +33,7 @@ class OrderData {
   String vehicleType;
   DeliveryManData deliveryManData;
   String paymentOnAppType;
-  String paymentInfo;
+  String paymentInfo; 
   String deliveryManString = '';
 
   OrderData(

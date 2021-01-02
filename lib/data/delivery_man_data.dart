@@ -87,7 +87,7 @@ class DeliveryManData {
       "image": image,
       "userId": userId,
       "vehicleColor": vehycleColor,
-      "vehycleType": vehycleType,
+      "vehicleType": vehycleType,
       "transitId": transitId,
       "driverIdImage": driverIdImage,
     };

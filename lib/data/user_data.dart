@@ -39,15 +39,16 @@ class UserData {
     this.latLng,
     this.deliveryManId,
     this.userDeliveryMan,
+    this.uid,
   });
   UserData.fromDocumentSnapshot(DocumentSnapshot docUser) {
-    uid = 
-    name = docUser.get("name");
+    uid = name = docUser.get("name");
     email = docUser.get("email");
+    image = docUser.get("image");
     isPartner = docUser.get("isPartner");
     print(isPartner);
     if (isPartner == 1) {
-      storeId = docUser.get("isPartner");
+      storeId = docUser.get("storeId");
     } else if (isPartner == 6) {
       deliveryManId = docUser.get("deliveryManId");
     }
