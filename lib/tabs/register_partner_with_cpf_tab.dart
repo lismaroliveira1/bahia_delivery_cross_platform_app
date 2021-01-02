@@ -353,7 +353,7 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                                                           context)
                                                       .addressToRegisterPartner,
                                                 );
-                                                Navigator.push(
+                                                Navigator.pushReplacement(
                                                   context,
                                                   PageTransition(
                                                     type: PageTransitionType

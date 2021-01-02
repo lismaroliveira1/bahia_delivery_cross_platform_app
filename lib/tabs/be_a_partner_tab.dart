@@ -57,7 +57,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                   children: [
                     FlatButton(
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           PageTransition(
                             type: PageTransitionType.rightToLeft,

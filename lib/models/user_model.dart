@@ -131,7 +131,6 @@ class UserModel extends Model {
             .get()
             .then((value) async {
           userData = UserData.fromDocumentSnapshot(value);
-
           notifyListeners();
           await getListOfCategory();
           await getListHomeStores();

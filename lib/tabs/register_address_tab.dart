@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bd_app_full/data/address_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
@@ -184,7 +186,9 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
     setState(() {
       textLenght = 0;
     });
-    closeTab();
+    Timer(Duration(seconds: 1), () {
+      Navigator.of(context).pop();
+    });
   }
 
   void _onFail() {

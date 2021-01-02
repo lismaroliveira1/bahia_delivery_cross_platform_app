@@ -52,7 +52,7 @@ class _RegisterPartnerTabState extends State<RegisterPartnerTab> {
                   children: [
                     FlatButton(
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           PageTransition(
                             type: PageTransitionType.rightToLeft,
@@ -86,7 +86,7 @@ class _RegisterPartnerTabState extends State<RegisterPartnerTab> {
                     ),
                     FlatButton(
                       onPressed: () {
-                        Navigator.push(
+                        Navigator.pushReplacement(
                           context,
                           PageTransition(
                             type: PageTransitionType.rightToLeft,
