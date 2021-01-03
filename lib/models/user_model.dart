@@ -2402,6 +2402,7 @@ class UserModel extends Model {
               );
             },
           );
+
           onSuccess();
           notifyListeners();
         } catch (erro) {

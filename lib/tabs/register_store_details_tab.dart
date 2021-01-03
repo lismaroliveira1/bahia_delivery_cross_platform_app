@@ -9,7 +9,6 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-
 class RegisterStoreDetailsTab extends StatefulWidget {
   final RequestPartnerData requestPartnerData;
   RegisterStoreDetailsTab(this.requestPartnerData);
@@ -66,8 +65,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
           child: Stack(
             children: [
               Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                child: ListView(
                   children: [
                     Center(
                       child: Container(

@@ -257,7 +257,18 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                       width: MediaQuery.of(context).size.width / 2.5,
                       child: FlatButton(
                         onPressed: () {
-                          _onYesPressed();
+                          Navigator.push(
+                            context,
+                            PageTransition(
+                              type: PageTransitionType.rightToLeft,
+                              child: RegisterAddressScreen(),
+                              inheritTheme: true,
+                              duration: Duration(
+                                milliseconds: 350,
+                              ),
+                              ctx: context,
+                            ),
+                          );
                         },
                         child: Column(
                           children: [
@@ -353,7 +364,7 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                                                           context)
                                                       .addressToRegisterPartner,
                                                 );
-                                                Navigator.pushReplacement(
+                                                Navigator.push(
                                                   context,
                                                   PageTransition(
                                                     type: PageTransitionType
@@ -427,22 +438,6 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
       isBirthDayChoosed = true;
     });
     Navigator.of(context).pop();
-  }
-
-  void _onYesPressed() {
-    Scaffold.of(context).hideCurrentSnackBar();
-    Navigator.push(
-      context,
-      new PageTransition(
-        type: PageTransitionType.rightToLeft,
-        child: new RegisterAddressScreen(),
-        inheritTheme: true,
-        duration: new Duration(
-          milliseconds: 350,
-        ),
-        ctx: context,
-      ),
-    );
   }
 
   void noChoosedBiryhDay() {

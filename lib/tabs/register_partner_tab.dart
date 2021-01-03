@@ -37,7 +37,7 @@ class _RegisterPartnerTabState extends State<RegisterPartnerTab> {
               Padding(
                 padding: const EdgeInsets.only(top: 80.0),
                 child: Text(
-                  'Você é pessoa \nfísica ou jurídica?',
+                  'Você é pessoa\nfísica ou jurídica?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 26,
@@ -52,7 +52,7 @@ class _RegisterPartnerTabState extends State<RegisterPartnerTab> {
                   children: [
                     FlatButton(
                       onPressed: () {
-                        Navigator.pushReplacement(
+                        Navigator.push(
                           context,
                           PageTransition(
                             type: PageTransitionType.rightToLeft,
@@ -86,7 +86,7 @@ class _RegisterPartnerTabState extends State<RegisterPartnerTab> {
                     ),
                     FlatButton(
                       onPressed: () {
-                        Navigator.pushReplacement(
+                        Navigator.push(
                           context,
                           PageTransition(
                             type: PageTransitionType.rightToLeft,
