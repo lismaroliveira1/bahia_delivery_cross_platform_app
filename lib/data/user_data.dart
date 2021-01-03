@@ -1,4 +1,3 @@
-import 'package:bd_app_full/data/address_data.dart';
 import 'package:bd_app_full/data/delivery_man_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geodesy/geodesy.dart';
@@ -19,7 +18,6 @@ class UserData {
   String phoneNumber;
   double latitude;
   double longitude;
-  AddressData userAdress;
   LatLng latLng;
   String deliveryManId;
   DeliveryManData userDeliveryMan;
@@ -35,7 +33,6 @@ class UserData {
     this.isPartner,
     this.phoneNumber,
     this.storeId,
-    this.userAdress,
     this.latLng,
     this.deliveryManId,
     this.userDeliveryMan,

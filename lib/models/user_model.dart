@@ -18,6 +18,7 @@ import 'package:bd_app_full/data/request_partner_data.dart';
 import 'package:bd_app_full/data/store_data.dart';
 import 'package:bd_app_full/data/subsection_data.dart';
 import 'package:bd_app_full/data/user_data.dart';
+import 'package:bd_app_full/screens/address_data.dart';
 import 'package:bd_app_full/services/cielo_payment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat/dash_chat.dart';
@@ -89,6 +90,7 @@ class UserModel extends Model {
   FirebaseAuth _auth = FirebaseAuth.instance;
   List<CouponData> couponsList = [];
   Position userPostion;
+  List<AddressData> userAddress = [];
   bool listenChangeUser = false;
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
@@ -132,6 +134,7 @@ class UserModel extends Model {
             .then((value) async {
           userData = UserData.fromDocumentSnapshot(value);
           notifyListeners();
+          getUserAddresses();
           await getListOfCategory();
           await getListHomeStores();
           await getOrders();
@@ -2281,6 +2284,7 @@ class UserModel extends Model {
     String addressId,
     VoidCallback onSuccess,
     VoidCallback onFail,
+    VoidCallback initLoad,
   }) async {
     addressToRegisterPartner = address;
     _latPartnerRequest = lat;
@@ -2292,8 +2296,16 @@ class UserModel extends Model {
       lat,
       lng,
     );
-    onSuccess();
+    final addressData = AddressData(
+      address: address,
+      addressId: addressId,
+      lat: lat,
+      lng: lng,
+    );
     try {
+      isLoading = true;
+      initLoad();
+      notifyListeners();
       storeHomeList.clear();
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance.collection("stores").get();
@@ -2343,6 +2355,15 @@ class UserModel extends Model {
         storeElement.deliveryTime = calctime(storeElement.distance);
       });
       updateFavoritList();
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(firebaseUser.uid)
+          .collection("addresses")
+          .add(
+            addressData.toMap(),
+          );
+      onSuccess();
+      isLoading = false;
       notifyListeners();
     } catch (erro) {
       sendErrorMessageToADM(
@@ -2795,5 +2816,113 @@ class UserModel extends Model {
         notifyListeners();
       }
     }
+  }
+
+  void getUserAddresses() async {
+    if (isLogged) {
+      try {
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .collection("addresses")
+            .snapshots()
+            .listen((querySnapshot) {
+          userAddress.clear();
+          querySnapshot.docs.map((query) {
+            userAddress.add(
+              AddressData.fromQueryDocumentSnapshot(query),
+            );
+          }).toList();
+          notifyListeners();
+          print(userAddress.length);
+        });
+      } catch (erro) {}
+    }
+  }
+
+  void setAddressWithotSaing({
+    @required String address,
+    double lat,
+    double lng,
+    String addressId,
+    VoidCallback onSuccess,
+    VoidCallback onFail,
+    VoidCallback initLoad,
+  }) async {
+    addressToRegisterPartner = address;
+    _latPartnerRequest = lat;
+    _lngPartnerRequest = lng;
+    userAddresId = addressId;
+    isLocationChoosedOnRegisterPartner = true;
+    addressSeted = true;
+    latLngDevice = LatLng(
+      lat,
+      lng,
+    );
+    try {
+      isLoading = true;
+      initLoad();
+      notifyListeners();
+      storeHomeList.clear();
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection("stores").get();
+      querySnapshot.docs.map((queryDoc) {
+        storeHomeList.add(StoreData.fromQueryDocument(queryDoc));
+      }).toList();
+      storeHomeList.forEach((storeElement) async {
+        List<ProductData> purchasedProducts = [];
+
+        storeElement.productsOff = await getOffStores(storeElement.id);
+        storeElement.products = await getProductsStore(storeElement.id);
+        storeElement.storesCombos =
+            await getComboStoreHomeList(storeElement.id);
+
+        storeElement.products.forEach((element) async {
+          element.incrementalOptionalsList = await getIncrementalByProduct(
+              storeId: storeElement.id, productId: element.pId);
+        });
+        storeElement.storeCategoryList =
+            await getCategoryByStore(storeElement.id);
+        for (OrderData orderData in listUserOrders) {
+          for (ProductData productData in orderData.products) {
+            for (ProductData productDataStore in storeElement.products) {
+              if (productDataStore.pId == productData.pId) {
+                if (purchasedProducts.length == 0) {
+                  purchasedProducts.add(productDataStore);
+                } else {
+                  bool hasThisProduct = false;
+                  for (ProductData purchasedProductElement
+                      in purchasedProducts) {
+                    if (productDataStore.pId == purchasedProductElement.pId) {
+                      hasThisProduct = true;
+                      break;
+                    }
+                  }
+                  if (!hasThisProduct) purchasedProducts.add(productDataStore);
+                }
+              }
+            }
+          }
+        }
+        storeElement.purchasedProducts = purchasedProducts;
+        storeElement.distance = geodesy.distanceBetweenTwoGeoPoints(
+          storeElement.latLng,
+          latLngDevice,
+        );
+        storeElement.deliveryTime = calctime(storeElement.distance);
+      });
+      updateFavoritList();
+      onSuccess();
+      isLoading = false;
+      notifyListeners();
+    } catch (erro) {
+      sendErrorMessageToADM(
+        errorFromUser: erro.toString(),
+      );
+      print(erro);
+      onFail();
+      notifyListeners();
+    }
+    notifyListeners();
   }
 }

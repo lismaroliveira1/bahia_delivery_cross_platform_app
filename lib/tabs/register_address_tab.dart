@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:bd_app_full/data/address_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:google_place/google_place.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -21,7 +21,7 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
   List<AutocompletePrediction> predictions = [];
   final TextEditingController addressController = TextEditingController();
   bool close = false;
-  AddressData addressData;
+  Timer _timer;
   @override
   void initState() {
     String apiKey = "AIzaSyB9QAT4C-TwvJu8pmNMxbRnGp_am3j76xI";
@@ -90,9 +90,36 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
                           height: 10,
                         ),
                         textLenght == 0
-                            ? Container(
-                                height: 0,
-                              )
+                            ? Expanded(
+                                child: ListView.builder(
+                                itemCount: model.userAddress.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    onTap: () {
+                                      model.setAddressWithotSaing(
+                                        initLoad: _initLoad,
+                                        onFail: _onFail,
+                                        onSuccess: _onSuccess,
+                                        address:
+                                            model.userAddress[index].address,
+                                        lat: model.userAddress[index].lat,
+                                        lng: model.userAddress[index].lng,
+                                        addressId:
+                                            model.userAddress[index].addressId,
+                                      );
+                                    },
+                                    leading: Icon(
+                                      Icons.location_city,
+                                    ),
+                                    title:
+                                        Text(model.userAddress[index].address),
+                                    trailing: IconButton(
+                                      icon: Icon(Icons.edit),
+                                      onPressed: () {},
+                                    ),
+                                  );
+                                },
+                              ))
                             : Expanded(
                                 child: ListView.builder(
                                   itemCount: predictions.length,
@@ -135,6 +162,7 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
                                                 addressController.clear();
                                                 UserModel.of(context)
                                                     .setAddressToRegister(
+                                                  initLoad: _initLoad,
                                                   onFail: _onFail,
                                                   onSuccess: _onSuccess,
                                                   address: predictions[index]
@@ -179,16 +207,17 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
   }
 
   void closeTab() {
-    Navigator.of(context).pop();
-  }
-
-  void _onSuccess() {
-    setState(() {
-      textLenght = 0;
-    });
     Timer(Duration(seconds: 1), () {
       Navigator.of(context).pop();
     });
+  }
+
+  void _onSuccess() async {
+    setState(() {
+      textLenght = 0;
+    });
+    await EasyLoading.dismiss();
+    closeTab();
   }
 
   void _onFail() {
@@ -201,6 +230,14 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
         backgroundColor: Colors.green,
         duration: Duration(seconds: 2),
       ),
+    );
+  }
+
+  void _initLoad() async {
+    _timer?.cancel();
+    await EasyLoading.show(
+      status: 'loading...',
+      maskType: EasyLoadingMaskType.black,
     );
   }
 }
