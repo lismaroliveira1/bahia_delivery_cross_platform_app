@@ -6,8 +6,6 @@ import 'package:bd_app_full/data/delivery_man_data.dart';
 import 'package:bd_app_full/data/request_partner_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/register_address_screen.dart';
-import 'package:bd_app_full/screens/register_partner_with_cnpj_screen.dart';
-import 'package:bd_app_full/screens/register_store_details_from_partner_screen.dart';
 import 'package:cnpj_cpf_formatter/cnpj_cpf_formatter.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
@@ -131,6 +129,9 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
           '/' +
           _selectedDate.year.toString();
       isBirthDayChoosed = true;
+    });
+    setState(() {
+      isShippingDateSelected = true;
     });
     Navigator.of(context).pop();
   }
@@ -1194,19 +1195,16 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                       ),
                     ),
                     FlatButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: RegisterPartnerWithCNPJScreen(),
-                            inheritTheme: true,
-                            duration: Duration(
-                              milliseconds: 350,
-                            ),
-                            ctx: context,
-                          ),
+                      onPressed: () async {
+                        _timer?.cancel();
+                        await EasyLoading.show(
+                          status: 'loading...',
+                          maskType: EasyLoadingMaskType.black,
                         );
+                        await EasyLoading.dismiss();
+                        setState(() {
+                          screen = 5;
+                        });
                       },
                       padding: EdgeInsets.zero,
                       child: Container(
@@ -1923,6 +1921,8 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                               _fantasyNameController.text;
                                           requestPartnerData.description =
                                               _descriptionController.text;
+                                          requestPartnerData.isJuridicPerson =
+                                              true;
                                         });
                                         UserModel.of(context)
                                             .sendRequestForNewPartner(
@@ -1997,8 +1997,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+              child: ListView(
                 children: [
                   Center(
                     child: Container(
@@ -2251,9 +2250,8 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                       ),
                     ),
                   ),
-                  Spacer(),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(20, 0, 20, 26),
+                    padding: EdgeInsets.fromLTRB(20, 40, 20, 26),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -2288,31 +2286,30 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                           isShippingDateSelected &&
                                           model
                                               .isLocationChoosedOnRegisterPartner
-                                      ? () {
-                                          final requestPartnerData =
+                                      ? () async {
+                                          _timer?.cancel();
+                                          await EasyLoading.show(
+                                            status: 'loading...',
+                                            maskType: EasyLoadingMaskType.black,
+                                          );
+                                          final requestPartnerDataFlag =
                                               RequestPartnerData(
+                                            expedtionDate: _selectedDate,
                                             companyName:
                                                 _companyNameController.text,
                                             cnpj: _cnpjController.text,
-                                            expedtionDate: _selectedDate,
                                             location: UserModel.of(context)
                                                 .addressToRegisterPartner,
                                           );
-                                          Navigator.push(
-                                            context,
-                                            PageTransition(
-                                              type: PageTransitionType
-                                                  .rightToLeft,
-                                              child: RegisterStoreDetailsScreen(
-                                                requestPartnerData,
-                                              ),
-                                              inheritTheme: true,
-                                              duration: Duration(
-                                                milliseconds: 350,
-                                              ),
-                                              ctx: context,
-                                            ),
-                                          );
+
+                                          await EasyLoading.dismiss();
+                                          setState(() {
+                                            requestPartnerData =
+                                                requestPartnerDataFlag;
+                                          });
+                                          setState(() {
+                                            screen = 6;
+                                          });
                                         }
                                       : null,
                                   padding: EdgeInsets.zero,

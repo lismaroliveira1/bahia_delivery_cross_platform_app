@@ -59,6 +59,7 @@ class RequestPartnerData {
         "cnpj": cnpj,
         "image": image,
         "companyName": companyName,
+        "expeditionDate": expedtionDate,
         "fantasyName": fantasyName,
         "category": category,
         "categoryId": categoryId,
