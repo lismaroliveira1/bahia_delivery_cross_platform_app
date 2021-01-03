@@ -44,6 +44,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
     requestPartnerData = widget.requestPartnerData;
     isImageChoosed = false;
     _dropdownsItens = [];
+    _dropdownsItens.add("Escolha");
     UserModel.of(context).categoryList.forEach((category) {
       _dropdownsItens.add(category.title);
     });

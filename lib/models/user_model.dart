@@ -2362,6 +2362,8 @@ class UserModel extends Model {
     @required VoidCallback onFailImage,
   }) async {
     if (isLoggedIn()) {
+      isLoading = true;
+      notifyListeners();
       categoryList.forEach((element) {
         if (element.title == requestPartnerData.category) {
           requestPartnerData.categoryId = element.id;
@@ -2402,8 +2404,8 @@ class UserModel extends Model {
               );
             },
           );
-
           onSuccess();
+          isLoading = false;
           notifyListeners();
         } catch (erro) {
           print(erro);

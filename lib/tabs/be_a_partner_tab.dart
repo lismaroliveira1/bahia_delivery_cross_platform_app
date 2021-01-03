@@ -33,6 +33,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
   TextEditingController _timeCloseController = TextEditingController();
   TextEditingController _companyNameController = TextEditingController();
   TextEditingController _cnpjController = TextEditingController();
+  TextEditingController _fantasyNameController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isCategorySelected;
   TextEditingController _descriptionController = TextEditingController();
@@ -50,7 +51,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
   String valueToValidate4 = '';
   String valueSaved4 = '';
   String valueChanged4 = '';
-  String _dropDownInitiValue;
+  String _dropDownInitiValueMot;
   bool isTypeVehicleChoosed;
   final picker = ImagePicker();
   List<String> dropdownList = [];
@@ -77,14 +78,20 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
     isBirthDayChoosed = false;
     isImageChoosed = false;
     isImageDriverChoosed = false;
+    _dropdownsItens = [];
+    _dropdownsItens.add("Escolha");
+    UserModel.of(context).categoryList.forEach((category) {
+      _dropdownsItens.add(category.title);
+    });
     dropdownList = [
       "Tipo do Veículo",
       "Motorizado",
       "Não motorizado",
     ];
-    _dropDownInitiValue = dropdownList[0];
+    _dropDownInitiValueMot = dropdownList[0];
     isLocationChoosed =
         UserModel.of(context).isLocationChoosedOnRegisterPartner;
+    _dropdownInitValue = _dropdownsItens[0];
     screen = 1;
     isCategorySelected = false;
     isStoreOpenTimeSelected = false;
@@ -202,6 +209,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                     if (imageFile == null) return;
                     setState(() {
                       isImageChoosed = true;
+                      requestPartnerData.imageFile = imageFile;
                     });
                     Scaffold.of(context).hideCurrentSnackBar();
                   } catch (e) {
@@ -810,7 +818,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         DropdownButton<String>(
-                          value: _dropDownInitiValue,
+                          value: _dropDownInitiValueMot,
                           icon: Icon(
                             Icons.arrow_downward,
                           ),
@@ -823,7 +831,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                           ),
                           onChanged: (String value) {
                             setState(() {
-                              _dropDownInitiValue = value;
+                              _dropDownInitiValueMot = value;
                               isTypeVehicleChoosed = true;
                             });
                           },
@@ -836,7 +844,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                         ),
                       ],
                     ),
-                    _dropDownInitiValue == "Motorizado"
+                    _dropDownInitiValueMot == "Motorizado"
                         ? Padding(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 20),
@@ -1019,7 +1027,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                                 _onFailImage();
                                               } else if (!isTypeVehicleChoosed) {
                                                 _onFailTypeVehycle();
-                                              } else if (_dropDownInitiValue ==
+                                              } else if (_dropDownInitiValueMot ==
                                                       "Motorizado" &&
                                                   !isImageDriverChoosed) {
                                                 _onFailDriverImage();
@@ -1035,7 +1043,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                                       _vehicleColorController
                                                           .text,
                                                   vehycleType:
-                                                      _dropDownInitiValue,
+                                                      _dropDownInitiValueMot,
                                                   transitId:
                                                       _transitCardController
                                                           .text,
@@ -1505,7 +1513,9 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           FlatButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
                             padding: EdgeInsets.zero,
                             child: Container(
                               height: 50,
@@ -1533,7 +1543,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                   builder: (context, snapshot) {
                                     return FlatButton(
                                       onPressed: snapshot.hasData
-                                          ? () {
+                                          ? () async {
                                               if (!isLocationChoosed &&
                                                   !isBirthDayChoosed) {
                                                 noChoosedLocationAndBirthDay();
@@ -1543,7 +1553,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                                   .isLocationChoosedOnRegisterPartner) {
                                                 noChoosedLocation();
                                               } else {
-                                                final requestPartnerData =
+                                                final requestPartnerDataFlag =
                                                     RequestPartnerData(
                                                   companyName:
                                                       _nameController.text,
@@ -1556,22 +1566,18 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                                           context)
                                                       .addressToRegisterPartner,
                                                 );
-                                                Navigator.push(
-                                                  context,
-                                                  PageTransition(
-                                                    type: PageTransitionType
-                                                        .rightToLeft,
-                                                    child:
-                                                        RegisterStoreDetailsScreen(
-                                                      requestPartnerData,
-                                                    ),
-                                                    inheritTheme: true,
-                                                    duration: Duration(
-                                                      milliseconds: 350,
-                                                    ),
-                                                    ctx: context,
-                                                  ),
+                                                _timer?.cancel();
+                                                await EasyLoading.show(
+                                                  status: 'loading...',
+                                                  maskType:
+                                                      EasyLoadingMaskType.black,
                                                 );
+                                                await EasyLoading.dismiss();
+                                                setState(() {
+                                                  requestPartnerData =
+                                                      requestPartnerDataFlag;
+                                                  screen = 6;
+                                                });
                                               }
                                             }
                                           : null,
@@ -1716,7 +1722,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                           stream: _registerPartnerBloc.outFantasyStoreName,
                           builder: (context, snapshot) {
                             return TextField(
-                              controller: _nameController,
+                              controller: _fantasyNameController,
                               onChanged: _registerPartnerBloc.changeFantasyName,
                               decoration: InputDecoration(
                                 hintText: "Loja tal",
@@ -1881,7 +1887,9 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           FlatButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
                             padding: EdgeInsets.zero,
                             child: Container(
                               height: 50,
@@ -1912,7 +1920,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                     ? () {
                                         setState(() {
                                           requestPartnerData.fantasyName =
-                                              _nameController.text;
+                                              _fantasyNameController.text;
                                           requestPartnerData.description =
                                               _descriptionController.text;
                                         });
@@ -1942,13 +1950,23 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                         : Colors.grey[300],
                                   ),
                                   child: Center(
-                                    child: Text(
-                                      "Enviar",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                      ),
+                                    child: ScopedModelDescendant<UserModel>(
+                                      builder: (context, child, model) {
+                                        if (model.isLoading) {
+                                          return Container(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        } else {
+                                          return Text(
+                                            "Enviar",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ),
+                                          );
+                                        }
+                                      },
                                     ),
                                   ),
                                 ),
@@ -2312,14 +2330,21 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                           : Colors.grey[300],
                                     ),
                                     child: Center(
-                                      child: Text(
-                                        "Próximo",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white,
-                                        ),
-                                      ),
+                                      child: model.isLoading
+                                          ? Container(
+                                              height: 20,
+                                              width: 20,
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            )
+                                          : Text(
+                                              "Próximo",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white,
+                                              ),
+                                            ),
                                     ),
                                   ),
                                 );

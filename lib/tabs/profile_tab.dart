@@ -212,6 +212,12 @@ class _ProfileTabState extends State<ProfileTab> {
                                     builder: (_) => AssetGiffyDialog(
                                       cornerRadius: 12.0,
                                       buttonOkColor: Colors.red,
+                                      buttonCancelText: Text(
+                                        "Cancelar",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                       onOkButtonPressed: () {
                                         Navigator.of(context).pop();
                                         Navigator.push(
