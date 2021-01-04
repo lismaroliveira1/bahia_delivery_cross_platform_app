@@ -33,7 +33,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
     isImageChoosed = false;
     imageFile = null;
     id = widget.categoryStoreData.id;
-    position = widget.categoryStoreData.order + 1;
+    position = widget.categoryStoreData.order;
     olderPos = position;
     x = widget.categoryStoreData.x;
     y = widget.categoryStoreData.y;
@@ -241,7 +241,25 @@ class _EditSectionTabState extends State<EditSectionTab> {
                   ),
                   height: 45,
                   child: FlatButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      final sectionData = CategoryStoreData(
+                        id: widget.categoryStoreData.id,
+                        description: _descriptionController.text,
+                        order: position,
+                        title: _nameController.text,
+                        x: x,
+                        y: y,
+                        imageFile: imageFile,
+                        image: widget.categoryStoreData.image,
+                      );
+                      print(id);
+                      print(position);
+                      UserModel.of(context).editSection(
+                        section: sectionData,
+                        onSuccess: _onSuccess,
+                        onFail: _onFail,
+                      );
+                    },
                     child: ScopedModelDescendant<UserModel>(
                       builder: (context, child, model) {
                         if (model.isLoading) {

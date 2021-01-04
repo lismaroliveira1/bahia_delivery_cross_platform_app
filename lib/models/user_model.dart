@@ -97,18 +97,7 @@ class UserModel extends Model {
 
   @override
   void addListener(VoidCallback listener) async {
-    _determinePosition();
     _loadCurrentUser();
-    app = await Firebase.initializeApp(
-      options: FirebaseOptions(
-        appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
-        apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
-        messagingSenderId: '411754724192',
-        projectId: 'bahia-delivery-app-cp',
-        databaseURL: 'bahia-delivery-app-cp.appspot.com',
-      ),
-    );
-    updateUser();
     super.addListener(listener);
   }
 
@@ -122,6 +111,16 @@ class UserModel extends Model {
     if (firebaseUser == null) {
       firebaseUser = _auth.currentUser;
       isLogged = isLoggedIn();
+      await _determinePosition();
+      app = await Firebase.initializeApp(
+        options: FirebaseOptions(
+          appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
+          apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
+          messagingSenderId: '411754724192',
+          projectId: 'bahia-delivery-app-cp',
+          databaseURL: 'bahia-delivery-app-cp.appspot.com',
+        ),
+      );
       isLoggedIn();
       try {
         listenChangeUser = true;
@@ -152,10 +151,12 @@ class UserModel extends Model {
           getPaymentUserForms();
           getDeliveryManData();
           getListOfCoupons();
+
           isLoading = false;
           isReady = true;
           listenChangeUser = false;
           notifyListeners();
+          updateUser();
         });
       } catch (erro) {
         print(erro);
@@ -240,6 +241,7 @@ class UserModel extends Model {
       await getListOfCategory();
       await getListHomeStores();
       await getOrders();
+      getUserAddresses();
       isLogged = true;
       notifyListeners();
       getcartProductList();
@@ -307,6 +309,7 @@ class UserModel extends Model {
       await getListOfCategory();
       await getListHomeStores();
       await getOrders();
+      getUserAddresses();
       getcartProductList();
       getComboCartItens();
       onSuccess();
@@ -391,6 +394,7 @@ class UserModel extends Model {
       await getListOfCategory();
       await getListHomeStores();
       await getOrders();
+      getUserAddresses();
       onSuccess();
       isLogged = true;
       isLoading = false;
@@ -517,6 +521,7 @@ class UserModel extends Model {
       await getListOfCategory();
       await getListHomeStores();
       await getOrders();
+      getUserAddresses();
       isLogged = true;
       notifyListeners();
       getcartProductList();
@@ -650,7 +655,6 @@ class UserModel extends Model {
   Future<void> getListHomeStores() async {
     if (isLoggedIn()) {
       storeHomeList.clear();
-      userPostion = await _determinePosition();
       latLngDevice = LatLng(
         userPostion.latitude,
         userPostion.longitude,
@@ -1039,6 +1043,121 @@ class UserModel extends Model {
     }
   }
 
+  void editSection({
+    @required CategoryStoreData section,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    if (isLoggedIn()) {
+      isLoading = true;
+      notifyListeners();
+      try {
+        print(section.id);
+        if (section.imageFile != null) {
+          Reference ref = FirebaseStorage.instance.ref().child("images").child(
+                DateTime.now().millisecond.toString(),
+              );
+          UploadTask uploadTask = ref.putFile(section.imageFile);
+          uploadTask.then((task) async {
+            section.image = await task.ref.getDownloadURL();
+            if (section.order == sectionsStorePartnerList.length) {
+              await FirebaseFirestore.instance
+                  .collection("stores")
+                  .doc(userData.storeId)
+                  .collection("categories")
+                  .doc(section.id)
+                  .update(
+                    section.toMap(),
+                  );
+            } else {
+              List<CategoryStoreData> flagSectionList = [];
+              flagSectionList =
+                  sectionsStorePartnerList.sublist(0, section.order);
+              sectionsStorePartnerList.forEach((sectStore) {
+                if (sectStore.order >= section.order) {
+                  sectStore.order = sectStore.order;
+                  flagSectionList.add(sectStore);
+                }
+              });
+              await FirebaseFirestore.instance
+                  .collection("stores")
+                  .doc(userData.storeId)
+                  .collection("categories")
+                  .doc(section.id)
+                  .update(
+                    section.toMap(),
+                  );
+              flagSectionList.forEach((sectionToDataBase) async {
+                print(sectionToDataBase.order);
+                await FirebaseFirestore.instance
+                    .collection("stores")
+                    .doc(userData.storeId)
+                    .collection("categories")
+                    .doc(section.id)
+                    .update(
+                      sectionToDataBase.toMap(),
+                    );
+              });
+            }
+            await getSectionList();
+            onSuccess();
+            isLoading = false;
+            notifyListeners();
+          });
+        } else {
+          if (section.order == sectionsStorePartnerList.length) {
+            await FirebaseFirestore.instance
+                .collection("stores")
+                .doc(userData.storeId)
+                .collection("categories")
+                .doc(section.id)
+                .update(
+                  section.toMap(),
+                );
+          } else {
+            List<CategoryStoreData> flagSectionList = [];
+            flagSectionList =
+                sectionsStorePartnerList.sublist(0, section.order);
+            sectionsStorePartnerList.forEach((sectStore) {
+              if (sectStore.order == section.order) {
+                sectStore.order = sectStore.order + 1;
+                flagSectionList.add(sectStore);
+              }
+            });
+            await FirebaseFirestore.instance
+                .collection("stores")
+                .doc(userData.storeId)
+                .collection("categories")
+                .doc(section.id)
+                .update(
+                  section.toMap(),
+                );
+            flagSectionList.forEach((sectionToDataBase) async {
+              print(sectionToDataBase.order);
+              await FirebaseFirestore.instance
+                  .collection("stores")
+                  .doc(userData.storeId)
+                  .collection("categories")
+                  .doc(section.id)
+                  .update(
+                    sectionToDataBase.toMap(),
+                  );
+            });
+          }
+          await getSectionList();
+          onSuccess();
+          isLoading = false;
+          notifyListeners();
+        }
+      } catch (error) {
+        onFail();
+        print(error);
+        isLoading = false;
+        notifyListeners();
+      }
+    }
+  }
+
   void insertNewSection({
     @required CategoryStoreData section,
     @required VoidCallback onSuccess,
@@ -1103,12 +1222,6 @@ class UserModel extends Model {
       }
     }
   }
-
-  void editSection({
-    @required CategoryStoreData section,
-    @required VoidCallback onSuccess,
-    @required VoidCallback onFail,
-  }) async {}
 
   void insertNewSubsection({
     @required SubSectionData subSectionData,
@@ -2042,6 +2155,10 @@ class UserModel extends Model {
             });
           } catch (erro) {
             print(erro);
+            listenChangeUser = false;
+            isLoading = false;
+            isReady = true;
+            notifyListeners();
           }
         }
       });
@@ -2163,7 +2280,7 @@ class UserModel extends Model {
       }
     }
     userPostion = await Geolocator.getCurrentPosition();
-    return await Geolocator.getCurrentPosition();
+    return userPostion;
   }
 
   void addComboToCart({

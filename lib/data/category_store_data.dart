@@ -21,7 +21,7 @@ class CategoryStoreData {
     @required this.title,
     @required this.x,
     @required this.y,
-    id,
+    this.id,
     @required this.imageFile,
   });
   CategoryStoreData.fromQueryDocument(QueryDocumentSnapshot query) {
