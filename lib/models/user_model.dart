@@ -203,6 +203,21 @@ class UserModel extends Model {
       this.firebaseUser = authResult.user;
       QuerySnapshot queryUser =
           await FirebaseFirestore.instance.collection("users").get();
+      FirebaseFirestore.instance
+          .collection("users")
+          .doc(firebaseUser.uid)
+          .collection("addresses")
+          .snapshots()
+          .listen((querySnapshot) {
+        userAddress.clear();
+        querySnapshot.docs.map((query) {
+          userAddress.add(
+            AddressData.fromQueryDocumentSnapshot(query),
+          );
+        }).toList();
+        notifyListeners();
+        print(userAddress.length);
+      });
       List<QueryDocumentSnapshot> list = queryUser.docs;
       for (QueryDocumentSnapshot doc in list) {
         if (doc.id == firebaseUser.uid) {
@@ -510,6 +525,21 @@ class UserModel extends Model {
             .get()
             .then((value) {
           userData = UserData.fromDocumentSnapshot(value);
+          FirebaseFirestore.instance
+              .collection("users")
+              .doc(firebaseUser.uid)
+              .collection("addresses")
+              .snapshots()
+              .listen((querySnapshot) {
+            userAddress.clear();
+            querySnapshot.docs.map((query) {
+              userAddress.add(
+                AddressData.fromQueryDocumentSnapshot(query),
+              );
+            }).toList();
+            notifyListeners();
+            print(userAddress.length);
+          });
         });
       } catch (error) {
         await FirebaseFirestore.instance.collection("errors").add({
@@ -518,10 +548,11 @@ class UserModel extends Model {
           "errorAt": DateTime.now(),
         });
       }
+
       await getListOfCategory();
       await getListHomeStores();
       await getOrders();
-      getUserAddresses();
+
       isLogged = true;
       notifyListeners();
       getcartProductList();
@@ -1265,6 +1296,7 @@ class UserModel extends Model {
         isLoading = false;
         notifyListeners();
       } catch (erro) {
+        print(erro);
         isLoading = false;
         onFail();
         notifyListeners();
@@ -3035,7 +3067,6 @@ class UserModel extends Model {
       updateFavoritList();
       onSuccess();
       isLoading = false;
-      notifyListeners();
     } catch (erro) {
       sendErrorMessageToADM(
         errorFromUser: erro.toString(),

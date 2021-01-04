@@ -24,6 +24,7 @@ class SubSectionData {
     return {
       "order": order,
       "title": title,
+      "sectionId": sectionId,
     };
   }
 }

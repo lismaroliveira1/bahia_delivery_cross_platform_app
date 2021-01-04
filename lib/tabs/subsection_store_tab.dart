@@ -1,5 +1,7 @@
 import 'package:bd_app_full/data/subsection_data.dart';
+import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/insert_new_subsection.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -17,6 +19,36 @@ class SubSectionStoreTab extends StatefulWidget {
 }
 
 class _SubSectionStoreTabState extends State<SubSectionStoreTab> {
+  List<SubSectionData> subsections = [];
+  @override
+  void initState() {
+    subsections = widget.subsections;
+    FirebaseFirestore.instance
+        .collection("stores")
+        .doc(UserModel.of(context).userData.storeId)
+        .collection("categories")
+        .doc(widget.sectionId)
+        .collection("subcategories")
+        .snapshots()
+        .listen(
+      (querySnapshot) {
+        subsections.clear();
+        querySnapshot.docs
+            .map(
+              (queryDoc) => subsections.add(
+                SubSectionData.fromQuerDocument(
+                  queryDoc,
+                  widget.sectionId,
+                ),
+              ),
+            )
+            .toList();
+        print(subsections.length);
+      },
+    );
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
