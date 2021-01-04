@@ -312,7 +312,6 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                         ],
                       ),
                     ),
-                    Spacer(),
                     Padding(
                       padding: EdgeInsets.fromLTRB(20, 0, 20, 26),
                       child: Row(

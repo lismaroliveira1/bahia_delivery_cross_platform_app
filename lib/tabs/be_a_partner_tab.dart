@@ -659,24 +659,19 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                           ),
                                         ),
                                       ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: SfDateRangePicker(
-                                            onSelectionChanged:
-                                                _onSelectionChanged,
-                                            selectionMode:
-                                                DateRangePickerSelectionMode
-                                                    .single,
-                                            initialSelectedRange:
-                                                PickerDateRange(
-                                                    DateTime.now().subtract(
-                                                        const Duration(
-                                                            days: 4)),
-                                                    DateTime.now()
-                                                        .add(const Duration(
-                                                            days: 3))),
-                                          ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SfDateRangePicker(
+                                          onSelectionChanged:
+                                              _onSelectionChanged,
+                                          selectionMode:
+                                              DateRangePickerSelectionMode
+                                                  .single,
+                                          initialSelectedRange: PickerDateRange(
+                                              DateTime.now().subtract(
+                                                  const Duration(days: 4)),
+                                              DateTime.now().add(
+                                                  const Duration(days: 3))),
                                         ),
                                       ),
                                       Padding(
@@ -1348,23 +1343,20 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                           ),
                                         ),
                                       ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: SfDateRangePicker(
-                                            onSelectionChanged:
-                                                _onSelectionChanged,
-                                            selectionMode:
-                                                DateRangePickerSelectionMode
-                                                    .single,
-                                            initialSelectedRange:
-                                                PickerDateRange(
-                                              DateTime.now().subtract(
-                                                  const Duration(days: 4)),
-                                              DateTime.now().add(
-                                                const Duration(
-                                                  days: 3,
-                                                ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SfDateRangePicker(
+                                          onSelectionChanged:
+                                              _onSelectionChanged,
+                                          selectionMode:
+                                              DateRangePickerSelectionMode
+                                                  .single,
+                                          initialSelectedRange: PickerDateRange(
+                                            DateTime.now().subtract(
+                                                const Duration(days: 4)),
+                                            DateTime.now().add(
+                                              const Duration(
+                                                days: 3,
                                               ),
                                             ),
                                           ),
@@ -1631,353 +1623,344 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
           padding: const EdgeInsets.all(12),
           child: Stack(
             children: [
-              Container(
-                child: ListView(
-                  children: [
-                    Center(
+              ListView(
+                children: [
+                  Center(
+                    child: Container(
+                      height: _imageSize,
+                      width: _imageSize,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        image: DecorationImage(
+                          image: AssetImage(
+                            'images/logo_and_name.jpg',
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: Text(
+                      'Agora vamos falar \ndo seu negócio',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 26,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 12.0,
+                    ),
+                    child: Center(
                       child: Container(
                         height: _imageSize,
                         width: _imageSize,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          image: DecorationImage(
-                            image: AssetImage(
-                              'images/logo_and_name.jpg',
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Stack(
+                          children: <Widget>[
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: isImageChoosed
+                                  ? Image.file(
+                                      imageFile,
+                                      isAntiAlias: false,
+                                      height:
+                                          MediaQuery.of(context).size.width / 3,
+                                      width:
+                                          MediaQuery.of(context).size.width / 3,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.network(
+                                      imageUrl,
+                                      height:
+                                          MediaQuery.of(context).size.width / 3,
+                                      width:
+                                          MediaQuery.of(context).size.width / 3,
+                                      fit: BoxFit.cover,
+                                    ),
                             ),
-                            fit: BoxFit.cover,
-                          ),
+                            Positioned(
+                              bottom: 4.0,
+                              right: 4.0,
+                              child: IconButton(
+                                onPressed: () {
+                                  _onEditImagePressed();
+                                },
+                                icon: Icon(
+                                  Icons.camera_alt,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: Text(
-                        'Agora vamos falar \ndo seu negócio',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 26,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 12.0,
-                      ),
-                      child: Center(
-                        child: Container(
-                          height: _imageSize,
-                          width: _imageSize,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Stack(
-                            children: <Widget>[
-                              ClipRRect(
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 18),
+                    child: StreamBuilder<String>(
+                        stream: _registerPartnerBloc.outFantasyStoreName,
+                        builder: (context, snapshot) {
+                          return TextField(
+                            controller: _fantasyNameController,
+                            onChanged: _registerPartnerBloc.changeFantasyName,
+                            decoration: InputDecoration(
+                              hintText: "Loja tal",
+                              labelText: 'Nome Fantasia',
+                              errorText:
+                                  snapshot.hasError ? snapshot.error : null,
+                              border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                child: isImageChoosed
-                                    ? Image.file(
-                                        imageFile,
-                                        isAntiAlias: false,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                3,
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                3,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Image.network(
-                                        imageUrl,
-                                        height:
-                                            MediaQuery.of(context).size.width /
-                                                3,
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                3,
-                                        fit: BoxFit.cover,
-                                      ),
                               ),
-                              Positioned(
-                                bottom: 4.0,
-                                right: 4.0,
-                                child: IconButton(
-                                  onPressed: () {
-                                    _onEditImagePressed();
-                                  },
-                                  icon: Icon(
-                                    Icons.camera_alt,
-                                  ),
-                                ),
+                            ),
+                          );
+                        }),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 18),
+                    child: StreamBuilder<String>(
+                        stream: _registerPartnerBloc.outStoreDescription,
+                        builder: (context, snapshot) {
+                          return TextField(
+                            onChanged: _registerPartnerBloc.changeDesription,
+                            controller: _descriptionController,
+                            maxLines: 3,
+                            decoration: InputDecoration(
+                              hintText: "Loja tal",
+                              labelText: 'Descrição',
+                              errorText:
+                                  snapshot.hasError ? snapshot.error : null,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                            ],
+                            ),
+                          );
+                        }),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25),
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Categoria:     ",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black87,
+                            ),
                           ),
-                        ),
+                          DropdownButton<String>(
+                            value: _dropdownInitValue,
+                            icon: Icon(Icons.arrow_downward),
+                            elevation: 16,
+                            iconSize: 16,
+                            underline: Container(
+                              height: 2,
+                              color: Colors.red,
+                            ),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                _dropdownInitValue = newValue;
+                                requestPartnerData.category = newValue;
+                                isCategorySelected = true;
+                              });
+                            },
+                            items: _dropdownsItens.map((String category) {
+                              return DropdownMenuItem<String>(
+                                value: category,
+                                child: Text(category),
+                              );
+                            }).toList(),
+                          ),
+                        ],
                       ),
                     ),
-                    Container(
-                      margin: EdgeInsets.only(top: 18),
-                      child: StreamBuilder<String>(
-                          stream: _registerPartnerBloc.outFantasyStoreName,
-                          builder: (context, snapshot) {
-                            return TextField(
-                              controller: _fantasyNameController,
-                              onChanged: _registerPartnerBloc.changeFantasyName,
-                              decoration: InputDecoration(
-                                hintText: "Loja tal",
-                                labelText: 'Nome Fantasia',
-                                errorText:
-                                    snapshot.hasError ? snapshot.error : null,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            );
-                          }),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 18),
-                      child: StreamBuilder<String>(
-                          stream: _registerPartnerBloc.outStoreDescription,
-                          builder: (context, snapshot) {
-                            return TextField(
-                              onChanged: _registerPartnerBloc.changeDesription,
-                              controller: _descriptionController,
-                              maxLines: 3,
-                              decoration: InputDecoration(
-                                hintText: "Loja tal",
-                                labelText: 'Descrição',
-                                errorText:
-                                    snapshot.hasError ? snapshot.error : null,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            );
-                          }),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 25),
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 40, 20, 26),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
                           children: [
                             Text(
-                              "Categoria:     ",
+                              "Abre às",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontWeight: FontWeight.w600,
                                 color: Colors.black87,
                               ),
                             ),
-                            DropdownButton<String>(
-                              value: _dropdownInitValue,
-                              icon: Icon(Icons.arrow_downward),
-                              elevation: 16,
-                              iconSize: 16,
-                              underline: Container(
-                                height: 2,
-                                color: Colors.red,
+                            Container(
+                              width: MediaQuery.of(context).size.width / 3,
+                              child: DateTimePicker(
+                                type: DateTimePickerType.time,
+                                controller: _timeOpenController,
+                                locale: Locale('pt', 'BR'),
+                                icon: Icon(
+                                  Icons.access_time,
+                                  size: 55,
+                                ),
+                                onChanged: (val) => setState(() {
+                                  valueChanged4 = val;
+                                  requestPartnerData.openTime = val;
+                                  isStoreOpenTimeSelected = true;
+                                }),
+                                validator: (val) {
+                                  setState(() {
+                                    valueToValidate4 = val;
+                                  });
+                                  return null;
+                                },
+                                onSaved: (val) => setState(() {
+                                  valueSaved4 = val;
+                                }),
                               ),
-                              onChanged: (String newValue) {
-                                setState(() {
-                                  _dropdownInitValue = newValue;
-                                  requestPartnerData.category = newValue;
-                                  isCategorySelected = true;
-                                });
-                              },
-                              items: _dropdownsItens.map((String category) {
-                                return DropdownMenuItem<String>(
-                                  value: category,
-                                  child: Text(category),
-                                );
-                              }).toList(),
                             ),
                           ],
                         ),
-                      ),
+                        Column(
+                          children: [
+                            Text(
+                              "Fecha às",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 3,
+                              child: DateTimePicker(
+                                type: DateTimePickerType.time,
+                                controller: _timeCloseController,
+                                locale: Locale('pt', 'BR'),
+                                icon: Icon(
+                                  Icons.access_time,
+                                  size: 55,
+                                ),
+                                onChanged: (val) => setState(() {
+                                  valueChanged4 = val;
+                                  requestPartnerData.closeTime = val;
+                                  isStoreCloseTimeSelected = true;
+                                }),
+                                validator: (val) {
+                                  setState(() => valueToValidate4 = val);
+                                  return null;
+                                },
+                                onSaved: (val) => setState(() {
+                                  valueSaved4 = val;
+                                }),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(20, 40, 20, 26),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            children: [
-                              Text(
-                                "Abre às",
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 0, 20, 26),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        FlatButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          padding: EdgeInsets.zero,
+                          child: Container(
+                            height: 50,
+                            width: MediaQuery.of(context).size.width / 3.5,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                color: Colors.red),
+                            child: Center(
+                              child: Text(
+                                "Cancelar",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 3,
-                                child: DateTimePicker(
-                                  type: DateTimePickerType.time,
-                                  controller: _timeOpenController,
-                                  locale: Locale('pt', 'BR'),
-                                  icon: Icon(
-                                    Icons.access_time,
-                                    size: 55,
-                                  ),
-                                  onChanged: (val) => setState(() {
-                                    valueChanged4 = val;
-                                    requestPartnerData.openTime = val;
-                                    isStoreOpenTimeSelected = true;
-                                  }),
-                                  validator: (val) {
-                                    setState(() {
-                                      valueToValidate4 = val;
-                                    });
-                                    return null;
-                                  },
-                                  onSaved: (val) => setState(() {
-                                    valueSaved4 = val;
-                                  }),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                "Fecha às",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              Container(
-                                width: MediaQuery.of(context).size.width / 3,
-                                child: DateTimePicker(
-                                  type: DateTimePickerType.time,
-                                  controller: _timeCloseController,
-                                  locale: Locale('pt', 'BR'),
-                                  icon: Icon(
-                                    Icons.access_time,
-                                    size: 55,
-                                  ),
-                                  onChanged: (val) => setState(() {
-                                    valueChanged4 = val;
-                                    requestPartnerData.closeTime = val;
-                                    isStoreCloseTimeSelected = true;
-                                  }),
-                                  validator: (val) {
-                                    setState(() => valueToValidate4 = val);
-                                    return null;
-                                  },
-                                  onSaved: (val) => setState(() {
-                                    valueSaved4 = val;
-                                  }),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Spacer(),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(20, 0, 20, 26),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          FlatButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            padding: EdgeInsets.zero,
-                            child: Container(
-                              height: 50,
-                              width: MediaQuery.of(context).size.width / 3.5,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: Colors.red),
-                              child: Center(
-                                child: Text(
-                                  "Cancelar",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
+                                  color: Colors.white,
                                 ),
                               ),
                             ),
                           ),
-                          StreamBuilder<bool>(
-                            stream: _registerPartnerBloc.outSubmitValidSend,
-                            builder: (context, snapshot) {
-                              return FlatButton(
-                                onPressed: snapshot.hasData &&
-                                        isCategorySelected &&
-                                        isStoreOpenTimeSelected &&
-                                        isStoreCloseTimeSelected
-                                    ? () {
-                                        setState(() {
-                                          requestPartnerData.fantasyName =
-                                              _fantasyNameController.text;
-                                          requestPartnerData.description =
-                                              _descriptionController.text;
-                                          requestPartnerData.isJuridicPerson =
-                                              true;
-                                        });
-                                        UserModel.of(context)
-                                            .sendRequestForNewPartner(
-                                          requestPartnerData:
-                                              requestPartnerData,
-                                          onSuccess: _onSuccess,
-                                          onFail: _onFail,
-                                          onFailImage: _onFailImage,
+                        ),
+                        StreamBuilder<bool>(
+                          stream: _registerPartnerBloc.outSubmitValidSend,
+                          builder: (context, snapshot) {
+                            return FlatButton(
+                              onPressed: snapshot.hasData &&
+                                      isCategorySelected &&
+                                      isStoreOpenTimeSelected &&
+                                      isStoreCloseTimeSelected
+                                  ? () {
+                                      setState(() {
+                                        requestPartnerData.fantasyName =
+                                            _fantasyNameController.text;
+                                        requestPartnerData.description =
+                                            _descriptionController.text;
+                                        requestPartnerData.isJuridicPerson =
+                                            true;
+                                      });
+                                      UserModel.of(context)
+                                          .sendRequestForNewPartner(
+                                        requestPartnerData: requestPartnerData,
+                                        onSuccess: _onSuccess,
+                                        onFail: _onFail,
+                                        onFailImage: _onFailImage,
+                                      );
+                                      //onButtonSendPressed();
+                                    }
+                                  : null,
+                              padding: EdgeInsets.zero,
+                              child: Container(
+                                height: 50,
+                                width: MediaQuery.of(context).size.width / 3.5,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: snapshot.hasData &&
+                                          isCategorySelected &&
+                                          isStoreOpenTimeSelected &&
+                                          isStoreCloseTimeSelected
+                                      ? Colors.red
+                                      : Colors.grey[300],
+                                ),
+                                child: Center(
+                                  child: ScopedModelDescendant<UserModel>(
+                                    builder: (context, child, model) {
+                                      if (model.isLoading) {
+                                        return Container(
+                                          child: CircularProgressIndicator(),
                                         );
-                                        //onButtonSendPressed();
+                                      } else {
+                                        return Text(
+                                          "Enviar",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
+                                        );
                                       }
-                                    : null,
-                                padding: EdgeInsets.zero,
-                                child: Container(
-                                  height: 50,
-                                  width:
-                                      MediaQuery.of(context).size.width / 3.5,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(12),
-                                    color: snapshot.hasData &&
-                                            isCategorySelected &&
-                                            isStoreOpenTimeSelected &&
-                                            isStoreCloseTimeSelected
-                                        ? Colors.red
-                                        : Colors.grey[300],
-                                  ),
-                                  child: Center(
-                                    child: ScopedModelDescendant<UserModel>(
-                                      builder: (context, child, model) {
-                                        if (model.isLoading) {
-                                          return Container(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        } else {
-                                          return Text(
-                                            "Enviar",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
-                                            ),
-                                          );
-                                        }
-                                      },
-                                    ),
+                                    },
                                   ),
                                 ),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
             ],
           ),
@@ -2099,21 +2082,17 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                         ),
                                       ),
                                     ),
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: SfDateRangePicker(
-                                          onSelectionChanged:
-                                              _onSelectionChanged,
-                                          selectionMode:
-                                              DateRangePickerSelectionMode
-                                                  .single,
-                                          initialSelectedRange: PickerDateRange(
-                                              DateTime.now().subtract(
-                                                  const Duration(days: 4)),
-                                              DateTime.now().add(
-                                                  const Duration(days: 3))),
-                                        ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SfDateRangePicker(
+                                        onSelectionChanged: _onSelectionChanged,
+                                        selectionMode:
+                                            DateRangePickerSelectionMode.single,
+                                        initialSelectedRange: PickerDateRange(
+                                            DateTime.now().subtract(
+                                                const Duration(days: 4)),
+                                            DateTime.now()
+                                                .add(const Duration(days: 3))),
                                       ),
                                     ),
                                     Padding(

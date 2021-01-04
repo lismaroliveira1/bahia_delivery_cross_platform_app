@@ -96,7 +96,7 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
                                 itemBuilder: (context, index) {
                                   return ListTile(
                                     onTap: () {
-                                      model.setAddressWithotSaing(
+                                      model.setAddressWithoutSaving(
                                         initLoad: _initLoad,
                                         onFail: _onFail,
                                         onSuccess: _onSuccess,

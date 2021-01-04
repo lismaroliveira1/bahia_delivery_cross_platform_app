@@ -122,9 +122,7 @@ class UserModel extends Model {
     if (firebaseUser == null) {
       firebaseUser = _auth.currentUser;
       isLogged = isLoggedIn();
-    }
-    isLoggedIn();
-    if (isLoggedIn()) {
+      isLoggedIn();
       try {
         listenChangeUser = true;
         await FirebaseFirestore.instance
@@ -161,7 +159,12 @@ class UserModel extends Model {
         });
       } catch (erro) {
         print(erro);
+        isLoading = false;
+        notifyListeners();
       }
+    } else {
+      isLoading = false;
+      notifyListeners();
     }
   }
 
@@ -672,6 +675,7 @@ class UserModel extends Model {
           storeElement.storeCategoryList =
               await getCategoryByStore(storeElement.id);
           for (OrderData orderData in listUserOrders) {
+            print(orderData.id);
             for (ProductData productData in orderData.products) {
               for (ProductData productDataStore in storeElement.products) {
                 if (productDataStore.pId == productData.pId) {
@@ -2840,7 +2844,7 @@ class UserModel extends Model {
     }
   }
 
-  void setAddressWithotSaing({
+  void setAddressWithoutSaving({
     @required String address,
     double lat,
     double lng,
