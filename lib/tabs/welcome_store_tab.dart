@@ -1,3 +1,4 @@
+import 'package:bd_app_full/data/product_data.dart';
 import 'package:bd_app_full/data/store_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/cart_screen.dart';
@@ -18,6 +19,13 @@ class WelcomeStoreTab extends StatefulWidget {
 }
 
 class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
+  List<ProductData> purchasedProducts = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -232,7 +240,68 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                       : Container(
                           height: 0,
                           width: 0,
+                        ),
+                  widget.storeData.purchasedProducts.length > 0
+                      ? Column(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12.0,
+                                vertical: 2.0,
+                              ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "Peça novamente...",
+                                    textAlign: TextAlign.start,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12.0,
+                                vertical: 2.0,
+                              ),
+                              child: Container(
+                                height: 140,
+                                child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: widget.storeData.purchasedProducts
+                                        .map(
+                                          (purchased) => Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  height: 80,
+                                                  width: 80,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                        purchased.productImage,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Text(purchased.productTitle),
+                                                Text(
+                                                    "R\$ ${purchased.productPrice.toStringAsFixed(2)}")
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                        .toList()),
+                              ),
+                            )
+                          ],
                         )
+                      : Container(),
                 ]),
               )
             ];

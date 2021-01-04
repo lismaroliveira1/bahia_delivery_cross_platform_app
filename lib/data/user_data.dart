@@ -43,7 +43,6 @@ class UserData {
     email = docUser.get("email");
     image = docUser.get("image");
     isPartner = docUser.get("isPartner");
-    print(isPartner);
     if (isPartner == 1) {
       storeId = docUser.get("storeId");
     } else if (isPartner == 6) {

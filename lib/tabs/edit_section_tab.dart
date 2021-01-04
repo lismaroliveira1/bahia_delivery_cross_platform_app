@@ -33,7 +33,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
     isImageChoosed = false;
     imageFile = null;
     id = widget.categoryStoreData.id;
-    position = widget.categoryStoreData.order;
+    position = widget.categoryStoreData.order + 1;
     olderPos = position;
     x = widget.categoryStoreData.x;
     y = widget.categoryStoreData.y;
@@ -252,8 +252,6 @@ class _EditSectionTabState extends State<EditSectionTab> {
                         imageFile: imageFile,
                         image: widget.categoryStoreData.image,
                       );
-                      print(id);
-                      print(position);
                       UserModel.of(context).editSection(
                         section: sectionData,
                         onSuccess: _onSuccess,
