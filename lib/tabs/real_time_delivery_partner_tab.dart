@@ -70,8 +70,8 @@ class _RealTimeDeliveryPartnerTabState
       ),
       orderData.isChoosedDeliveryMan
           ? TimelineItem(
-              title: widget.orderData.deliveryManData.name,
-              subtitle: widget.orderData.deliveryManData.cpf,
+              title: orderData.deliveryManData.name,
+              subtitle: orderData.deliveryManData.cpf,
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,

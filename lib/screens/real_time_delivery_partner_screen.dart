@@ -57,28 +57,6 @@ class _RealTimeDeliveryPartnerScreenState
               backGroundColor: Colors.white,
               items: <Bubble>[
                 Bubble(
-                  title: "Detalhes",
-                  iconColor: Colors.white,
-                  bubbleColor: Colors.blue,
-                  icon: Icons.list_alt_rounded,
-                  titleStyle: TextStyle(fontSize: 16, color: Colors.white),
-                  onPress: () {
-                    _animationController.reverse();
-                    Navigator.push(
-                      context,
-                      PageTransition(
-                        type: PageTransitionType.rightToLeft,
-                        child: DetailsUserOrderScreen(),
-                        inheritTheme: true,
-                        duration: Duration(
-                          milliseconds: 350,
-                        ),
-                        ctx: context,
-                      ),
-                    );
-                  },
-                ),
-                Bubble(
                   title: "Chat",
                   iconColor: Colors.white,
                   bubbleColor: Colors.blue,
@@ -130,19 +108,43 @@ class _RealTimeDeliveryPartnerScreenState
                           });
                         },
                       )
-                    : Bubble(
-                        title: "Entregador",
-                        iconColor: Colors.white,
-                        bubbleColor: Colors.blue,
-                        icon: Icons.delivery_dining,
-                        titleStyle: TextStyle(color: Colors.white),
-                        onPress: () async {
-                          _animationController.reverse();
-                          Timer(Duration(milliseconds: 500), () {
-                            chooseDeliveryMan();
-                          });
-                        },
-                      ),
+                    : !orderData.isChoosedDeliveryMan
+                        ? Bubble(
+                            title: "Entregador",
+                            iconColor: Colors.white,
+                            bubbleColor: Colors.blue,
+                            icon: Icons.delivery_dining,
+                            titleStyle: TextStyle(color: Colors.white),
+                            onPress: () async {
+                              _animationController.reverse();
+                              Timer(Duration(milliseconds: 500), () {
+                                chooseDeliveryMan();
+                              });
+                            },
+                          )
+                        : Bubble(
+                            title: "Detalhes",
+                            iconColor: Colors.white,
+                            bubbleColor: Colors.blue,
+                            icon: Icons.list_alt_rounded,
+                            titleStyle:
+                                TextStyle(fontSize: 16, color: Colors.white),
+                            onPress: () {
+                              _animationController.reverse();
+                              Navigator.push(
+                                context,
+                                PageTransition(
+                                  type: PageTransitionType.rightToLeft,
+                                  child: DetailsUserOrderScreen(),
+                                  inheritTheme: true,
+                                  duration: Duration(
+                                    milliseconds: 350,
+                                  ),
+                                  ctx: context,
+                                ),
+                              );
+                            },
+                          ),
                 Bubble(
                   title: "Cancelar Pedido",
                   iconColor: Colors.white,
@@ -187,6 +189,7 @@ class _RealTimeDeliveryPartnerScreenState
     _scaffoldKey.currentState
         .showSnackBar(
           SnackBar(
+            backgroundColor: Colors.grey[400],
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(25),
@@ -196,97 +199,115 @@ class _RealTimeDeliveryPartnerScreenState
             duration: Duration(minutes: 1),
             content: Container(
               height: MediaQuery.of(context).size.height * 0.6,
-              child: Column(
+              child: Stack(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 18,
-                    ),
-                    child: TextField(
-                      onChanged: (text) {
-                        if (text.length > 1) {
-                          setState(() {
-                            isSearching = true;
-                          });
-                        }
-                      },
-                      decoration: InputDecoration(
-                        labelText: "Pesquisar",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Entregadores",
+                          style: TextStyle(
+                            fontSize: 22,
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  ScopedModelDescendant<UserModel>(
-                    builder: (context, child, model) {
-                      double _imageSize = MediaQuery.of(context).size.width / 3;
-                      return Expanded(
-                        child: GridView.count(
-                          crossAxisCount: 2,
-                          mainAxisSpacing: 12,
-                          crossAxisSpacing: 12,
-                          children: model.deliveryMans
-                              .map(
-                                (delivery) => FlatButton(
-                                  onPressed: () {
-                                    model.setDeliveryManToOrder(
-                                      deliveryManData: delivery,
-                                      orderId: orderData.id,
-                                      onSuccess: _onSuccess,
-                                      onFail: _onFail,
-                                    );
-                                  },
-                                  padding: EdgeInsets.zero,
-                                  child: Card(
-                                    elevation: 8,
-                                    child: Container(
-                                      height: _imageSize + 50,
-                                      width: _imageSize + 50,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          children: [
-                                            Container(
-                                              height: _imageSize * 0.8,
-                                              width: _imageSize * 0.8,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      delivery.image),
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(2.0),
-                                                child: Column(
-                                                  children: [
-                                                    Text(
-                                                      delivery.name,
+                      ScopedModelDescendant<UserModel>(
+                        builder: (context, child, model) {
+                          double _imageSize =
+                              MediaQuery.of(context).size.width / 3;
+                          return Expanded(
+                            child: GridView.count(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 12,
+                              crossAxisSpacing: 12,
+                              children: model.deliveryMans
+                                  .map(
+                                    (delivery) => FlatButton(
+                                      onPressed: () {
+                                        model.setDeliveryManToOrder(
+                                          deliveryManData: delivery,
+                                          orderId: orderData.id,
+                                          onSuccess: _onSuccess,
+                                          onFail: _onFail,
+                                        );
+                                      },
+                                      padding: EdgeInsets.zero,
+                                      child: Card(
+                                        color: Colors.white,
+                                        elevation: 8,
+                                        child: Container(
+                                          color: Colors.white,
+                                          height: _imageSize + 50,
+                                          width: _imageSize + 50,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  height: _imageSize * 0.8,
+                                                  width: _imageSize * 0.8,
+                                                  decoration: BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    image: DecorationImage(
+                                                      image: NetworkImage(
+                                                          delivery.image),
+                                                      fit: BoxFit.cover,
                                                     ),
-                                                    Text(
-                                                      delivery.cpf,
-                                                    ),
-                                                  ],
+                                                  ),
                                                 ),
-                                              ),
+                                                Expanded(
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            2.0),
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                          delivery.name,
+                                                          style: TextStyle(
+                                                            color:
+                                                                Colors.black54,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          delivery.cpf,
+                                                          style: TextStyle(
+                                                            color:
+                                                                Colors.black54,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      );
-                    },
+                                  )
+                                  .toList(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  Positioned(
+                    right: 2,
+                    top: 2,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.cancel,
+                        color: Colors.black54,
+                        size: 40,
+                      ),
+                      onPressed: () {
+                        _scaffoldKey.currentState.hideCurrentSnackBar();
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -302,7 +323,11 @@ class _RealTimeDeliveryPartnerScreenState
   }
 
   void _onFail() {
-    Scaffold.of(context).showSnackBar(
+    _scaffoldKey.currentState.hideCurrentSnackBar();
+    setState(() {
+      _isSnackbarActive = true;
+    });
+    _scaffoldKey.currentState.showSnackBar(
       SnackBar(
         content: Text(
           "Algo saiu errado, tente novamente",

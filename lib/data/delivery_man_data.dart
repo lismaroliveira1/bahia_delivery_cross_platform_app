@@ -36,6 +36,7 @@ class DeliveryManData {
   DeliveryManData.fromDynamic(dynamic docSnap) {
     name = docSnap["name"];
     image = docSnap["image"];
+    cpf = docSnap["cpf"];
   }
   DeliveryManData.fromQuerySnapshot(QueryDocumentSnapshot docSnap) {
     id = docSnap.id;

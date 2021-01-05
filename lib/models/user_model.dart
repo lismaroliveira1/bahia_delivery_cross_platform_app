@@ -113,7 +113,7 @@ class UserModel extends Model {
       firebaseUser = _auth.currentUser;
       isLogged = isLoggedIn();
       notifyListeners();
-      await _determinePosition();
+      await getLocationDevice();
       app = await Firebase.initializeApp(
         options: FirebaseOptions(
           appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
@@ -593,8 +593,8 @@ class UserModel extends Model {
     if (isLoggedIn()) {
       storeHomeList.clear();
       latLngDevice = LatLng(
-        userPostion.latitude,
-        userPostion.longitude,
+        _locationData.latitude,
+        _locationData.longitude,
       );
       try {
         QuerySnapshot querySnapshot =
@@ -2186,7 +2186,7 @@ class UserModel extends Model {
     _locationData = await location.getLocation();
   }
 
-  Future<Position> _determinePosition() async {
+  Future<Position> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
