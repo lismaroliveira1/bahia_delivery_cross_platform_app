@@ -66,7 +66,6 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
   @override
   void initState() {
     EasyLoading.addStatusCallback((status) {
-      print('EasyLoading Status $status');
       if (status == EasyLoadingStatus.dismiss) {
         _timer?.cancel();
       }
@@ -210,10 +209,13 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                     if (imageFile == null) return;
                     setState(() {
                       isImageChoosed = true;
-                      requestPartnerData.imageFile = imageFile;
+                      if (screen != 2) {
+                        requestPartnerData.imageFile = imageFile;
+                      }
                     });
                     Scaffold.of(context).hideCurrentSnackBar();
                   } catch (e) {
+                    print(e);
                     setState(() {
                       isImageChoosed = false;
                     });
@@ -245,6 +247,9 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                     setState(() {
                       isImageChoosed = true;
                     });
+                    if (screen != 2) {
+                      requestPartnerData.imageFile = imageFile;
+                    }
                     Scaffold.of(context).hideCurrentSnackBar();
                   } catch (e) {
                     setState(() {

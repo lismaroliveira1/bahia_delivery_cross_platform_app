@@ -390,7 +390,6 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                                   child:
                                       _buildCircle("1", firtstatus, status, 1),
                                 ),
-                                Spacer(),
                                 FlatButton(
                                   padding: EdgeInsets.zero,
                                   onPressed: status == 2
@@ -434,7 +433,6 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                                   child: _buildCircle(
                                       "2", secondStatus, status, 2),
                                 ),
-                                Spacer(),
                                 FlatButton(
                                     onPressed: () {
                                       Scaffold.of(context).showSnackBar(
