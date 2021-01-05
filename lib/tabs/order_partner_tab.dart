@@ -1,8 +1,6 @@
-import 'package:bd_app_full/data/set_delivery_man_screen.dart';
 import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/tiles/order_partner_tile.dart';
+import 'package:bd_app_full/tiles/order_tile.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class OrderPartnerTab extends StatefulWidget {
@@ -33,43 +31,23 @@ class _OrderPartnerTabState extends State<OrderPartnerTab> {
             ),
           ),
           child: ScopedModelDescendant<UserModel>(
-            builder: (context, child, model) {
-              if (model.isLoading) {
-                return Container(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                );
-              } else {
-                return Expanded(
-                  child: ListView(
-                      children: model.partnerOrderList
-                          .map((order) => OrderPartnerTile(
-                                order,
-                                setDeliveryMan,
-                              ))
-                          .toList()),
-                );
-              }
-            },
-          ),
+              builder: (context, chiil, model) {
+            if (model.isLoading) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              return ListView(
+                children: model.listUserOrders.map((order) {
+                  return OrderTile(
+                    orderData: order,
+                    screen: null,
+                  );
+                }).toList(),
+              );
+            }
+          }),
         ),
-      ),
-    );
-  }
-
-  void setDeliveryMan(String orderId) {
-    print(orderId);
-    Navigator.push(
-      context,
-      new PageTransition(
-        type: PageTransitionType.rightToLeft,
-        child: new SetDeliveryManScreen(orderId),
-        inheritTheme: true,
-        duration: new Duration(
-          milliseconds: 350,
-        ),
-        ctx: context,
       ),
     );
   }

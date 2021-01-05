@@ -1912,8 +1912,6 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                             _fantasyNameController.text;
                                         requestPartnerData.description =
                                             _descriptionController.text;
-                                        requestPartnerData.isJuridicPerson =
-                                            true;
                                       });
                                       UserModel.of(context)
                                           .sendRequestForNewPartner(
@@ -2284,6 +2282,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                             cnpj: _cnpjController.text,
                                             location: UserModel.of(context)
                                                 .addressToRegisterPartner,
+                                            isJuridicPerson: true,
                                           );
 
                                           await EasyLoading.dismiss();

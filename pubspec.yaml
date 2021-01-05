@@ -82,6 +82,8 @@ dependencies:
   geolocator: ^6.1.13
   date_time_picker: ^1.1.1
   flutter_easyloading: ^2.2.2
+  timelines: ^0.0.2+1
+  
 
 dev_dependencies:
   flutter_test:

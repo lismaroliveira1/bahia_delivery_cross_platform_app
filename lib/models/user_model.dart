@@ -277,6 +277,7 @@ class UserModel extends Model {
       isLoading = false;
       isReady = true;
       notifyListeners();
+      updateUser();
     } catch (error) {
       onFail();
       await FirebaseFirestore.instance.collection("errors").add({
@@ -517,61 +518,9 @@ class UserModel extends Model {
       });
       await _determinePosition();
       saveToken();
-      try {
-        await FirebaseFirestore.instance
-            .collection("users")
-            .doc(firebaseUser.uid)
-            .get()
-            .then((value) {
-          userData = UserData.fromDocumentSnapshot(value);
-          FirebaseFirestore.instance
-              .collection("users")
-              .doc(firebaseUser.uid)
-              .collection("addresses")
-              .snapshots()
-              .listen((querySnapshot) {
-            userAddress.clear();
-            querySnapshot.docs.map((query) {
-              userAddress.add(
-                AddressData.fromQueryDocumentSnapshot(query),
-              );
-            }).toList();
-            notifyListeners();
-          });
-        });
-      } catch (error) {
-        await FirebaseFirestore.instance.collection("errors").add({
-          "erro": "Google Sign in" + error.toString(),
-          "userId": firebaseUser.uid,
-          "errorAt": DateTime.now(),
-        });
-      }
-      await getListOfCategory();
-      await getListHomeStores();
-      await getOrders();
-      isLogged = true;
-      notifyListeners();
-      getcartProductList();
-      getComboCartItens();
-      getPaymentUserForms();
-      updateFavoritList();
-      getDeliveryPartnersList();
-      getPartnerData();
-      getProductsPartnerList();
-      getSectionList();
-      getPartnerOffSales();
-      getComboList();
-      getPartnerOrderList();
-      getPurchasedStoresList();
-      getAllProductsToList();
-      getPaymentUserForms();
-      getDeliveryManData();
-      getListOfCoupons();
+      _loadCurrentUser();
       onSuccess();
-      isLoading = false;
-      isReady = true;
       notifyListeners();
-      updateUser();
     } catch (error) {
       await FirebaseFirestore.instance.collection("errors").add({
         "erro": "Google Sign in 2" + error.toString(),
@@ -580,16 +529,6 @@ class UserModel extends Model {
       });
       print(error);
     }
-    notifyListeners();
-    app = await Firebase.initializeApp(
-      options: FirebaseOptions(
-        appId: '1:411754724192:android:b29a3de213a1a3a1f5fc05',
-        apiKey: 'AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s',
-        messagingSenderId: '411754724192',
-        projectId: 'bahia-delivery-app-cp',
-        databaseURL: 'bahia-delivery-app-cp.appspot.com',
-      ),
-    );
   }
 
   void signInWithFacebook({
