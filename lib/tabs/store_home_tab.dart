@@ -20,6 +20,7 @@ class StoreHomeTab extends StatefulWidget {
 
 class _StoreHomeTabState extends State<StoreHomeTab> {
   String urlImage = "https://meuvidraceiro.com.br/images/sem-imagem.png";
+
   @override
   Widget build(BuildContext context) {
     return Container(

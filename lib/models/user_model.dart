@@ -105,12 +105,13 @@ class UserModel extends Model {
     return firebaseUser != null; //firebaseUser != null;
   }
 
-  void _loadCurrentUser() async {
+  Future<void> _loadCurrentUser() async {
     isLoading = true;
     notifyListeners();
     if (firebaseUser == null) {
       firebaseUser = _auth.currentUser;
       isLogged = isLoggedIn();
+      notifyListeners();
       await _determinePosition();
       app = await Firebase.initializeApp(
         options: FirebaseOptions(
@@ -155,7 +156,7 @@ class UserModel extends Model {
           isReady = true;
           listenChangeUser = false;
           notifyListeners();
-          updateUser();
+          updateUser(false);
         });
       } catch (erro) {
         print(erro);
@@ -236,48 +237,8 @@ class UserModel extends Model {
         });
       }
       saveToken();
-      try {
-        await FirebaseFirestore.instance
-            .collection("users")
-            .doc(firebaseUser.uid)
-            .get()
-            .then((value) {
-          userData = UserData.fromDocumentSnapshot(value);
-        });
-      } catch (error) {
-        await FirebaseFirestore.instance.collection("errors").add({
-          "erro": "Google Sign in" + error.toString(),
-          "userId": firebaseUser.uid,
-          "errorAt": DateTime.now(),
-        });
-      }
-      await getListOfCategory();
-      await getListHomeStores();
-      await getOrders();
-      getUserAddresses();
-      isLogged = true;
+      _loadCurrentUser();
       notifyListeners();
-      getcartProductList();
-      getComboCartItens();
-      getPaymentUserForms();
-      updateFavoritList();
-      getDeliveryPartnersList();
-      getPartnerData();
-      getProductsPartnerList();
-      getSectionList();
-      getPartnerOffSales();
-      getComboList();
-      getPartnerOrderList();
-      getPurchasedStoresList();
-      getAllProductsToList();
-      getPaymentUserForms();
-      getDeliveryManData();
-      getListOfCoupons();
-      onSuccess();
-      isLoading = false;
-      isReady = true;
-      notifyListeners();
-      updateUser();
     } catch (error) {
       onFail();
       await FirebaseFirestore.instance.collection("errors").add({
@@ -516,10 +477,17 @@ class UserModel extends Model {
         "phoneNumber": firebaseUser.phoneNumber,
         "image": firebaseUser.photoURL,
       });
-      await _determinePosition();
+      userData = UserData(
+        name: firebaseUser.displayName,
+        email: firebaseUser.displayName,
+        image: firebaseUser.photoURL,
+      );
+      await _loadCurrentUser();
+      isLogged = true;
+      isLoading = false;
+      notifyListeners();
       saveToken();
-      _loadCurrentUser();
-      onSuccess();
+      updateUser(true);
       notifyListeners();
     } catch (error) {
       await FirebaseFirestore.instance.collection("errors").add({
@@ -527,7 +495,6 @@ class UserModel extends Model {
         "userId": firebaseUser.uid,
         "errorAt": DateTime.now(),
       });
-      print(error);
     }
   }
 
@@ -2058,18 +2025,22 @@ class UserModel extends Model {
     }
   }
 
-  void updateUser() async {
+  void updateUser(bool firstTime) async {
     if (isLoggedIn()) {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(firebaseUser.uid)
+          .get()
+          .then((value) async {
+        userData = UserData.fromDocumentSnapshot(value);
+      });
       FirebaseFirestore.instance
           .collection("users")
           .doc(firebaseUser.uid)
           .snapshots()
           .listen((queryDoc) async {
-        if (queryDoc.get("isPartner") != userData.isPartner) {
-          print("ok");
+        if (queryDoc.get("isPartner") != userData.isPartner || firstTime) {
           try {
-            listenChangeUser = true;
-            notifyListeners();
             DocumentSnapshot docUser = await FirebaseFirestore.instance
                 .collection("users")
                 .doc(firebaseUser.uid)
@@ -2089,9 +2060,6 @@ class UserModel extends Model {
             await getListHomeStores();
             await getOrders();
             getUserAddresses();
-            isLogged = true;
-            isLoading = false;
-            isReady = true;
             notifyListeners();
             getcartProductList();
             getComboCartItens();
