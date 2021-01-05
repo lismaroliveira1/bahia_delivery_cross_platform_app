@@ -477,6 +477,7 @@ class UserModel extends Model {
         "phoneNumber": firebaseUser.phoneNumber,
         "image": firebaseUser.photoURL,
       });
+
       userData = UserData(
         name: firebaseUser.displayName,
         email: firebaseUser.displayName,

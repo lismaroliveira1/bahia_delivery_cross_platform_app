@@ -20,6 +20,11 @@ class StoreHomeTab extends StatefulWidget {
 
 class _StoreHomeTabState extends State<StoreHomeTab> {
   String urlImage = "https://meuvidraceiro.com.br/images/sem-imagem.png";
+  bool flag;
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +32,9 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
       color: Colors.black26,
       child: ScopedModelDescendant<UserModel>(
         builder: (context, child, model) {
+          if (model.userData.storeImage == null) {
+            model.updateUser(true);
+          }
           if (model.isLoading) {
             return Center(
               child: CircularProgressIndicator(),
