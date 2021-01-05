@@ -32,9 +32,6 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
       color: Colors.black26,
       child: ScopedModelDescendant<UserModel>(
         builder: (context, child, model) {
-          if (model.userData.storeImage == null) {
-            model.updateUser(true);
-          }
           if (model.isLoading) {
             return Center(
               child: CircularProgressIndicator(),

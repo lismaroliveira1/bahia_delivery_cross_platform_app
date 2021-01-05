@@ -33,6 +33,7 @@ import 'package:geodesy/geodesy.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:location/location.dart';
+import 'package:random_string/random_string.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const token = '635289558f18ba4c749d6928e8cd0ba7';
@@ -2594,6 +2595,17 @@ class UserModel extends Model {
             "deliveryMan": deliveryManData.toRequestMap(),
           },
         );
+
+        partnerOrderList.forEach((order) async {
+          if (orderId == order.id) {
+            DocumentSnapshot doc = await FirebaseFirestore.instance
+                .collection("orders")
+                .doc(orderId)
+                .get();
+            order = OrderData.fromDocumentSnapshot(doc);
+            notifyListeners();
+          }
+        });
         onSuccess();
         notifyListeners();
       } catch (error) {

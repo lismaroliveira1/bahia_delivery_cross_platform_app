@@ -50,6 +50,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0-nullsafety.1"
+  bubble_timeline:
+    dependency: "direct main"
+    description:
+      name: bubble_timeline
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.5"
   cached_network_image:
     dependency: transitive
     description:
@@ -952,13 +959,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.19-nullsafety.2"
-  timelines:
-    dependency: "direct main"
-    description:
-      name: timelines
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.2+1"
   transparent_image:
     dependency: "direct main"
     description:

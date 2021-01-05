@@ -33,8 +33,9 @@ class OrderData {
   String vehicleType;
   DeliveryManData deliveryManData;
   String paymentOnAppType;
-  String paymentInfo; 
+  String paymentInfo;
   String deliveryManString = '';
+  bool isChoosedDeliveryMan = false;
 
   OrderData(
     this.id,
@@ -91,6 +92,7 @@ class OrderData {
     storeAdressId = queryDoc.data()["storeLocation"]["addressId"];
     storeLat = queryDoc.data()["storeLocation"]["lat"];
     storeLng = queryDoc.data()["storeLocation"]["lng"];
+
     if (paymentType == "Pagamento no app") {
       paymentOnAppType = queryDoc.data()["dataSale"]["payment"]["type"];
       if (paymentOnAppType == 'DebitCard') {
@@ -108,6 +110,58 @@ class OrderData {
     if (queryDoc.get("deliveryMan") != "none") {
       deliveryManData =
           DeliveryManData.fromDynamic(queryDoc.data()["deliveryMan"]);
+      isChoosedDeliveryMan = true;
+    }
+    for (LinkedHashMap p in queryDoc.data()["products"]) {
+      products.add(ProductData.fromLinkedHashMap(p));
+      totalPrice += p["totalPrice"];
+    }
+    for (LinkedHashMap combo in queryDoc.data()["combos"]) {
+      combos.add(ComboData.fromLinkedHashMap(combo));
+      totalPrice += combo["price"] * combo["quantity"];
+    }
+  }
+  OrderData.fromDocumentSnapshot(DocumentSnapshot queryDoc) {
+    id = queryDoc.id;
+    storeName = queryDoc.get("StoreName");
+    client = queryDoc.get("client");
+    clientImage = queryDoc.get("clientImage");
+    clientName = queryDoc.get("clientName");
+    createdAt = queryDoc.get("createdAt");
+    discount = queryDoc.get("discount");
+    paymentType = queryDoc.get("paymentType");
+    shipPrice = queryDoc.get("shipPrice");
+    status = queryDoc.get("status");
+    storeDescription = queryDoc.get("storeDescription");
+    storeId = queryDoc.get("storeId");
+    storeImage = queryDoc.get("storeImage");
+    totalPrice = queryDoc.get("shipPrice");
+    clientAddress = queryDoc.data()["userLocation"]["clientAddress"];
+    clientAddressId = queryDoc.data()["userLocation"]["addressId"];
+    clientLat = queryDoc.data()["userLocation"]["lat"];
+    clientLng = queryDoc.data()["userLocation"]["lng"];
+    storeAddress = queryDoc.data()["storeLocation"]["storeAddress"];
+    storeAdressId = queryDoc.data()["storeLocation"]["addressId"];
+    storeLat = queryDoc.data()["storeLocation"]["lat"];
+    storeLng = queryDoc.data()["storeLocation"]["lng"];
+    if (paymentType == "Pagamento no app") {
+      paymentOnAppType = queryDoc.data()["dataSale"]["payment"]["type"];
+      if (paymentOnAppType == 'DebitCard') {
+        paymentInfo = queryDoc.data()["dataSale"]["payment"]['debitCard']
+                ["brand"] +
+            " - " +
+            queryDoc.data()["dataSale"]["payment"]['debitCard']["cardNumber"];
+      } else if (paymentOnAppType == 'CreditCard') {
+        paymentInfo = queryDoc.data()["dataSale"]["payment"]['creditCard']
+                ["brand"] +
+            " - " +
+            queryDoc.data()["dataSale"]["payment"]['creditCard']["cardNumber"];
+      }
+    }
+    if (queryDoc.get("deliveryMan") != "none") {
+      deliveryManData =
+          DeliveryManData.fromDynamic(queryDoc.data()["deliveryMan"]);
+      isChoosedDeliveryMan = true;
     }
     for (LinkedHashMap p in queryDoc.data()["products"]) {
       products.add(ProductData.fromLinkedHashMap(p));

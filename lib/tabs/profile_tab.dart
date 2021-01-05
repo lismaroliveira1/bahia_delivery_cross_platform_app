@@ -19,6 +19,12 @@ class ProfileTab extends StatefulWidget {
 
 class _ProfileTabState extends State<ProfileTab> {
   @override
+  void initState() {
+    UserModel.of(context).updateUser(true);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black26,

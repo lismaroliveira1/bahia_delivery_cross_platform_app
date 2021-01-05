@@ -66,7 +66,6 @@ class _RealTimeDeliveryUserScreenState extends State<RealTimeDeliveryUserScreen>
               );
             },
           ),
-          // Floating action menu item
           Bubble(
             title: "Chat",
             iconColor: Colors.white,
@@ -89,7 +88,6 @@ class _RealTimeDeliveryUserScreenState extends State<RealTimeDeliveryUserScreen>
               );
             },
           ),
-          //Floating action menu item
           Bubble(
             title: "Ligar",
             iconColor: Colors.white,
@@ -101,11 +99,7 @@ class _RealTimeDeliveryUserScreenState extends State<RealTimeDeliveryUserScreen>
             },
           ),
         ],
-
-        // animation controller
         animation: _animation,
-
-        // On pressed change animation state
         onPress: () => _animationController.isCompleted
             ? _animationController.reverse()
             : _animationController.forward(),
