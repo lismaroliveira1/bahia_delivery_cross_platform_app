@@ -36,7 +36,7 @@ class OrderData {
   String paymentInfo;
   String deliveryManString = '';
   bool isChoosedDeliveryMan = false;
-
+  bool isDeliveryStarted = false;
   OrderData(
     this.id,
     this.storeName,
@@ -92,7 +92,6 @@ class OrderData {
     storeAdressId = queryDoc.data()["storeLocation"]["addressId"];
     storeLat = queryDoc.data()["storeLocation"]["lat"];
     storeLng = queryDoc.data()["storeLocation"]["lng"];
-
     if (paymentType == "Pagamento no app") {
       paymentOnAppType = queryDoc.data()["dataSale"]["payment"]["type"];
       if (paymentOnAppType == 'DebitCard') {
@@ -144,6 +143,7 @@ class OrderData {
     storeAdressId = queryDoc.data()["storeLocation"]["addressId"];
     storeLat = queryDoc.data()["storeLocation"]["lat"];
     storeLng = queryDoc.data()["storeLocation"]["lng"];
+    isDeliveryStarted = queryDoc.get("isDeliveryStarted");
     if (paymentType == "Pagamento no app") {
       paymentOnAppType = queryDoc.data()["dataSale"]["payment"]["type"];
       if (paymentOnAppType == 'DebitCard') {

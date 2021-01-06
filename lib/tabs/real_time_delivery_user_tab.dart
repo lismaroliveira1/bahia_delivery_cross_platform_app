@@ -530,7 +530,6 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
 
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(cPosition));
-    print("ok");
   }
 
   void onProductListPressed() {

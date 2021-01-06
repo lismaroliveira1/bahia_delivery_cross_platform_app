@@ -339,9 +339,7 @@ class _RealTimeDeliveryPartnerScreenState
     );
   }
 
-  void _onSuccess() async {
-    Timer(Duration(milliseconds: 2000), () {
-      Navigator.of(context).pop();
-    });
+  void _onSuccess(OrderData order) async {
+    _scaffoldKey.currentState.hideCurrentSnackBar();
   }
 }

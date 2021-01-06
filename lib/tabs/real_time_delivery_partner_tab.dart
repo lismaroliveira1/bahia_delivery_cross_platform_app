@@ -2,6 +2,7 @@ import 'package:bd_app_full/data/order_data.dart';
 import 'package:bubble_timeline/bubble_timeline.dart';
 import 'package:bubble_timeline/timeline_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class RealTimeDeliveryPartnerTab extends StatefulWidget {
@@ -15,16 +16,16 @@ class RealTimeDeliveryPartnerTab extends StatefulWidget {
 class _RealTimeDeliveryPartnerTabState
     extends State<RealTimeDeliveryPartnerTab> {
   List<TimelineItem> _items = [];
-  String titleState1;
-  String titleState2;
-  String titleState3;
-  String titleState4;
-  String titleState5;
-  String titleState6;
+  DatabaseReference _deliveryManRealTimeLocation;
+  double distance = 0;
+  double duration = 0;
+  double latEvent;
+  double lngEvent;
   OrderData orderData;
   @override
   void initState() {
     orderData = widget.orderData;
+    print(orderData.isDeliveryStarted);
     initRealTime();
     super.initState();
   }
@@ -77,7 +78,7 @@ class _RealTimeDeliveryPartnerTabState
                   shape: BoxShape.circle,
                   image: DecorationImage(
                     image: NetworkImage(
-                      widget.orderData.deliveryManData.image,
+                      orderData.deliveryManData.image,
                     ),
                     fit: BoxFit.cover,
                   ),
@@ -95,8 +96,14 @@ class _RealTimeDeliveryPartnerTabState
               bubbleColor: Colors.grey,
             ),
       TimelineItem(
-        title: 'Bus',
-        subtitle: 'I like to go with friends',
+        title: orderData.isDeliveryStarted
+            ? "${orderData.deliveryManData.name.split(" ")[0]} inciou a entrega"
+            : 'Entrega não iniciada',
+        subtitle: orderData.isDeliveryStarted
+            ? "Duração: ${(duration / 60).toStringAsFixed(0)} min \n Distância ${(distance / 1000).toStringAsFixed(1)} Km"
+            : orderData.isChoosedDeliveryMan
+                ? 'Aguardando ${orderData.deliveryManData.name.split(" ")[0]} iniciar a entrega'
+                : 'Entregador nã definido',
         child: Icon(
           Icons.directions_bus,
           color: Colors.white,
@@ -226,9 +233,41 @@ class _RealTimeDeliveryPartnerTabState
         .doc(orderData.id)
         .snapshots()
         .listen((docSnapshot) {
+      print("ok");
       setState(() {
         orderData = OrderData.fromDocumentSnapshot(docSnapshot);
       });
+    });
+    _deliveryManRealTimeLocation = FirebaseDatabase.instance
+        .reference()
+        .child("orders")
+        .child(orderData.id)
+        .child("deliveryRealTimeLocation");
+
+    _deliveryManRealTimeLocation.onValue.listen((event) {
+      if (orderData.isDeliveryStarted) {
+        update(
+          dist: event.snapshot.value["distanceRemaining"],
+          durat: event.snapshot.value["durationRemaining"],
+          latEven: event.snapshot.value['lat'],
+          lngEven: event.snapshot.value['lng'],
+        );
+      }
+    });
+  }
+
+  void update({
+    @required double dist,
+    @required double durat,
+    @required double latEven,
+    @required double lngEven,
+  }) {
+    print(duration);
+    setState(() {
+      distance = dist;
+      duration = durat;
+      latEvent = latEven;
+      lngEvent = lngEven;
     });
   }
 

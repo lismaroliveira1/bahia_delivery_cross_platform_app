@@ -1748,7 +1748,6 @@ class UserModel extends Model {
   }) async {
     if (isLoggedIn()) {
       final cieloPayment = new CieloPayment();
-
       Map response = {};
       double totalPrice = 0;
       comboCartList.forEach((combo) {
@@ -1796,6 +1795,7 @@ class UserModel extends Model {
             "StoreName": storeData.name,
             "storeImage": storeData.image,
             "storeDescription": "storeDescrition",
+            "isDeliveryStarted": false,
             "discount": discount,
             "totalPrice": totalPrice,
             "status": 1,
@@ -1814,6 +1814,7 @@ class UserModel extends Model {
             "method": "debitCard",
             "dataSale": response,
             "realTimeDeliveryManLocation": {},
+            "isFinished": false,
           });
           getListOfCategory();
           getListHomeStores();
@@ -1905,6 +1906,7 @@ class UserModel extends Model {
           },
           "discount": discount,
           "totalPrice": totalPrice,
+          "isDeliveryStarted": false,
           "deliveryMan": "none",
           "status": 1,
           'createdAt': FieldValue.serverTimestamp(),
@@ -1913,6 +1915,7 @@ class UserModel extends Model {
           "method": "creditCard",
           "dataSale": response,
           "realTimeDeliveryManLocation": {},
+          "isFinished": false,
         });
         getListOfCategory();
         getListHomeStores();
@@ -1990,6 +1993,7 @@ class UserModel extends Model {
           "StoreName": storeData.name,
           "storeImage": storeData.image,
           "storeDescription": "storeDescrition",
+          "isDeliveryStarted": false,
           "storeLocation": {
             "storeAddress": storeData.storeAddress
                 .replaceAll("State of ", "")
@@ -2007,6 +2011,7 @@ class UserModel extends Model {
           'paymentType': "Pagamento na Entrega",
           'dataSale': {},
           "realTimeDeliveryManLocation": {},
+          "isFinished": false,
         });
         cartProducts.clear();
         comboCartList.clear();
@@ -2582,7 +2587,7 @@ class UserModel extends Model {
   void setDeliveryManToOrder({
     @required DeliveryManData deliveryManData,
     @required String orderId,
-    @required VoidCallback onSuccess,
+    @required Function(OrderData orderData) onSuccess,
     @required VoidCallback onFail,
   }) async {
     if (isLoggedIn()) {
@@ -2603,11 +2608,10 @@ class UserModel extends Model {
                 .doc(orderId)
                 .get();
             order = OrderData.fromDocumentSnapshot(doc);
+            onSuccess(order);
             notifyListeners();
           }
         });
-        onSuccess();
-        notifyListeners();
       } catch (error) {
         onFail();
         notifyListeners();
@@ -2641,6 +2645,7 @@ class UserModel extends Model {
     @required double lng,
     @required double distanceRemaining,
     @required double durationRemaining,
+    @required bool isSending,
   }) async {
     if (isLoggedIn()) {
       DatabaseReference coordinates = FirebaseDatabase.instance
@@ -2655,6 +2660,12 @@ class UserModel extends Model {
           "distanceRemaining": distanceRemaining,
           "durationRemaining": durationRemaining,
         };
+        await FirebaseFirestore.instance
+            .collection("orders")
+            .doc(orderData.id)
+            .update({
+          "isDeliveryStarted": isSending,
+        });
         return mutableData;
       });
     }

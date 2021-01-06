@@ -74,7 +74,7 @@ class _SetDeliveryManTabState extends State<SetDeliveryManTab> {
                               model.setDeliveryManToOrder(
                                 deliveryManData: delivery,
                                 orderId: widget.orderId,
-                                onSuccess: _onSuccess,
+                                onSuccess: (order) {},
                                 onFail: _onFail,
                               );
                             },
@@ -141,11 +141,5 @@ class _SetDeliveryManTabState extends State<SetDeliveryManTab> {
         duration: Duration(seconds: 2),
       ),
     );
-  }
-
-  void _onSuccess() async {
-    Timer(Duration(milliseconds: 2000), () {
-      Navigator.of(context).pop();
-    });
   }
 }

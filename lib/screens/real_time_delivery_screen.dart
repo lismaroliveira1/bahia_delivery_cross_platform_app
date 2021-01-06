@@ -38,6 +38,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
   bool _navigationFinished;
   List<WayPoint> wayPoints = [];
   bool orderFinished;
+
   @override
   void initState() {
     if (widget.orderData.status == 4) {
@@ -49,16 +50,11 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
     getDeviceLocation();
     initialize();
     _navigationFinished = false;
-    isDeliverySending = true;
+    isDeliverySending = false;
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initialize() async {
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) return;
-
     _directions = MapBoxNavigation(onRouteEvent: _onEmbeddedRouteEvent);
     _options = MapBoxOptions(
       initialLatitude: 36.1175275,
@@ -82,14 +78,15 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
       if (isDeliverySending) {
         _distanceRemaining = await _directions.distanceRemaining;
         _durationRemaining = await _directions.durationRemaining;
-        UserModel.of(context).setLocationdDeliveryManOrder(
-          orderData: widget.orderData,
-          lat: locationData.latitude,
-          lng: locationData.longitude,
-          distanceRemaining: _distanceRemaining,
-          durationRemaining: _durationRemaining,
-        );
       }
+      UserModel.of(context).setLocationdDeliveryManOrder(
+        orderData: widget.orderData,
+        lat: locationData.latitude,
+        lng: locationData.longitude,
+        distanceRemaining: _distanceRemaining,
+        durationRemaining: _durationRemaining,
+        isSending: isDeliverySending,
+      );
       setState(() {
         longitudeText = locationData.longitude.toStringAsFixed(8);
         latitudeText = locationData.latitude.toStringAsFixed(8);
@@ -335,6 +332,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                                     .doc(widget.orderData.id)
                                     .update({
                                   "status": 4,
+                                  "isFinished": true,
                                 });
                               }
                             : null,
