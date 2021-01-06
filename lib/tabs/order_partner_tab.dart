@@ -39,7 +39,7 @@ class _OrderPartnerTabState extends State<OrderPartnerTab> {
               );
             } else {
               return ListView(
-                children: model.listUserOrders.map((order) {
+                children: model.partnerOrderList.map((order) {
                   return OrderTile(
                     orderData: order,
                     screen: RealTimeDeliveryPartnerScreen(order),

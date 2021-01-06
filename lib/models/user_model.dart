@@ -33,7 +33,6 @@ import 'package:geodesy/geodesy.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:location/location.dart';
-import 'package:random_string/random_string.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 const token = '635289558f18ba4c749d6928e8cd0ba7';
@@ -548,6 +547,7 @@ class UserModel extends Model {
             .snapshots()
             .listen((querySnapshot) {
           listUserOrders.clear();
+          deliveryManRacers.clear();
           querySnapshot.docs.map((queryDoc) async {
             if (queryDoc.get("client") == firebaseUser.uid) {
               listUserOrders.add(OrderData.fromQueryDocument(queryDoc));
@@ -569,6 +569,7 @@ class UserModel extends Model {
             )
             .get();
         listUserOrders.clear();
+        deliveryManRacers.clear();
         querySnapshot.docs.map((queryDoc) async {
           if (queryDoc.get("client") == firebaseUser.uid) {
             listUserOrders.add(OrderData.fromQueryDocument(queryDoc));
@@ -1580,7 +1581,9 @@ class UserModel extends Model {
             .get();
         partnerOrderList.clear();
         querySnapshot.docs.map((queryDoc) {
-          partnerOrderList.add(OrderData.fromQueryDocument(queryDoc));
+          if (queryDoc.get("storeId") == userData.storeId) {
+            partnerOrderList.add(OrderData.fromQueryDocument(queryDoc));
+          }
         }).toList();
       }
       FirebaseFirestore.instance
@@ -1594,7 +1597,9 @@ class UserModel extends Model {
         if (!isLoading) {
           partnerOrderList.clear();
           querySnapshot.docs.map((queryDoc) {
-            partnerOrderList.add(OrderData.fromQueryDocument(queryDoc));
+            if (queryDoc.get("storeId") == userData.storeId) {
+              partnerOrderList.add(OrderData.fromQueryDocument(queryDoc));
+            }
           }).toList();
         }
       });
