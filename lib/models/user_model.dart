@@ -1800,7 +1800,7 @@ class UserModel extends Model {
             "StoreName": storeData.name,
             "storeImage": storeData.image,
             "storeDescription": "storeDescrition",
-            "isDeliveryStarted": false,
+            "isSending": false,
             "discount": discount,
             "totalPrice": totalPrice,
             "status": 1,
@@ -1911,7 +1911,7 @@ class UserModel extends Model {
           },
           "discount": discount,
           "totalPrice": totalPrice,
-          "isDeliveryStarted": false,
+          "isSending": false,
           "deliveryMan": "none",
           "status": 1,
           'createdAt': FieldValue.serverTimestamp(),
@@ -1998,7 +1998,7 @@ class UserModel extends Model {
           "StoreName": storeData.name,
           "storeImage": storeData.image,
           "storeDescription": "storeDescrition",
-          "isDeliveryStarted": false,
+          "isSending": false,
           "storeLocation": {
             "storeAddress": storeData.storeAddress
                 .replaceAll("State of ", "")
@@ -2669,7 +2669,7 @@ class UserModel extends Model {
             .collection("orders")
             .doc(orderData.id)
             .update({
-          "isDeliveryStarted": isSending,
+          "isSending": isSending,
         });
         return mutableData;
       });

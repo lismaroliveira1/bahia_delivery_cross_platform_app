@@ -21,7 +21,6 @@ class RealTimeDeliveryScreen extends StatefulWidget {
 class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
   String _instruction = "";
 
-  bool isDeliverySending;
   List<ProductData> products = [];
   MapBoxNavigation _directions;
   MapBoxOptions _options;
@@ -42,54 +41,55 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
   @override
   void initState() {
     orderData = widget.orderData;
-
-    super.initState();
     getDeviceLocation();
     initialize();
+    initRealTime();
     _navigationFinished = false;
-    isDeliverySending = false;
+    super.initState();
   }
 
-  Future<void> initialize() async {
-    if (!mounted) return;
-    _directions = MapBoxNavigation(onRouteEvent: _onEmbeddedRouteEvent);
-    _options = MapBoxOptions(
-      initialLatitude: 36.1175275,
-      initialLongitude: -115.1839524,
-      zoom: 15.0,
-      tilt: 0.0,
-      bearing: 0.0,
-      enableRefresh: false,
-      alternatives: true,
-      voiceInstructionsEnabled: true,
-      bannerInstructionsEnabled: true,
-      allowsUTurnAtWayPoints: true,
-      mode: MapBoxNavigationMode.drivingWithTraffic,
-      units: VoiceUnits.imperial,
-      simulateRoute: false,
-      animateBuildRoute: true,
-      longPressDestinationEnabled: true,
-      language: "pt",
-    );
-    location.onLocationChanged.listen((locationData) async {
-      if (isDeliverySending) {
-        _distanceRemaining = await _directions.distanceRemaining;
-        _durationRemaining = await _directions.durationRemaining;
-      }
-      UserModel.of(context).setLocationdDeliveryManOrder(
-        orderData: widget.orderData,
-        lat: locationData.latitude,
-        lng: locationData.longitude,
-        distanceRemaining: _distanceRemaining,
-        durationRemaining: _durationRemaining,
-        isSending: isDeliverySending,
+  void initialize() async {
+    try {
+      if (!mounted) return;
+      _directions = MapBoxNavigation(onRouteEvent: _onEmbeddedRouteEvent);
+      _options = MapBoxOptions(
+        initialLatitude: 36.1175275,
+        initialLongitude: -115.1839524,
+        zoom: 15.0,
+        tilt: 0.0,
+        bearing: 0.0,
+        enableRefresh: false,
+        alternatives: true,
+        voiceInstructionsEnabled: true,
+        bannerInstructionsEnabled: true,
+        allowsUTurnAtWayPoints: true,
+        mode: MapBoxNavigationMode.drivingWithTraffic,
+        units: VoiceUnits.imperial,
+        simulateRoute: false,
+        animateBuildRoute: true,
+        longPressDestinationEnabled: true,
+        language: "pt",
       );
-      setState(() {
-        longitudeText = locationData.longitude.toStringAsFixed(8);
-        latitudeText = locationData.latitude.toStringAsFixed(8);
+      location.onLocationChanged.listen((locationData) async {
+        if (orderData.isSending && !orderData.isFinished) {
+          _distanceRemaining = await _directions.distanceRemaining;
+          _durationRemaining = await _directions.durationRemaining;
+          UserModel.of(context).setLocationdDeliveryManOrder(
+            orderData: widget.orderData,
+            lat: locationData.latitude,
+            lng: locationData.longitude,
+            distanceRemaining: _distanceRemaining,
+            durationRemaining: _durationRemaining,
+            isSending: true,
+          );
+          setState(() {
+            longitudeText = locationData.longitude.toStringAsFixed(8);
+            latitudeText = locationData.latitude.toStringAsFixed(8);
+          });
+        }
       });
-    });
-    _controller.initialize();
+      _controller.initialize();
+    } catch (erro) {}
   }
 
   @override
@@ -284,9 +284,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                                   orderData: widget.orderData,
                                   status: 2,
                                 );
-                                setState(() {
-                                  isDeliverySending = true;
-                                });
+                                ;
                                 await _directions.startNavigation(
                                   wayPoints: wayPoints,
                                   options: MapBoxOptions(
@@ -330,6 +328,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                                     .update({
                                   "status": 4,
                                   "isFinished": true,
+                                  "finishedAt": FieldValue.serverTimestamp(),
                                 });
                               }
                             : null,
@@ -370,7 +369,6 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
       case MapBoxEvent.route_built:
         setState(() {
           _routeBuilt = true;
-          isDeliverySending = true;
         });
         break;
       case MapBoxEvent.route_build_failed:
@@ -381,7 +379,6 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
       case MapBoxEvent.navigation_running:
         setState(() {
           _isNavigating = true;
-          isDeliverySending = true;
         });
         break;
       case MapBoxEvent.on_arrival:
@@ -410,6 +407,18 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
 
   void getDeviceLocation() async {
     _locationData = await location.getLocation();
+  }
+
+  void initRealTime() {
+    FirebaseFirestore.instance
+        .collection("orders")
+        .doc(orderData.id)
+        .snapshots()
+        .listen((docSnapshot) {
+      setState(() {
+        orderData = OrderData.fromDocumentSnapshot(docSnapshot);
+      });
+    });
   }
 
   Widget _buildComboText(List<ComboData> comboList) {

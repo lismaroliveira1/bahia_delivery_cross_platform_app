@@ -25,7 +25,7 @@ class _RealTimeDeliveryPartnerTabState
   @override
   void initState() {
     orderData = widget.orderData;
-    print(orderData.isDeliveryStarted);
+
     initRealTime();
     super.initState();
   }
@@ -96,14 +96,18 @@ class _RealTimeDeliveryPartnerTabState
               bubbleColor: Colors.grey,
             ),
       TimelineItem(
-        title: orderData.isDeliveryStarted
-            ? "${orderData.deliveryManData.name.split(" ")[0]} inciou a entrega"
-            : 'Entrega não iniciada',
-        subtitle: orderData.isDeliveryStarted
-            ? "Duração: ${(duration / 60).toStringAsFixed(0)} min \n Distância ${(distance / 1000).toStringAsFixed(1)} Km"
-            : orderData.isChoosedDeliveryMan
-                ? 'Aguardando ${orderData.deliveryManData.name.split(" ")[0]} iniciar a entrega'
-                : 'Entregador nã definido',
+        title: orderData.isFinished
+            ? "${orderData.deliveryManData.name.split(" ")[0]} finalizou a entrega\nHorário: ${orderData.finishedAt.toString()}"
+            : orderData.isSending
+                ? "${orderData.deliveryManData.name.split(" ")[0]} inciou a entrega"
+                : 'Entrega não iniciada',
+        subtitle: orderData.isFinished
+            ? ""
+            : orderData.isSending
+                ? "Duração: ${(duration / 60).toStringAsFixed(0)} min \n Distância ${(distance / 1000).toStringAsFixed(1)} Km"
+                : orderData.isChoosedDeliveryMan
+                    ? 'Aguardando ${orderData.deliveryManData.name.split(" ")[0]} iniciar a entrega'
+                    : 'Entregador nã definido',
         child: Icon(
           Icons.directions_bus,
           color: Colors.white,
@@ -245,7 +249,7 @@ class _RealTimeDeliveryPartnerTabState
         .child("deliveryRealTimeLocation");
 
     _deliveryManRealTimeLocation.onValue.listen((event) {
-      if (orderData.isDeliveryStarted) {
+      if (orderData.isSending) {
         update(
           dist: event.snapshot.value["distanceRemaining"],
           durat: event.snapshot.value["durationRemaining"],
