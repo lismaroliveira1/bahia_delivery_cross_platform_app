@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:bd_app_full/data/order_data.dart';
-import 'package:bd_app_full/data/set_delivery_man_screen.dart';
 import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/chat_user_order_screen.dart';
+import 'package:bd_app_full/screens/chat_order_partner_screen.dart';
 import 'package:bd_app_full/screens/details_user_order_screnn.dart';
 import 'package:bd_app_full/tabs/real_time_delivery_partner_tab.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -68,7 +67,7 @@ class _RealTimeDeliveryPartnerScreenState
                       context,
                       PageTransition(
                         type: PageTransitionType.rightToLeft,
-                        child: ChatUserOrderScreen(widget.orderData),
+                        child: ChatOrderPartnerScreen(widget.orderData),
                         inheritTheme: true,
                         duration: Duration(
                           milliseconds: 350,

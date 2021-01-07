@@ -517,607 +517,617 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
   }
 
   Widget _deliveryManRegisterWidget() {
-    return Form(
-      key: _formKey,
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Stack(
-            children: [
-              Container(
-                child: ListView(
-                  children: [
-                    Center(
-                      child: Container(
-                        height: _imageSize,
-                        width: _imageSize,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          image: DecorationImage(
-                            image: AssetImage(
-                              'images/logo_and_name.jpg',
+    return SafeArea(
+      child: Form(
+        key: _formKey,
+        child: Container(
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Stack(
+              children: [
+                Container(
+                  child: ListView(
+                    children: [
+                      Center(
+                        child: Container(
+                          height: _imageSize,
+                          width: _imageSize,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'images/logo_and_name.jpg',
+                              ),
+                              fit: BoxFit.cover,
                             ),
-                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12.0),
-                      child: Text(
-                        'Deixe-nos saber \n mais sobre você',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 26,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Text(
+                          'Deixe-nos saber \n mais sobre você',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 26,
+                          ),
                         ),
                       ),
-                    ),
-                    Center(
-                      child: Stack(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(top: 12.0),
-                            height: _imageSize,
-                            width: _imageSize,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                image: !isImageChoosed
-                                    ? AssetImage(
-                                        'images/user_no_image.png',
-                                      )
-                                    : FileImage(imageFile),
-                                fit: BoxFit.cover,
+                      Center(
+                        child: Stack(
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(top: 12.0),
+                              height: _imageSize,
+                              width: _imageSize,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: !isImageChoosed
+                                      ? AssetImage(
+                                          'images/user_no_image.png',
+                                        )
+                                      : FileImage(imageFile),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          ),
-                          Positioned(
-                            bottom: 4,
-                            right: 8,
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.camera_alt,
-                                size: 30,
+                            Positioned(
+                              bottom: 4,
+                              right: 8,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.camera_alt,
+                                  size: 30,
+                                ),
+                                onPressed: () {
+                                  _onEditImagePressed();
+                                },
                               ),
-                              onPressed: () {
-                                _onEditImagePressed();
-                              },
-                            ),
-                          )
-                        ],
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 18),
-                      child: StreamBuilder<Object>(
-                          stream: _registerPartnerBloc.outOwnerName,
+                      Container(
+                        margin: EdgeInsets.only(top: 18),
+                        child: StreamBuilder<Object>(
+                            stream: _registerPartnerBloc.outOwnerName,
+                            builder: (context, snapshot) {
+                              return TextField(
+                                controller: _nameController,
+                                onChanged: _registerPartnerBloc.changeOWnerName,
+                                decoration: InputDecoration(
+                                  hintText: "Fulano de tal",
+                                  labelText: 'Nome Completo',
+                                  errorText:
+                                      snapshot.hasError ? snapshot.error : null,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              );
+                            }),
+                      ),
+                      StreamBuilder<String>(
+                          stream: _registerPartnerBloc.outCPF,
                           builder: (context, snapshot) {
-                            return TextField(
-                              controller: _nameController,
-                              onChanged: _registerPartnerBloc.changeOWnerName,
-                              decoration: InputDecoration(
-                                hintText: "Fulano de tal",
-                                labelText: 'Nome Completo',
-                                errorText:
-                                    snapshot.hasError ? snapshot.error : null,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                            return Container(
+                              margin: EdgeInsets.only(top: 18),
+                              child: TextField(
+                                onChanged: _registerPartnerBloc.changeCPF,
+                                controller: _cpfController,
+                                inputFormatters: [
+                                  CnpjCpfFormatter(
+                                    eDocumentType: EDocumentType.CPF,
+                                  )
+                                ],
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  hintText: '000.000.000-00',
+                                  labelText: 'CPF',
+                                  errorText:
+                                      snapshot.hasError ? snapshot.error : null,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                 ),
                               ),
                             );
                           }),
-                    ),
-                    StreamBuilder<String>(
-                        stream: _registerPartnerBloc.outCPF,
-                        builder: (context, snapshot) {
-                          return Container(
-                            margin: EdgeInsets.only(top: 18),
-                            child: TextField(
-                              onChanged: _registerPartnerBloc.changeCPF,
-                              controller: _cpfController,
-                              inputFormatters: [
-                                CnpjCpfFormatter(
-                                  eDocumentType: EDocumentType.CPF,
-                                )
-                              ],
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                hintText: '000.000.000-00',
-                                labelText: 'CPF',
-                                errorText:
-                                    snapshot.hasError ? snapshot.error : null,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                    Container(
-                      child: FlatButton(
-                        onPressed: () {
-                          return showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                ),
-                                child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height / 2,
-                                  width:
-                                      MediaQuery.of(context).size.width / 1.2,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
+                      Container(
+                        child: FlatButton(
+                          onPressed: () {
+                            return showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25),
                                   ),
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Text(
-                                          "Selecione sua data \nde nascimento",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 16,
+                                  child: Container(
+                                    height:
+                                        MediaQuery.of(context).size.height / 2,
+                                    width:
+                                        MediaQuery.of(context).size.width / 1.2,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Text(
+                                            "Selecione sua data \nde nascimento",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: SfDateRangePicker(
-                                          onSelectionChanged:
-                                              _onSelectionChanged,
-                                          selectionMode:
-                                              DateRangePickerSelectionMode
-                                                  .single,
-                                          initialSelectedRange: PickerDateRange(
-                                              DateTime.now().subtract(
-                                                  const Duration(days: 4)),
-                                              DateTime.now().add(
-                                                  const Duration(days: 3))),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: SfDateRangePicker(
+                                            onSelectionChanged:
+                                                _onSelectionChanged,
+                                            selectionMode:
+                                                DateRangePickerSelectionMode
+                                                    .single,
+                                            initialSelectedRange:
+                                                PickerDateRange(
+                                                    DateTime.now().subtract(
+                                                        const Duration(
+                                                            days: 4)),
+                                                    DateTime.now()
+                                                        .add(const Duration(
+                                                            days: 3))),
+                                          ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 20,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Center(
-                                              child: FlatButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                padding: EdgeInsets.zero,
-                                                child: Container(
-                                                  height: 40,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      3.5,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            12),
-                                                    color: Colors.red,
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      "Cancelar",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.white,
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 20,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Center(
+                                                child: FlatButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  padding: EdgeInsets.zero,
+                                                  child: Container(
+                                                    height: 40,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            3.5,
+                                                    decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              12),
+                                                      color: Colors.red,
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        "Cancelar",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.white,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 16.0),
-                              child: Icon(
-                                Icons.perm_contact_calendar,
-                                size: MediaQuery.of(context).size.width / 4,
-                                color: Colors.black45,
-                              ),
-                            ),
-                            Text(
-                              "Nascimento",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                            Text(
-                              _textDate,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black45,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 2.5,
-                      child: FlatButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.rightToLeft,
-                              child: RegisterAddressScreen(),
-                              inheritTheme: true,
-                              duration: Duration(
-                                milliseconds: 350,
-                              ),
-                              ctx: context,
-                            ),
-                          );
-                        },
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Icon(
-                                Icons.location_on_rounded,
-                                size: MediaQuery.of(context).size.width / 4,
-                                color: Colors.black45,
-                              ),
-                            ),
-                            ScopedModelDescendant<UserModel>(
-                                builder: (context, child, model) {
-                              return Column(
-                                children: [
-                                  Text(
-                                    "Localização",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black87,
+                                            ],
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                  Text(
-                                    "${model.addressToRegisterPartner}",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.black45,
+                                );
+                              },
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 16.0),
+                                child: Icon(
+                                  Icons.perm_contact_calendar,
+                                  size: MediaQuery.of(context).size.width / 4,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                              Text(
+                                "Nascimento",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Text(
+                                _textDate,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width / 2.5,
+                        child: FlatButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.rightToLeft,
+                                child: RegisterAddressScreen(),
+                                inheritTheme: true,
+                                duration: Duration(
+                                  milliseconds: 350,
+                                ),
+                                ctx: context,
+                              ),
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Icon(
+                                  Icons.location_on_rounded,
+                                  size: MediaQuery.of(context).size.width / 4,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                              ScopedModelDescendant<UserModel>(
+                                  builder: (context, child, model) {
+                                return Column(
+                                  children: [
+                                    Text(
+                                      "Localização",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${model.addressToRegisterPartner}",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black45,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              })
+                            ],
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          DropdownButton<String>(
+                            value: _dropDownInitiValueMot,
+                            icon: Icon(
+                              Icons.arrow_downward,
+                            ),
+                            elevation: 16,
+                            iconSize: 16,
+                            underline: Container(
+                              height: 2,
+                              width: MediaQuery.of(context).size.width / 2,
+                              color: Colors.red,
+                            ),
+                            onChanged: (String value) {
+                              setState(() {
+                                _dropDownInitiValueMot = value;
+                                isTypeVehicleChoosed = true;
+                              });
+                            },
+                            items: dropdownList
+                                .map((type) => DropdownMenuItem<String>(
+                                      value: type,
+                                      child: Text(type),
+                                    ))
+                                .toList(),
+                          ),
+                        ],
+                      ),
+                      _dropDownInitiValueMot == "Motorizado"
+                          ? Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 20),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    width:
+                                        MediaQuery.of(context).size.width / 3.2,
+                                    child: Column(
+                                      children: [
+                                        FlatButton(
+                                          padding: EdgeInsets.zero,
+                                          onPressed: () {
+                                            onPhotoDriverPressed();
+                                          },
+                                          child: Container(
+                                            margin: EdgeInsets.all(4),
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                3.5,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width /
+                                                3.5,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              border: Border.all(
+                                                color: Colors.black45,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              image: DecorationImage(
+                                                image: isImageDriverChoosed
+                                                    ? FileImage(imageDriverFile)
+                                                    : AssetImage(
+                                                        'images/user_and_id.png',
+                                                      ),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          "Envie uma foto com seu documento de identificação",
+                                          textAlign: TextAlign.center,
+                                          softWrap: true,
+                                          overflow: TextOverflow.clip,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
+                                    child: Container(
+                                      width: 150,
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            child: TextField(
+                                              controller:
+                                                  _transitBoardController,
+                                              decoration: InputDecoration(
+                                                labelText: 'Placa do veículo',
+                                                hintText: 'AAA-0000',
+                                                border: OutlineInputBorder(),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
+                                    child: Container(
+                                      width: 200,
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            child: TextField(
+                                              controller:
+                                                  _transitCardController,
+                                              decoration: InputDecoration(
+                                                labelText:
+                                                    'Nº Cateira de habilitação',
+                                                hintText: '00123456789',
+                                                border: OutlineInputBorder(),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 12,
+                                    ),
+                                    child: Container(
+                                      width: 150,
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            child: TextField(
+                                              controller:
+                                                  _vehicleColorController,
+                                              decoration: InputDecoration(
+                                                labelText: 'Cor do veículo',
+                                                hintText: 'branca',
+                                                border: OutlineInputBorder(),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
-                              );
-                            })
-                          ],
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        DropdownButton<String>(
-                          value: _dropDownInitiValueMot,
-                          icon: Icon(
-                            Icons.arrow_downward,
-                          ),
-                          elevation: 16,
-                          iconSize: 16,
-                          underline: Container(
-                            height: 2,
-                            width: MediaQuery.of(context).size.width / 2,
-                            color: Colors.red,
-                          ),
-                          onChanged: (String value) {
-                            setState(() {
-                              _dropDownInitiValueMot = value;
-                              isTypeVehicleChoosed = true;
-                            });
-                          },
-                          items: dropdownList
-                              .map((type) => DropdownMenuItem<String>(
-                                    value: type,
-                                    child: Text(type),
-                                  ))
-                              .toList(),
-                        ),
-                      ],
-                    ),
-                    _dropDownInitiValueMot == "Motorizado"
-                        ? Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 20),
-                            child: Column(
-                              children: [
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width / 3.2,
-                                  child: Column(
-                                    children: [
-                                      FlatButton(
-                                        padding: EdgeInsets.zero,
-                                        onPressed: () {
-                                          onPhotoDriverPressed();
-                                        },
-                                        child: Container(
-                                          margin: EdgeInsets.all(4),
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              3.5,
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              3.5,
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            border: Border.all(
-                                              color: Colors.black45,
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            image: DecorationImage(
-                                              image: isImageDriverChoosed
-                                                  ? FileImage(imageDriverFile)
-                                                  : AssetImage(
-                                                      'images/user_and_id.png',
-                                                    ),
-                                              fit: BoxFit.cover,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Text(
-                                        "Envie uma foto com seu documento de identificação",
-                                        textAlign: TextAlign.center,
-                                        softWrap: true,
-                                        overflow: TextOverflow.clip,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 12,
-                                  ),
-                                  child: Container(
-                                    width: 150,
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          child: TextField(
-                                            controller: _transitBoardController,
-                                            decoration: InputDecoration(
-                                              labelText: 'Placa do veículo',
-                                              hintText: 'AAA-0000',
-                                              border: OutlineInputBorder(),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 12,
-                                  ),
-                                  child: Container(
-                                    width: 200,
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          child: TextField(
-                                            controller: _transitCardController,
-                                            decoration: InputDecoration(
-                                              labelText:
-                                                  'Nº Cateira de habilitação',
-                                              hintText: '00123456789',
-                                              border: OutlineInputBorder(),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 12,
-                                  ),
-                                  child: Container(
-                                    width: 150,
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          child: TextField(
-                                            controller: _vehicleColorController,
-                                            decoration: InputDecoration(
-                                              labelText: 'Cor do veículo',
-                                              hintText: 'branca',
-                                              border: OutlineInputBorder(),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
+                            )
+                          : Container(
+                              height: 0,
+                              width: 0,
                             ),
-                          )
-                        : Container(
-                            height: 0,
-                            width: 0,
-                          ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(20, 20, 20, 26),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          FlatButton(
-                            onPressed: () {},
-                            padding: EdgeInsets.zero,
-                            child: Container(
-                              height: 50,
-                              width: MediaQuery.of(context).size.width / 3.5,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: Colors.red),
-                              child: Center(
-                                child: Text(
-                                  "Cancelar",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(20, 20, 20, 26),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            FlatButton(
+                              onPressed: () {},
+                              padding: EdgeInsets.zero,
+                              child: Container(
+                                height: 50,
+                                width: MediaQuery.of(context).size.width / 3.5,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: Colors.red),
+                                child: Center(
+                                  child: Text(
+                                    "Cancelar",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          ScopedModelDescendant<UserModel>(
-                            builder: (context, child, model) {
-                              if (model.isLoading) {
-                                return Center(
-                                  child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              } else {
-                                return StreamBuilder<bool>(
-                                  stream:
-                                      _registerPartnerBloc.outSubmitValidCPF,
-                                  builder: (context, snapshot) {
-                                    return FlatButton(
-                                      onPressed: snapshot.hasData
-                                          ? () {
-                                              if (!isLocationChoosed &&
-                                                  !isBirthDayChoosed) {
-                                                noChoosedLocationAndBirthDay();
-                                              } else if (!isBirthDayChoosed) {
-                                                noChoosedBiryhDay();
-                                              } else if (!model
-                                                  .isLocationChoosedOnRegisterPartner) {
-                                                noChoosedLocation();
-                                              } else if (!isImageChoosed) {
-                                                _onFailImage();
-                                              } else if (!isTypeVehicleChoosed) {
-                                                _onFailTypeVehycle();
-                                              } else if (_dropDownInitiValueMot ==
-                                                      "Motorizado" &&
-                                                  !isImageDriverChoosed) {
-                                                _onFailDriverImage();
-                                              } else {
-                                                final deliveryManDatta =
-                                                    DeliveryManData(
-                                                  driverImageFile:
-                                                      imageDriverFile,
-                                                  transitBoard:
-                                                      _transitBoardController
-                                                          .text,
-                                                  vehycleColor:
-                                                      _vehicleColorController
-                                                          .text,
-                                                  vehycleType:
-                                                      _dropDownInitiValueMot,
-                                                  transitId:
-                                                      _transitCardController
-                                                          .text,
-                                                  birthDay: _selectedDate,
-                                                  cpf: _cpfController.text,
-                                                  imageFile: imageFile,
-                                                  lat: null,
-                                                  lng: null,
-                                                  location: null,
-                                                  locationId: null,
-                                                  name: _nameController.text,
-                                                  image: null,
-                                                );
-                                                UserModel.of(context)
-                                                    .sendRequestForNewDeliveryMan(
-                                                  deliveryManData:
-                                                      deliveryManDatta,
-                                                  onSuccess: _onSuccess,
-                                                  onFail: _onFail,
-                                                );
+                            ScopedModelDescendant<UserModel>(
+                              builder: (context, child, model) {
+                                if (model.isLoading) {
+                                  return Center(
+                                    child: Container(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                } else {
+                                  return StreamBuilder<bool>(
+                                    stream:
+                                        _registerPartnerBloc.outSubmitValidCPF,
+                                    builder: (context, snapshot) {
+                                      return FlatButton(
+                                        onPressed: snapshot.hasData
+                                            ? () {
+                                                if (!isLocationChoosed &&
+                                                    !isBirthDayChoosed) {
+                                                  noChoosedLocationAndBirthDay();
+                                                } else if (!isBirthDayChoosed) {
+                                                  noChoosedBiryhDay();
+                                                } else if (!model
+                                                    .isLocationChoosedOnRegisterPartner) {
+                                                  noChoosedLocation();
+                                                } else if (!isImageChoosed) {
+                                                  _onFailImage();
+                                                } else if (!isTypeVehicleChoosed) {
+                                                  _onFailTypeVehycle();
+                                                } else if (_dropDownInitiValueMot ==
+                                                        "Motorizado" &&
+                                                    !isImageDriverChoosed) {
+                                                  _onFailDriverImage();
+                                                } else {
+                                                  final deliveryManDatta =
+                                                      DeliveryManData(
+                                                    driverImageFile:
+                                                        imageDriverFile,
+                                                    transitBoard:
+                                                        _transitBoardController
+                                                            .text,
+                                                    vehycleColor:
+                                                        _vehicleColorController
+                                                            .text,
+                                                    vehycleType:
+                                                        _dropDownInitiValueMot,
+                                                    transitId:
+                                                        _transitCardController
+                                                            .text,
+                                                    birthDay: _selectedDate,
+                                                    cpf: _cpfController.text,
+                                                    imageFile: imageFile,
+                                                    lat: null,
+                                                    lng: null,
+                                                    location: null,
+                                                    locationId: null,
+                                                    name: _nameController.text,
+                                                    image: null,
+                                                  );
+                                                  UserModel.of(context)
+                                                      .sendRequestForNewDeliveryMan(
+                                                    deliveryManData:
+                                                        deliveryManDatta,
+                                                    onSuccess: _onSuccess,
+                                                    onFail: _onFail,
+                                                  );
+                                                }
                                               }
-                                            }
-                                          : null,
-                                      padding: EdgeInsets.zero,
-                                      child: model.isLoading
-                                          ? Center(
-                                              child: Container(
-                                                height: 20,
-                                                width: 20,
-                                                child:
-                                                    CircularProgressIndicator(),
-                                              ),
-                                            )
-                                          : Container(
-                                              height: 50,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  3.5,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(12),
-                                                color: snapshot.hasData &&
-                                                        isBirthDayChoosed &&
-                                                        model
-                                                            .isLocationChoosedOnRegisterPartner
-                                                    ? Colors.red
-                                                    : Colors.grey[300],
-                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  "Enviar",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.white,
+                                            : null,
+                                        padding: EdgeInsets.zero,
+                                        child: model.isLoading
+                                            ? Center(
+                                                child: Container(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                ),
+                                              )
+                                            : Container(
+                                                height: 50,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    3.5,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(12),
+                                                  color: snapshot.hasData &&
+                                                          isBirthDayChoosed &&
+                                                          model
+                                                              .isLocationChoosedOnRegisterPartner
+                                                      ? Colors.red
+                                                      : Colors.grey[300],
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    "Enviar",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      color: Colors.white,
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                    );
-                                  },
-                                );
-                              }
-                            },
-                          )
-                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -1236,384 +1246,390 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
   }
 
   Widget _registerPartnerWithCPF() {
-    return Form(
-      key: _formKey,
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Stack(
-            children: [
-              Container(
-                child: ListView(
-                  children: [
-                    Center(
-                      child: Container(
-                        height: _imageSize,
-                        width: _imageSize,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          image: DecorationImage(
-                            image: AssetImage(
-                              'images/logo_and_name.jpg',
+    return SafeArea(
+      child: Form(
+        key: _formKey,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Stack(
+              children: [
+                Container(
+                  child: ListView(
+                    children: [
+                      Center(
+                        child: Container(
+                          height: _imageSize,
+                          width: _imageSize,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'images/logo_and_name.jpg',
+                              ),
+                              fit: BoxFit.cover,
                             ),
-                            fit: BoxFit.cover,
                           ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 25.0),
-                      child: Text(
-                        'Deixe-nos saber \n mais sobre você',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 26,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 25.0),
+                        child: Text(
+                          'Deixe-nos saber \n mais sobre você',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 26,
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 18),
-                      child: StreamBuilder<Object>(
-                          stream: _registerPartnerBloc.outOwnerName,
+                      Container(
+                        margin: EdgeInsets.only(top: 18),
+                        child: StreamBuilder<Object>(
+                            stream: _registerPartnerBloc.outOwnerName,
+                            builder: (context, snapshot) {
+                              return TextField(
+                                controller: _nameController,
+                                onChanged: _registerPartnerBloc.changeOWnerName,
+                                decoration: InputDecoration(
+                                  hintText: "Fulano de tal",
+                                  labelText: 'Nome Completo',
+                                  errorText:
+                                      snapshot.hasError ? snapshot.error : null,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              );
+                            }),
+                      ),
+                      StreamBuilder<String>(
+                          stream: _registerPartnerBloc.outCPF,
                           builder: (context, snapshot) {
-                            return TextField(
-                              controller: _nameController,
-                              onChanged: _registerPartnerBloc.changeOWnerName,
-                              decoration: InputDecoration(
-                                hintText: "Fulano de tal",
-                                labelText: 'Nome Completo',
-                                errorText:
-                                    snapshot.hasError ? snapshot.error : null,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                            return Container(
+                              margin: EdgeInsets.only(top: 18),
+                              child: TextField(
+                                onChanged: _registerPartnerBloc.changeCPF,
+                                controller: _cpfController,
+                                inputFormatters: [
+                                  CnpjCpfFormatter(
+                                    eDocumentType: EDocumentType.CPF,
+                                  )
+                                ],
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  hintText: '000.000.000-00',
+                                  labelText: 'CPF',
+                                  errorText:
+                                      snapshot.hasError ? snapshot.error : null,
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                 ),
                               ),
                             );
                           }),
-                    ),
-                    StreamBuilder<String>(
-                        stream: _registerPartnerBloc.outCPF,
-                        builder: (context, snapshot) {
-                          return Container(
-                            margin: EdgeInsets.only(top: 18),
-                            child: TextField(
-                              onChanged: _registerPartnerBloc.changeCPF,
-                              controller: _cpfController,
-                              inputFormatters: [
-                                CnpjCpfFormatter(
-                                  eDocumentType: EDocumentType.CPF,
-                                )
-                              ],
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                hintText: '000.000.000-00',
-                                labelText: 'CPF',
-                                errorText:
-                                    snapshot.hasError ? snapshot.error : null,
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                    Container(
-                      child: FlatButton(
-                        onPressed: () {
-                          return showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return Dialog(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(25),
-                                ),
-                                child: Container(
-                                  height:
-                                      MediaQuery.of(context).size.height / 2,
-                                  width:
-                                      MediaQuery.of(context).size.width / 1.2,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
+                      Container(
+                        child: FlatButton(
+                          onPressed: () {
+                            return showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return Dialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(25),
                                   ),
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(4.0),
-                                        child: Text(
-                                          "Selecione sua data \nde nascimento",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 16,
+                                  child: Container(
+                                    height:
+                                        MediaQuery.of(context).size.height / 2,
+                                    width:
+                                        MediaQuery.of(context).size.width / 1.2,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.all(4.0),
+                                          child: Text(
+                                            "Selecione sua data \nde nascimento",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: SfDateRangePicker(
-                                          onSelectionChanged:
-                                              _onSelectionChanged,
-                                          selectionMode:
-                                              DateRangePickerSelectionMode
-                                                  .single,
-                                          initialSelectedRange: PickerDateRange(
-                                            DateTime.now().subtract(
-                                                const Duration(days: 4)),
-                                            DateTime.now().add(
-                                              const Duration(
-                                                days: 3,
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: SfDateRangePicker(
+                                            onSelectionChanged:
+                                                _onSelectionChanged,
+                                            selectionMode:
+                                                DateRangePickerSelectionMode
+                                                    .single,
+                                            initialSelectedRange:
+                                                PickerDateRange(
+                                              DateTime.now().subtract(
+                                                  const Duration(days: 4)),
+                                              DateTime.now().add(
+                                                const Duration(
+                                                  days: 3,
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 10,
-                                          vertical: 20,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Center(
-                                              child: FlatButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                padding: EdgeInsets.zero,
-                                                child: Container(
-                                                  height: 40,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      3.5,
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              12),
-                                                      color: Colors.red),
-                                                  child: Center(
-                                                    child: Text(
-                                                      "Cancelar",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: Colors.white,
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 10,
+                                            vertical: 20,
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Center(
+                                                child: FlatButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  padding: EdgeInsets.zero,
+                                                  child: Container(
+                                                    height: 40,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            3.5,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                        color: Colors.red),
+                                                    child: Center(
+                                                      child: Text(
+                                                        "Cancelar",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: Colors.white,
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
+                                );
+                              },
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 16.0),
+                                child: Icon(
+                                  Icons.perm_contact_calendar,
+                                  size: MediaQuery.of(context).size.width / 4,
+                                  color: Colors.black45,
                                 ),
-                              );
-                            },
-                          );
-                        },
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 16.0),
-                              child: Icon(
-                                Icons.perm_contact_calendar,
-                                size: MediaQuery.of(context).size.width / 4,
-                                color: Colors.black45,
                               ),
-                            ),
-                            Text(
-                              "Nascimento",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
+                              Text(
+                                "Nascimento",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black,
+                                ),
                               ),
-                            ),
-                            Text(
-                              _textDate,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black45,
+                              Text(
+                                _textDate,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black45,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width / 2.5,
-                      child: FlatButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.rightToLeft,
-                              child: RegisterAddressScreen(),
-                              inheritTheme: true,
-                              duration: Duration(
-                                milliseconds: 350,
+                      Container(
+                        width: MediaQuery.of(context).size.width / 2.5,
+                        child: FlatButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                type: PageTransitionType.rightToLeft,
+                                child: RegisterAddressScreen(),
+                                inheritTheme: true,
+                                duration: Duration(
+                                  milliseconds: 350,
+                                ),
+                                ctx: context,
                               ),
-                              ctx: context,
-                            ),
-                          );
-                        },
-                        child: Column(
+                            );
+                          },
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Icon(
+                                  Icons.location_on_rounded,
+                                  size: MediaQuery.of(context).size.width / 4,
+                                  color: Colors.black45,
+                                ),
+                              ),
+                              ScopedModelDescendant<UserModel>(
+                                  builder: (context, child, model) {
+                                return Column(
+                                  children: [
+                                    Text(
+                                      "Localização",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                    Text(
+                                      "${model.addressToRegisterPartner}",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black45,
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              })
+                            ],
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(20, 80, 20, 26),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
-                              child: Icon(
-                                Icons.location_on_rounded,
-                                size: MediaQuery.of(context).size.width / 4,
-                                color: Colors.black45,
-                              ),
-                            ),
-                            ScopedModelDescendant<UserModel>(
-                                builder: (context, child, model) {
-                              return Column(
-                                children: [
-                                  Text(
-                                    "Localização",
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              padding: EdgeInsets.zero,
+                              child: Container(
+                                height: 50,
+                                width: MediaQuery.of(context).size.width / 3.5,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: Colors.red),
+                                child: Center(
+                                  child: Text(
+                                    "Cancelar",
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
-                                      color: Colors.black87,
+                                      color: Colors.white,
                                     ),
-                                  ),
-                                  Text(
-                                    "${model.addressToRegisterPartner}",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.black45,
-                                    ),
-                                  ),
-                                ],
-                              );
-                            })
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(20, 80, 20, 26),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          FlatButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            padding: EdgeInsets.zero,
-                            child: Container(
-                              height: 50,
-                              width: MediaQuery.of(context).size.width / 3.5,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: Colors.red),
-                              child: Center(
-                                child: Text(
-                                  "Cancelar",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          ScopedModelDescendant<UserModel>(
-                            builder: (context, child, model) {
-                              return StreamBuilder<bool>(
-                                  stream:
-                                      _registerPartnerBloc.outSubmitValidCPF,
-                                  builder: (context, snapshot) {
-                                    return FlatButton(
-                                      onPressed: snapshot.hasData
-                                          ? () async {
-                                              if (!isLocationChoosed &&
-                                                  !isBirthDayChoosed) {
-                                                noChoosedLocationAndBirthDay();
-                                              } else if (!isBirthDayChoosed) {
-                                                noChoosedBiryhDay();
-                                              } else if (!model
-                                                  .isLocationChoosedOnRegisterPartner) {
-                                                noChoosedLocation();
-                                              } else {
-                                                final requestPartnerDataFlag =
-                                                    RequestPartnerData(
-                                                  companyName:
-                                                      _nameController.text,
-                                                  ownerName:
-                                                      _nameController.text,
-                                                  cpf: _cpfController.text,
-                                                  birthDay: _selectedDate,
-                                                  isJuridicPerson: false,
-                                                  location: UserModel.of(
-                                                          context)
-                                                      .addressToRegisterPartner,
-                                                );
-                                                _timer?.cancel();
-                                                await EasyLoading.show(
-                                                  status: 'loading...',
-                                                  maskType:
-                                                      EasyLoadingMaskType.black,
-                                                );
-                                                await EasyLoading.dismiss();
-                                                setState(() {
-                                                  requestPartnerData =
-                                                      requestPartnerDataFlag;
-                                                  screen = 6;
-                                                });
+                            ScopedModelDescendant<UserModel>(
+                              builder: (context, child, model) {
+                                return StreamBuilder<bool>(
+                                    stream:
+                                        _registerPartnerBloc.outSubmitValidCPF,
+                                    builder: (context, snapshot) {
+                                      return FlatButton(
+                                        onPressed: snapshot.hasData
+                                            ? () async {
+                                                if (!isLocationChoosed &&
+                                                    !isBirthDayChoosed) {
+                                                  noChoosedLocationAndBirthDay();
+                                                } else if (!isBirthDayChoosed) {
+                                                  noChoosedBiryhDay();
+                                                } else if (!model
+                                                    .isLocationChoosedOnRegisterPartner) {
+                                                  noChoosedLocation();
+                                                } else {
+                                                  final requestPartnerDataFlag =
+                                                      RequestPartnerData(
+                                                    companyName:
+                                                        _nameController.text,
+                                                    ownerName:
+                                                        _nameController.text,
+                                                    cpf: _cpfController.text,
+                                                    birthDay: _selectedDate,
+                                                    isJuridicPerson: false,
+                                                    location: UserModel.of(
+                                                            context)
+                                                        .addressToRegisterPartner,
+                                                  );
+                                                  _timer?.cancel();
+                                                  await EasyLoading.show(
+                                                    status: 'loading...',
+                                                    maskType:
+                                                        EasyLoadingMaskType
+                                                            .black,
+                                                  );
+                                                  await EasyLoading.dismiss();
+                                                  setState(() {
+                                                    requestPartnerData =
+                                                        requestPartnerDataFlag;
+                                                    screen = 6;
+                                                  });
+                                                }
                                               }
-                                            }
-                                          : null,
-                                      padding: EdgeInsets.zero,
-                                      child: Container(
-                                        height: 50,
-                                        width:
-                                            MediaQuery.of(context).size.width /
-                                                3.5,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(12),
-                                          color: snapshot.hasData &&
-                                                  isBirthDayChoosed &&
-                                                  model
-                                                      .isLocationChoosedOnRegisterPartner
-                                              ? Colors.red
-                                              : Colors.grey[300],
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            "Próximo",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white,
+                                            : null,
+                                        padding: EdgeInsets.zero,
+                                        child: Container(
+                                          height: 50,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              3.5,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(12),
+                                            color: snapshot.hasData &&
+                                                    isBirthDayChoosed &&
+                                                    model
+                                                        .isLocationChoosedOnRegisterPartner
+                                                ? Colors.red
+                                                : Colors.grey[300],
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              "Próximo",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  });
-                            },
-                          )
-                        ],
+                                      );
+                                    });
+                              },
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -1621,10 +1637,12 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
   }
 
   Widget _registerPartnerDetails() {
-    return Form(
-      key: _formKey,
-      child: SafeArea(
-        child: Padding(
+    return SafeArea(
+      child: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[];
+        },
+        body: Padding(
           padding: const EdgeInsets.all(12),
           child: Stack(
             children: [

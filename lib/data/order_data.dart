@@ -37,6 +37,7 @@ class OrderData {
   String deliveryManString = '';
   bool isChoosedDeliveryMan = false;
   bool isDeliveryStarted = false;
+  bool isFinished;
   OrderData(
     this.id,
     this.storeName,
@@ -84,6 +85,7 @@ class OrderData {
     storeId = queryDoc.get("storeId");
     storeImage = queryDoc.get("storeImage");
     totalPrice = queryDoc.get("shipPrice");
+    isFinished = queryDoc.get("isFinished");
     clientAddress = queryDoc.data()["userLocation"]["clientAddress"];
     clientAddressId = queryDoc.data()["userLocation"]["addressId"];
     clientLat = queryDoc.data()["userLocation"]["lat"];
@@ -144,6 +146,7 @@ class OrderData {
     storeLat = queryDoc.data()["storeLocation"]["lat"];
     storeLng = queryDoc.data()["storeLocation"]["lng"];
     isDeliveryStarted = queryDoc.get("isDeliveryStarted");
+    isFinished = queryDoc.get("isFinished");
     if (paymentType == "Pagamento no app") {
       paymentOnAppType = queryDoc.data()["dataSale"]["payment"]["type"];
       if (paymentOnAppType == 'DebitCard') {

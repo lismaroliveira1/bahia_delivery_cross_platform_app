@@ -37,15 +37,12 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
   String latitudeText = '';
   bool _navigationFinished;
   List<WayPoint> wayPoints = [];
-  bool orderFinished;
+  OrderData orderData;
 
   @override
   void initState() {
-    if (widget.orderData.status == 4) {
-      orderFinished = true;
-    } else {
-      orderFinished = false;
-    }
+    orderData = widget.orderData;
+
     super.initState();
     getDeviceLocation();
     initialize();
@@ -136,7 +133,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                         child: Padding(
                           padding: EdgeInsets.all(10),
                           child: Text(
-                            "Pedido: ${widget.orderData.id.substring(0, 6)}",
+                            "Pedido: ${orderData.id.substring(0, 6)}",
                             style: TextStyle(
                               color: Colors.black87,
                               fontSize: 18,
@@ -158,7 +155,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                         borderRadius: BorderRadius.circular(12),
                         child: FadeInImage.memoryNetwork(
                           placeholder: kTransparentImage,
-                          image: widget.orderData.storeImage,
+                          image: orderData.storeImage,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -166,7 +163,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                   ),
                   Center(
                     child: Text(
-                      widget.orderData.storeName,
+                      orderData.storeName,
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                     ),
@@ -183,13 +180,13 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                   SizedBox(
                     height: 4.0,
                   ),
-                  widget.orderData.products.length > 0
+                  orderData.products.length > 0
                       ? _buildProductsAndComplements(widget.orderData.products)
                       : Container(
                           height: 0,
                           width: 0,
                         ),
-                  widget.orderData.combos.length > 0
+                  orderData.combos.length > 0
                       ? _buildComboText(widget.orderData.combos)
                       : Container(
                           height: 0,
@@ -201,7 +198,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                     child: Padding(
                       padding: EdgeInsets.all(10),
                       child: (Text(
-                        orderFinished
+                        orderData.isFinished
                             ? 'Pedido Finalizado'
                             : _instruction == null || _instruction.isEmpty
                                 ? "Localização atual"
@@ -211,7 +208,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                       )),
                     ),
                   ),
-                  !orderFinished
+                  !orderData.isFinished
                       ? Padding(
                           padding: EdgeInsets.only(
                               left: 20.0, right: 20, top: 20, bottom: 10),
@@ -241,7 +238,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                           height: 0,
                           width: 0,
                         ),
-                  !orderFinished
+                  !orderData.isFinished
                       ? Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
@@ -262,7 +259,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                           height: 0,
                           width: 0,
                         ),
-                  !orderFinished
+                  !orderData.isFinished
                       ? Padding(
                           padding: const EdgeInsets.symmetric(vertical: 18.0),
                           child: Center(
@@ -320,12 +317,12 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 18.0),
                     child: Center(
                       child: AnimatedButton(
-                        color: _navigationFinished && !orderFinished
+                        color: _navigationFinished || !orderData.isFinished
                             ? Colors.red
                             : Colors.grey,
                         width: MediaQuery.of(context).size.width * 0.25,
                         height: 40,
-                        onPressed: _navigationFinished && !orderFinished
+                        onPressed: _navigationFinished || !orderData.isFinished
                             ? () async {
                                 await FirebaseFirestore.instance
                                     .collection("orders")
@@ -337,7 +334,9 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                               }
                             : null,
                         child: Text(
-                          orderFinished ? 'Pedido\nFinalizado' : 'Finalizar',
+                          orderData.isFinished
+                              ? 'Pedido\nFinalizado'
+                              : 'Finalizar',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.white,

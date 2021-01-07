@@ -7,14 +7,14 @@ import 'package:dash_chat/dash_chat.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ChatUserOrderTab extends StatefulWidget {
+class ChatOrderPartnerTab extends StatefulWidget {
   final OrderData orderData;
-  ChatUserOrderTab(this.orderData);
+  ChatOrderPartnerTab(this.orderData);
   @override
-  _ChatUserOrderTabState createState() => _ChatUserOrderTabState();
+  _ChatOrderPartnerTabState createState() => _ChatOrderPartnerTabState();
 }
 
-class _ChatUserOrderTabState extends State<ChatUserOrderTab> {
+class _ChatOrderPartnerTabState extends State<ChatOrderPartnerTab> {
   File imageFile;
   final String imageUrl = "https://meuvidraceiro.com.br/images/sem-imagem.png";
   bool isImageChoosed = false;
@@ -100,6 +100,7 @@ class _ChatUserOrderTabState extends State<ChatUserOrderTab> {
               child: DashChat(
                 key: _chatViewKey,
                 messages: messages,
+                inverted: true,
                 messageContainerDecoration: BoxDecoration(
                   color: Colors.black12,
                   borderRadius: BorderRadius.only(
@@ -119,7 +120,7 @@ class _ChatUserOrderTabState extends State<ChatUserOrderTab> {
                 textInputAction: TextInputAction.send,
                 dateFormat: DateFormat('dd-MM-yyyy'),
                 timeFormat: DateFormat('HH:mm'),
-                user: user,
+                user: store,
                 showUserAvatar: true,
                 showAvatarForEveryMessage: true,
                 scrollToBottom: true,

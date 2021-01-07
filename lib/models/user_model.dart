@@ -2681,7 +2681,7 @@ class UserModel extends Model {
     notifyListeners();
   }
 
-  void sendtextMessageByUser({
+  void sendtextMessage({
     @required ChatMessage message,
     @required OrderData orderData,
   }) async {
@@ -2692,7 +2692,7 @@ class UserModel extends Model {
         .add(message.toJson());
   }
 
-  void sendImageMessageByUser({
+  void sendImageMessage({
     @required File imageFile,
     @required OrderData orderData,
     @required ChatUser user,
@@ -2850,7 +2850,6 @@ class UserModel extends Model {
   Future<List<CouponData>> getListOfCouponsByStore(String storeid) async {
     List<CouponData> couponData = [];
     if (isLoggedIn()) {
-      int discount = 0;
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection("stores")
           .doc(storeid)
