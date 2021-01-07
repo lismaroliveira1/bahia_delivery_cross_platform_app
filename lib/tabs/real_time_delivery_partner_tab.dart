@@ -25,7 +25,6 @@ class _RealTimeDeliveryPartnerTabState
   @override
   void initState() {
     orderData = widget.orderData;
-
     initRealTime();
     super.initState();
   }
@@ -38,14 +37,18 @@ class _RealTimeDeliveryPartnerTabState
         description: 'Endereço: ${widget.orderData.clientAddress}',
         subtitle:
             'Horário: ${orderData.createdAt.toDate().hour}:${orderData.createdAt.toDate().minute}',
-        child: Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            image: DecorationImage(
-              image: NetworkImage(
-                orderData.clientImage,
+        child: Center(
+          child: Container(
+            height: 100,
+            width: 100,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                image: NetworkImage(
+                  orderData.clientImage,
+                ),
+                fit: BoxFit.cover,
               ),
-              fit: BoxFit.cover,
             ),
           ),
         ),

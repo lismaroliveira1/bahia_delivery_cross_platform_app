@@ -1808,177 +1808,192 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                   ),
                   Padding(
                     padding: EdgeInsets.fromLTRB(20, 40, 20, 26),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.97,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              "Abre às",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width / 3,
-                              child: DateTimePicker(
-                                type: DateTimePickerType.time,
-                                controller: _timeOpenController,
-                                locale: Locale('pt', 'BR'),
-                                icon: Icon(
-                                  Icons.access_time,
-                                  size: 55,
+                            Column(
+                              children: [
+                                Text(
+                                  "Abre às",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black87,
+                                  ),
                                 ),
-                                onChanged: (val) => setState(() {
-                                  valueChanged4 = val;
-                                  requestPartnerData.openTime = val;
-                                  isStoreOpenTimeSelected = true;
-                                }),
-                                validator: (val) {
-                                  setState(() {
-                                    valueToValidate4 = val;
-                                  });
-                                  return null;
-                                },
-                                onSaved: (val) => setState(() {
-                                  valueSaved4 = val;
-                                }),
-                              ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 3,
+                                  child: DateTimePicker(
+                                    type: DateTimePickerType.time,
+                                    controller: _timeOpenController,
+                                    locale: Locale('pt', 'BR'),
+                                    icon: Icon(
+                                      Icons.access_time,
+                                      size: 55,
+                                    ),
+                                    onChanged: (val) => setState(() {
+                                      valueChanged4 = val;
+                                      requestPartnerData.openTime = val;
+                                      isStoreOpenTimeSelected = true;
+                                    }),
+                                    validator: (val) {
+                                      setState(() {
+                                        valueToValidate4 = val;
+                                      });
+                                      return null;
+                                    },
+                                    onSaved: (val) => setState(() {
+                                      valueSaved4 = val;
+                                    }),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Text(
+                                  "Fecha às",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                Container(
+                                  width: MediaQuery.of(context).size.width / 3,
+                                  child: DateTimePicker(
+                                    type: DateTimePickerType.time,
+                                    controller: _timeCloseController,
+                                    locale: Locale('pt', 'BR'),
+                                    icon: Icon(
+                                      Icons.access_time,
+                                      size: 55,
+                                    ),
+                                    onChanged: (val) => setState(() {
+                                      valueChanged4 = val;
+                                      requestPartnerData.closeTime = val;
+                                      isStoreCloseTimeSelected = true;
+                                    }),
+                                    validator: (val) {
+                                      setState(() => valueToValidate4 = val);
+                                      return null;
+                                    },
+                                    onSaved: (val) => setState(() {
+                                      valueSaved4 = val;
+                                    }),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        Column(
-                          children: [
-                            Text(
-                              "Fecha às",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width / 3,
-                              child: DateTimePicker(
-                                type: DateTimePickerType.time,
-                                controller: _timeCloseController,
-                                locale: Locale('pt', 'BR'),
-                                icon: Icon(
-                                  Icons.access_time,
-                                  size: 55,
-                                ),
-                                onChanged: (val) => setState(() {
-                                  valueChanged4 = val;
-                                  requestPartnerData.closeTime = val;
-                                  isStoreCloseTimeSelected = true;
-                                }),
-                                validator: (val) {
-                                  setState(() => valueToValidate4 = val);
-                                  return null;
-                                },
-                                onSaved: (val) => setState(() {
-                                  valueSaved4 = val;
-                                }),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(20, 0, 20, 26),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        FlatButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          padding: EdgeInsets.zero,
-                          child: Container(
-                            height: 50,
-                            width: MediaQuery.of(context).size.width / 3.5,
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.red),
-                            child: Center(
-                              child: Text(
-                                "Cancelar",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        StreamBuilder<bool>(
-                          stream: _registerPartnerBloc.outSubmitValidSend,
-                          builder: (context, snapshot) {
-                            return FlatButton(
-                              onPressed: snapshot.hasData &&
-                                      isCategorySelected &&
-                                      isStoreOpenTimeSelected &&
-                                      isStoreCloseTimeSelected
-                                  ? () {
-                                      setState(() {
-                                        requestPartnerData.fantasyName =
-                                            _fantasyNameController.text;
-                                        requestPartnerData.description =
-                                            _descriptionController.text;
-                                      });
-                                      UserModel.of(context)
-                                          .sendRequestForNewPartner(
-                                        requestPartnerData: requestPartnerData,
-                                        onSuccess: _onSuccess,
-                                        onFail: _onFail,
-                                        onFailImage: _onFailImage,
-                                      );
-                                      //onButtonSendPressed();
-                                    }
-                                  : null,
+                    padding: EdgeInsets.fromLTRB(20, 40, 20, 26),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.97,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            FlatButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
                               padding: EdgeInsets.zero,
                               child: Container(
                                 height: 50,
                                 width: MediaQuery.of(context).size.width / 3.5,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  color: snapshot.hasData &&
-                                          isCategorySelected &&
-                                          isStoreOpenTimeSelected &&
-                                          isStoreCloseTimeSelected
-                                      ? Colors.red
-                                      : Colors.grey[300],
-                                ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: Colors.red),
                                 child: Center(
-                                  child: ScopedModelDescendant<UserModel>(
-                                    builder: (context, child, model) {
-                                      if (model.isLoading) {
-                                        return Container(
-                                          child: CircularProgressIndicator(),
-                                        );
-                                      } else {
-                                        return Text(
-                                          "Enviar",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white,
-                                          ),
-                                        );
-                                      }
-                                    },
+                                  child: Text(
+                                    "Cancelar",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ),
-                            );
-                          },
+                            ),
+                            Container(
+                              child: StreamBuilder<bool>(
+                                stream: _registerPartnerBloc.outSubmitValidSend,
+                                builder: (context, snapshot) {
+                                  return FlatButton(
+                                    onPressed: snapshot.hasData &&
+                                            isCategorySelected &&
+                                            isStoreOpenTimeSelected &&
+                                            isStoreCloseTimeSelected
+                                        ? () {
+                                            setState(() {
+                                              requestPartnerData.fantasyName =
+                                                  _fantasyNameController.text;
+                                              requestPartnerData.description =
+                                                  _descriptionController.text;
+                                            });
+                                            UserModel.of(context)
+                                                .sendRequestForNewPartner(
+                                              requestPartnerData:
+                                                  requestPartnerData,
+                                              onSuccess: _onSuccess,
+                                              onFail: _onFail,
+                                              onFailImage: _onFailImage,
+                                            );
+                                            //onButtonSendPressed();
+                                          }
+                                        : null,
+                                    padding: EdgeInsets.zero,
+                                    child: Container(
+                                      height: 50,
+                                      width: MediaQuery.of(context).size.width /
+                                          3.5,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(12),
+                                        color: snapshot.hasData &&
+                                                isCategorySelected &&
+                                                isStoreOpenTimeSelected &&
+                                                isStoreCloseTimeSelected
+                                            ? Colors.red
+                                            : Colors.grey[300],
+                                      ),
+                                      child: Center(
+                                        child: ScopedModelDescendant<UserModel>(
+                                          builder: (context, child, model) {
+                                            if (model.isLoading) {
+                                              return Container(
+                                                child:
+                                                    CircularProgressIndicator(),
+                                              );
+                                            } else {
+                                              return Text(
+                                                "Enviar",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   )
                 ],

@@ -100,7 +100,7 @@ class _ChatOrderPartnerTabState extends State<ChatOrderPartnerTab> {
               child: DashChat(
                 key: _chatViewKey,
                 messages: messages,
-                inverted: true,
+                inverted: false,
                 messageContainerDecoration: BoxDecoration(
                   color: Colors.black12,
                   borderRadius: BorderRadius.only(

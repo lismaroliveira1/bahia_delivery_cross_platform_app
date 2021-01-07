@@ -87,7 +87,9 @@ class OrderData {
     storeImage = queryDoc.get("storeImage");
     totalPrice = queryDoc.get("shipPrice");
     isFinished = queryDoc.get("isFinished");
-    if (isFinished) {}
+    if (isFinished) {
+      finishedAt = queryDoc.get("finishedAt");
+    }
     clientAddress = queryDoc.data()["userLocation"]["clientAddress"];
     clientAddressId = queryDoc.data()["userLocation"]["addressId"];
     clientLat = queryDoc.data()["userLocation"]["lat"];
@@ -149,6 +151,9 @@ class OrderData {
     storeLng = queryDoc.data()["storeLocation"]["lng"];
     isSending = queryDoc.get("isSending");
     isFinished = queryDoc.get("isFinished");
+    if (isFinished) {
+      finishedAt = queryDoc.get("finishedAt");
+    }
     if (paymentType == "Pagamento no app") {
       paymentOnAppType = queryDoc.data()["dataSale"]["payment"]["type"];
       if (paymentOnAppType == 'DebitCard') {
