@@ -18,16 +18,18 @@ class ShipCard extends StatelessWidget {
               title: model.addressSeted
                   ? Container(
                       color: Colors.white,
-                      child: Text(
-                        /*model.currentAddressDataFromGoogle.description.length <
-                                40
-                            ? model.currentAddressDataFromGoogle.description
-                            : model.currentAddressDataFromGoogle.description
-                                    .substring(0, 40) +*/
-                        "...",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[700]),
+                      child: ListTile(
+                        title: Text(
+                          model.addressToRegisterPartner.length > 60
+                              ? model.addressToRegisterPartner
+                                      .substring(0, 60) +
+                                  "..."
+                              : model.addressToRegisterPartner,
+                          style: TextStyle(
+                            color: Colors.black54,
+                            fontSize: 14,
+                          ),
+                        ),
                       ),
                     )
                   : Text("Adcionar Endereço"),
@@ -82,8 +84,9 @@ class ShipCard extends StatelessWidget {
                     children: [
                       TextFormField(
                         decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            hintText: "Digite se u CEP"),
+                          border: OutlineInputBorder(),
+                          hintText: "Digite se u CEP",
+                        ),
                         initialValue: "",
                       ),
                     ],

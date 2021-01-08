@@ -16,12 +16,9 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  String permissionStatus;
   bool isAddressSeted;
-  PermissionStatus _permissionGranted;
   LocationData locationData;
   Location location = Location();
-  bool _serviceEnabled;
   void initState() {
     isAddressSeted = false;
     super.initState();
@@ -219,20 +216,23 @@ class _HomeTabState extends State<HomeTab> {
                                       .map((purchasedStore) {
                                     return FlatButton(
                                       onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          PageTransition(
-                                            type:
-                                                PageTransitionType.rightToLeft,
-                                            child: WelcomeStoreScreen(
-                                                purchasedStore),
-                                            inheritTheme: true,
-                                            duration: Duration(
-                                              milliseconds: 350,
-                                            ),
-                                            ctx: context,
-                                          ),
-                                        );
+                                        model.addressSeted
+                                            ? Navigator.push(
+                                                context,
+                                                PageTransition(
+                                                  type: PageTransitionType
+                                                      .rightToLeft,
+                                                  child: WelcomeStoreScreen(
+                                                    purchasedStore,
+                                                  ),
+                                                  inheritTheme: true,
+                                                  duration: Duration(
+                                                    milliseconds: 350,
+                                                  ),
+                                                  ctx: context,
+                                                ),
+                                              )
+                                            : loadAddres();
                                       },
                                       padding: EdgeInsets.symmetric(
                                         horizontal: 4,

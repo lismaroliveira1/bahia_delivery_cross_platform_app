@@ -19,7 +19,6 @@ class _ChatOrderPartnerTabState extends State<ChatOrderPartnerTab> {
   final String imageUrl = "https://meuvidraceiro.com.br/images/sem-imagem.png";
   bool isImageChoosed = false;
   final picker = ImagePicker();
-  TextEditingController _messageController = TextEditingController();
   final GlobalKey<DashChatState> _chatViewKey = GlobalKey<DashChatState>();
   List<ChatMessage> messages = List<ChatMessage>();
   bool isComposing;

@@ -4,6 +4,7 @@ import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/cart_screen.dart';
 import 'package:bd_app_full/screens/category_store_screen.dart';
 import 'package:bd_app_full/screens/combo_screnn.dart';
+import 'package:bd_app_full/screens/product_screen.dart';
 import 'package:bd_app_full/screens/sales_off_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -273,26 +274,48 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                                     scrollDirection: Axis.horizontal,
                                     children: widget.storeData.purchasedProducts
                                         .map(
-                                          (purchased) => Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              children: [
-                                                Container(
-                                                  height: 80,
-                                                  width: 80,
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    image: DecorationImage(
-                                                      image: NetworkImage(
-                                                        purchased.productImage,
+                                          (purchased) => FlatButton(
+                                            onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                new PageTransition(
+                                                  type: PageTransitionType
+                                                      .rightToLeft,
+                                                  child: new ProductStoreScreen(
+                                                    purchased,
+                                                  ),
+                                                  inheritTheme: true,
+                                                  duration: new Duration(
+                                                    milliseconds: 350,
+                                                  ),
+                                                  ctx: context,
+                                                ),
+                                              );
+                                            },
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    height: 80,
+                                                    width: 80,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      image: DecorationImage(
+                                                        image: NetworkImage(
+                                                          purchased
+                                                              .productImage,
+                                                        ),
+                                                        fit: BoxFit.cover,
                                                       ),
                                                     ),
                                                   ),
-                                                ),
-                                                Text(purchased.productTitle),
-                                                Text(
-                                                    "R\$ ${purchased.productPrice.toStringAsFixed(2)}")
-                                              ],
+                                                  Text(purchased.productTitle),
+                                                  Text(
+                                                      "R\$ ${purchased.productPrice.toStringAsFixed(2)}")
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         )
