@@ -22,11 +22,6 @@ class WelcomeStoreTab extends StatefulWidget {
 class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
   List<ProductData> purchasedProducts = [];
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Stack(

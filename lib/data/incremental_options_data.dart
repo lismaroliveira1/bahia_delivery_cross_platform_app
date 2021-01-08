@@ -53,4 +53,17 @@ class IncrementalOptionalsData {
     type = data.type;
     quantity = 0;
   }
+  Map<String, dynamic> toMap() {
+    return {
+      "title": title,
+      "description": description,
+      "image": image,
+      "maxQuanity": maxQuantity,
+      "minQuantity": minQuantity,
+      "price": price,
+      "productId": productId,
+      "session": session,
+      "type": type,
+    };
+  }
 }
