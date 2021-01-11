@@ -4,8 +4,10 @@ import 'package:bd_app_full/data/category_store_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:bd_app_full/data/subsection_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/register_new_optmal_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class EditProductTab extends StatefulWidget {
@@ -331,6 +333,46 @@ class _EditProductTabState extends State<EditProductTab> {
                     ],
                   ),
                   Padding(
+                    padding: const EdgeInsets.only(
+                      top: 4,
+                    ),
+                    child: FlatButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          new PageTransition(
+                            type: PageTransitionType.rightToLeft,
+                            child:
+                                new RegisterNewOptIncrementScreen(productData),
+                            inheritTheme: true,
+                            duration: new Duration(
+                              milliseconds: 350,
+                            ),
+                            ctx: context,
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 55,
+                        width: MediaQuery.of(context).size.width / 3,
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Complementos",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
                     padding: EdgeInsets.symmetric(
                       vertical: 16.0,
                     ),
@@ -428,6 +470,17 @@ class _EditProductTabState extends State<EditProductTab> {
                       ),
                     ),
                   ],
+                ),
+              ),
+              FlatButton(
+                onPressed: () {},
+                child: Container(
+                  height: 55,
+                  width: MediaQuery.of(context).size.width / 3,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
               ),
               ScopedModelDescendant<UserModel>(

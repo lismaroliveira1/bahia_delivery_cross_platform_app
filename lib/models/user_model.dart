@@ -2996,4 +2996,34 @@ class UserModel extends Model {
     }
     notifyListeners();
   }
+
+  void insertOptIncrement({
+    @required File imageFile,
+    @required IncrementalOptionalsData incrementalOptData,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    if (firebaseUser != null) {
+      isLoading = true;
+      notifyListeners();
+      try {
+        await FirebaseFirestore.instance
+            .collection("stores")
+            .doc(userData.storeId)
+            .collection("products")
+            .doc()
+            .collection("IncrementalOptions")
+            .add(
+              incrementalOptData.toMap(),
+            );
+        onSuccess();
+        isLoading = false;
+        notifyListeners();
+      } catch (e) {
+        onFail();
+        isLoading = false;
+        notifyListeners();
+      }
+    }
+  }
 }

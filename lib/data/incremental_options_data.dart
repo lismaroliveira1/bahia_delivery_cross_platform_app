@@ -15,7 +15,7 @@ class IncrementalOptionalsData {
   int quantity = 0;
 
   IncrementalOptionalsData({
-    @required this.id,
+    this.id,
     @required this.productId,
     @required this.type,
     @required this.image,
@@ -25,8 +25,9 @@ class IncrementalOptionalsData {
     @required this.minQuantity,
     @required this.price,
     @required this.session,
-    @required this.quantity,
+    this.quantity,
   });
+
   IncrementalOptionalsData.fromQueryDocument(QueryDocumentSnapshot queryDoc) {
     id = queryDoc.id;
     description = queryDoc.get("description");

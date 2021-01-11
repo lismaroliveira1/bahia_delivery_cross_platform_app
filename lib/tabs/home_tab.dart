@@ -459,51 +459,52 @@ class _HomeTabState extends State<HomeTab> {
           ),
         ),
         content: Container(
-            height: 200,
-            child: Column(
-              children: [
-                Text(
-                  "Antes de começar\nvamos definir seu endereço...",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black54,
-                    fontSize: 18,
-                  ),
+          height: 200,
+          child: Column(
+            children: [
+              Text(
+                "Antes de começar\nvamos definir seu endereço...",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: 18,
                 ),
-                Spacer(),
-                Center(
-                  child: AnimatedButton(
-                    height: 50,
-                    color: Colors.red,
-                    child: Text(
-                      'Ok, vamos lá!',
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                      ),
+              ),
+              Spacer(),
+              Center(
+                child: AnimatedButton(
+                  height: 50,
+                  color: Colors.red,
+                  child: Text(
+                    'Ok, vamos lá!',
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
                     ),
-                    onPressed: () {
-                      Scaffold.of(context).hideCurrentSnackBar();
-                      Timer(Duration(milliseconds: 500), () {
-                        Navigator.push(
-                          context,
-                          new PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: new RegisterAddressScreen(),
-                            inheritTheme: true,
-                            duration: new Duration(
-                              milliseconds: 350,
-                            ),
-                            ctx: context,
-                          ),
-                        );
-                      });
-                    },
                   ),
+                  onPressed: () {
+                    Scaffold.of(context).hideCurrentSnackBar();
+                    Timer(Duration(milliseconds: 500), () {
+                      Navigator.push(
+                        context,
+                        new PageTransition(
+                          type: PageTransitionType.rightToLeft,
+                          child: new RegisterAddressScreen(),
+                          inheritTheme: true,
+                          duration: new Duration(
+                            milliseconds: 350,
+                          ),
+                          ctx: context,
+                        ),
+                      );
+                    });
+                  },
                 ),
-              ],
-            )),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
