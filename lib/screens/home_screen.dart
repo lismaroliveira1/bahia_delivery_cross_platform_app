@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:bd_app_full/elements/drawer_menu_item.dart';
 import 'package:bd_app_full/tabs/favorite_tab.dart';
 import 'package:bd_app_full/tabs/home_tab.dart';
 import 'package:bd_app_full/tabs/profile_tab.dart';
@@ -10,6 +12,9 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
+  final StreamController<DrawerItemEnum> streamController;
+
+  HomeScreen({Key key, this.streamController}) : super(key: key);
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -88,56 +93,61 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     double sizeColor = 30.0;
-    return Scaffold(
-      body: _showPage,
-      bottomNavigationBar: CurvedNavigationBar(
-        height: 55,
-        color: Colors.black26,
-        backgroundColor: Colors.white,
-        buttonBackgroundColor: Colors.redAccent,
-        items: [
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Icon(
-              Icons.home,
-              size: sizeColor,
-              color: Colors.white,
+    return StreamBuilder<DrawerItemEnum>(
+        stream: widget.streamController.stream,
+        initialData: DrawerItemEnum.HOME,
+        builder: (context, snapshot) {
+          return Scaffold(
+            body: _showPage,
+            bottomNavigationBar: CurvedNavigationBar(
+              height: 55,
+              color: Colors.black26,
+              backgroundColor: Colors.white,
+              buttonBackgroundColor: Colors.redAccent,
+              items: [
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Icon(
+                    Icons.home,
+                    size: sizeColor,
+                    color: Colors.white,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Icon(
+                    Icons.favorite,
+                    size: sizeColor,
+                    color: Colors.white,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Icon(
+                    Icons.search,
+                    size: sizeColor,
+                    color: Colors.white,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Icon(
+                    Icons.person_pin,
+                    size: sizeColor,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+              animationDuration: Duration(milliseconds: 350),
+              animationCurve: Curves.ease,
+              onTap: (int tapIndex) {
+                setState(() {
+                  _showPage = _pageChooser(tapIndex);
+                });
+              },
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Icon(
-              Icons.favorite,
-              size: sizeColor,
-              color: Colors.white,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Icon(
-              Icons.search,
-              size: sizeColor,
-              color: Colors.white,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Icon(
-              Icons.person_pin,
-              size: sizeColor,
-              color: Colors.white,
-            ),
-          ),
-        ],
-        animationDuration: Duration(milliseconds: 350),
-        animationCurve: Curves.ease,
-        onTap: (int tapIndex) {
-          setState(() {
-            _showPage = _pageChooser(tapIndex);
-          });
-        },
-      ),
-    );
+          );
+        });
   }
 
   Widget headerView(BuildContext context) {
