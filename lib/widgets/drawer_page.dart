@@ -1,14 +1,8 @@
 import 'dart:async';
 
+import 'package:bd_app_full/elements/drawer_menu_item.dart';
 import 'package:flutter/material.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
-
-enum DrawerItemEnum {
-  HOME,
-  PEDIDOS,
-  SOBRE,
-  AJUDA,
-}
 
 class DrawerPage extends StatefulWidget {
   final StreamController<DrawerItemEnum> streamController;
