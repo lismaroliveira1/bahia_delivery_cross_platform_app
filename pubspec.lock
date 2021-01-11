@@ -239,13 +239,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.10"
-  drawerbehavior:
-    dependency: "direct main"
-    description:
-      name: drawerbehavior
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.4"
   fake_async:
     dependency: transitive
     description:
@@ -625,13 +618,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.2"
-  kf_drawer:
+  kt_drawer_menu:
     dependency: "direct main"
     description:
-      name: kf_drawer
+      name: kt_drawer_menu
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.2"
+    version: "0.0.6"
   latlong:
     dependency: transitive
     description:

@@ -5,7 +5,6 @@ import 'package:bd_app_full/tabs/home_tab.dart';
 import 'package:bd_app_full/tabs/profile_tab.dart';
 import 'package:bd_app_full/tabs/search_tab.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:drawerbehavior/menu_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -22,17 +21,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final ProfileTab _profileTab = ProfileTab();
   Widget _showPage = new HomeTab();
 
-  List<MenuItem> itens = [
-    new MenuItem<int>(
-      id: 0,
-      title: "Title 1",
-      icon: Icons.fastfood,
-    )
-  ];
-  Menu menu;
   @override
   void initState() {
-    menu = Menu(items: itens);
     super.initState();
     configFCM();
   }

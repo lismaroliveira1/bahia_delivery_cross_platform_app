@@ -76,14 +76,13 @@ dependencies:
   dash_chat: ^1.1.15
   primary_secondary_progress_bar: ^0.1.1
   flutter_plugin_android_lifecycle: ^1.0.11
-  drawerbehavior: ^1.1.4
   permission_handler: ^5.0.1
   flutter_launcher_icons: ^0.8.1
   geolocator: ^6.1.13
   date_time_picker: ^1.1.1
   flutter_easyloading: ^2.2.2
   bubble_timeline: ^1.0.5
-  kf_drawer: ^1.1.2
+  kt_drawer_menu: ^0.0.6
   
 
 dev_dependencies:

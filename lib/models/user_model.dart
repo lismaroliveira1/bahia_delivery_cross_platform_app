@@ -997,7 +997,6 @@ class UserModel extends Model {
           uploadTask.then((task) async {
             section.image = await task.ref.getDownloadURL();
             print(section.order);
-            int count = section.order;
             List<CategoryStoreData> flagSectionList = [];
             flagSectionList =
                 sectionsStorePartnerList.sublist(0, section.order - 1);
@@ -1034,7 +1033,6 @@ class UserModel extends Model {
           });
         } else {
           print(section.order);
-          int count = section.order;
           List<CategoryStoreData> flagSectionList = [];
           flagSectionList =
               sectionsStorePartnerList.sublist(0, section.order - 1);
