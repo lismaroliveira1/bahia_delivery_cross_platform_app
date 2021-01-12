@@ -4,6 +4,7 @@ import 'package:bd_app_full/data/combo_data.dart';
 import 'package:bd_app_full/data/delivery_man_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dash_chat/dash_chat.dart';
 
 class OrderData {
   String id;
@@ -39,6 +40,7 @@ class OrderData {
   bool isSending = false;
   bool isFinished;
   Timestamp finishedAt;
+  List<ChatMessage> chatMessage = [];
   OrderData(
     this.id,
     this.storeName,

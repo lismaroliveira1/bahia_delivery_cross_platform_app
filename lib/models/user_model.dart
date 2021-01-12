@@ -565,6 +565,21 @@ class UserModel extends Model {
               }
             }
           }).toList();
+          print("oasdf");
+          listUserOrders.forEach((order) async {
+            QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+                .collection("orders")
+                .doc(order.id)
+                .collection("chat")
+                .get();
+            querySnapshot.docs.map((chatMessage) {
+              order.chatMessage.add(
+                ChatMessage.fromJson(
+                  chatMessage.data(),
+                ),
+              );
+            }).toList();
+          });
           notifyListeners();
         });
         QuerySnapshot querySnapshot = await FirebaseFirestore.instance
