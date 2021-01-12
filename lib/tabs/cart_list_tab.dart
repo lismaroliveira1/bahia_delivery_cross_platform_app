@@ -1,4 +1,6 @@
+import 'package:bd_app_full/data/store_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/welcome_store_screen.dart';
 import 'package:bd_app_full/tabs/cart_tab.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
@@ -26,83 +28,111 @@ class _CartListTabState extends State<CartListTab> {
           } else {
             return SingleChildScrollView(
               child: Column(
-                children: model.cartDataList
-                    .map(
-                      (cartData) => Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 4,
-                          horizontal: 8,
+                children: model.cartDataList.map((cartData) {
+                  double totalPrice = 0;
+                  cartData.carts.forEach((product) {
+                    totalPrice += product.price;
+                  });
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 4,
+                      horizontal: 8,
+                    ),
+                    child: Card(
+                      elevation: 8,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6),
                         ),
-                        child: Card(
-                          elevation: 8,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            child: FlatButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  new PageTransition(
-                                    type: PageTransitionType.rightToLeft,
-                                    child: new CartTab(cartData.storeData),
-                                    inheritTheme: true,
-                                    duration: new Duration(
-                                      milliseconds: 350,
+                        child: FlatButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              new PageTransition(
+                                type: PageTransitionType.rightToLeft,
+                                child: new CartTab(cartData.storeData),
+                                inheritTheme: true,
+                                duration: new Duration(
+                                  milliseconds: 350,
+                                ),
+                                ctx: context,
+                              ),
+                            );
+                          },
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: Container(
+                                  height: 100,
+                                  width: 100,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(6),
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                        cartData.storeData.image,
+                                      ),
+                                      fit: BoxFit.cover,
                                     ),
-                                    ctx: context,
                                   ),
-                                );
-                              },
-                              child: Row(
+                                ),
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(4),
-                                    child: Container(
-                                      height: 100,
-                                      width: 100,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(6),
-                                        image: DecorationImage(
-                                          image: NetworkImage(
-                                            cartData.storeData.image,
-                                          ),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
+                                  Text(
+                                    cartData.storeData.name,
+                                    style: TextStyle(fontSize: 20),
                                   ),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        cartData.storeData.name,
-                                        style: TextStyle(fontSize: 20),
-                                      ),
-                                      Text("Pizzas e Massas"),
-                                      Text(
-                                        cartData.carts.length > 1
-                                            ? cartData.carts.length
-                                                    .toStringAsFixed(0) +
-                                                " itens"
-                                            : cartData.carts.length
-                                                    .toStringAsFixed(0) +
-                                                " item",
-                                      ),
-                                    ],
-                                  )
+                                  Text("Pizzas e Massas"),
+                                  Text(
+                                    cartData.carts.length > 1
+                                        ? cartData.carts.length
+                                                .toStringAsFixed(0) +
+                                            " itens"
+                                        : cartData.carts.length
+                                                .toStringAsFixed(0) +
+                                            " item",
+                                  ),
+                                  Text("Custo do envio: R\$ 9,99"),
+                                  Text(
+                                      "Total: R\$ ${(totalPrice + 9.99).toStringAsFixed(2)}")
                                 ],
                               ),
-                            ),
+                              Spacer(),
+                              IconButton(
+                                  icon: Icon(Icons.add),
+                                  onPressed: () {
+                                    StoreData storeData;
+                                    model.storeHomeList.forEach((store) {
+                                      if (store.id == cartData.storeData.id) {
+                                        storeData = store;
+                                      }
+                                    });
+                                    Navigator.push(
+                                      context,
+                                      new PageTransition(
+                                        type: PageTransitionType.rightToLeft,
+                                        child:
+                                            new WelcomeStoreScreen(storeData),
+                                        inheritTheme: true,
+                                        duration: new Duration(
+                                          milliseconds: 350,
+                                        ),
+                                        ctx: context,
+                                      ),
+                                    );
+                                  })
+                            ],
                           ),
                         ),
                       ),
-                    )
-                    .toList(),
+                    ),
+                  );
+                }).toList(),
               ),
             );
           }
