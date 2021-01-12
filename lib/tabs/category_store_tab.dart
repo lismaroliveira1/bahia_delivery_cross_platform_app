@@ -105,6 +105,7 @@ class _CategoryStoreTabState extends State<CategoryStoreTab> {
                 ),
               ),
               itemBuilder: (c, doc) {
+                doc.storeId = widget.storeData.id;
                 return Card(
                   elevation: 8.0,
                   child: Padding(

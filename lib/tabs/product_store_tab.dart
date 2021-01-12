@@ -233,8 +233,8 @@ class _ProductStoreTabState extends State<ProductStoreTab> {
                     ),
                   ),
                   onPressed: () {
+                    print(widget.productData.storeId);
                     CartProduct cartProduct = CartProduct();
-
                     cartProduct.category = widget.productData.category;
                     cartProduct.productImage = widget.productData.productImage;
                     cartProduct.pId = widget.productData.pId;

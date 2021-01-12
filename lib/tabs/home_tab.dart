@@ -44,38 +44,80 @@ class _HomeTabState extends State<HomeTab> {
                   elevation: 0.0,
                   floating: true,
                   snap: true,
-                  expandedHeight: 100,
+                  expandedHeight: 60,
                   flexibleSpace: Container(
-                    height: 100,
+                    height: 60,
                     margin: EdgeInsets.only(top: 65),
                     child: Padding(
                       padding: const EdgeInsets.only(right: 12.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          new IconButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              KTDrawerMenu.of(context).toggle();
-                            },
-                            icon: Icon(
-                              Icons.sort,
+                          Container(
+                            height: 50,
+                            width: 50,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: Card(
+                                elevation: 8,
+                                child: new IconButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
+                                    KTDrawerMenu.of(context).toggle();
+                                  },
+                                  icon: Icon(
+                                    Icons.sort,
+                                    size: 25,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                           Image.asset(
                             "images/logo.png",
-                            width: 85,
-                            height: 85,
+                            width: 50,
+                            height: 50,
                             fit: BoxFit.cover,
                           ),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(12),
-                            child: FadeInImage.memoryNetwork(
-                              placeholder: kTransparentImage,
-                              image: model.userData.image,
-                              height: 40,
-                              width: 40,
-                              fit: BoxFit.fill,
+                          Container(
+                            height: 50,
+                            width: 50,
+                            child: Container(
+                              height: 35,
+                              width: 35,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Card(
+                                  elevation: 8,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(2.0),
+                                    child: FlatButton(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          new PageTransition(
+                                            type:
+                                                PageTransitionType.rightToLeft,
+                                            child: new RegisterAddressScreen(),
+                                            inheritTheme: true,
+                                            duration: new Duration(
+                                              milliseconds: 350,
+                                            ),
+                                            ctx: context,
+                                          ),
+                                        );
+                                      },
+                                      child: Image.asset(
+                                        "images/cart_icon.png",
+                                        width: 15,
+                                        height: 15,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ],

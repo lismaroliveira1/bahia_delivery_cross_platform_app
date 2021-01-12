@@ -1,3 +1,4 @@
+import 'package:bd_app_full/data/cart_product.dart';
 import 'package:bd_app_full/data/store_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/tiles/cart_tile.dart';
@@ -51,6 +52,10 @@ class _CartTabState extends State<CartTab> {
               ),
             ),
             ScopedModelDescendant<UserModel>(builder: (context, cart, model) {
+              List<CartProduct> cartByStore = model.cartProducts
+                  .where((cartElement) =>
+                      cartElement.storeId == widget.storeData.id)
+                  .toList();
               if (model.isLoading) {
                 return Container(
                   height: 0,
@@ -60,7 +65,8 @@ class _CartTabState extends State<CartTab> {
                 return Column(
                   children: [
                     Column(
-                      children: model.cartProducts.map((product) {
+                      children: cartByStore.map((product) {
+                        print(product.storeId);
                         return CartTile(
                           cartProduct: product,
                           noProduct: _noProductInCart,

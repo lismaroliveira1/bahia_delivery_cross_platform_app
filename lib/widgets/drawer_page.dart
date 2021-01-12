@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:bd_app_full/elements/drawer_menu_item.dart';
+import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class DrawerPage extends StatefulWidget {
   final StreamController<DrawerItemEnum> streamController;
@@ -22,16 +24,72 @@ class _DrawerPageState extends State<DrawerPage> {
       initialData: DrawerItemEnum.HOME,
       builder: (context, snapshot) {
         selected = snapshot.data;
-        return Container(
-          color: Colors.blueGrey[900],
-          child: Stack(
-            children: [
-              _getMenu(context, DrawerItemEnum.HOME),
-              _getMenu(context, DrawerItemEnum.PEDIDOS),
-              _getMenu(context, DrawerItemEnum.SOBRE),
-              _getMenu(context, DrawerItemEnum.AJUDA),
-            ],
-          ),
+        return ScopedModelDescendant<UserModel>(
+          builder: (context, child, model) {
+            if (model.isLoading) {
+              return Center(
+                child: Container(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            } else {
+              return Container(
+                color: Colors.blueGrey[900],
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: NetworkImage(
+                                    model.userData.image,
+                                  ),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    model.userData.name,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.2,
+                        ),
+                        _getMenu(context, DrawerItemEnum.HOME),
+                        _getMenu(context, DrawerItemEnum.PEDIDOS),
+                        _getMenu(context, DrawerItemEnum.SOBRE),
+                        _getMenu(context, DrawerItemEnum.AJUDA),
+                        Spacer(),
+                        _getMenu(context, DrawerItemEnum.AJUDA),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }
+          },
         );
       },
     );

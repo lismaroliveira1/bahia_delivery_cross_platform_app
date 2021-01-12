@@ -92,6 +92,7 @@ class UserModel extends Model {
   Position userPostion;
   List<AddressData> userAddress = [];
   bool listenChangeUser = false;
+  Map carts = {};
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
 
@@ -136,7 +137,7 @@ class UserModel extends Model {
           await getListOfCategory();
           await getListHomeStores();
           await getOrders();
-          getcartProductList();
+          getCartProductList();
           getComboCartItens();
           getPaymentUserForms();
           updateFavoritList();
@@ -285,7 +286,7 @@ class UserModel extends Model {
       await getListHomeStores();
       await getOrders();
       getUserAddresses();
-      getcartProductList();
+      getCartProductList();
       getComboCartItens();
       onSuccess();
       isLogged = true;
@@ -375,7 +376,7 @@ class UserModel extends Model {
       isLoading = false;
       isReady = true;
       notifyListeners();
-      getcartProductList();
+      getCartProductList();
       getComboCartItens();
       getPaymentUserForms();
       updateFavoritList();
@@ -1618,7 +1619,6 @@ class UserModel extends Model {
             .add(
               cartProduct.toMap(),
             );
-        getcartProductList();
         onSuccess();
         notifyListeners();
       } catch (erro) {
@@ -1628,23 +1628,26 @@ class UserModel extends Model {
     }
   }
 
-  void getcartProductList() async {
+  void getCartProductList() async {
     if (isLoggedIn()) {
       cartProducts.clear();
-      QuerySnapshot cartQuery = await FirebaseFirestore.instance
+      FirebaseFirestore.instance
           .collection("users")
           .doc(firebaseUser.uid)
           .collection("cart")
-          .get();
-      cartQuery.docs.map((queryDoc) {
-        if (queryDoc.get("type") == "product") {
-          cartProducts.add(CartProduct.fromDocument(queryDoc));
+          .snapshots()
+          .listen((cartQuery) {
+        cartQuery.docs.map((queryDoc) {
+          if (queryDoc.get("type") == "product") {
+            cartProducts.add(CartProduct.fromDocument(queryDoc));
+          }
+        }).toList();
+        if (cartProducts.length > 0) {
+          hasProductInCart = true;
         }
-      }).toList();
-      if (cartProducts.length > 0) {
-        hasProductInCart = true;
-      }
-      notifyListeners();
+        getCartList();
+        notifyListeners();
+      });
     }
   }
 
@@ -1830,7 +1833,7 @@ class UserModel extends Model {
           cartProducts.clear();
           comboCartList.clear();
           hasProductInCart = false;
-          getcartProductList();
+          getCartProductList();
           notifyListeners();
         } else {
           notifyListeners();
@@ -2071,7 +2074,7 @@ class UserModel extends Model {
             await getOrders();
             getUserAddresses();
             notifyListeners();
-            getcartProductList();
+            getCartProductList();
             getComboCartItens();
             getPaymentUserForms();
             updateFavoritList();
@@ -3023,5 +3026,21 @@ class UserModel extends Model {
         notifyListeners();
       }
     }
+  }
+
+  void getCartList() {
+    carts.clear();
+    cartProducts.forEach((cart) {
+      if (!carts.containsKey(cart.storeId)) {
+        carts.addAll(
+          {
+            cart.storeId: cartProducts
+                .where((cartElement) => cartElement.storeId == cart.storeId)
+                .toList(),
+          },
+        );
+        print(carts);
+      }
+    });
   }
 }
