@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bd_app_full/data/cart_data.dart';
 import 'package:bd_app_full/data/cart_product.dart';
 import 'package:bd_app_full/data/category_data.dart';
 import 'package:bd_app_full/data/category_store_data.dart';
@@ -94,6 +95,7 @@ class UserModel extends Model {
   bool listenChangeUser = false;
   Map carts = {};
   List<List<CartProduct>> cartsByStore = [];
+  List<CartData> cartDataList = [];
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
 
@@ -154,6 +156,7 @@ class UserModel extends Model {
           getPaymentUserForms();
           getDeliveryManData();
           getListOfCoupons();
+
           isLoading = false;
           isReady = true;
           listenChangeUser = false;
@@ -3035,6 +3038,7 @@ class UserModel extends Model {
   void getCartList() {
     carts.clear();
     cartsByStore.clear();
+    cartDataList.clear();
     print(cartProducts.length);
     cartProducts.forEach((cart) {
       if (!carts.containsKey(cart.storeId)) {
@@ -3048,10 +3052,18 @@ class UserModel extends Model {
       }
     });
     carts.forEach(
-      (key, value) {
-        cartsByStore.add(value);
+      (key, value) async {
+        await FirebaseFirestore.instance
+            .collection("stores")
+            .doc(key)
+            .get()
+            .then((doc) {
+          final storeData = StoreData.fromDocument(doc);
+          final cartData = CartData(carts: value, storeData: storeData);
+          cartDataList.add(cartData);
+        });
       },
     );
-    print(cartsByStore.length);
+    notifyListeners();
   }
 }

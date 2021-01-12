@@ -65,7 +65,11 @@ class _CartPriceState extends State<CartPrice> {
                         double totalProductsPrice = 0;
                         double totalCombosPrice = 0;
                         List<DocumentSnapshot> comboItens = snapshot.data.docs
-                            .where((element) => element.get("type") == "combo")
+                            .where(
+                              (element) =>
+                                  element.get("type") == "combo" &&
+                                  element.get("storeId") == widget.storeData.id,
+                            )
                             .toList();
                         for (DocumentSnapshot doc in comboItens) {
                           totalCombosPrice +=
@@ -73,7 +77,10 @@ class _CartPriceState extends State<CartPrice> {
                         }
                         List<DocumentSnapshot> items = snapshot.data.docs
                             .where(
-                                (element) => element.get("type") == "product")
+                              (element) =>
+                                  element.get("type") == "product" &&
+                                  element.get("storeId") == widget.storeData.id,
+                            )
                             .toList();
                         for (DocumentSnapshot doc in items) {
                           totalProductsPrice += doc.get("totalPrice");

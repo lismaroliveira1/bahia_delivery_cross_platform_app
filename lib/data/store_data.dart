@@ -97,4 +97,49 @@ class StoreData {
       isActive = false;
     }
   }
+  StoreData.fromDocument(DocumentSnapshot queryDoc) {
+    id = queryDoc.id;
+    LinkedHashMap p;
+    description = queryDoc.get("description");
+    image = queryDoc.get("image");
+    name = queryDoc.get("name");
+    partnerId = queryDoc.get("partnerId");
+    geopoint = queryDoc.data()["address"]["geopoint"];
+    latLng = LatLng(
+      geopoint.latitude,
+      geopoint.longitude,
+    );
+    locationId = queryDoc.data()["address"]["locationId"];
+    storeAddress = queryDoc.data()["address"]["storeAddress"];
+    try {
+      p = queryDoc.data()["closingTime"];
+      closingTimeHour = p["hour"];
+      closingTimeMinute = p["minute"];
+      p = queryDoc.data()["openingTime"];
+      openingTimeMinute = p["minute"];
+      openingTimeHour = p["hour"];
+      if (DateTime.now().hour > openingTimeHour &&
+          DateTime.now().hour < closingTimeHour) {
+        isOpen = true;
+      } else if (DateTime.now().hour == openingTimeHour) {
+        if (DateTime.now().minute >= openingTimeMinute) {
+          isOpen = true;
+        } else {
+          isOpen = false;
+        }
+      } else if (DateTime.now().hour < openingTimeHour ||
+          DateTime.now().hour > closingTimeHour) {
+        isOpen = false;
+      } else if (DateTime.now().hour == closingTimeHour) {
+        if (DateTime.now().minute <= closingTimeMinute) {
+          isOpen = true;
+        } else {
+          isOpen = false;
+        }
+      }
+      isActive = true;
+    } catch (erro) {
+      isActive = false;
+    }
+  }
 }
