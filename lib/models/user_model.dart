@@ -565,20 +565,8 @@ class UserModel extends Model {
               }
             }
           }).toList();
-          print("oasdf");
           listUserOrders.forEach((order) async {
-            QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-                .collection("orders")
-                .doc(order.id)
-                .collection("chat")
-                .get();
-            querySnapshot.docs.map((chatMessage) {
-              order.chatMessage.add(
-                ChatMessage.fromJson(
-                  chatMessage.data(),
-                ),
-              );
-            }).toList();
+            order.chatMessage = await getUserChat(order);
           });
           notifyListeners();
         });
@@ -601,6 +589,9 @@ class UserModel extends Model {
             }
           }
         }).toList();
+        listUserOrders.forEach((order) async {
+          order.chatMessage = await getUserChat(order);
+        });
         notifyListeners();
       } catch (erro) {
         sendErrorMessageToADM(
@@ -1017,7 +1008,6 @@ class UserModel extends Model {
           UploadTask uploadTask = ref.putFile(section.imageFile);
           uploadTask.then((task) async {
             section.image = await task.ref.getDownloadURL();
-            print(section.order);
             List<CategoryStoreData> flagSectionList = [];
             flagSectionList =
                 sectionsStorePartnerList.sublist(0, section.order - 1);
@@ -1028,7 +1018,6 @@ class UserModel extends Model {
               }
             });
             flagSectionList.forEach((sectionToDataBase) async {
-              print(sectionToDataBase.order);
               await FirebaseFirestore.instance
                   .collection("stores")
                   .doc(userData.storeId)
@@ -1053,7 +1042,6 @@ class UserModel extends Model {
             notifyListeners();
           });
         } else {
-          print(section.order);
           List<CategoryStoreData> flagSectionList = [];
           flagSectionList =
               sectionsStorePartnerList.sublist(0, section.order - 1);
@@ -1064,7 +1052,6 @@ class UserModel extends Model {
             }
           });
           flagSectionList.forEach((sectionToDataBase) async {
-            print(sectionToDataBase.order);
             await FirebaseFirestore.instance
                 .collection("stores")
                 .doc(userData.storeId)
@@ -3055,7 +3042,6 @@ class UserModel extends Model {
     carts.clear();
     cartsByStore.clear();
     cartDataList.clear();
-    print(cartProducts.length);
     cartProducts.forEach((cart) {
       if (!carts.containsKey(cart.storeId)) {
         carts.addAll(
@@ -3098,5 +3084,25 @@ class UserModel extends Model {
         },
       );
     } catch (error) {}
+  }
+
+  Future<List<ChatMessage>> getUserChat(OrderData order) async {
+    if (isLoggedIn()) {
+      List<ChatMessage> chatFlag = [];
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection("orders")
+          .doc(order.id)
+          .collection("chat")
+          .get();
+      querySnapshot.docs.map((chatMessage) {
+        chatFlag.add(
+          ChatMessage.fromJson(
+            chatMessage.data(),
+          ),
+        );
+      }).toList();
+      return chatFlag;
+    }
+    return [];
   }
 }

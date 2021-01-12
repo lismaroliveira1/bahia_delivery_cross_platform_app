@@ -7,6 +7,7 @@ import 'package:bd_app_full/screens/order_user_screen.dart';
 import 'package:bd_app_full/screens/payment_user_screen.dart';
 import 'package:bd_app_full/screens/setup_user_screen.dart';
 import 'package:bd_app_full/screens/store_home_screen.dart';
+import 'package:bd_app_full/screens/user_chat_list_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
@@ -311,7 +312,7 @@ class _ProfileTabState extends State<ProfileTab> {
                           context,
                           PageTransition(
                             type: PageTransitionType.rightToLeft,
-                            child: NotificationSetupScreen(),
+                            child: UserChatListScreen(),
                             inheritTheme: true,
                             duration: Duration(
                               milliseconds: 350,
