@@ -96,6 +96,7 @@ class UserModel extends Model {
   Map carts = {};
   List<List<CartProduct>> cartsByStore = [];
   List<CartData> cartDataList = [];
+  List<CouponData> couponUserData = [];
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
 
@@ -140,6 +141,7 @@ class UserModel extends Model {
           await getListOfCategory();
           await getListHomeStores();
           await getOrders();
+          getUserCoupon();
           getCartProductList();
           getComboCartItens();
           getPaymentUserForms();
@@ -156,7 +158,6 @@ class UserModel extends Model {
           getPaymentUserForms();
           getDeliveryManData();
           getListOfCoupons();
-
           isLoading = false;
           isReady = true;
           listenChangeUser = false;
@@ -3065,5 +3066,22 @@ class UserModel extends Model {
       },
     );
     notifyListeners();
+  }
+
+  void getUserCoupon() {
+    try {
+      FirebaseFirestore.instance.collection("coupons").snapshots().listen(
+        (querySnapshot) {
+          couponUserData.clear();
+          querySnapshot.docs
+              .map(
+                (queryDoc) => couponUserData.add(
+                  CouponData.fromQueryDocumentSnapshot(queryDoc),
+                ),
+              )
+              .toList();
+        },
+      );
+    } catch (error) {}
   }
 }
