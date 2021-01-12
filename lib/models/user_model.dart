@@ -93,6 +93,7 @@ class UserModel extends Model {
   List<AddressData> userAddress = [];
   bool listenChangeUser = false;
   Map carts = {};
+  List<List<CartProduct>> cartsByStore = [];
   static UserModel of(BuildContext context) =>
       ScopedModel.of<UserModel>(context);
 
@@ -1630,24 +1631,27 @@ class UserModel extends Model {
 
   void getCartProductList() async {
     if (isLoggedIn()) {
-      cartProducts.clear();
-      FirebaseFirestore.instance
-          .collection("users")
-          .doc(firebaseUser.uid)
-          .collection("cart")
-          .snapshots()
-          .listen((cartQuery) {
-        cartQuery.docs.map((queryDoc) {
-          if (queryDoc.get("type") == "product") {
-            cartProducts.add(CartProduct.fromDocument(queryDoc));
+      try {
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(firebaseUser.uid)
+            .collection("cart")
+            .snapshots()
+            .listen((cartQuery) {
+          cartQuery.docs.map((queryDoc) {
+            if (queryDoc.get("type") == "product") {
+              cartProducts.add(CartProduct.fromDocument(queryDoc));
+            }
+          }).toList();
+          if (cartProducts.length > 0) {
+            hasProductInCart = true;
           }
-        }).toList();
-        if (cartProducts.length > 0) {
-          hasProductInCart = true;
-        }
-        getCartList();
-        notifyListeners();
-      });
+          getCartList();
+          notifyListeners();
+        });
+      } catch (error) {
+        print(error);
+      }
     }
   }
 
@@ -3030,6 +3034,8 @@ class UserModel extends Model {
 
   void getCartList() {
     carts.clear();
+    cartsByStore.clear();
+    print(cartProducts.length);
     cartProducts.forEach((cart) {
       if (!carts.containsKey(cart.storeId)) {
         carts.addAll(
@@ -3039,8 +3045,13 @@ class UserModel extends Model {
                 .toList(),
           },
         );
-        print(carts);
       }
     });
+    carts.forEach(
+      (key, value) {
+        cartsByStore.add(value);
+      },
+    );
+    print(cartsByStore.length);
   }
 }

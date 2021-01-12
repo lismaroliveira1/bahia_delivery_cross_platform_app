@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:animated_button/animated_button.dart';
 import 'package:bd_app_full/models/user_model.dart';
+import 'package:bd_app_full/screens/carts_list_screen.dart';
 import 'package:bd_app_full/screens/register_address_screen.dart';
 import 'package:bd_app_full/screens/welcome_store_screen.dart';
 import 'package:flutter/material.dart';
@@ -99,7 +100,7 @@ class _HomeTabState extends State<HomeTab> {
                                           new PageTransition(
                                             type:
                                                 PageTransitionType.rightToLeft,
-                                            child: new RegisterAddressScreen(),
+                                            child: new CartListScreen(),
                                             inheritTheme: true,
                                             duration: new Duration(
                                               milliseconds: 350,
