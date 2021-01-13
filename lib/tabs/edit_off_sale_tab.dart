@@ -330,7 +330,6 @@ class _EditSaleOffTabState extends State<EditSaleOffTab> {
                 FlatButton(
                   padding: EdgeInsets.only(top: 20),
                   onPressed: () {
-                    print(_discountPercentageController.text);
                     final offSale = OffData(
                       id: widget.offData.id,
                       description: _descriptionController.text,

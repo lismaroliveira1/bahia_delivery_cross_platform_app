@@ -53,7 +53,6 @@ class _UserChatListTabState extends State<UserChatListTab> {
                   }
                 },
               );
-              print(chatUserList.length);
               return Column(
                 children: chatUserList
                     .map((chat) => Container(

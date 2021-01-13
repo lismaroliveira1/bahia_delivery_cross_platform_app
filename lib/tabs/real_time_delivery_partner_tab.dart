@@ -240,7 +240,6 @@ class _RealTimeDeliveryPartnerTabState
         .doc(orderData.id)
         .snapshots()
         .listen((docSnapshot) {
-      print("ok");
       setState(() {
         orderData = OrderData.fromDocumentSnapshot(docSnapshot);
       });
@@ -269,7 +268,6 @@ class _RealTimeDeliveryPartnerTabState
     @required double latEven,
     @required double lngEven,
   }) {
-    print(duration);
     setState(() {
       distance = dist;
       duration = durat;

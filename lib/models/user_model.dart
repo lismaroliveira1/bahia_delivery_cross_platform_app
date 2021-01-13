@@ -1645,6 +1645,7 @@ class UserModel extends Model {
             .collection("cart")
             .snapshots()
             .listen((cartQuery) {
+          cartProducts.clear();
           carts.clear();
           cartsByStore.clear();
           cartDataList.clear();
@@ -1656,6 +1657,8 @@ class UserModel extends Model {
           if (cartProducts.length > 0) {
             hasProductInCart = true;
             getCartList();
+          } else {
+            hasProductInCart = false;
           }
           notifyListeners();
         });
@@ -1802,6 +1805,7 @@ class UserModel extends Model {
             },
             "storeId": storeData.id,
             "products": cartProducts
+                .where((product) => storeData.id == product.storeId)
                 .map(
                   (cartProduct) => cartProduct.toMap(),
                 )
@@ -1836,23 +1840,21 @@ class UserModel extends Model {
             "realTimeDeliveryManLocation": {},
             "isFinished": false,
           });
-          getListOfCategory();
-          getListHomeStores();
-          await getOrders();
           onSuccess();
           notifyListeners();
           for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-            doc.reference.delete();
+            if (doc.get("storeId") == storeData.id) {
+              doc.reference.delete();
+            }
           }
-          cartProducts.clear();
-          comboCartList.clear();
-          hasProductInCart = false;
           notifyListeners();
         } else {
           notifyListeners();
           onFailDebitCard();
         }
-      } catch (erro) {}
+      } catch (erro) {
+        notifyListeners();
+      }
     }
   }
 
@@ -1984,7 +1986,6 @@ class UserModel extends Model {
             .doc(firebaseUser.uid)
             .collection("cart")
             .get();
-
         await FirebaseFirestore.instance.collection("orders").add({
           "client": firebaseUser.uid,
           "clientName": userData.name,

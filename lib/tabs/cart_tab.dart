@@ -66,7 +66,6 @@ class _CartTabState extends State<CartTab> {
                   children: [
                     Column(
                       children: cartByStore.map((product) {
-                        print(product.storeId);
                         return CartTile(
                           cartProduct: product,
                           noProduct: _noProductInCart,

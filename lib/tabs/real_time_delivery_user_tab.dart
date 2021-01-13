@@ -452,7 +452,6 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
           distanceRemaining = distance;
         });
       }
-      print(event.snapshot.value['lat']);
       try {
         latEvent = event.snapshot.value['lat'];
         lngEvent = event.snapshot.value['lng'];

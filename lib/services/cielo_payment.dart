@@ -10,7 +10,6 @@ class CieloPayment {
     @required CreditDebitCardData creditDebitCardData,
     @required double price,
   }) async {
-    print(price.toString());
     final Map<String, dynamic> dataSale = {
       'merchantOrderId': randomAlphaNumeric(20),
       'amount': (100 * price).toInt(),
@@ -42,7 +41,6 @@ class CieloPayment {
     final HttpsCallable callable =
         functions.httpsCallable('authorizedDebitCard');
     final response = await callable.call(dataSale);
-    print(response.data);
     return response.data;
   }
 
@@ -53,7 +51,6 @@ class CieloPayment {
     };
     final HttpsCallable callable = functions.httpsCallable('cancelPaybyCard');
     final response = await callable.call(data);
-    print(response.data);
     return response.data;
   }
 
@@ -65,7 +62,6 @@ class CieloPayment {
     };
     final HttpsCallable callable = functions.httpsCallable('capturePayByCard');
     final response = await callable.call(data);
-    print(response.data);
     return response.data;
   }
 }

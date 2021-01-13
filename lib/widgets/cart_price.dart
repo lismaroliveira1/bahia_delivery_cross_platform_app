@@ -222,7 +222,6 @@ class _CartPriceState extends State<CartPrice> {
                                             if (userModel
                                                 .currentCreditDebitCardData
                                                 .isDebit) {
-                                              print("debit");
                                               await userModel
                                                   .finishOrderWithPayOnAppByDebitCard(
                                                 onSuccess: _onSuccessPayOnApp,
