@@ -1,3 +1,4 @@
+import 'package:bd_app_full/data/order_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:dash_chat/dash_chat.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +9,17 @@ class UserChatListTab extends StatefulWidget {
   _UserChatListTabState createState() => _UserChatListTabState();
 }
 
+class ChatData {
+  OrderData order;
+  List<ChatMessage> chats = [];
+  ChatData({
+    @required this.order,
+    @required this.chats,
+  });
+}
+
 class _UserChatListTabState extends State<UserChatListTab> {
-  List<List<ChatMessage>> chatUserList = [];
+  List<ChatData> chatUserList = [];
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,15 +43,25 @@ class _UserChatListTabState extends State<UserChatListTab> {
           ),
           child: ScopedModelDescendant<UserModel>(
             builder: (context, child, model) {
+              chatUserList.clear();
               model.listUserOrders.forEach(
                 (order) {
                   if (order.chatMessage.length != 0) {
-                    chatUserList.add(order.chatMessage);
+                    final chatData =
+                        ChatData(order: order, chats: order.chatMessage);
+                    chatUserList.add(chatData);
                   }
                 },
               );
               print(chatUserList.length);
-              return Column();
+              return Column(
+                children: chatUserList
+                    .map((chat) => Container(
+                          height: 50,
+                          color: Colors.black,
+                        ))
+                    .toList(),
+              );
             },
           ),
         ),

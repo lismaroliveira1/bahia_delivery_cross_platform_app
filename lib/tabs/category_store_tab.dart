@@ -117,7 +117,7 @@ class _CategoryStoreTabState extends State<CategoryStoreTab> {
                             context,
                             PageTransition(
                               type: PageTransitionType.rightToLeftWithFade,
-                              child: ProductStoreScreen(doc),
+                              child: ProductStoreScreen(doc, widget.storeData),
                               inheritTheme: true,
                               duration: Duration(
                                 milliseconds: 350,

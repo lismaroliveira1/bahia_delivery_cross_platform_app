@@ -26,11 +26,7 @@ class RealTimeDeliveryUserTab extends StatefulWidget {
 }
 
 class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
-  double _originLatitude = 6.5212402, _originLongitude = 3.3679965;
-  double _destLatitude = 6.849660, _destLongitude = 3.648190;
-
   Completer<GoogleMapController> _controller = Completer();
-  Set<Polyline> _polylines = Set<Polyline>();
   List<LatLng> polylineCoordinates = [];
   PolylinePoints polylinePoints;
   String googleAPIKey = 'AIzaSyB9QAT4C-TwvJu8pmNMxbRnGp_am3j76xI';
@@ -50,7 +46,6 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
   String photoDeliveryMan;
   String deliveryName;
   PermissionStatus _permissionGranted;
-  LocationData _locationData;
   Location location = Location();
 
   Set<Marker> _markers = HashSet<Marker>();
@@ -430,8 +425,6 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
         return;
       }
     }
-
-    _locationData = await location.getLocation();
   }
 
   void realTimeInit() async {

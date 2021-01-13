@@ -567,6 +567,7 @@ class UserModel extends Model {
           }).toList();
           listUserOrders.forEach((order) async {
             order.chatMessage = await getUserChat(order);
+            notifyListeners();
           });
           notifyListeners();
         });
@@ -1644,6 +1645,9 @@ class UserModel extends Model {
             .collection("cart")
             .snapshots()
             .listen((cartQuery) {
+          carts.clear();
+          cartsByStore.clear();
+          cartDataList.clear();
           cartQuery.docs.map((queryDoc) {
             if (queryDoc.get("type") == "product") {
               cartProducts.add(CartProduct.fromDocument(queryDoc));
@@ -1651,8 +1655,8 @@ class UserModel extends Model {
           }).toList();
           if (cartProducts.length > 0) {
             hasProductInCart = true;
+            getCartList();
           }
-          getCartList();
           notifyListeners();
         });
       } catch (error) {
@@ -1843,7 +1847,6 @@ class UserModel extends Model {
           cartProducts.clear();
           comboCartList.clear();
           hasProductInCart = false;
-          getCartProductList();
           notifyListeners();
         } else {
           notifyListeners();
@@ -2084,7 +2087,6 @@ class UserModel extends Model {
             await getOrders();
             getUserAddresses();
             notifyListeners();
-            getCartProductList();
             getComboCartItens();
             getPaymentUserForms();
             updateFavoritList();
@@ -3040,7 +3042,6 @@ class UserModel extends Model {
 
   void getCartList() {
     carts.clear();
-    cartsByStore.clear();
     cartDataList.clear();
     cartProducts.forEach((cart) {
       if (!carts.containsKey(cart.storeId)) {
@@ -3057,7 +3058,9 @@ class UserModel extends Model {
       (key, value) async {
         await FirebaseFirestore.instance
             .collection("stores")
-            .doc(key)
+            .doc(
+              key.toString(),
+            )
             .get()
             .then((doc) {
           final storeData = StoreData.fromDocument(doc);
@@ -3094,6 +3097,7 @@ class UserModel extends Model {
           .doc(order.id)
           .collection("chat")
           .get();
+      chatFlag.clear();
       querySnapshot.docs.map((chatMessage) {
         chatFlag.add(
           ChatMessage.fromJson(

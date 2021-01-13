@@ -26,9 +26,6 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
   TextEditingController _timeCloseController = TextEditingController();
   String _dropdownInitValue;
   List<String> _dropdownsItens;
-  String _valueToValidate4 = '';
-  String _valueSaved4 = '';
-  String _valueChanged4 = '';
   bool isCategorySelected;
   bool isStoreOpenTimeSelected;
   bool isStoreCloseTimeSelected;
@@ -256,19 +253,14 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                     size: 55,
                                   ),
                                   onChanged: (val) => setState(() {
-                                    _valueChanged4 = val;
                                     requestPartnerData.openTime = val;
                                     isStoreOpenTimeSelected = true;
                                   }),
                                   validator: (val) {
-                                    setState(() {
-                                      _valueToValidate4 = val;
-                                    });
+                                    setState(() {});
                                     return null;
                                   },
-                                  onSaved: (val) => setState(() {
-                                    _valueSaved4 = val;
-                                  }),
+                                  onSaved: (val) => setState(() {}),
                                 ),
                               ),
                             ],
@@ -294,17 +286,13 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                     size: 55,
                                   ),
                                   onChanged: (val) => setState(() {
-                                    _valueChanged4 = val;
                                     requestPartnerData.closeTime = val;
                                     isStoreCloseTimeSelected = true;
                                   }),
                                   validator: (val) {
-                                    setState(() => _valueToValidate4 = val);
                                     return null;
                                   },
-                                  onSaved: (val) => setState(() {
-                                    _valueSaved4 = val;
-                                  }),
+                                  onSaved: (val) => setState(() {}),
                                 ),
                               ),
                             ],

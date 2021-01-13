@@ -1,11 +1,8 @@
-import 'package:bd_app_full/data/order_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/real_time_delivery_user_screen.dart';
 import 'package:bd_app_full/tiles/order_tile.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class OrderUserTab extends StatefulWidget {

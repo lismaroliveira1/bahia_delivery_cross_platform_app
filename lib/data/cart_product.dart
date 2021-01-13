@@ -135,6 +135,7 @@ class CartProduct {
       "productDescription": productDescription,
       "totalPrice": price,
       "complement": complementMap.toList(),
+      "createdAt": DateTime.now(),
     };
   }
 }

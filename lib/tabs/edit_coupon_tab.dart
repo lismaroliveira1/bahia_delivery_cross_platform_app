@@ -16,7 +16,6 @@ class _EditCouponTabState extends State<EditCouponTab> {
   TextEditingController _messageController = TextEditingController();
   TextEditingController _discountController = TextEditingController();
   PickerDateRange _selectedDate;
-  String _textDate;
   bool isPeriodChoosed;
 
   @override
@@ -26,7 +25,6 @@ class _EditCouponTabState extends State<EditCouponTab> {
       widget.couponData.end,
     );
     isPeriodChoosed = true;
-    _textDate = '';
     super.initState();
   }
 
@@ -331,13 +329,7 @@ class _EditCouponTabState extends State<EditCouponTab> {
 
   void _onSelectionChanged(DateRangePickerSelectionChangedArgs args) {
     _selectedDate = args.value;
-    setState(() {
-      _textDate = _selectedDate.startDate.day.toString() +
-          '/' +
-          _selectedDate.startDate.month.toString() +
-          '/' +
-          _selectedDate.startDate.year.toString();
-    });
+    setState(() {});
     if (_selectedDate.endDate != null) {
       setState(() {
         _selectedDate = args.value;

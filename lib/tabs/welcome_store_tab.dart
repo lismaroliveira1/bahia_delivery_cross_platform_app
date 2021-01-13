@@ -278,6 +278,7 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                                                       .rightToLeft,
                                                   child: new ProductStoreScreen(
                                                     purchased,
+                                                    widget.storeData,
                                                   ),
                                                   inheritTheme: true,
                                                   duration: new Duration(

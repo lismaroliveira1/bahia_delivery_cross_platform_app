@@ -1,6 +1,7 @@
 import 'package:bd_app_full/data/cart_product.dart';
 import 'package:bd_app_full/data/incremental_options_data.dart';
 import 'package:bd_app_full/data/product_data.dart';
+import 'package:bd_app_full/data/store_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
@@ -8,7 +9,8 @@ import 'package:scoped_model/scoped_model.dart';
 
 class ProductStoreTab extends StatefulWidget {
   final ProductData productData;
-  ProductStoreTab(this.productData);
+  final StoreData storeData;
+  ProductStoreTab(this.productData, this.storeData);
   @override
   _ProductStoreTabState createState() => _ProductStoreTabState();
 }
@@ -239,7 +241,7 @@ class _ProductStoreTabState extends State<ProductStoreTab> {
                     cartProduct.productImage = widget.productData.productImage;
                     cartProduct.pId = widget.productData.pId;
                     cartProduct.quantify = quantity;
-                    cartProduct.storeId = widget.productData.storeId;
+                    cartProduct.storeId = widget.storeData.id;
                     cartProduct.productDescription =
                         widget.productData.productDescription;
                     cartProduct.productTitle = widget.productData.productTitle;

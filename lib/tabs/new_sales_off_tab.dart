@@ -24,7 +24,6 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _discountPercentageController =
       TextEditingController();
-  final TextEditingController _discountCoinController = TextEditingController();
   ProductData productData;
   bool isProductSelected;
   @override

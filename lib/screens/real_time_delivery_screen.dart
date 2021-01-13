@@ -24,12 +24,9 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
   List<ProductData> products = [];
   MapBoxNavigation _directions;
   MapBoxOptions _options;
-  bool _arrived = false;
   bool _isMultipleStop = false;
   double _distanceRemaining, _durationRemaining;
   MapBoxNavigationViewController _controller;
-  bool _routeBuilt = false;
-  bool _isNavigating = false;
   LocationData _locationData;
   Location location = new Location();
   String longitudeText = '';
@@ -284,7 +281,6 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                                   orderData: widget.orderData,
                                   status: 2,
                                 );
-                                ;
                                 await _directions.startNavigation(
                                   wayPoints: wayPoints,
                                   options: MapBoxOptions(
@@ -360,29 +356,21 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
     switch (e.eventType) {
       case MapBoxEvent.progress_change:
         var progressEvent = e.data as RouteProgressEvent;
-        _arrived = progressEvent.arrived;
 
         if (progressEvent.currentStepInstruction != null)
           _instruction = progressEvent.currentStepInstruction;
         break;
       case MapBoxEvent.route_building:
       case MapBoxEvent.route_built:
-        setState(() {
-          _routeBuilt = true;
-        });
+        setState(() {});
         break;
       case MapBoxEvent.route_build_failed:
-        setState(() {
-          _routeBuilt = false;
-        });
+        setState(() {});
         break;
       case MapBoxEvent.navigation_running:
-        setState(() {
-          _isNavigating = true;
-        });
+        setState(() {});
         break;
       case MapBoxEvent.on_arrival:
-        _arrived = true;
         if (!_isMultipleStop) {
           await Future.delayed(Duration(seconds: 3));
           await _controller.finishNavigation();
@@ -394,10 +382,7 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
         });
         break;
       case MapBoxEvent.navigation_cancelled:
-        setState(() {
-          _routeBuilt = false;
-          _isNavigating = false;
-        });
+        setState(() {});
         break;
       default:
         break;
