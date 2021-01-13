@@ -1904,6 +1904,7 @@ class UserModel extends Model {
           },
           "storeId": storeData.id,
           "products": cartProducts
+              .where((product) => storeData.id == product.storeId)
               .map(
                 (cartProduct) => cartProduct.toMap(),
               )
@@ -1938,17 +1939,13 @@ class UserModel extends Model {
           "realTimeDeliveryManLocation": {},
           "isFinished": false,
         });
-        getListOfCategory();
-        getListHomeStores();
-        await getOrders();
         onSuccess();
         notifyListeners();
         for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-          doc.reference.delete();
+          if (doc.get("storeId") == storeData.id) {
+            doc.reference.delete();
+          }
         }
-        cartProducts.clear();
-        comboCartList.clear();
-        hasProductInCart = false;
         notifyListeners();
       } else if (response["payment"]["returnMessage"] == "Card Expired") {
         onCartExpired();
@@ -2000,6 +1997,7 @@ class UserModel extends Model {
           },
           "storeId": storeData.id,
           "products": cartProducts
+              .where((product) => storeData.id == product.storeId)
               .map(
                 (cartProduct) => cartProduct.toMap(),
               )
@@ -2033,17 +2031,13 @@ class UserModel extends Model {
           "realTimeDeliveryManLocation": {},
           "isFinished": false,
         });
-        cartProducts.clear();
-        comboCartList.clear();
-        hasProductInCart = false;
         onSuccess();
         notifyListeners();
         for (QueryDocumentSnapshot doc in querySnapshot.docs) {
-          doc.reference.delete();
+          if (doc.get("storeId") == storeData.id) {
+            doc.reference.delete();
+          }
         }
-        await getOrders();
-        await getListHomeStores();
-        await updateFavoritList();
         notifyListeners();
       } catch (e) {
         onFail();
