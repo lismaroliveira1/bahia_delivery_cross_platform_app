@@ -289,7 +289,8 @@ export const onOrderStatusChanged = functions
         const deliveryManBeforeStatus = snapshot.before.data().deliveryMan;
         const deliveryManAfterStatus = snapshot.after.data().deliveryMan;
         if (deliveryManAfterStatus !== deliveryManBeforeStatus &&
-            deliveryManAcceptedBeforeStatus === deliveryManAcceptedAfterStatus) {
+            deliveryManAcceptedBeforeStatus === deliveryManAcceptedAfterStatus &&
+            beforeStatus === afterStatus) {
             const tokensDeliveryUser = await admin.firestore().collection("users")
                 .doc(snapshot.after.data().deliveryMan.userId).collection("tokens").get();
             const tokensUser = tokensDeliveryUser.docs.map(doc => doc.id);
