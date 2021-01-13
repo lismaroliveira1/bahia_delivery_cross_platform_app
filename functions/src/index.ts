@@ -273,6 +273,7 @@ const orderStatus = new Map([
 ]);
 export const onOrderStatusChanged = functions
     .firestore.document("/orders/{orderId}").onUpdate(async (snapshot, contexxt) => {
+        const orderId = snapshot.before.id;
         const beforeStatus = snapshot.before.data().status;
         const afterStatus = snapshot.after.data().status;
         if (beforeStatus !== afterStatus) {
@@ -283,7 +284,32 @@ export const onOrderStatusChanged = functions
                 'Novo status do pedido',
                 '' + orderStatus.get(afterStatus));
         }
-
+        const deliveryManAcceptedBeforeStatus = snapshot.before.data().deliveryManAccepted;
+        const deliveryManAcceptedAfterStatus = snapshot.after.data().deliveryManAccepted;
+        const deliveryManBeforeStatus = snapshot.before.data().deliveryMan;
+        const deliveryManAfterStatus = snapshot.after.data().deliveryMan;
+        if (deliveryManAfterStatus !== deliveryManBeforeStatus &&
+            deliveryManAcceptedBeforeStatus === deliveryManAcceptedAfterStatus) {
+            const tokensDeliveryUser = await admin.firestore().collection("users")
+                .doc(snapshot.after.data().deliveryMan.userId).collection("tokens").get();
+            const tokensUser = tokensDeliveryUser.docs.map(doc => doc.id);
+            await sendPushFCM(tokensUser,
+                "Nova solicitação de corrida",
+                'Pedido: ' + orderId,
+            );  
+        }
+        if (deliveryManAcceptedBeforeStatus !== deliveryManAcceptedAfterStatus) {
+            const partnerUserDoc = await admin.firestore().collection("stores")
+                .doc(snapshot.after.data().storeId).get();
+            const partnerData = partnerUserDoc.data() || {};
+            const userDoc = await admin.firestore().collection("users")
+                .doc(partnerData.partnerId).collection("tokens").get();
+            const tokensPartner = userDoc.docs.map(doc => doc.id);
+            await sendPushFCM(tokensPartner,
+                "Corrida Aceita",
+                'Pedido: ' + orderId,
+            );
+        }
     });
 
 const partnerStatus = new Map([

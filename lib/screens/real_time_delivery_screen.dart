@@ -189,6 +189,36 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                           height: 0,
                           width: 0,
                         ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: AnimatedButton(
+                      color: !orderData.deliveryManAccepted
+                          ? Colors.red
+                          : Colors.grey,
+                      width: MediaQuery.of(context).size.width * 0.25,
+                      height: 40,
+                      onPressed: !orderData.deliveryManAccepted
+                          ? () async {
+                              await FirebaseFirestore.instance
+                                  .collection("orders")
+                                  .doc(widget.orderData.id)
+                                  .update({
+                                "deliveryManAccepted": true,
+                              });
+                            }
+                          : null,
+                      child: Text(
+                        !orderData.deliveryManAccepted
+                            ? 'Aceitar'
+                            : 'Pedido aceito',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
                   Container(
                     color: Colors.grey,
                     width: double.infinity,
@@ -198,7 +228,9 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
                         orderData.isFinished
                             ? 'Pedido Finalizado'
                             : _instruction == null || _instruction.isEmpty
-                                ? "Localização atual"
+                                ? !orderData.deliveryManAccepted
+                                    ? "Aguardando reposta do entregador"
+                                    : "Entrega aceita"
                                 : _instruction,
                         style: TextStyle(color: Colors.white),
                         textAlign: TextAlign.center,

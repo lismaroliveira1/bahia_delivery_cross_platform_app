@@ -55,7 +55,9 @@ class _RealTimeDeliveryPartnerTabState
         bubbleColor: Colors.grey,
       ),
       TimelineItem(
-        title: 'Boat',
+        title: orderData.status == 1
+            ? "Aguardando a loja aceitar"
+            : "Pedido aceito",
         subtitle: 'Travel through Oceans',
         child: orderData.status <= 1
             ? Container(
@@ -72,7 +74,7 @@ class _RealTimeDeliveryPartnerTabState
               ),
         bubbleColor: Colors.grey,
       ),
-      orderData.isChoosedDeliveryMan
+      orderData.isChoosedDeliveryMan && orderData.deliveryManAccepted
           ? TimelineItem(
               title: orderData.deliveryManData.name,
               subtitle: orderData.deliveryManData.cpf,
@@ -89,15 +91,36 @@ class _RealTimeDeliveryPartnerTabState
               ),
               bubbleColor: Colors.grey,
             )
-          : TimelineItem(
-              title: 'Entregador',
-              subtitle: 'Não definido',
-              child: Icon(
-                Icons.directions_bike,
-                color: Colors.white,
-              ),
-              bubbleColor: Colors.grey,
-            ),
+          : orderData.isChoosedDeliveryMan
+              ? orderData.deliveryManAccepted
+                  ? TimelineItem(
+                      title: '${orderData.deliveryManData.name.split(" ")[0]}',
+                      subtitle: 'Convite aceito',
+                      child: Icon(
+                        Icons.directions_bike,
+                        color: Colors.white,
+                      ),
+                      bubbleColor: Colors.grey,
+                    )
+                  : TimelineItem(
+                      title:
+                          'Aguardando resposta de ${orderData.deliveryManData.name.split(" ")[0]}',
+                      subtitle: 'Convite enviado',
+                      child: Icon(
+                        Icons.directions_bike,
+                        color: Colors.white,
+                      ),
+                      bubbleColor: Colors.grey,
+                    )
+              : TimelineItem(
+                  title: 'Entregador',
+                  subtitle: 'Não definido',
+                  child: Icon(
+                    Icons.directions_bike,
+                    color: Colors.white,
+                  ),
+                  bubbleColor: Colors.grey,
+                ),
       TimelineItem(
         title: orderData.isFinished
             ? "${orderData.deliveryManData.name.split(" ")[0]} finalizou a entrega\nHorário: ${orderData.finishedAt.toString()}"
@@ -110,7 +133,7 @@ class _RealTimeDeliveryPartnerTabState
                 ? "Duração: ${(duration / 60).toStringAsFixed(0)} min \n Distância ${(distance / 1000).toStringAsFixed(1)} Km"
                 : orderData.isChoosedDeliveryMan
                     ? 'Aguardando ${orderData.deliveryManData.name.split(" ")[0]} iniciar a entrega'
-                    : 'Entregador nã definido',
+                    : 'Entregador não definido',
         child: Icon(
           Icons.directions_bus,
           color: Colors.white,

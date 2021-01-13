@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:bd_app_full/data/cart_data.dart';
@@ -1839,6 +1840,7 @@ class UserModel extends Model {
             "dataSale": response,
             "realTimeDeliveryManLocation": {},
             "isFinished": false,
+            "deliveryManAccepted": false,
           });
           onSuccess();
           notifyListeners();
@@ -1938,6 +1940,7 @@ class UserModel extends Model {
           "dataSale": response,
           "realTimeDeliveryManLocation": {},
           "isFinished": false,
+          "deliveryManAccepted": false,
         });
         onSuccess();
         notifyListeners();
@@ -2030,6 +2033,7 @@ class UserModel extends Model {
           'dataSale': {},
           "realTimeDeliveryManLocation": {},
           "isFinished": false,
+          "deliveryManAccepted": false,
         });
         onSuccess();
         notifyListeners();
@@ -2044,6 +2048,10 @@ class UserModel extends Model {
         print(e);
       }
     }
+  }
+
+  void countTimeToCancel() async {
+    Timer(Duration(minutes: 5), () {});
   }
 
   void updateUser(bool firstTime) async {

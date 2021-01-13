@@ -41,6 +41,7 @@ class OrderData {
   bool isFinished;
   Timestamp finishedAt;
   List<ChatMessage> chatMessage = [];
+  bool deliveryManAccepted;
   OrderData(
     this.id,
     this.storeName,
@@ -89,6 +90,7 @@ class OrderData {
     storeImage = queryDoc.get("storeImage");
     totalPrice = queryDoc.get("shipPrice");
     isFinished = queryDoc.get("isFinished");
+    deliveryManAccepted = queryDoc.get("deliveryManAccepted");
     if (isFinished) {
       finishedAt = queryDoc.get("finishedAt");
     }
@@ -153,6 +155,7 @@ class OrderData {
     storeLng = queryDoc.data()["storeLocation"]["lng"];
     isSending = queryDoc.get("isSending");
     isFinished = queryDoc.get("isFinished");
+    deliveryManAccepted = queryDoc.get("deliveryManAccepted");
     if (isFinished) {
       finishedAt = queryDoc.get("finishedAt");
     }
