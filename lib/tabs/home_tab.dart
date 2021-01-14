@@ -5,6 +5,7 @@ import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/carts_list_screen.dart';
 import 'package:bd_app_full/screens/register_address_screen.dart';
 import 'package:bd_app_full/screens/welcome_store_screen.dart';
+import 'package:bd_app_full/tiles/purchased_store_tile.dart';
 import 'package:bd_app_full/tiles/store_home_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
@@ -289,37 +290,8 @@ class _HomeTabState extends State<HomeTab> {
                                             color: Colors.grey[300],
                                           ),
                                         ),
-                                        child: Column(
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: 6.0,
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    top: 6.0),
-                                                child: Container(
-                                                  height: 100,
-                                                  width: 100,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            8),
-                                                    image: new DecorationImage(
-                                                      image: NetworkImage(
-                                                        purchasedStore.image,
-                                                      ),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                            Text(
-                                              purchasedStore.name,
-                                            ),
-                                          ],
-                                        ),
+                                        child:
+                                            PurchasedStoreTile(purchasedStore),
                                       ),
                                     );
                                   }).toList(),

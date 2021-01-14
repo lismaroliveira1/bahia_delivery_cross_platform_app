@@ -6,6 +6,8 @@ import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/register_address_screen.dart';
 import 'package:bd_app_full/screens/welcome_store_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:geodesy/geodesy.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -19,9 +21,24 @@ class StoreHomeTile extends StatefulWidget {
 }
 
 class _StoreHomeTileState extends State<StoreHomeTile> {
+  LatLng userPosition;
+  double distance;
+  double serviceTime;
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
+      distance = Geolocator.distanceBetween(
+        widget.storeData.latLng.latitude,
+        widget.storeData.latLng.longitude,
+        model.latLngDevice.latitude,
+        model.latLngDevice.longitude,
+      );
+      serviceTime = ((distance / 1000) / 30) * 60 + widget.storeData.setupTime;
       return Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 10,
@@ -76,8 +93,8 @@ class _StoreHomeTileState extends State<StoreHomeTile> {
                         child: FadeInImage.memoryNetwork(
                           placeholder: kTransparentImage,
                           image: widget.storeData.image,
-                          height: 110,
-                          width: 110,
+                          height: 100,
+                          width: 100,
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -90,12 +107,16 @@ class _StoreHomeTileState extends State<StoreHomeTile> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            widget.storeData.name,
-                            style: GoogleFonts.fredokaOne(
-                              color: Colors.black45,
-                              fontSize: 22,
-                              fontWeight: FontWeight.w300,
+                          Container(
+                            child: Text(
+                              widget.storeData.name,
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                              style: GoogleFonts.fredokaOne(
+                                color: Colors.black45,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w300,
+                              ),
                             ),
                           ),
                           Text(
@@ -103,8 +124,25 @@ class _StoreHomeTileState extends State<StoreHomeTile> {
                             style: GoogleFonts.notoSans(),
                           ),
                           widget.storeData.deliveryTime != null
-                              ? Text(
-                                  "${widget.storeData.deliveryTime.toStringAsFixed(0)} m",
+                              ? Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.green,
+                                    ),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(1.5),
+                                    child: Text(
+                                      distance > 100
+                                          ? "${(distance / 1000).toStringAsFixed(1)} km - ${serviceTime.toStringAsFixed(0)} min - R\$ ${(widget.storeData.deliveryRate * distance / 1000).toStringAsFixed(2)}"
+                                          : "${distance.toStringAsFixed(1)} m - ${serviceTime.toStringAsFixed(0)} min - R\$ ${(widget.storeData.deliveryRate * distance / 1000).toStringAsFixed(2)}",
+                                      style: GoogleFonts.tomorrow(
+                                        fontSize: 9,
+                                        color: Colors.green,
+                                      ),
+                                    ),
+                                  ),
                                 )
                               : Container(
                                   height: 0,

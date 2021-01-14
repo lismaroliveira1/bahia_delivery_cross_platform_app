@@ -34,7 +34,8 @@ class StoreData {
   String storeAddress;
   List<CouponData> coupons = [];
   int discount = 0;
-
+  double setupTime = 60;
+  double deliveryRate = 2;
   StoreData(
     this.description,
     this.image,
