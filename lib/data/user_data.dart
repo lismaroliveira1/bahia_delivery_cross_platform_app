@@ -22,6 +22,10 @@ class UserData {
   String deliveryManId;
   DeliveryManData userDeliveryMan;
   String uid;
+  int storeClosingTimeHour;
+  int storeClosingTimeMinute;
+  int storeOpeningTimeHour;
+  int storeOpeningTimeMinute;
 
   UserData({
     this.currentAddress,

@@ -920,18 +920,28 @@ class UserModel extends Model {
     }
   }
 
-  Future<void> getPartnerData() async {
+  void getPartnerData() async {
     if (isLoggedIn()) {
       if (userData.isPartner == 1) {
-        DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+        FirebaseFirestore.instance
             .collection("stores")
             .doc(userData.storeId)
-            .get();
-        userData.storeId = docSnapshot.id;
-        userData.storeName = docSnapshot.get("title");
-        userData.storeImage = docSnapshot.get("image");
+            .snapshots()
+            .listen((docSnapshot) {
+          userData.storeId = docSnapshot.id;
+          userData.storeName = docSnapshot.get("title");
+          userData.storeImage = docSnapshot.get("image");
+          userData.storeClosingTimeHour =
+              docSnapshot.data()["closingTime"]['hour'];
+          userData.storeClosingTimeMinute =
+              docSnapshot.data()["closingTime"]["minute"];
+          userData.storeOpeningTimeHour =
+              docSnapshot.data()["openingTime"]["hour"];
+          userData.storeOpeningTimeMinute =
+              docSnapshot.data()["openingTime"]["minute"];
+          notifyListeners();
+        });
       }
-      notifyListeners();
     }
   }
 
@@ -3111,5 +3121,71 @@ class UserModel extends Model {
       return chatFlag;
     }
     return [];
+  }
+
+  void updateStore({
+    @required String closeTime,
+    @required String openTime,
+    @required String category,
+    @required File imageFile,
+    @required VoidCallback onSuccess,
+    @required VoidCallback onFail,
+  }) async {
+    if (imageFile != null) {
+      Reference ref =
+          FirebaseStorage.instance.ref().child("chat").child("images").child(
+                DateTime.now().millisecond.toString(),
+              );
+      UploadTask uploadTask = ref.putFile(imageFile);
+      await uploadTask.then((task) async {
+        String url = await task.ref.getDownloadURL();
+        await FirebaseFirestore.instance
+            .collection("stores")
+            .doc(userData.storeId)
+            .update({
+          "image": url,
+          "category": category,
+          "closingTime": {
+            "hour": int.parse(
+              closeTime.splitMapJoin(":")[0],
+            ),
+            "minute": int.parse(
+              closeTime.splitMapJoin(":")[1],
+            ),
+          },
+          "openingTime": {
+            "hour": int.parse(
+              openTime.splitMapJoin(":")[0],
+            ),
+            "minute": int.parse(
+              openTime.splitMapJoin(":")[1],
+            ),
+          },
+        });
+      });
+    } else {
+      await FirebaseFirestore.instance
+          .collection("stores")
+          .doc(userData.storeId)
+          .update({
+        "category": category,
+        "closingTime": {
+          "hour": int.parse(
+            closeTime.splitMapJoin(":")[0],
+          ),
+          "minute": int.parse(
+            closeTime.splitMapJoin(":")[1],
+          ),
+        },
+        "openingTime": {
+          "hour": int.parse(
+            openTime.splitMapJoin(":")[0],
+          ),
+          "minute": int.parse(
+            openTime.splitMapJoin(":")[1],
+          ),
+        },
+      });
+    }
   }
 }
