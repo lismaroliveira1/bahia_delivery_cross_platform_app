@@ -6,6 +6,7 @@ import 'package:bd_app_full/screens/category_store_screen.dart';
 import 'package:bd_app_full/screens/combo_screnn.dart';
 import 'package:bd_app_full/screens/product_screen.dart';
 import 'package:bd_app_full/screens/sales_off_screen.dart';
+import 'package:bd_app_full/tiles/store_combo_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:page_transition/page_transition.dart';
@@ -170,63 +171,14 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                               ],
                             ),
                             Container(
-                              height: 160,
+                              height: 200,
                               child: ListView(
                                 scrollDirection: Axis.horizontal,
                                 children:
                                     widget.storeData.storesCombos.map((combo) {
-                                  double imageSize =
-                                      MediaQuery.of(context).size.width / 4;
-                                  return Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: FlatButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          PageTransition(
-                                            type:
-                                                PageTransitionType.rightToLeft,
-                                            child: ComboStoreScreen(
-                                              combo,
-                                              widget.storeData,
-                                            ),
-                                            inheritTheme: true,
-                                            duration: Duration(
-                                              milliseconds: 350,
-                                            ),
-                                            ctx: context,
-                                          ),
-                                        );
-                                      },
-                                      child: Column(
-                                        children: <Widget>[
-                                          Container(
-                                            height: imageSize,
-                                            width: imageSize,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              image: new DecorationImage(
-                                                image: NetworkImage(
-                                                  combo.image,
-                                                ),
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                          Text(
-                                            combo.title,
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ),
-                                          Text(
-                                            combo.description,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                  return StoreComboTile(
+                                    combo,
+                                    widget.storeData,
                                   );
                                 }).toList(),
                               ),
