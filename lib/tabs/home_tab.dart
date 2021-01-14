@@ -5,12 +5,12 @@ import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/carts_list_screen.dart';
 import 'package:bd_app_full/screens/register_address_screen.dart';
 import 'package:bd_app_full/screens/welcome_store_screen.dart';
+import 'package:bd_app_full/tiles/store_home_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:location/location.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 class HomeTab extends StatefulWidget {
   @override
@@ -344,142 +344,12 @@ class _HomeTabState extends State<HomeTab> {
                     Column(
                       children: model.storeHomeList.map((store) {
                         store.coupons.forEach((coupon) {
-                          if (coupon.discount > store.discount &&
+                          /*if (coupon.discount > store.discount &&
                               coupon.start.isBefore(DateTime.now())) {
                             store.discount = coupon.discount;
-                          }
+                          }*/
                         });
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          child: Stack(
-                            children: [
-                              FlatButton(
-                                padding: EdgeInsets.zero,
-                                onPressed: () {
-                                  model.addressSeted
-                                      ? Navigator.push(
-                                          context,
-                                          PageTransition(
-                                            type:
-                                                PageTransitionType.rightToLeft,
-                                            child: WelcomeStoreScreen(store),
-                                            inheritTheme: true,
-                                            duration: Duration(
-                                              milliseconds: 350,
-                                            ),
-                                            ctx: context,
-                                          ),
-                                        )
-                                      : loadAddres();
-                                },
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color: Colors.grey[300],
-                                      ),
-                                      color: Colors.white,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(6.0),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8),
-                                            child: FadeInImage.memoryNetwork(
-                                              placeholder: kTransparentImage,
-                                              image: store.image,
-                                              height: 80,
-                                              width: 80,
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              store.name,
-                                              style: TextStyle(
-                                                color: Colors.black54,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            Text(
-                                              store.description,
-                                            ),
-                                            store.deliveryTime != null
-                                                ? Text(
-                                                    "${store.deliveryTime.toStringAsFixed(0)} m",
-                                                  )
-                                                : Container(
-                                                    height: 0,
-                                                  ),
-                                          ],
-                                        )
-                                      ],
-                                    )),
-                              ),
-                              Positioned(
-                                top: 2,
-                                right: 2,
-                                child: IconButton(
-                                  onPressed: () {
-                                    model.addRemoveStoreFavorite(
-                                      storeId: store.id,
-                                    );
-                                  },
-                                  icon: Icon(
-                                    Icons.favorite,
-                                    size: 20,
-                                    color: store.isFavorite
-                                        ? Colors.red[200]
-                                        : Colors.grey,
-                                  ),
-                                ),
-                              ),
-                              store.discount > 0
-                                  ? Positioned(
-                                      right: 8,
-                                      bottom: 8,
-                                      child: Container(
-                                        height: 15,
-                                        width: 45,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                          color: Colors.green[600],
-                                          border: Border.all(
-                                            color: Colors.green[600],
-                                          ),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            "-${store.discount.toStringAsFixed(0)}",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : Container(
-                                      height: 0,
-                                      width: 0,
-                                    ),
-                            ],
-                          ),
-                        );
+                        return StoreHomeTile(store);
                       }).toList(),
                     ),
                   ]),

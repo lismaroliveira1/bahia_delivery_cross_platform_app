@@ -83,6 +83,7 @@ dependencies:
   flutter_easyloading: ^2.2.2
   bubble_timeline: ^1.0.5
   kt_drawer_menu: ^0.0.6
+  google_fonts: ^1.1.1
   
 
 dev_dependencies:
