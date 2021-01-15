@@ -116,8 +116,9 @@ class _CartListTabState extends State<CartListTab> {
                                       context,
                                       new PageTransition(
                                         type: PageTransitionType.rightToLeft,
-                                        child:
-                                            new WelcomeStoreScreen(storeData),
+                                        child: new WelcomeStoreScreen(
+                                          storeData: storeData,
+                                        ),
                                         inheritTheme: true,
                                         duration: new Duration(
                                           milliseconds: 350,

@@ -268,7 +268,7 @@ class _HomeTabState extends State<HomeTab> {
                                                   type: PageTransitionType
                                                       .rightToLeft,
                                                   child: WelcomeStoreScreen(
-                                                    purchasedStore,
+                                                    storeData: purchasedStore,
                                                   ),
                                                   inheritTheme: true,
                                                   duration: Duration(

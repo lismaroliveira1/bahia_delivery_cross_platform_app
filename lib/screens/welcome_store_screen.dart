@@ -4,11 +4,15 @@ import 'package:flutter/material.dart';
 
 class WelcomeStoreScreen extends StatelessWidget {
   final StoreData storeData;
-  WelcomeStoreScreen(this.storeData);
+  WelcomeStoreScreen({
+    @required this.storeData,
+  });
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: WelcomeStoreTab(storeData),
+      body: WelcomeStoreTab(
+        storeData: storeData,
+      ),
     );
   }
 }

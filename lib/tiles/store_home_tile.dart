@@ -21,7 +21,6 @@ class StoreHomeTile extends StatefulWidget {
 }
 
 class _StoreHomeTileState extends State<StoreHomeTile> {
-  LatLng userPosition;
   double distance;
   double serviceTime;
   @override
@@ -54,7 +53,9 @@ class _StoreHomeTileState extends State<StoreHomeTile> {
                         context,
                         PageTransition(
                           type: PageTransitionType.rightToLeft,
-                          child: WelcomeStoreScreen(widget.storeData),
+                          child: WelcomeStoreScreen(
+                            storeData: widget.storeData,
+                          ),
                           inheritTheme: true,
                           duration: Duration(
                             milliseconds: 350,

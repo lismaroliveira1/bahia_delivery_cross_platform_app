@@ -135,7 +135,7 @@ class _SearchTabState extends State<SearchTab> {
                                                 type: PageTransitionType
                                                     .rightToLeft,
                                                 child: WelcomeStoreScreen(
-                                                  storeData,
+                                                  storeData: storeData,
                                                 ),
                                                 inheritTheme: true,
                                                 duration: Duration(

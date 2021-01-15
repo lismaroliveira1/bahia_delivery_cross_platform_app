@@ -66,7 +66,7 @@ class _FavoriteTabState extends State<FavoriteTab> {
                                 PageTransition(
                                   type: PageTransitionType.rightToLeft,
                                   child: WelcomeStoreScreen(
-                                    storeData,
+                                    storeData: storeData,
                                   ),
                                   inheritTheme: true,
                                   duration: Duration(
@@ -120,7 +120,7 @@ class _FavoriteTabState extends State<FavoriteTab> {
                               PageTransition(
                                 type: PageTransitionType.rightToLeft,
                                 child: WelcomeStoreScreen(
-                                  storeData,
+                                  storeData: storeData,
                                 ),
                                 inheritTheme: true,
                                 duration: Duration(
