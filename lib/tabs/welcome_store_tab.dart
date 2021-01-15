@@ -4,6 +4,7 @@ import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/cart_screen.dart';
 import 'package:bd_app_full/screens/category_store_screen.dart';
 import 'package:bd_app_full/screens/product_screen.dart';
+import 'package:bd_app_full/tiles/purchased_products_tile.dart';
 import 'package:bd_app_full/tiles/store_combo_tile.dart';
 import 'package:bd_app_full/tiles/store_off_tile.dart';
 import 'package:flutter/material.dart';
@@ -187,11 +188,13 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                                 child: Container(
                                   height: 140,
                                   child: ListView(
+                                      padding: EdgeInsets.zero,
                                       scrollDirection: Axis.horizontal,
                                       children: widget
                                           .storeData.purchasedProducts
                                           .map(
                                             (purchased) => FlatButton(
+                                              padding: EdgeInsets.zero,
                                               onPressed: () {
                                                 Navigator.push(
                                                   context,
@@ -211,32 +214,8 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                                                   ),
                                                 );
                                               },
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  children: [
-                                                    Container(
-                                                      height: 80,
-                                                      width: 80,
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        image: DecorationImage(
-                                                          image: NetworkImage(
-                                                            purchased
-                                                                .productImage,
-                                                          ),
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                        purchased.productTitle),
-                                                    Text(
-                                                        "R\$ ${purchased.productPrice.toStringAsFixed(2)}")
-                                                  ],
-                                                ),
-                                              ),
+                                              child:
+                                                  PurchasedProduct(purchased),
                                             ),
                                           )
                                           .toList()),
@@ -249,99 +228,119 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                 )
               ];
             },
-            body: StaggeredGridView.count(
-              padding: EdgeInsets.zero,
-              crossAxisCount: 2,
-              mainAxisSpacing: 2.0,
-              crossAxisSpacing: 3.0,
-              staggeredTiles:
-                  widget.storeData.storeCategoryList.map((category) {
-                return StaggeredTile.count(
-                  category.x,
-                  category.y + 0.2 * category.y,
-                );
-              }).toList(),
-              children: widget.storeData.storeCategoryList.map(
-                (category) {
-                  double width;
-                  double height;
-                  height = (MediaQuery.of(context).size.width * 0.95 * 0.5) *
-                      category.y;
-                  width = (MediaQuery.of(context).size.width * 0.95 * 0.5) *
-                      category.x;
-                  return FlatButton(
-                    padding: EdgeInsets.zero,
-                    onPressed: () {},
-                    child: Card(
-                      elevation: 4,
-                      child: FlatButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.rightToLeft,
-                              child: CategoryStoreScreen(
-                                widget.storeData,
-                                category.id,
-                              ),
-                              inheritTheme: true,
-                              duration: Duration(
-                                milliseconds: 350,
-                              ),
-                              ctx: context,
-                            ),
-                          );
-                        },
-                        padding: EdgeInsets.zero,
-                        child: Center(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 4.0,
-                                  vertical: 2.0,
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(6),
-                                  child: Image.network(
-                                    category.image,
-                                    fit: BoxFit.cover,
-                                    height: height,
-                                    width: width,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 4.0,
-                                  vertical: 2.0,
-                                ),
-                                child: Text(
-                                  category.title,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontStyle: FontStyle.italic,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 4.0,
-                                  vertical: 2.0,
-                                ),
-                                child: Text(
-                                  category.description,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
+            body: Column(
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "Seções",
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  );
-                },
-              ).toList(),
+                  ],
+                ),
+                Expanded(
+                  child: StaggeredGridView.count(
+                    padding: EdgeInsets.zero,
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 2.0,
+                    crossAxisSpacing: 3.0,
+                    staggeredTiles:
+                        widget.storeData.storeCategoryList.map((category) {
+                      return StaggeredTile.count(
+                        category.x,
+                        category.y + 0.2 * category.y,
+                      );
+                    }).toList(),
+                    children: widget.storeData.storeCategoryList.map(
+                      (category) {
+                        double width;
+                        double height;
+                        height =
+                            (MediaQuery.of(context).size.width * 0.95 * 0.5) *
+                                category.y;
+                        width =
+                            (MediaQuery.of(context).size.width * 0.95 * 0.5) *
+                                category.x;
+                        return FlatButton(
+                          padding: EdgeInsets.zero,
+                          onPressed: () {},
+                          child: Card(
+                            elevation: 4,
+                            child: FlatButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.rightToLeft,
+                                    child: CategoryStoreScreen(
+                                      widget.storeData,
+                                      category.id,
+                                    ),
+                                    inheritTheme: true,
+                                    duration: Duration(
+                                      milliseconds: 350,
+                                    ),
+                                    ctx: context,
+                                  ),
+                                );
+                              },
+                              padding: EdgeInsets.zero,
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 4.0,
+                                        vertical: 2.0,
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(6),
+                                        child: Image.network(
+                                          category.image,
+                                          fit: BoxFit.cover,
+                                          height: height,
+                                          width: width,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 4.0,
+                                        vertical: 2.0,
+                                      ),
+                                      child: Text(
+                                        category.title,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontStyle: FontStyle.italic,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 4.0,
+                                        vertical: 2.0,
+                                      ),
+                                      child: Text(
+                                        category.description,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ).toList(),
+                  ),
+                ),
+              ],
             ),
           ),
           Positioned(
