@@ -6,7 +6,6 @@ import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/register_address_screen.dart';
 import 'package:bd_app_full/screens/welcome_store_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:geodesy/geodesy.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';

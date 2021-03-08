@@ -26,8 +26,10 @@ class WelcomeStoreTab extends StatefulWidget {
 
 class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
   List<ProductData> purchasedProducts = [];
+  bool isDependenciesLoading = true;
   double distance;
   double serviceTime;
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<UserModel>(builder: (context, child, model) {
@@ -342,74 +344,69 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                           width =
                               (MediaQuery.of(context).size.width * 0.95 * 0.5) *
                                   category.x;
-                          return FlatButton(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {},
-                            child: Card(
-                              elevation: 4,
-                              child: FlatButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    PageTransition(
-                                      type: PageTransitionType.rightToLeft,
-                                      child: CategoryStoreScreen(
-                                        widget.storeData,
-                                        category.id,
-                                      ),
-                                      inheritTheme: true,
-                                      duration: Duration(
-                                        milliseconds: 350,
-                                      ),
-                                      ctx: context,
+                          return Card(
+                            elevation: 4,
+                            child: FlatButton(
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    type: PageTransitionType.rightToLeft,
+                                    child: CategoryStoreScreen(
+                                      widget.storeData,
+                                      category,
                                     ),
-                                  );
-                                },
-                                padding: EdgeInsets.zero,
-                                child: Center(
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 4.0,
-                                          vertical: 2.0,
-                                        ),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(6),
-                                          child: Image.network(
-                                            category.image,
-                                            fit: BoxFit.cover,
-                                            height: height,
-                                            width: width,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 4.0,
-                                          vertical: 2.0,
-                                        ),
-                                        child: Text(
-                                          category.title,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontStyle: FontStyle.italic,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 4.0,
-                                          vertical: 2.0,
-                                        ),
-                                        child: Text(
-                                          category.description,
-                                        ),
-                                      )
-                                    ],
+                                    inheritTheme: true,
+                                    duration: Duration(
+                                      milliseconds: 350,
+                                    ),
+                                    ctx: context,
                                   ),
+                                );
+                              },
+                              padding: EdgeInsets.zero,
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 4.0,
+                                        vertical: 2.0,
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(6),
+                                        child: Image.network(
+                                          category.image,
+                                          fit: BoxFit.cover,
+                                          height: height,
+                                          width: width,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 4.0,
+                                        vertical: 2.0,
+                                      ),
+                                      child: Text(
+                                        category.title,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontStyle: FontStyle.italic,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 4.0,
+                                        vertical: 2.0,
+                                      ),
+                                      child: Text(
+                                        category.description,
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
                             ),
@@ -426,7 +423,13 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
               right: 20.0,
               child: ScopedModelDescendant<UserModel>(
                 builder: (context, child, model) {
-                  if (model.hasProductInCart) {
+                  bool hasProductInCart = false;
+                  model.cartDataList.forEach((element) {
+                    if (element.storeData.id == widget.storeData.id) {
+                      hasProductInCart = true;
+                    }
+                  });
+                  if (model.hasProductInCart && hasProductInCart) {
                     return FloatingActionButton(
                       child: Icon(
                         Icons.shopping_cart,

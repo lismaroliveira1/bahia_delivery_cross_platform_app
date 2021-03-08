@@ -1,5 +1,4 @@
 import 'package:bd_app_full/data/delivery_man_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geodesy/geodesy.dart';
 

@@ -1,8 +1,10 @@
+import 'package:bd_app_full/data/category_store_data.dart';
 import 'package:bd_app_full/data/store_data.dart';
 import 'package:bd_app_full/models/user_model.dart';
 import 'package:bd_app_full/screens/cart_screen.dart';
 import 'package:bd_app_full/screens/product_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -10,8 +12,8 @@ import 'package:transparent_image/transparent_image.dart';
 
 class CategoryStoreTab extends StatefulWidget {
   final StoreData storeData;
-  final String categoryId;
-  CategoryStoreTab(this.storeData, this.categoryId);
+  final CategoryStoreData categoryStoreData;
+  CategoryStoreTab(this.storeData, this.categoryStoreData);
   @override
   _CategoryStoreTabState createState() => _CategoryStoreTabState();
 }
@@ -23,50 +25,90 @@ class _CategoryStoreTabState extends State<CategoryStoreTab> {
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         return <Widget>[
           SliverAppBar(
-            backgroundColor: Colors.transparent,
+            elevation: 8,
+            backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(30),
                 bottomRight: Radius.circular(30),
               ),
             ),
-            expandedHeight: 200.0,
+            expandedHeight: MediaQuery.of(context).size.height * 0.2,
             floating: true,
+            pinned: true,
             flexibleSpace: FlexibleSpaceBar(
+              centerTitle: true,
+              title: Container(
+                child: Text(
+                  widget.storeData.name,
+                  style: GoogleFonts.fredokaOne(
+                    color: Colors.grey,
+                    fontSize: 32,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ),
               background: ClipRRect(
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(30),
                   bottomRight: Radius.circular(30),
                 ),
-                child: FadeInImage.memoryNetwork(
-                  placeholder: kTransparentImage,
-                  image: widget.storeData.image,
-                  fit: BoxFit.cover,
+                child: Container(
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey[400],
+                        blurRadius: 1.0, // soften the shadow
+                        spreadRadius: 1.0, //extend the shadow
+                        offset: Offset(
+                          2.0, // Move to right 10  horizontally
+                          2.0, // Move to bottom 10 Vertically
+                        ),
+                      )
+                    ],
+                  ),
+                  child: FadeInImage.memoryNetwork(
+                    placeholder: kTransparentImage,
+                    image: widget.storeData.image,
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
             ),
           ),
           SliverList(
-            delegate: SliverChildListDelegate([
-              Center(
-                child: Container(
-                  margin: EdgeInsets.only(
-                    top: 14,
-                  ),
-                  child: Text(
-                    widget.storeData.name,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.grey[700],
+            delegate: SliverChildListDelegate(
+              [
+                Center(
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      top: 5,
+                    ),
+                    child: Text(
+                      widget.categoryStoreData.title,
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.grey[700],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Center(
-                child: Text(widget.storeData.description),
-              ),
-            ]),
+                Container(
+                  height: 100,
+                  width: 100,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: NetworkImage(
+                        widget.categoryStoreData.image,
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           )
         ];
       },
@@ -76,9 +118,11 @@ class _CategoryStoreTabState extends State<CategoryStoreTab> {
             child: GroupedListView<dynamic, String>(
               elements: widget.storeData.products
                   .where(
-                    (element) => element.categoryId == widget.categoryId,
+                    (element) =>
+                        element.categoryId == widget.categoryStoreData.id,
                   )
                   .toList(),
+              padding: EdgeInsets.zero,
               groupBy: (element) => element.group,
               useStickyGroupSeparators: false,
               groupSeparatorBuilder: (String value) => Container(
@@ -176,13 +220,19 @@ class _CategoryStoreTabState extends State<CategoryStoreTab> {
             ),
           ),
           ScopedModelDescendant<UserModel>(builder: (context, child, model) {
+            bool hasProductInCart = false;
+            model.cartDataList.forEach((element) {
+              if (element.storeData.id == widget.storeData.id) {
+                hasProductInCart = true;
+              }
+            });
             if (model.isLoading) {
               return Container(
                 height: 0,
                 width: 0,
               );
             } else {
-              if (model.cartProducts.length > 0) {
+              if (model.cartProducts.length > 0 && hasProductInCart) {
                 return Positioned(
                   bottom: 0,
                   child: FlatButton(
