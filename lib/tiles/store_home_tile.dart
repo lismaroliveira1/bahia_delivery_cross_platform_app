@@ -4,10 +4,10 @@ import 'package:animated_button/animated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import '../components/components.dart';
 import '../data/data.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
@@ -48,18 +48,10 @@ class _StoreHomeTileState extends State<StoreHomeTile> {
               padding: EdgeInsets.zero,
               onPressed: () {
                 model.addressSeted
-                    ? Navigator.push(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.rightToLeft,
-                          child: WelcomeStoreScreen(
-                            storeData: widget.storeData,
-                          ),
-                          inheritTheme: true,
-                          duration: Duration(
-                            milliseconds: 350,
-                          ),
-                          ctx: context,
+                    ? pageTransition(
+                        context: context,
+                        screen: new WelcomeStoreScreen(
+                          storeData: widget.storeData,
                         ),
                       )
                     : loadAddres();
@@ -246,20 +238,12 @@ class _StoreHomeTileState extends State<StoreHomeTile> {
                   ),
                   onPressed: () {
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                    Timer(Duration(milliseconds: 500), () {
-                      Navigator.push(
-                        context,
-                        new PageTransition(
-                          type: PageTransitionType.rightToLeft,
-                          child: new RegisterAddressScreen(),
-                          inheritTheme: true,
-                          duration: new Duration(
-                            milliseconds: 350,
-                          ),
-                          ctx: context,
-                        ),
-                      );
-                    });
+                    Timer(
+                        Duration(milliseconds: 500),
+                        () => pageTransition(
+                              context: context,
+                              screen: new RegisterAddressScreen(),
+                            ));
                   },
                 ),
               ),
