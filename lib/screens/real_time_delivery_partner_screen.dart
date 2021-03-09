@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:bd_app_full/components/components.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
@@ -63,17 +64,9 @@ class _RealTimeDeliveryPartnerScreenState
                   titleStyle: TextStyle(color: Colors.white),
                   onPress: () {
                     _animationController.reverse();
-                    Navigator.push(
-                      context,
-                      PageTransition(
-                        type: PageTransitionType.rightToLeft,
-                        child: ChatOrderPartnerScreen(widget.orderData),
-                        inheritTheme: true,
-                        duration: Duration(
-                          milliseconds: 350,
-                        ),
-                        ctx: context,
-                      ),
+                    pageTransition(
+                      context: context,
+                      screen: ChatOrderPartnerScreen(widget.orderData),
                     );
                   },
                 ),
@@ -130,17 +123,9 @@ class _RealTimeDeliveryPartnerScreenState
                                 TextStyle(fontSize: 16, color: Colors.white),
                             onPress: () {
                               _animationController.reverse();
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.rightToLeft,
-                                  child: DetailsUserOrderScreen(),
-                                  inheritTheme: true,
-                                  duration: Duration(
-                                    milliseconds: 350,
-                                  ),
-                                  ctx: context,
-                                ),
+                              pageTransition(
+                                context: context,
+                                screen: DetailsUserOrderScreen(),
                               );
                             },
                           ),
