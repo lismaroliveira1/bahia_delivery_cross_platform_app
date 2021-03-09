@@ -4,6 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../data/data.dart';
 import '../screens/screens.dart';
 
+import '../data/data.dart';
+import '../screens/screens.dart';
+
 class StoreOffTile extends StatefulWidget {
   final StoreData storeData;
   final OffData off;
