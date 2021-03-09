@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:bd_app_full/blocs/partner_section_bloc.dart';
-import 'package:bd_app_full/data/offs_data.dart';
-import 'package:bd_app_full/data/product_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../blocs/blocs.dart';
+import '../data/data.dart';
+import '../models/models.dart';
 
 class NewSalesOffPartnerTab extends StatefulWidget {
   @override

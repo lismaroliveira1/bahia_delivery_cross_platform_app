@@ -1,6 +1,7 @@
-import 'package:bd_app_full/validators/login_validators.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:rxdart/rxdart.dart';
+
+import '../validators/validators.dart';
 
 class LoginBloc extends BlocBase with LoginValidators {
   final _emailController = BehaviorSubject<String>();
@@ -28,7 +29,6 @@ class LoginBloc extends BlocBase with LoginValidators {
   Function(String) get changeConfirmedPassoword =>
       _confirmedPasswordController.sink.add;
   @override
-
   void dispose() {
     super.dispose();
     _emailController.close();

@@ -1,6 +1,7 @@
-import 'package:bd_app_full/validators/register_partner_validators.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:rxdart/rxdart.dart';
+
+import '../validators/validators.dart';
 
 class RegisterPartnerBloc extends BlocBase with RegisterPartnerValidators {
   final _ownerNameController = BehaviorSubject<String>();

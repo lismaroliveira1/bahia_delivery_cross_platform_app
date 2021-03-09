@@ -1,9 +1,10 @@
-import 'package:bd_app_full/blocs/partner_section_bloc.dart';
-import 'package:bd_app_full/data/coupon_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+
+import '../blocs/blocs.dart';
+import '../data/data.dart';
+import '../models/models.dart';
 
 class InsertNewCouponTab extends StatefulWidget {
   @override

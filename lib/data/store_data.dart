@@ -1,12 +1,9 @@
 import 'dart:collection';
 
-import 'package:bd_app_full/data/category_store_data.dart';
-import 'package:bd_app_full/data/combo_data.dart';
-import 'package:bd_app_full/data/coupon_data.dart';
-import 'package:bd_app_full/data/offs_data.dart';
-import 'package:bd_app_full/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geodesy/geodesy.dart';
+
+import '../data/data.dart';
 
 class StoreData {
   String description;

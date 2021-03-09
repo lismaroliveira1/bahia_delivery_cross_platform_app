@@ -1,7 +1,8 @@
-import 'package:bd_app_full/validators/partner_section_validators.dart';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:rxdart/subjects.dart';
+
+import '../validators/validators.dart';
 
 class PartnerSectionBloc extends BlocBase with PartnerSectionValidators {
   final _nameController = BehaviorSubject<String>();

@@ -1,9 +1,10 @@
 import 'dart:collection';
 import 'dart:io';
 
-import 'package:bd_app_full/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+
+import '../data/data.dart';
 
 class ComboData {
   String id;

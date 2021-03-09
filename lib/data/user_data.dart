@@ -1,6 +1,7 @@
-import 'package:bd_app_full/data/delivery_man_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geodesy/geodesy.dart';
+
+import '../data/data.dart';
 
 class UserData {
   String name;
@@ -26,7 +27,6 @@ class UserData {
   int storeClosingTimeMinute;
   int storeOpeningTimeHour;
   int storeOpeningTimeMinute;
- 
 
   UserData({
     this.currentAddress,

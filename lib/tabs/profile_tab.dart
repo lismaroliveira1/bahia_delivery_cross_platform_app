@@ -1,17 +1,11 @@
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/be_a_partner_screen.dart';
-import 'package:bd_app_full/screens/coupon_screen.dart';
-import 'package:bd_app_full/screens/delivery_man_home_screen.dart';
-import 'package:bd_app_full/screens/notifications_screen.dart';
-import 'package:bd_app_full/screens/order_user_screen.dart';
-import 'package:bd_app_full/screens/payment_user_screen.dart';
-import 'package:bd_app_full/screens/setup_user_screen.dart';
 import 'package:bd_app_full/screens/store_home_screen.dart';
-import 'package:bd_app_full/screens/user_chat_list_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 import 'package:page_transition/page_transition.dart';
+
+import '../models/models.dart';
+import '../screens/screens.dart';
 
 class ProfileTab extends StatefulWidget {
   @override

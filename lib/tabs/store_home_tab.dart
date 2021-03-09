@@ -1,17 +1,10 @@
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/category_store_partner_screen.dart';
-import 'package:bd_app_full/screens/combo_partner_screen.dart';
-import 'package:bd_app_full/screens/delivery_man_for_partner_screen.dart';
-import 'package:bd_app_full/screens/off_sales_partner_screnn.dart';
-import 'package:bd_app_full/screens/order_partner_screnn.dart';
-import 'package:bd_app_full/screens/product_store_screnn.dart';
-import 'package:bd_app_full/screens/report_store_screem.dart';
-import 'package:bd_app_full/screens/setup_partner_screen.dart';
-import 'package:bd_app_full/screens/store_coupons_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
+
+import '../models/models.dart';
+import '../screens/screens.dart';
 
 class StoreHomeTab extends StatefulWidget {
   @override

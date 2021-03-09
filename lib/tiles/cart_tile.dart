@@ -1,8 +1,9 @@
-import 'package:bd_app_full/data/cart_product.dart';
-import 'package:bd_app_full/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../data/data.dart';
+import '../models/models.dart';
 
 class CartTile extends StatefulWidget {
   final CartProduct cartProduct;

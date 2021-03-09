@@ -1,14 +1,15 @@
 import 'dart:async';
 
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/home_screen.dart';
-import 'package:bd_app_full/screens/login_screen.dart';
-import 'package:bd_app_full/widgets/drawer_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import './models/user_model.dart';
+import './screens/home_screen.dart';
+import './screens/login_screen.dart';
+import './widgets/drawer_page.dart';
 
 import 'elements/drawer_menu_item.dart';
 

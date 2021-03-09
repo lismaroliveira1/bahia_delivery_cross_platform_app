@@ -1,5 +1,6 @@
-import 'package:bd_app_full/tabs/register_partner_with_cpf_tab.dart';
 import 'package:flutter/material.dart';
+
+import '../tabs/tabs.dart';
 
 class RegisterPartnerWithCPFScreen extends StatelessWidget {
   @override

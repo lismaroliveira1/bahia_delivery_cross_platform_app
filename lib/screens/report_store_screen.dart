@@ -1,5 +1,6 @@
-import 'package:bd_app_full/tabs/report_store_tab.dart';
 import 'package:flutter/material.dart';
+
+import '../tabs/tabs.dart';
 
 class ReportStoreScreen extends StatelessWidget {
   @override

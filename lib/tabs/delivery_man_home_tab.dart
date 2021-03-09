@@ -1,12 +1,10 @@
-import 'package:bd_app_full/data/delivery_man_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/chats_delivery_man_screen.dart';
-import 'package:bd_app_full/screens/profile_delivery_man_screen.dart';
-import 'package:bd_app_full/screens/racers_delivery_man_screen.dart';
-import 'package:bd_app_full/screens/setup_delivery_man_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../data/delivery_man_data.dart';
+import '../models/models.dart';
+import '../screens/screens.dart';
 
 class DeliveryManHomeTab extends StatefulWidget {
   @override

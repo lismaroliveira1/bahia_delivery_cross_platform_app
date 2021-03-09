@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:bd_app_full/elements/drawer_menu_item.dart';
-import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../elements/elements.dart';
+import '../models/models.dart';
 
 class DrawerPage extends StatefulWidget {
   final StreamController<DrawerItemEnum> streamController;

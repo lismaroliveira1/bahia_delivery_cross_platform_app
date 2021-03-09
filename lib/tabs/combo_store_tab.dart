@@ -1,11 +1,9 @@
-import 'package:bd_app_full/data/combo_data.dart';
-import 'package:bd_app_full/data/complement_data.dart';
-import 'package:bd_app_full/data/product_data.dart';
-import 'package:bd_app_full/data/store_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
+
+import '../data/data.dart';
+import '../models/models.dart';
 
 class ComboStoreTab extends StatefulWidget {
   final ComboData comboData;

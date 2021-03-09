@@ -1,6 +1,7 @@
-import 'package:bd_app_full/data/credit_debit_card_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
+
+import '../data/data.dart';
+import '../models/models.dart';
 
 class CreditDebitCardTile extends StatelessWidget {
   final CreditDebitCardData creditDebitCardData;

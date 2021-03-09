@@ -1,10 +1,10 @@
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/payment_screen.dart';
-import 'package:bd_app_full/tiles/credit_card_tile.dart';
-import 'package:bd_app_full/tiles/payment_on_delivery_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../models/models.dart';
+import '../screens/screens.dart';
+import '../tiles/tiles.dart';
 
 class PaymentCard extends StatefulWidget {
   @override

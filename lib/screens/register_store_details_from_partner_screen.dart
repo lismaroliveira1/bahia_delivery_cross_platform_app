@@ -1,6 +1,7 @@
-import 'package:bd_app_full/data/request_partner_data.dart';
-import 'package:bd_app_full/tabs/register_store_details_tab.dart';
 import 'package:flutter/material.dart';
+
+import '../data/data.dart';
+import '../tabs/tabs.dart';
 
 class RegisterStoreDetailsScreen extends StatelessWidget {
   final RequestPartnerData requestPartnerData;

@@ -1,7 +1,8 @@
-import 'package:bd_app_full/data/credit_debit_card_data.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:random_string/random_string.dart';
+
+import '../data/data.dart';
 
 class CieloPayment {
   final FirebaseFunctions functions = FirebaseFunctions.instance;

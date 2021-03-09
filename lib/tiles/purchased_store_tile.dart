@@ -1,6 +1,7 @@
-import 'package:bd_app_full/data/store_data.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import '../data/data.dart';
 
 class PurchasedStoreTile extends StatefulWidget {
   final StoreData storeData;

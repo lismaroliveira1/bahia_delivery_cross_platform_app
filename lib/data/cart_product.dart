@@ -1,9 +1,7 @@
 import 'dart:collection';
-
-import 'package:bd_app_full/data/combo_data.dart';
-import 'package:bd_app_full/data/incremental_options_data.dart';
-import 'package:bd_app_full/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../data/data.dart';
 
 class CartProduct {
   String cId;

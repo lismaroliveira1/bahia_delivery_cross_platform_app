@@ -1,9 +1,10 @@
-import 'package:bd_app_full/data/combo_data.dart';
-import 'package:bd_app_full/data/store_data.dart';
-import 'package:bd_app_full/screens/combo_screnn.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
+
+import '../data/data.dart';
+import '../screens/screens.dart';
 
 class StoreComboTile extends StatefulWidget {
   final ComboData combo;

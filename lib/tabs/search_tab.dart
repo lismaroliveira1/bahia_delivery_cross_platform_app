@@ -1,9 +1,10 @@
-import 'package:bd_app_full/data/store_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/welcome_store_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+
+import '../data/data.dart';
+import '../models/models.dart';
+import '../screens/screens.dart';
 
 class SearchTab extends StatefulWidget {
   @override

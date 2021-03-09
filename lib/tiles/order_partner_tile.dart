@@ -1,11 +1,11 @@
 import 'package:animated_button/animated_button.dart';
-import 'package:bd_app_full/data/combo_data.dart';
-import 'package:bd_app_full/data/order_data.dart';
-import 'package:bd_app_full/data/product_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
+
+import '../data/data.dart';
+import '../models/models.dart';
 
 class OrderPartnerTile extends StatefulWidget {
   final OrderData orderData;

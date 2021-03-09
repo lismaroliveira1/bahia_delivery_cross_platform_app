@@ -1,17 +1,16 @@
 import 'dart:async';
 
 import 'package:animated_button/animated_button.dart';
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/carts_list_screen.dart';
-import 'package:bd_app_full/screens/register_address_screen.dart';
-import 'package:bd_app_full/screens/welcome_store_screen.dart';
-import 'package:bd_app_full/tiles/purchased_store_tile.dart';
-import 'package:bd_app_full/tiles/store_home_tile.dart';
+
 import 'package:flutter/material.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:location/location.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../models/models.dart';
+import '../screens/screens.dart';
+import '../tiles/tiles.dart';
 
 class HomeTab extends StatefulWidget {
   @override

@@ -1,5 +1,6 @@
-import 'package:bd_app_full/tabs/chat_delivery_man_data.dart';
 import 'package:flutter/material.dart';
+
+import '../tabs/tabs.dart';
 
 class ChatDeliveryManScreen extends StatelessWidget {
   @override

@@ -1,5 +1,6 @@
-import 'package:bd_app_full/tabs/category_store_partner_tab.dart';
 import 'package:flutter/material.dart';
+
+import '../tabs/tabs.dart';
 
 class CategoryStorePartnerScrenn extends StatelessWidget {
   @override
