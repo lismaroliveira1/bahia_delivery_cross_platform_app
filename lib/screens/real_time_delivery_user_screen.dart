@@ -1,6 +1,6 @@
+import 'package:bd_app_full/components/components.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
 import '../tabs/tabs.dart';
 import '../screens/screens.dart';
@@ -52,17 +52,9 @@ class _RealTimeDeliveryUserScreenState extends State<RealTimeDeliveryUserScreen>
             titleStyle: TextStyle(fontSize: 16, color: Colors.white),
             onPress: () {
               _animationController.reverse();
-              Navigator.push(
-                context,
-                PageTransition(
-                  type: PageTransitionType.rightToLeft,
-                  child: DetailsUserOrderScreen(),
-                  inheritTheme: true,
-                  duration: Duration(
-                    milliseconds: 350,
-                  ),
-                  ctx: context,
-                ),
+              pageTransition(
+                context: context,
+                screen: DetailsUserOrderScreen(),
               );
             },
           ),
@@ -74,17 +66,9 @@ class _RealTimeDeliveryUserScreenState extends State<RealTimeDeliveryUserScreen>
             titleStyle: TextStyle(fontSize: 16, color: Colors.white),
             onPress: () {
               _animationController.reverse();
-              Navigator.push(
-                context,
-                PageTransition(
-                  type: PageTransitionType.rightToLeft,
-                  child: ChatUserOrderScreen(widget.orderData),
-                  inheritTheme: true,
-                  duration: Duration(
-                    milliseconds: 350,
-                  ),
-                  ctx: context,
-                ),
+              pageTransition(
+                context: context,
+                screen: ChatUserOrderScreen(widget.orderData),
               );
             },
           ),
