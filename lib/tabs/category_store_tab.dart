@@ -1,8 +1,8 @@
+import 'package:bd_app_full/components/components.dart';
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:grouped_list/grouped_list.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -157,17 +157,9 @@ class _CategoryStoreTabState extends State<CategoryStoreTab> {
                     child: Container(
                       child: ListTile(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.rightToLeftWithFade,
-                              child: ProductStoreScreen(doc, widget.storeData),
-                              inheritTheme: true,
-                              duration: Duration(
-                                milliseconds: 350,
-                              ),
-                              ctx: context,
-                            ),
+                          pageTransition(
+                            context: context,
+                            screen: ProductStoreScreen(doc, widget.storeData),
                           );
                         },
                         dense: false,
@@ -238,17 +230,9 @@ class _CategoryStoreTabState extends State<CategoryStoreTab> {
                   child: FlatButton(
                     padding: EdgeInsets.zero,
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.rightToLeft,
-                          child: CartScreen(widget.storeData),
-                          inheritTheme: true,
-                          duration: Duration(
-                            milliseconds: 500,
-                          ),
-                          ctx: context,
-                        ),
+                      pageTransition(
+                        context: context,
+                        screen: CartScreen(widget.storeData),
                       );
                     },
                     child: Container(
