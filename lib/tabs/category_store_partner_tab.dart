@@ -1,6 +1,6 @@
+import 'package:bd_app_full/components/components.dart';
 import 'package:flutter/material.dart';
 
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../models/models.dart';
@@ -51,17 +51,9 @@ class _CategoryStorePartnerTabState extends State<CategoryStorePartnerTab> {
                   ),
                   child: ListTile(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.rightToLeft,
-                          child: InsertNewSectionScreen(),
-                          inheritTheme: true,
-                          duration: Duration(
-                            milliseconds: 350,
-                          ),
-                          ctx: context,
-                        ),
+                      pageTransition(
+                        context: context,
+                        screen: InsertNewSectionScreen(),
                       );
                     },
                     dense: true,
@@ -119,17 +111,9 @@ class _CategoryStorePartnerTabState extends State<CategoryStorePartnerTab> {
                             child: ListTile(
                               contentPadding: EdgeInsets.all(4),
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  PageTransition(
-                                    type: PageTransitionType.rightToLeft,
-                                    child: EditSectionScreen(section),
-                                    inheritTheme: true,
-                                    duration: Duration(
-                                      milliseconds: 350,
-                                    ),
-                                    ctx: context,
-                                  ),
+                                pageTransition(
+                                  context: context,
+                                  screen: EditSectionScreen(section),
                                 );
                               },
                               isThreeLine: true,
