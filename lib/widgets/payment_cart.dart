@@ -1,5 +1,5 @@
+import 'package:bd_app_full/components/components.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../models/models.dart';
@@ -26,17 +26,9 @@ class _PaymentCardState extends State<PaymentCard> {
           onPressed: () {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             Duration(seconds: 10);
-            Navigator.push(
-              context,
-              PageTransition(
-                type: PageTransitionType.rightToLeft,
-                child: PaymentScreen(),
-                inheritTheme: true,
-                duration: Duration(
-                  milliseconds: 350,
-                ),
-                ctx: context,
-              ),
+            pageTransition(
+              context: context,
+              screen: new PaymentScreen(),
             );
           },
           child: Card(
