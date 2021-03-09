@@ -1,6 +1,6 @@
+import 'package:bd_app_full/components/components.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
 import '../data/data.dart';
 import '../models/models.dart';
@@ -129,20 +129,10 @@ class _SearchTabState extends State<SearchTab> {
                                                 break;
                                               }
                                             }
-
-                                            Navigator.push(
-                                              context,
-                                              PageTransition(
-                                                type: PageTransitionType
-                                                    .rightToLeft,
-                                                child: WelcomeStoreScreen(
-                                                  storeData: storeData,
-                                                ),
-                                                inheritTheme: true,
-                                                duration: Duration(
-                                                  milliseconds: 350,
-                                                ),
-                                                ctx: context,
+                                            pageTransition(
+                                              context: context,
+                                              screen: new WelcomeStoreScreen(
+                                                storeData: storeData,
                                               ),
                                             );
                                           },
