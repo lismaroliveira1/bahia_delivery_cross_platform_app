@@ -1,6 +1,6 @@
-import 'package:bd_app_full/components/components.dart';
 import 'package:flutter/material.dart';
 
+import '../components/components.dart';
 import '../screens/screens.dart';
 
 class RegisterPartnerTab extends StatefulWidget {

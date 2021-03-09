@@ -124,7 +124,7 @@ class _RealTimeDeliveryPartnerScreenState
                               _animationController.reverse();
                               pageTransition(
                                 context: context,
-                                screen: DetailsUserOrderScreen(),
+                                screen: new DetailsUserOrderScreen(),
                               );
                             },
                           ),
