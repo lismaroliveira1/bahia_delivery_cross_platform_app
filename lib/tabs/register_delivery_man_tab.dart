@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:bd_app_full/components/components.dart';
 import 'package:cnpj_cpf_formatter/cnpj_cpf_formatter.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
@@ -311,17 +311,9 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                       width: MediaQuery.of(context).size.width / 2.5,
                       child: FlatButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              type: PageTransitionType.rightToLeft,
-                              child: RegisterAddressScreen(),
-                              inheritTheme: true,
-                              duration: Duration(
-                                milliseconds: 350,
-                              ),
-                              ctx: context,
-                            ),
+                          pageTransition(
+                            context: context,
+                            screen: new RegisterAddressScreen(),
                           );
                         },
                         child: Column(
