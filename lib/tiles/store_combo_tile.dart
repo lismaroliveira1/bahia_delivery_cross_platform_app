@@ -1,7 +1,6 @@
-
+import 'package:bd_app_full/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
 
 import '../data/data.dart';
 import '../screens/screens.dart';
@@ -30,23 +29,13 @@ class _StoreComboTileState extends State<StoreComboTile> {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: FlatButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.rightToLeft,
-              child: ComboStoreScreen(
-                combo,
-                storeData,
-              ),
-              inheritTheme: true,
-              duration: Duration(
-                milliseconds: 350,
-              ),
-              ctx: context,
-            ),
-          );
-        },
+        onPressed: () => pageTransition(
+          context: context,
+          screen: new ComboStoreScreen(
+            combo,
+            storeData,
+          ),
+        ),
         child: Container(
           decoration: BoxDecoration(
             boxShadow: [
