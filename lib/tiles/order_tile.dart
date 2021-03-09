@@ -1,6 +1,6 @@
+import 'package:bd_app_full/components/components.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
 import '../data/data.dart';
 
@@ -26,20 +26,10 @@ class _OrderTileState extends State<OrderTile> {
       padding: const EdgeInsets.all(8.0),
       child: FlatButton(
         padding: EdgeInsets.zero,
-        onPressed: () {
-          Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.rightToLeft,
-              child: widget.screen,
-              inheritTheme: true,
-              duration: new Duration(
-                milliseconds: 350,
-              ),
-              ctx: context,
-            ),
-          );
-        },
+        onPressed: () => pageTransition(
+          context: context,
+          screen: widget.screen,
+        ),
         child: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
