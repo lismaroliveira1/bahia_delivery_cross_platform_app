@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import '../components/components.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
 
@@ -98,7 +98,10 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                                 ),
                                 child: ListTile(
                                   onTap: () {
-                                    _onFanancialCashWidgetPressed();
+                                    pageTransition(
+                                      context: context,
+                                      screen: new ReportStoreScreen(),
+                                    );
                                   },
                                   dense: true,
                                   leading: Icon(
@@ -124,7 +127,10 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                                 ),
                                 child: ListTile(
                                   onTap: () {
-                                    _onProductWidgetPressed();
+                                    pageTransition(
+                                      context: context,
+                                      screen: new ProductStorePartnerScreen(),
+                                    );
                                   },
                                   dense: true,
                                   leading: Icon(
@@ -150,7 +156,10 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                                 ),
                                 child: ListTile(
                                   onTap: () {
-                                    _onSectionStoreWidgetPressed();
+                                    pageTransition(
+                                      context: context,
+                                      screen: new CategoryStorePartnerScrenn(),
+                                    );
                                   },
                                   dense: true,
                                   leading: Icon(
@@ -177,7 +186,10 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                                 ),
                                 child: ListTile(
                                   onTap: () {
-                                    _onSalesOffWidgetPressed();
+                                    pageTransition(
+                                      context: context,
+                                      screen: new SalesOffPartnerScreen(),
+                                    );
                                   },
                                   dense: true,
                                   leading: Icon(Icons.bolt),
@@ -204,7 +216,10 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                                 ),
                                 child: ListTile(
                                   onTap: () {
-                                    _onCuponWidgetPressed();
+                                    pageTransition(
+                                      context: context,
+                                      screen: new StoreCouponsScreen(),
+                                    );
                                   },
                                   dense: true,
                                   leading: Icon(Icons.bolt),
@@ -231,7 +246,10 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                                 ),
                                 child: ListTile(
                                   onTap: () {
-                                    _onCombofWidgetPressed();
+                                    pageTransition(
+                                      context: context,
+                                      screen: new ComboPartnerScreen(),
+                                    );
                                   },
                                   dense: true,
                                   leading: Icon(Icons.apps),
@@ -258,7 +276,10 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                                 ),
                                 child: ListTile(
                                   onTap: () {
-                                    _onOrderWidgetPressed();
+                                    pageTransition(
+                                      context: context,
+                                      screen: new OrderPartnerScreen(),
+                                    );
                                   },
                                   dense: true,
                                   leading: Icon(
@@ -287,7 +308,10 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                                 ),
                                 child: ListTile(
                                   onTap: () {
-                                    _onDeliveryManWidgetPressed();
+                                    pageTransition(
+                                      context: context,
+                                      screen: new DeliveryManForPartnerScreen(),
+                                    );
                                   },
                                   dense: true,
                                   leading: Icon(
@@ -313,7 +337,10 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
                                 ),
                                 child: ListTile(
                                   onTap: () {
-                                    _onSetupStorePressed();
+                                    pageTransition(
+                                      context: context,
+                                      screen: new SetupPartnerScreen(),
+                                    );
                                   },
                                   dense: true,
                                   leading: Icon(
@@ -338,141 +365,6 @@ class _StoreHomeTabState extends State<StoreHomeTab> {
             );
           }
         },
-      ),
-    );
-  }
-
-  void _onFanancialCashWidgetPressed() {
-    Navigator.push(
-      context,
-      PageTransition(
-        type: PageTransitionType.rightToLeft,
-        child: ReportStoreScreen(),
-        inheritTheme: true,
-        duration: Duration(
-          milliseconds: 350,
-        ),
-        ctx: context,
-      ),
-    );
-  }
-
-  void _onProductWidgetPressed() {
-    Navigator.push(
-      context,
-      PageTransition(
-        type: PageTransitionType.rightToLeft,
-        child: ProductStorePartnerScreen(),
-        inheritTheme: true,
-        duration: Duration(
-          milliseconds: 350,
-        ),
-        ctx: context,
-      ),
-    );
-  }
-
-  void _onSectionStoreWidgetPressed() {
-    Navigator.push(
-      context,
-      PageTransition(
-        type: PageTransitionType.rightToLeft,
-        child: CategoryStorePartnerScrenn(),
-        inheritTheme: true,
-        duration: Duration(
-          milliseconds: 350,
-        ),
-        ctx: context,
-      ),
-    );
-  }
-
-  void _onSalesOffWidgetPressed() {
-    Navigator.push(
-      context,
-      PageTransition(
-        type: PageTransitionType.rightToLeft,
-        child: SalesOffPartnerScreen(),
-        inheritTheme: true,
-        duration: Duration(
-          milliseconds: 350,
-        ),
-        ctx: context,
-      ),
-    );
-  }
-
-  void _onOrderWidgetPressed() {
-    Navigator.push(
-      context,
-      PageTransition(
-        type: PageTransitionType.rightToLeft,
-        child: OrderPartnerScreen(),
-        inheritTheme: true,
-        duration: Duration(
-          milliseconds: 350,
-        ),
-        ctx: context,
-      ),
-    );
-  }
-
-  void _onSetupStorePressed() {
-    Navigator.push(
-      context,
-      PageTransition(
-        type: PageTransitionType.rightToLeft,
-        child: SetupPartnerScreen(),
-        inheritTheme: true,
-        duration: Duration(
-          milliseconds: 350,
-        ),
-        ctx: context,
-      ),
-    );
-  }
-
-  void _onCombofWidgetPressed() {
-    Navigator.push(
-      context,
-      PageTransition(
-        type: PageTransitionType.rightToLeft,
-        child: ComboPartnerScreen(),
-        inheritTheme: true,
-        duration: Duration(
-          milliseconds: 350,
-        ),
-        ctx: context,
-      ),
-    );
-  }
-
-  void _onCuponWidgetPressed() {
-    Navigator.push(
-      context,
-      PageTransition(
-        child: StoreCouponsScreen(),
-        type: PageTransitionType.rightToLeft,
-        inheritTheme: true,
-        duration: Duration(
-          milliseconds: 350,
-        ),
-        ctx: context,
-      ),
-    );
-  }
-
-  _onDeliveryManWidgetPressed() {
-    Navigator.push(
-      context,
-      PageTransition(
-        child: DeliveryManForPartnerScreen(),
-        type: PageTransitionType.rightToLeft,
-        inheritTheme: true,
-        duration: Duration(
-          milliseconds: 350,
-        ),
-        ctx: context,
       ),
     );
   }
