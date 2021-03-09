@@ -45,8 +45,8 @@ class ShipCard extends StatelessWidget {
                   color: Colors.grey,
                 ),
                 onPressed: () async {
-                  Scaffold.of(context).hideCurrentSnackBar();
-                  Scaffold.of(context).showSnackBar(
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(

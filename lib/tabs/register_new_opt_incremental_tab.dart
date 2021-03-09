@@ -73,7 +73,7 @@ class _RegisterNewOptIncrementTabState
                           child: IconButton(
                             icon: Icon(Icons.camera_alt),
                             onPressed: () {
-                              Scaffold.of(context).showSnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   backgroundColor: Colors.redAccent,
                                   shape: RoundedRectangleBorder(

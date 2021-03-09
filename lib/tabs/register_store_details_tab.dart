@@ -395,7 +395,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
   }
 
   void onButtonSendPressed() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
@@ -412,7 +412,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
   }
 
   void _onEditImagePressed() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.redAccent,
         shape: RoundedRectangleBorder(
@@ -433,7 +433,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                 ),
                 onPressed: () async {
                   try {
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     PickedFile _pickedFile = await _picker.getImage(
                       source: ImageSource.gallery,
                       maxHeight: 500,
@@ -474,7 +474,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                 ),
                 onPressed: () async {
                   try {
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     PickedFile _pickedFile = await _picker.getImage(
                       source: ImageSource.camera,
                       maxHeight: 500,
@@ -522,7 +522,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
 
   void _onFail() {}
   void _onFailImage() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "É necessário fazer o upload da imagem",

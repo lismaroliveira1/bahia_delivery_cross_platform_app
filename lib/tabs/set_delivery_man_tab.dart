@@ -131,7 +131,7 @@ class _SetDeliveryManTabState extends State<SetDeliveryManTab> {
   }
 
   void _onFail() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Algo saiu errado, tente novamente",

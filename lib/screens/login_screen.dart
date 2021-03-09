@@ -247,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void _onSuccess() {}
 
   void _onFail() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text("Falha ao realizar login", textAlign: TextAlign.center),
         backgroundColor: Colors.red,
@@ -257,7 +257,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onFailGoogle() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Conta Google não registrada",
@@ -270,7 +270,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _onFailFacebook() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Conta Facebook não registrada",

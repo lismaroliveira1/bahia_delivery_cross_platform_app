@@ -288,8 +288,8 @@ class _EditSectionTabState extends State<EditSectionTab> {
   }
 
   void _onPositionPressed() {
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
@@ -343,7 +343,8 @@ class _EditSectionTabState extends State<EditSectionTab> {
                                 setState(() {
                                   position = index + 1;
                                 });
-                                Scaffold.of(context).hideCurrentSnackBar();
+                                ScaffoldMessenger.of(context)
+                                    .hideCurrentSnackBar();
                               },
                               child: Column(
                                 children: [
@@ -379,8 +380,8 @@ class _EditSectionTabState extends State<EditSectionTab> {
   }
 
   void _onSizePressed() {
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
@@ -414,7 +415,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                     x = 1;
                     y = 1;
                   });
-                  Scaffold.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 },
                 child: Text(
                   "1:1",
@@ -438,7 +439,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                     x = 1;
                     y = 2;
                   });
-                  Scaffold.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 },
                 child: Text(
                   "1:2",
@@ -462,7 +463,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                     x = 2;
                     y = 1;
                   });
-                  Scaffold.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 },
                 child: Text(
                   "2:1",
@@ -486,7 +487,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                     x = 2;
                     y = 2;
                   });
-                  Scaffold.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 },
                 child: Text(
                   "2:2",
@@ -517,7 +518,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
   void _onFail() {}
 
   void _onEditImagePressed() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.redAccent,
         shape: RoundedRectangleBorder(

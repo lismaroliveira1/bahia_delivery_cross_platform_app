@@ -222,7 +222,7 @@ class _RegisterAddressTabState extends State<RegisterAddressTab> {
   }
 
   void _onFail() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Algo saiu errado, tente novamente",

@@ -307,7 +307,7 @@ class _SetupPartnerTabState extends State<SetupPartnerTab> {
   }
 
   void _onEditImagePressed() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.redAccent,
         shape: RoundedRectangleBorder(
@@ -340,13 +340,13 @@ class _SetupPartnerTabState extends State<SetupPartnerTab> {
                     setState(() {
                       isImageChoosed = true;
                     });
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   } catch (e) {
                     print(e);
                     setState(() {
                       isImageChoosed = false;
                     });
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   }
                 },
                 child: Container(
@@ -374,12 +374,12 @@ class _SetupPartnerTabState extends State<SetupPartnerTab> {
                     setState(() {
                       isImageChoosed = true;
                     });
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   } catch (e) {
                     setState(() {
                       isImageChoosed = false;
                     });
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   }
                 },
                 child: Container(

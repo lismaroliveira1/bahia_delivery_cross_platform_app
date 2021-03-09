@@ -137,7 +137,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
   }
 
   void noChoosedBiryhDay() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       new SnackBar(
         content: new Text(
           "Escolha a data de nascimento",
@@ -152,7 +152,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
   }
 
   void noChoosedLocation() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       new SnackBar(
         content: new Text(
           "Escolha a localização da loja",
@@ -165,7 +165,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
   }
 
   void noChoosedLocationAndBirthDay() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       new SnackBar(
         content: new Text(
           "Escolha a localização da loja e a sua data de nascimento",
@@ -178,7 +178,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
   }
 
   void _onEditImagePressed() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.redAccent,
         shape: RoundedRectangleBorder(
@@ -214,13 +214,13 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                         requestPartnerData.imageFile = imageFile;
                       }
                     });
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   } catch (e) {
                     print(e);
                     setState(() {
                       isImageChoosed = false;
                     });
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   }
                 },
                 child: Container(
@@ -251,12 +251,12 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                     if (screen != 2) {
                       requestPartnerData.imageFile = imageFile;
                     }
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   } catch (e) {
                     setState(() {
                       isImageChoosed = false;
                     });
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   }
                 },
                 child: Container(
@@ -275,7 +275,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
   }
 
   void _onFailImage() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "É necessário fazer o upload da imagem",
@@ -294,7 +294,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
   void _onFail() {}
 
   void onPhotoDriverPressed() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.redAccent,
         shape: RoundedRectangleBorder(
@@ -327,12 +327,12 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                     setState(() {
                       isImageDriverChoosed = true;
                     });
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   } catch (e) {
                     setState(() {
                       isImageDriverChoosed = false;
                     });
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   }
                 },
                 child: Container(
@@ -360,12 +360,12 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                     setState(() {
                       isImageDriverChoosed = true;
                     });
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   } catch (e) {
                     setState(() {
                       isImageChoosed = false;
                     });
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   }
                 },
                 child: Container(
@@ -384,7 +384,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
   }
 
   void _onFailDriverImage() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "É necessário fazer o upload da sua foto com a sua carteira de motorista",
@@ -397,7 +397,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
   }
 
   void _onFailTypeVehycle() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "É necessário Escolher o tipo do veículo",

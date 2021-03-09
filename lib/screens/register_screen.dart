@@ -147,7 +147,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         formKey.currentState.save();
                                         if (user.password !=
                                             user.confirmPassword) {
-                                          Scaffold.of(context)
+                                          ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                             content: const Text(
                                                 'Senhas não coincidem!'),
@@ -250,7 +250,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void _onFail() {}
 
   void _onFailGoogle() {
-    Scaffold.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
         "Esta conta Google já foi registrada",
         textAlign: TextAlign.center,
@@ -261,7 +261,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _onFailFacebook() {
-    Scaffold.of(context).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(
         "Esta conta Facebook já foi registrada",
         textAlign: TextAlign.center,

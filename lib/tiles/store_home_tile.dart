@@ -210,7 +210,7 @@ class _StoreHomeTileState extends State<StoreHomeTile> {
   }
 
   void loadAddres() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.grey[100],
         shape: RoundedRectangleBorder(
@@ -245,7 +245,7 @@ class _StoreHomeTileState extends State<StoreHomeTile> {
                     ),
                   ),
                   onPressed: () {
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     Timer(Duration(milliseconds: 500), () {
                       Navigator.push(
                         context,

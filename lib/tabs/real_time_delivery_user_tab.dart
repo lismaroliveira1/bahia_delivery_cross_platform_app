@@ -526,7 +526,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
   }
 
   void onProductListPressed() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
@@ -636,7 +636,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                     size: 15,
                   ),
                   onPressed: () {
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                   },
                 ),
               ),

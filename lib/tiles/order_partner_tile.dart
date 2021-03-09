@@ -396,7 +396,8 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                                       ? () async {
                                           if (snapshot.data["deliveryMan"] ==
                                               "none") {
-                                            Scaffold.of(context).showSnackBar(
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(
                                               SnackBar(
                                                 content: Text(
                                                   "Defina quem é o entregador",
@@ -419,7 +420,8 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                                           }
                                         }
                                       : () {
-                                          Scaffold.of(context).showSnackBar(
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
                                             SnackBar(
                                               content: Text(
                                                 "Você deve aceitar o pedido antes",
@@ -435,7 +437,8 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                                 ),
                                 FlatButton(
                                     onPressed: () {
-                                      Scaffold.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
                                           content: Text(
                                             "Aguardando o reposta do entregador",
@@ -461,7 +464,8 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                                 ? null
                                 : () {
                                     if (status == 3) {
-                                      Scaffold.of(context).showSnackBar(
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
                                         SnackBar(
                                           backgroundColor: Colors.white,
                                           content: Container(
@@ -496,7 +500,8 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                                                     children: [
                                                       FlatButton(
                                                         onPressed: () {
-                                                          Scaffold.of(context)
+                                                          ScaffoldMessenger.of(
+                                                                  context)
                                                               .hideCurrentSnackBar();
                                                         },
                                                         child: Container(
@@ -524,7 +529,8 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                                                       ),
                                                       FlatButton(
                                                         onPressed: () {
-                                                          Scaffold.of(context)
+                                                          ScaffoldMessenger.of(
+                                                                  context)
                                                               .hideCurrentSnackBar();
                                                           UserModel.of(context)
                                                               .cancelPayByPartner(

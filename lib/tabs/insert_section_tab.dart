@@ -324,8 +324,8 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
   }
 
   void _onEditImagePressed() {
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.redAccent,
         shape: RoundedRectangleBorder(
@@ -410,8 +410,8 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
   }
 
   void _onSizePressed() {
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
@@ -446,7 +446,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                     y = 1;
                     isSizeSelected = true;
                   });
-                  Scaffold.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 },
                 child: Text(
                   "1:1",
@@ -471,7 +471,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                     y = 2;
                     isSizeSelected = true;
                   });
-                  Scaffold.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 },
                 child: Text(
                   "1:2",
@@ -496,7 +496,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                     y = 1;
                     isSizeSelected = true;
                   });
-                  Scaffold.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 },
                 child: Text(
                   "2:1",
@@ -521,7 +521,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                     y = 2;
                     isSizeSelected = true;
                   });
-                  Scaffold.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 },
                 child: Text(
                   "2:2",
@@ -546,9 +546,9 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
   }
 
   void _onPositionPressed() {
-    Scaffold.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     if (isFirstPostion) {
-      Scaffold.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             "Essa é a primeira seção",
@@ -559,8 +559,8 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
         ),
       );
     } else {
-      Scaffold.of(context).hideCurrentSnackBar();
-      Scaffold.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
@@ -614,7 +614,8 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                                   setState(() {
                                     position = index + 1;
                                   });
-                                  Scaffold.of(context).hideCurrentSnackBar();
+                                  ScaffoldMessenger.of(context)
+                                      .hideCurrentSnackBar();
                                 },
                                 child: Column(
                                   children: [
@@ -651,8 +652,8 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
   }
 
   void _onFailChoosedImage() {
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Você deve estar esquecendo a imagem",
@@ -665,8 +666,8 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
   }
 
   void _onFailSizeSelected() {
-    Scaffold.of(context).hideCurrentSnackBar();
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Selecione o tamanho da seção",

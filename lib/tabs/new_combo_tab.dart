@@ -87,7 +87,7 @@ class _NewComboTabState extends State<NewComboTab> {
                           right: 4.0,
                           child: IconButton(
                             onPressed: () {
-                              Scaffold.of(context).showSnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   backgroundColor: Colors.redAccent,
                                   shape: RoundedRectangleBorder(
@@ -413,7 +413,7 @@ class _NewComboTabState extends State<NewComboTab> {
   }
 
   void _onProductButtonPressed() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.white,
         duration: Duration(
@@ -473,7 +473,7 @@ class _NewComboTabState extends State<NewComboTab> {
                                         products.add(product);
                                         isProductConfigured = true;
                                       });
-                                      Scaffold.of(context)
+                                      ScaffoldMessenger.of(context)
                                           .hideCurrentSnackBar();
                                     },
                                     dense: true,
@@ -527,7 +527,7 @@ class _NewComboTabState extends State<NewComboTab> {
                   color: Colors.black54,
                 ),
                 onPressed: () {
-                  Scaffold.of(context).hideCurrentSnackBar();
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
                 },
               ),
             )
@@ -544,7 +544,7 @@ class _NewComboTabState extends State<NewComboTab> {
   void _onFail() {}
 
   void noProductConfigured() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       new SnackBar(
         content: new Text(
           "Insira um ou mais produtos no combo",

@@ -337,7 +337,7 @@ class _SalesOffTabState extends State<SalesOffTab> {
   }
 
   void onFail() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Algo deu errado tente novamente",

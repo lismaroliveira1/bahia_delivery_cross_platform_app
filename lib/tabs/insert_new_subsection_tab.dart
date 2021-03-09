@@ -132,7 +132,7 @@ class _InsertNewSubSectionTabState extends State<InsertNewSubSectionTab> {
   }
 
   void _onPositionButtonPressed() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(

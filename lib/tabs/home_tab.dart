@@ -5,9 +5,9 @@ import 'package:animated_button/animated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:kt_drawer_menu/kt_drawer_menu.dart';
 import 'package:location/location.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import '../components/components.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
 import '../tiles/tiles.dart';
@@ -94,21 +94,10 @@ class _HomeTabState extends State<HomeTab> {
                                     padding: const EdgeInsets.all(2.0),
                                     child: FlatButton(
                                       padding: EdgeInsets.zero,
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          new PageTransition(
-                                            type:
-                                                PageTransitionType.rightToLeft,
-                                            child: new CartListScreen(),
-                                            inheritTheme: true,
-                                            duration: new Duration(
-                                              milliseconds: 350,
-                                            ),
-                                            ctx: context,
-                                          ),
-                                        );
-                                      },
+                                      onPressed: () => pageTransition(
+                                        context: context,
+                                        screen: new CartListScreen(),
+                                      ),
                                       child: Image.asset(
                                         "images/cart_icon.png",
                                         width: 15,
@@ -135,19 +124,11 @@ class _HomeTabState extends State<HomeTab> {
                       child: FlatButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {
-                          Scaffold.of(context).hideCurrentSnackBar();
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           Timer(Duration(milliseconds: 500), () {
-                            Navigator.push(
-                              context,
-                              new PageTransition(
-                                type: PageTransitionType.rightToLeft,
-                                child: new RegisterAddressScreen(),
-                                inheritTheme: true,
-                                duration: new Duration(
-                                  milliseconds: 350,
-                                ),
-                                ctx: context,
-                              ),
+                            pageTransition(
+                              context: context,
+                              screen: new RegisterAddressScreen(),
                             );
                           });
                         },
@@ -261,19 +242,10 @@ class _HomeTabState extends State<HomeTab> {
                                     return FlatButton(
                                       onPressed: () {
                                         model.addressSeted
-                                            ? Navigator.push(
-                                                context,
-                                                PageTransition(
-                                                  type: PageTransitionType
-                                                      .rightToLeft,
-                                                  child: WelcomeStoreScreen(
-                                                    storeData: purchasedStore,
-                                                  ),
-                                                  inheritTheme: true,
-                                                  duration: Duration(
-                                                    milliseconds: 350,
-                                                  ),
-                                                  ctx: context,
+                                            ? pageTransition(
+                                                context: context,
+                                                screen: WelcomeStoreScreen(
+                                                  storeData: purchasedStore,
                                                 ),
                                               )
                                             : loadAddres();
@@ -334,7 +306,7 @@ class _HomeTabState extends State<HomeTab> {
   }
 
   void loadAddres() {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.grey[100],
         shape: RoundedRectangleBorder(
@@ -369,19 +341,11 @@ class _HomeTabState extends State<HomeTab> {
                     ),
                   ),
                   onPressed: () {
-                    Scaffold.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     Timer(Duration(milliseconds: 500), () {
-                      Navigator.push(
-                        context,
-                        new PageTransition(
-                          type: PageTransitionType.rightToLeft,
-                          child: new RegisterAddressScreen(),
-                          inheritTheme: true,
-                          duration: new Duration(
-                            milliseconds: 350,
-                          ),
-                          ctx: context,
-                        ),
+                      pageTransition(
+                        context: context,
+                        screen: new RegisterAddressScreen(),
                       );
                     });
                   },

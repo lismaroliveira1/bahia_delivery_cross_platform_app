@@ -49,7 +49,7 @@ class DiscountCard extends StatelessWidget {
                           text,
                           docSnap.get("percent"),
                         );
-                        Scaffold.of(context).showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           content: Text(
                             "Desconto de ${docSnap.get("percent")}% aplicado!",
                             textAlign: TextAlign.center,
@@ -62,7 +62,7 @@ class DiscountCard extends StatelessWidget {
                         ));
                       } else {
                         UserModel.of(context).setCoupon(null, 0);
-                        Scaffold.of(context).showSnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
                               "Cupon não encontrado!",
