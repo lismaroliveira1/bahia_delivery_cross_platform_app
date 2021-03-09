@@ -1,5 +1,5 @@
+import 'package:bd_app_full/components/components.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
 import '../screens/screens.dart';
 
@@ -52,17 +52,9 @@ class _RegisterPartnerTabState extends State<RegisterPartnerTab> {
                   children: [
                     FlatButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: RegisterPartnerWithCPFScreen(),
-                            inheritTheme: true,
-                            duration: Duration(
-                              milliseconds: 350,
-                            ),
-                            ctx: context,
-                          ),
+                        pageTransition(
+                          context: context,
+                          screen: new RegisterPartnerWithCPFScreen(),
                         );
                       },
                       padding: EdgeInsets.zero,
@@ -86,17 +78,9 @@ class _RegisterPartnerTabState extends State<RegisterPartnerTab> {
                     ),
                     FlatButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: RegisterPartnerWithCNPJScreen(),
-                            inheritTheme: true,
-                            duration: Duration(
-                              milliseconds: 350,
-                            ),
-                            ctx: context,
-                          ),
+                        pageTransition(
+                          context: context,
+                          screen: new RegisterPartnerWithCNPJScreen(),
                         );
                       },
                       padding: EdgeInsets.zero,
