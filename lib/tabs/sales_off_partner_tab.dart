@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import '../components/components.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
 
@@ -48,17 +48,9 @@ class _SalesOffPartnerTabState extends State<SalesOffPartnerTab> {
                   ),
                   child: ListTile(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.rightToLeft,
-                          child: NewSalesOffPartnerScreen(),
-                          inheritTheme: true,
-                          duration: Duration(
-                            milliseconds: 350,
-                          ),
-                          ctx: context,
-                        ),
+                      pageTransition(
+                        context: context,
+                        screen: new NewSalesOffPartnerScreen(),
                       );
                     },
                     dense: true,
@@ -93,18 +85,10 @@ class _SalesOffPartnerTabState extends State<SalesOffPartnerTab> {
                                         )),
                                     child: ListTile(
                                       onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          PageTransition(
-                                            child: EditOffSaleScreen(offData),
-                                            type:
-                                                PageTransitionType.rightToLeft,
-                                            inheritTheme: true,
-                                            duration: Duration(
-                                              milliseconds: 350,
-                                            ),
-                                            ctx: context,
-                                          ),
+                                        pageTransition(
+                                          context: context,
+                                          screen:
+                                              new EditOffSaleScreen(offData),
                                         );
                                       },
                                       leading: Container(
