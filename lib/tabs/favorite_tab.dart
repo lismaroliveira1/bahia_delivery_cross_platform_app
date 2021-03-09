@@ -1,6 +1,6 @@
+import 'package:bd_app_full/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
@@ -62,18 +62,10 @@ class _FavoriteTabState extends State<FavoriteTab> {
                           child: FlatButton(
                             padding: EdgeInsets.zero,
                             onPressed: () {
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  type: PageTransitionType.rightToLeft,
-                                  child: WelcomeStoreScreen(
-                                    storeData: storeData,
-                                  ),
-                                  inheritTheme: true,
-                                  duration: Duration(
-                                    milliseconds: 350,
-                                  ),
-                                  ctx: context,
+                              pageTransition(
+                                context: context,
+                                screen: new WelcomeStoreScreen(
+                                  storeData: storeData,
                                 ),
                               );
                             },
@@ -116,18 +108,10 @@ class _FavoriteTabState extends State<FavoriteTab> {
                         child: FlatButton(
                           padding: EdgeInsets.zero,
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.rightToLeft,
-                                child: WelcomeStoreScreen(
-                                  storeData: storeData,
-                                ),
-                                inheritTheme: true,
-                                duration: Duration(
-                                  milliseconds: 350,
-                                ),
-                                ctx: context,
+                            pageTransition(
+                              context: context,
+                              screen: new WelcomeStoreScreen(
+                                storeData: storeData,
                               ),
                             );
                           },
