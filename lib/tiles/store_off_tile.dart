@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:page_transition/page_transition.dart';
 
 import '../data/data.dart';
 import '../screens/screens.dart';
@@ -20,23 +19,10 @@ class _StoreOffTileState extends State<StoreOffTile> {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: FlatButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            PageTransition(
-              type: PageTransitionType.rightToLeft,
-              child: SalesOffScreen(
-                widget.storeData,
-                widget.off,
-              ),
-              inheritTheme: true,
-              duration: Duration(
-                milliseconds: 350,
-              ),
-              ctx: context,
-            ),
-          );
-        },
+        onPressed: () => SalesOffScreen(
+          widget.storeData,
+          widget.off,
+        ),
         child: Container(
           decoration: BoxDecoration(
             boxShadow: [
