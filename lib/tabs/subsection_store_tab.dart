@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 
+import '../components/components.dart';
 import '../data/data.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
@@ -85,21 +85,14 @@ class _SubSectionStoreTabState extends State<SubSectionStoreTab> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: ListTile(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.rightToLeft,
-                          child: InsertNewSubSectionScreen(widget.subsections,
-                              widget.sectionId, widget.isFirstSection),
-                          inheritTheme: true,
-                          duration: Duration(
-                            milliseconds: 350,
-                          ),
-                          ctx: context,
-                        ),
-                      );
-                    },
+                    onTap: () => pageTransition(
+                      context: context,
+                      screen: new InsertNewSubSectionScreen(
+                        widget.subsections,
+                        widget.sectionId,
+                        widget.isFirstSection,
+                      ),
+                    ),
                     dense: true,
                     leading: Icon(Icons.add_circle),
                     title: Text("Nova Subseção"),
