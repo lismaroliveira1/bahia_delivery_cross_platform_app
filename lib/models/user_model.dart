@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import '../services/cielo_payment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat/dash_chat.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,6 +16,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:location/location.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import '../services/services.dart';
 import '../data/data.dart';
 
 const token = '635289558f18ba4c749d6928e8cd0ba7';
