@@ -1,19 +1,20 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:bd_app_full/blocs/register_partner_block.dart';
-import 'package:bd_app_full/data/delivery_man_data.dart';
-import 'package:bd_app_full/data/request_partner_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/register_address_screen.dart';
-import 'package:cnpj_cpf_formatter/cnpj_cpf_formatter.dart';
-import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import 'package:cnpj_cpf_formatter/cnpj_cpf_formatter.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+
+import '../blocs/blocs.dart';
+import '../data/data.dart';
+import '../models/models.dart';
+import '../screens/screens.dart';
 
 class BeAPartnerTab extends StatefulWidget {
   @override

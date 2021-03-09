@@ -1,5 +1,6 @@
-import 'package:bd_app_full/tabs/order_partner_tab.dart';
 import 'package:flutter/material.dart';
+
+import '../tabs/tabs.dart';
 
 class OrderPartnerScreen extends StatelessWidget {
   @override

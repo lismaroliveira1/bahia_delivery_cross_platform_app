@@ -1,5 +1,6 @@
-import 'package:bd_app_full/tabs/cart_list_tab.dart';
 import 'package:flutter/material.dart';
+
+import '../tabs/tabs.dart';
 
 class CartListScreen extends StatelessWidget {
   @override

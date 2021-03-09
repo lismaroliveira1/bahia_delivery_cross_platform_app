@@ -1,8 +1,9 @@
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/login_screen.dart';
-import 'package:bd_app_full/tiles/drawer_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../models/models.dart';
+import '../screens/screens.dart';
+import '../tiles/drawer_tile.dart';
 
 class CustomDrawer extends StatelessWidget {
   final PageController pageController;

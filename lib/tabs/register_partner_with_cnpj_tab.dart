@@ -1,13 +1,13 @@
-import 'package:bd_app_full/blocs/register_partner_block.dart';
-import 'package:bd_app_full/data/request_partner_data.dart';
 import 'package:cnpj_cpf_formatter/cnpj_cpf_formatter.dart';
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/register_address_screen.dart';
-import 'package:bd_app_full/screens/register_store_details_from_partner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+
+import '../blocs/blocs.dart';
+import '../data/data.dart';
+import '../models/models.dart';
+import '../screens/screens.dart';
 
 class RegisterPartnerWithCNPJTab extends StatefulWidget {
   @override

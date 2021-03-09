@@ -1,27 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:bd_app_full/data/cart_data.dart';
-import 'package:bd_app_full/data/cart_product.dart';
-import 'package:bd_app_full/data/category_data.dart';
-import 'package:bd_app_full/data/category_store_data.dart';
-import 'package:bd_app_full/data/combo_data.dart';
-import 'package:bd_app_full/data/coupon_data.dart';
-import 'package:bd_app_full/data/credit_debit_card_Item.dart';
-import 'package:bd_app_full/data/credit_debit_card_data.dart';
-import 'package:bd_app_full/data/delivery_man_data.dart';
-import 'package:bd_app_full/data/incremental_options_data.dart';
-import 'package:bd_app_full/data/offs_data.dart';
-import 'package:bd_app_full/data/order_data.dart';
-import 'package:bd_app_full/data/payment_form_data.dart';
-import 'package:bd_app_full/data/payment_on_delivery_date.dart';
-import 'package:bd_app_full/data/product_data.dart';
-import 'package:bd_app_full/data/request_partner_data.dart';
-import 'package:bd_app_full/data/store_data.dart';
-import 'package:bd_app_full/data/subsection_data.dart';
-import 'package:bd_app_full/data/user_data.dart';
-import 'package:bd_app_full/screens/address_data.dart';
-import 'package:bd_app_full/services/cielo_payment.dart';
+import '../services/cielo_payment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat/dash_chat.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -36,6 +16,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:location/location.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../data/data.dart';
 
 const token = '635289558f18ba4c749d6928e8cd0ba7';
 

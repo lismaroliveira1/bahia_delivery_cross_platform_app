@@ -1,15 +1,15 @@
 import 'dart:async';
 
-import 'package:bd_app_full/data/order_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/chat_order_partner_screen.dart';
-import 'package:bd_app_full/screens/details_user_order_screnn.dart';
-import 'package:bd_app_full/tabs/real_time_delivery_partner_tab.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../data/data.dart';
+import '../models/models.dart';
+import '../screens/screens.dart';
+import '../tabs/tabs.dart';
 
 class RealTimeDeliveryPartnerScreen extends StatefulWidget {
   final OrderData orderData;

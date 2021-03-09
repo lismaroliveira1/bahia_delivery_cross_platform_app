@@ -1,15 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:bd_app_full/elements/drawer_menu_item.dart';
-import 'package:bd_app_full/tabs/favorite_tab.dart';
-import 'package:bd_app_full/tabs/home_tab.dart';
-import 'package:bd_app_full/tabs/profile_tab.dart';
-import 'package:bd_app_full/tabs/search_tab.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+
+import '../elements/elements.dart';
+import '../tabs/tabs.dart';
 
 class HomeScreen extends StatefulWidget {
   final StreamController<DrawerItemEnum> streamController;

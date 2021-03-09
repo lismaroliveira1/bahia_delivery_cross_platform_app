@@ -1,5 +1,6 @@
-import 'package:bd_app_full/data/payment_on_delivery_date.dart';
 import 'package:flutter/material.dart';
+
+import '../data/data.dart';
 
 class PaymentOnDeliveryTile extends StatelessWidget {
   final PaymentOnDeliveryData paymentOnDeliveryData;

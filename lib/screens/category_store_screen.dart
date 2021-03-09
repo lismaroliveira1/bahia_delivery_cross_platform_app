@@ -1,7 +1,7 @@
-import 'package:bd_app_full/data/category_store_data.dart';
-import 'package:bd_app_full/data/store_data.dart';
-import 'package:bd_app_full/tabs/category_store_tab.dart';
+import '../tabs/category_store_tab.dart';
 import 'package:flutter/material.dart';
+
+import '../data/data.dart';
 
 class CategoryStoreScreen extends StatelessWidget {
   final StoreData storeData;

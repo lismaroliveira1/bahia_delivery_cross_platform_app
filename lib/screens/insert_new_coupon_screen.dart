@@ -1,5 +1,6 @@
-import 'package:bd_app_full/tabs/insert_new_coupon_tab.dart';
 import 'package:flutter/material.dart';
+
+import '../tabs/tabs.dart';
 
 class InsertNewCouponScreen extends StatelessWidget {
   @override

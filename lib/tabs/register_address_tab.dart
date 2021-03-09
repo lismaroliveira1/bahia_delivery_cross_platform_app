@@ -1,11 +1,12 @@
 import 'dart:async';
 
-import 'package:bd_app_full/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:google_place/google_place.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../models/models.dart';
 
 class RegisterAddressTab extends StatefulWidget {
   @override

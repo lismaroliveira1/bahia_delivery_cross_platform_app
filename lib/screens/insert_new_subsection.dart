@@ -1,6 +1,7 @@
-import 'package:bd_app_full/data/subsection_data.dart';
-import 'package:bd_app_full/tabs/insert_new_subsection_tab.dart';
 import 'package:flutter/material.dart';
+
+import '../data/data.dart';
+import '../tabs/tabs.dart';
 
 class InsertNewSubSectionScreen extends StatelessWidget {
   final List<SubSectionData> subsections;

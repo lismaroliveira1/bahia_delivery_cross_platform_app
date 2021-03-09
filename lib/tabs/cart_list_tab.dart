@@ -1,10 +1,12 @@
-import 'package:bd_app_full/data/store_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/welcome_store_screen.dart';
-import 'package:bd_app_full/tabs/cart_tab.dart';
 import 'package:flutter/material.dart';
+
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../data/data.dart';
+import '../models/models.dart';
+import '../screens/screens.dart';
+import '../tabs/tabs.dart';
 
 class CartListTab extends StatefulWidget {
   @override

@@ -1,12 +1,3 @@
-import 'package:bd_app_full/data/product_data.dart';
-import 'package:bd_app_full/data/store_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/cart_screen.dart';
-import 'package:bd_app_full/screens/category_store_screen.dart';
-import 'package:bd_app_full/screens/product_screen.dart';
-import 'package:bd_app_full/tiles/purchased_products_tile.dart';
-import 'package:bd_app_full/tiles/store_combo_tile.dart';
-import 'package:bd_app_full/tiles/store_off_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:geolocator/geolocator.dart';
@@ -14,6 +5,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
+
+import '../data/data.dart';
+import '../models/models.dart';
+import '../screens/screens.dart';
+import '../tiles/tiles.dart';
 
 class WelcomeStoreTab extends StatefulWidget {
   final StoreData storeData;

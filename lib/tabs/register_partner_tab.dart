@@ -1,7 +1,7 @@
-import 'package:bd_app_full/screens/register_partner_with_cnpj_screen.dart';
-import 'package:bd_app_full/screens/register_partner_with_cpf_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
+
+import '../screens/screens.dart';
 
 class RegisterPartnerTab extends StatefulWidget {
   @override

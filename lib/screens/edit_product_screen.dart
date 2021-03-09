@@ -1,6 +1,7 @@
-import 'package:bd_app_full/data/product_data.dart';
-import 'package:bd_app_full/tabs/edit_product_tab.dart';
 import 'package:flutter/material.dart';
+
+import '../data/data.dart';
+import '../tabs/tabs.dart';
 
 class EditProductScreen extends StatelessWidget {
   final ProductData productData;

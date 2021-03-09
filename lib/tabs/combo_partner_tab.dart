@@ -1,9 +1,9 @@
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/edit_combo_screen.dart';
-import 'package:bd_app_full/screens/new_combo_screnn.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../models/models.dart';
+import '../screens/screens.dart';
 
 class ComboPartnerTab extends StatefulWidget {
   @override

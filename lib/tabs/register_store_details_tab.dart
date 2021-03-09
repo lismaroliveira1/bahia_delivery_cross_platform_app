@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:bd_app_full/blocs/register_partner_block.dart';
-import 'package:bd_app_full/data/request_partner_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../blocs/blocs.dart';
+import '../data/data.dart';
+import '../models/models.dart';
 
 class RegisterStoreDetailsTab extends StatefulWidget {
   final RequestPartnerData requestPartnerData;

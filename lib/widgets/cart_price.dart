@@ -1,14 +1,15 @@
 import 'dart:async';
 
-import 'package:bd_app_full/data/store_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/payment_screen.dart';
-import 'package:bd_app_full/services/cielo_payment.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../data/data.dart';
+import '../models/models.dart';
+import '../screens/screens.dart';
+import '../services/services.dart';
 
 class CartPrice extends StatefulWidget {
   final StoreData storeData;

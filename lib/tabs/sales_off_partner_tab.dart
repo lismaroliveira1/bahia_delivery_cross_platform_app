@@ -1,9 +1,9 @@
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/screens/edit_off_sales_screen.dart';
-import 'package:bd_app_full/screens/new_off_partner_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../models/models.dart';
+import '../screens/screens.dart';
 
 class SalesOffPartnerTab extends StatefulWidget {
   @override

@@ -1,11 +1,12 @@
 import 'dart:io';
 
-import 'package:bd_app_full/data/user_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../data/data.dart';
+import '../models/models.dart';
 
 class SetupPartnerTab extends StatefulWidget {
   @override

@@ -1,10 +1,9 @@
 import 'dart:collection';
 
-import 'package:bd_app_full/data/combo_data.dart';
-import 'package:bd_app_full/data/delivery_man_data.dart';
-import 'package:bd_app_full/data/product_data.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash_chat/dash_chat.dart';
+
+import '../data/data.dart';
 
 class OrderData {
   String id;

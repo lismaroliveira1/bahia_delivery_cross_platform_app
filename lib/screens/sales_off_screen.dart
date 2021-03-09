@@ -1,7 +1,7 @@
-import 'package:bd_app_full/data/offs_data.dart';
-import 'package:bd_app_full/data/store_data.dart';
-import 'package:bd_app_full/tabs/sales_off_tab.dart';
 import 'package:flutter/material.dart';
+
+import '../data/data.dart';
+import '../tabs/tabs.dart';
 
 class SalesOffScreen extends StatelessWidget {
   final StoreData storeData;

@@ -1,14 +1,10 @@
-import 'package:bd_app_full/data/cart_product.dart';
-import 'package:bd_app_full/data/store_data.dart';
-import 'package:bd_app_full/models/user_model.dart';
-import 'package:bd_app_full/tiles/cart_tile.dart';
-import 'package:bd_app_full/tiles/combo_cart_tile.dart';
-import 'package:bd_app_full/widgets/cart_price.dart';
-import 'package:bd_app_full/widgets/discount_cart.dart';
-import 'package:bd_app_full/widgets/payment_cart.dart';
-import 'package:bd_app_full/widgets/ship_card.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+import '../data/data.dart';
+import '../models/models.dart';
+import '../tiles/tiles.dart';
+import '../widgets/widgets.dart';
 
 class CartTab extends StatefulWidget {
   final StoreData storeData;
