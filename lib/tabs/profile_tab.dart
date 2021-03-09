@@ -1,8 +1,8 @@
+import 'package:bd_app_full/components/components.dart';
 import 'package:bd_app_full/screens/store_home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
-import 'package:page_transition/page_transition.dart';
 
 import '../models/models.dart';
 import '../screens/screens.dart';
@@ -61,17 +61,9 @@ class _ProfileTabState extends State<ProfileTab> {
                     child: ListTile(
                       dense: true,
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: PaymentUserScreen(),
-                            inheritTheme: true,
-                            duration: Duration(
-                              milliseconds: 350,
-                            ),
-                            ctx: context,
-                          ),
+                        pageTransition(
+                          context: context,
+                          screen: new PaymentUserScreen(),
                         );
                       },
                       leading: Icon(
@@ -108,17 +100,9 @@ class _ProfileTabState extends State<ProfileTab> {
                     child: ListTile(
                       dense: true,
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: CouponScreen(),
-                            inheritTheme: true,
-                            duration: Duration(
-                              milliseconds: 350,
-                            ),
-                            ctx: context,
-                          ),
+                        pageTransition(
+                          context: context,
+                          screen: new CouponScreen(),
                         );
                       },
                       leading: Icon(
@@ -195,17 +179,9 @@ class _ProfileTabState extends State<ProfileTab> {
                               dense: true,
                               onTap: () {
                                 if (status == 1) {
-                                  Navigator.push(
-                                    context,
-                                    PageTransition(
-                                      type: PageTransitionType.rightToLeft,
-                                      child: StoreHomeScrenn(),
-                                      inheritTheme: true,
-                                      duration: Duration(
-                                        milliseconds: 350,
-                                      ),
-                                      ctx: context,
-                                    ),
+                                  pageTransition(
+                                    context: context,
+                                    screen: new StoreHomeScrenn(),
                                   );
                                 } else if (status == 3) {
                                   return showDialog(
@@ -221,18 +197,9 @@ class _ProfileTabState extends State<ProfileTab> {
                                       ),
                                       onOkButtonPressed: () {
                                         Navigator.of(context).pop();
-                                        Navigator.push(
-                                          context,
-                                          PageTransition(
-                                            type:
-                                                PageTransitionType.rightToLeft,
-                                            child: BeAPartnerScreen(),
-                                            inheritTheme: true,
-                                            duration: Duration(
-                                              milliseconds: 350,
-                                            ),
-                                            ctx: context,
-                                          ),
+                                        pageTransition(
+                                          context: context,
+                                          screen: new BeAPartnerScreen(),
                                         );
                                       },
                                       image: Image.asset(
@@ -257,17 +224,9 @@ class _ProfileTabState extends State<ProfileTab> {
                                     ),
                                   );
                                 } else if (status == 6) {
-                                  Navigator.push(
-                                    context,
-                                    PageTransition(
-                                      type: PageTransitionType.rightToLeft,
-                                      child: DeliveryManHomeScreen(),
-                                      inheritTheme: true,
-                                      duration: Duration(
-                                        milliseconds: 350,
-                                      ),
-                                      ctx: context,
-                                    ),
+                                  pageTransition(
+                                    context: context,
+                                    screen: new DeliveryManHomeScreen(),
                                   );
                                 }
                               },
@@ -302,17 +261,9 @@ class _ProfileTabState extends State<ProfileTab> {
                     child: ListTile(
                       dense: true,
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: UserChatListScreen(),
-                            inheritTheme: true,
-                            duration: Duration(
-                              milliseconds: 350,
-                            ),
-                            ctx: context,
-                          ),
+                        pageTransition(
+                          context: context,
+                          screen: new UserChatListScreen(),
                         );
                       },
                       leading: Icon(Icons.notifications_active),
@@ -347,17 +298,9 @@ class _ProfileTabState extends State<ProfileTab> {
                     child: ListTile(
                       dense: true,
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: NotificationSetupScreen(),
-                            inheritTheme: true,
-                            duration: Duration(
-                              milliseconds: 350,
-                            ),
-                            ctx: context,
-                          ),
+                        pageTransition(
+                          context: context,
+                          screen: new NotificationSetupScreen(),
                         );
                       },
                       leading: Icon(Icons.notifications_active),
@@ -392,17 +335,9 @@ class _ProfileTabState extends State<ProfileTab> {
                     child: ListTile(
                       dense: true,
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: OrderUserScreen(),
-                            inheritTheme: true,
-                            duration: Duration(
-                              milliseconds: 350,
-                            ),
-                            ctx: context,
-                          ),
+                        pageTransition(
+                          context: context,
+                          screen: new OrderUserScreen(),
                         );
                       },
                       leading: Icon(
@@ -439,17 +374,9 @@ class _ProfileTabState extends State<ProfileTab> {
                     child: ListTile(
                       dense: true,
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: SetupUserScreen(),
-                            inheritTheme: true,
-                            duration: Duration(
-                              milliseconds: 350,
-                            ),
-                            ctx: context,
-                          ),
+                        pageTransition(
+                          context: context,
+                          screen: OrderUserScreen(),
                         );
                       },
                       leading: Icon(
