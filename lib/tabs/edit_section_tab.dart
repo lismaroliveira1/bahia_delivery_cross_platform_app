@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:bd_app_full/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../data/data.dart';
@@ -206,20 +206,12 @@ class _EditSectionTabState extends State<EditSectionTab> {
                   ),
                   child: ListTile(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.rightToLeft,
-                          child: SubSectionStoreScren(
-                            widget.categoryStoreData.subSectionsList,
-                            widget.categoryStoreData.id,
-                            false,
-                          ),
-                          inheritTheme: true,
-                          duration: Duration(
-                            milliseconds: 350,
-                          ),
-                          ctx: context,
+                      pageTransition(
+                        context: context,
+                        screen: new SubSectionStoreScren(
+                          widget.categoryStoreData.subSectionsList,
+                          widget.categoryStoreData.id,
+                          false,
                         ),
                       );
                     },
