@@ -1,5 +1,5 @@
+import 'package:bd_app_full/components/components.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../data/delivery_man_data.dart';
@@ -69,17 +69,9 @@ class _DeliveryManHomeTabState extends State<DeliveryManHomeTab> {
                         ),
                         child: ListTile(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                child: ChatDeliveryManScreen(),
-                                type: PageTransitionType.rightToLeft,
-                                inheritTheme: true,
-                                ctx: context,
-                                duration: Duration(
-                                  milliseconds: 350,
-                                ),
-                              ),
+                            pageTransition(
+                              context: context,
+                              screen: new ChatDeliveryManScreen(),
                             );
                           },
                           leading: Icon(
@@ -102,17 +94,9 @@ class _DeliveryManHomeTabState extends State<DeliveryManHomeTab> {
                         ),
                         child: ListTile(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                child: RacerDeliveryManScreen(),
-                                type: PageTransitionType.rightToLeft,
-                                inheritTheme: true,
-                                ctx: context,
-                                duration: Duration(
-                                  milliseconds: 350,
-                                ),
-                              ),
+                            pageTransition(
+                              context: context,
+                              screen: new RacerDeliveryManScreen(),
                             );
                           },
                           leading: Icon(
@@ -135,16 +119,9 @@ class _DeliveryManHomeTabState extends State<DeliveryManHomeTab> {
                         ),
                         child: ListTile(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                  child: ProfileDeliveryManScreen(),
-                                  type: PageTransitionType.rightToLeft,
-                                  inheritTheme: true,
-                                  ctx: context,
-                                  duration: Duration(
-                                    milliseconds: 350,
-                                  )),
+                            pageTransition(
+                              context: context,
+                              screen: ProfileDeliveryManScreen(),
                             );
                           },
                           leading: Icon(
@@ -167,17 +144,9 @@ class _DeliveryManHomeTabState extends State<DeliveryManHomeTab> {
                         ),
                         child: ListTile(
                           onTap: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                child: SetupDeliveryManScreen(),
-                                type: PageTransitionType.rightToLeft,
-                                inheritTheme: true,
-                                ctx: context,
-                                duration: Duration(
-                                  milliseconds: 350,
-                                ),
-                              ),
+                            pageTransition(
+                              context: context,
+                              screen: new SetupDeliveryManScreen(),
                             );
                           },
                           leading: Icon(
