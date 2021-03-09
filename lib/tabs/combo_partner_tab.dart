@@ -1,5 +1,5 @@
+import 'package:bd_app_full/components/components.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../models/models.dart';
@@ -51,17 +51,9 @@ class _ComboPartnerTabState extends State<ComboPartnerTab> {
                   ),
                   child: ListTile(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          type: PageTransitionType.rightToLeft,
-                          child: NewComboScrenn(),
-                          inheritTheme: true,
-                          duration: Duration(
-                            milliseconds: 350,
-                          ),
-                          ctx: context,
-                        ),
+                      pageTransition(
+                        context: context,
+                        screen: new NewComboScrenn(),
                       );
                     },
                     dense: true,
@@ -112,17 +104,9 @@ class _ComboPartnerTabState extends State<ComboPartnerTab> {
                                 ),
                                 child: ListTile(
                                   onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      PageTransition(
-                                        type: PageTransitionType.rightToLeft,
-                                        child: EditComboScreen(combo),
-                                        inheritTheme: true,
-                                        duration: Duration(
-                                          milliseconds: 350,
-                                        ),
-                                        ctx: context,
-                                      ),
+                                    pageTransition(
+                                      context: context,
+                                      screen: new EditComboScreen(combo),
                                     );
                                   },
                                   title: Text(
