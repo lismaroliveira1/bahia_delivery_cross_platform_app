@@ -3,14 +3,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-
 import 'package:cnpj_cpf_formatter/cnpj_cpf_formatter.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
+import '../components/components.dart';
 import '../blocs/blocs.dart';
 import '../data/data.dart';
 import '../models/models.dart';
@@ -771,17 +770,9 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                         width: MediaQuery.of(context).size.width / 2.5,
                         child: FlatButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.rightToLeft,
-                                child: RegisterAddressScreen(),
-                                inheritTheme: true,
-                                duration: Duration(
-                                  milliseconds: 350,
-                                ),
-                                ctx: context,
-                              ),
+                            pageTransition(
+                              context: context,
+                              screen: RegisterAddressScreen(),
                             );
                           },
                           child: Column(
@@ -1466,17 +1457,9 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                         width: MediaQuery.of(context).size.width / 2.5,
                         child: FlatButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                type: PageTransitionType.rightToLeft,
-                                child: RegisterAddressScreen(),
-                                inheritTheme: true,
-                                duration: Duration(
-                                  milliseconds: 350,
-                                ),
-                                ctx: context,
-                              ),
+                            pageTransition(
+                              context: context,
+                              screen: RegisterAddressScreen(),
                             );
                           },
                           child: Column(
@@ -2216,17 +2199,9 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                     width: MediaQuery.of(context).size.width / 2.5,
                     child: FlatButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          PageTransition(
-                            type: PageTransitionType.rightToLeft,
-                            child: RegisterAddressScreen(),
-                            inheritTheme: true,
-                            duration: Duration(
-                              milliseconds: 350,
-                            ),
-                            ctx: context,
-                          ),
+                        pageTransition(
+                          context: context,
+                          screen: RegisterAddressScreen(),
                         );
                       },
                       child: Column(

@@ -1,6 +1,5 @@
+import 'package:bd_app_full/components/components.dart';
 import 'package:flutter/material.dart';
-
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../data/data.dart';
@@ -50,17 +49,9 @@ class _CartListTabState extends State<CartListTab> {
                         child: FlatButton(
                           padding: EdgeInsets.zero,
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              new PageTransition(
-                                type: PageTransitionType.rightToLeft,
-                                child: new CartTab(cartData.storeData),
-                                inheritTheme: true,
-                                duration: new Duration(
-                                  milliseconds: 350,
-                                ),
-                                ctx: context,
-                              ),
+                            pageTransition(
+                              context: context,
+                              screen: CartTab(cartData.storeData),
                             );
                           },
                           child: Row(
@@ -114,18 +105,10 @@ class _CartListTabState extends State<CartListTab> {
                                         storeData = store;
                                       }
                                     });
-                                    Navigator.push(
-                                      context,
-                                      new PageTransition(
-                                        type: PageTransitionType.rightToLeft,
-                                        child: new WelcomeStoreScreen(
-                                          storeData: storeData,
-                                        ),
-                                        inheritTheme: true,
-                                        duration: new Duration(
-                                          milliseconds: 350,
-                                        ),
-                                        ctx: context,
+                                    pageTransition(
+                                      context: context,
+                                      screen: new WelcomeStoreScreen(
+                                        storeData: storeData,
                                       ),
                                     );
                                   })
