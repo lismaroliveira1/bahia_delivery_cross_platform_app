@@ -1,9 +1,9 @@
-import 'package:bd_app_full/components/components.dart';
 import 'package:bd_app_full/screens/store_home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
 
+import '../components/components.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
 

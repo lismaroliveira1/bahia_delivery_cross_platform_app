@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import '../components/components.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
 
@@ -55,18 +55,10 @@ class _StoreCouponsTabState extends State<StoreCouponsTab> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: ListTile(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          child: InsertNewCouponScreen(),
-                          type: PageTransitionType.rightToLeft,
-                          inheritTheme: true,
-                          duration: Duration(milliseconds: 350),
-                          ctx: context,
-                        ),
-                      );
-                    },
+                    onTap: () => pageTransition(
+                      context: context,
+                      screen: new InsertNewCouponScreen(),
+                    ),
                     title: Text(
                       "Novo Cupom",
                     ),
@@ -110,18 +102,10 @@ class _StoreCouponsTabState extends State<StoreCouponsTab> {
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: ListTile(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      PageTransition(
-                                        child: EditCouponScrenn(coupon),
-                                        type: PageTransitionType.rightToLeft,
-                                        inheritTheme: true,
-                                        duration: Duration(milliseconds: 350),
-                                        ctx: context,
-                                      ),
-                                    );
-                                  },
+                                  onTap: () => pageTransition(
+                                    context: context,
+                                    screen: new EditCouponScrenn(coupon),
+                                  ),
                                   title: Text(
                                     coupon.title,
                                   ),

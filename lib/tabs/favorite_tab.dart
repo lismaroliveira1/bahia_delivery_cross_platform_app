@@ -1,9 +1,9 @@
-import 'package:bd_app_full/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import '../components/components.dart';
 import '../data/data.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';

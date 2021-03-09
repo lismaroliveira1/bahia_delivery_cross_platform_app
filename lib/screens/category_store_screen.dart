@@ -1,6 +1,6 @@
-import '../tabs/category_store_tab.dart';
 import 'package:flutter/material.dart';
 
+import '../tabs/tabs.dart';
 import '../data/data.dart';
 
 class CategoryStoreScreen extends StatelessWidget {

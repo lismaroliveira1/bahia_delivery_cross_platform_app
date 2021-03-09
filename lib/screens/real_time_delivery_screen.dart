@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:animated_button/animated_button.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mapbox_navigation/library.dart';

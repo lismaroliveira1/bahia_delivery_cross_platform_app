@@ -1,4 +1,3 @@
-export '../data/address_data.dart';
 export './be_a_partner_screen.dart';
 export './cart_screen.dart';
 export './carts_list_screen.dart';

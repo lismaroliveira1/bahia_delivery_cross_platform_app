@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../tabs/tabs.dart';
 import '../data/data.dart';
+import '../tabs/tabs.dart';
 
 class ProductStoreScreen extends StatelessWidget {
   final ProductData productData;

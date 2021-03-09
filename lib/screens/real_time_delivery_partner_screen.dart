@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:bd_app_full/components/components.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import '../components/components.dart';
 import '../data/data.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';

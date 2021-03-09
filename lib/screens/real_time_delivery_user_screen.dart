@@ -1,7 +1,7 @@
-import 'package:bd_app_full/components/components.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:flutter/material.dart';
 
+import '../components/components.dart';
 import '../tabs/tabs.dart';
 import '../screens/screens.dart';
 import '../data/data.dart';

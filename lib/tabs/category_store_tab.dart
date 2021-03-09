@@ -1,4 +1,3 @@
-import 'package:bd_app_full/components/components.dart';
 import 'package:flutter/material.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -6,6 +5,7 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:transparent_image/transparent_image.dart';
 
+import '../components/components.dart';
 import '../data/data.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
