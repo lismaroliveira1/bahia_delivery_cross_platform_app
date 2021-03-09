@@ -1,5 +1,5 @@
+import 'package:bd_app_full/components/components.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../data/data.dart';
@@ -70,18 +70,9 @@ class _PaymentUserTabState extends State<PaymentUserTab> {
                                       return IconButton(
                                           icon: Icon(Icons.add),
                                           onPressed: () {
-                                            Navigator.push(
-                                              context,
-                                              PageTransition(
-                                                type: PageTransitionType
-                                                    .rightToLeft,
-                                                child: PaymentScreen(),
-                                                inheritTheme: true,
-                                                duration: Duration(
-                                                  milliseconds: 500,
-                                                ),
-                                                ctx: context,
-                                              ),
+                                            pageTransition(
+                                              context: context,
+                                              screen: new PaymentScreen(),
                                             );
                                           });
                                     } else {
