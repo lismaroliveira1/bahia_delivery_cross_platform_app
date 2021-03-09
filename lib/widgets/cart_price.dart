@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import '../components/components.dart';
 import '../data/data.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
@@ -205,18 +205,9 @@ class _CartPriceState extends State<CartPrice> {
                                       onPressed: () async {
                                         if (!userModel.paymentSet) {
                                           _btnController.reset();
-                                          Navigator.push(
-                                            context,
-                                            PageTransition(
-                                              type: PageTransitionType
-                                                  .rightToLeft,
-                                              child: PaymentScreen(),
-                                              inheritTheme: true,
-                                              duration: Duration(
-                                                milliseconds: 350,
-                                              ),
-                                              ctx: context,
-                                            ),
+                                          pageTransition(
+                                            context: context,
+                                            screen: new PaymentScreen(),
                                           );
                                         } else {
                                           if (userModel.payOnApp) {
