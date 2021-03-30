@@ -1,94 +1,34 @@
 {
   "project_info": {
-    "project_number": "411754724192",
-    "firebase_url": "https://bahia-delivery-app-cp.firebaseio.com",
-    "project_id": "bahia-delivery-app-cp",
-    "storage_bucket": "bahia-delivery-app-cp.appspot.com"
+    "project_number": "96738572964",
+    "project_id": "delivery-app-6efcb",
+    "storage_bucket": "delivery-app-6efcb.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:411754724192:android:b29a3de213a1a3a1f5fc05",
+        "mobilesdk_app_id": "1:96738572964:android:1b74b130966acf336c4431",
         "android_client_info": {
-          "package_name": "br.com.bahiadelivery.app"
+          "package_name": "br.com.dionisiusdev.kdrastreios"
         }
       },
       "oauth_client": [
         {
-          "client_id": "411754724192-e5mtqasqrjago5ug5stnj2cl3107f425.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "br.com.bahiadelivery.app",
-            "certificate_hash": "71493d1fb0b9c0ad40b2c49c4a893a4af6c80bb5"
-          }
-        },
-        {
-          "client_id": "411754724192-ak9r4kgfr0nqmagq31gajf8m912o5qpk.apps.googleusercontent.com",
+          "client_id": "96738572964-dctb9o8jaqpm5vcpdcu8blr2dk9mc9ga.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s"
+          "current_key": "AIzaSyCgq3td05DBqZW98dKWEed12RYRIVufWQA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "411754724192-ak9r4kgfr0nqmagq31gajf8m912o5qpk.apps.googleusercontent.com",
+              "client_id": "96738572964-dctb9o8jaqpm5vcpdcu8blr2dk9mc9ga.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "411754724192-47gvsdco9batrabh5aabq11ptuedu3ke.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "br.com.bahiadelivery.app"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:411754724192:android:45a1878cb52154d0f5fc05",
-        "android_client_info": {
-          "package_name": "br.com.bahiadeliverymanager.app"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "411754724192-u1mg6ev74viu5grurnaggmb3b5up8mq6.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "br.com.bahiadeliverymanager.app",
-            "certificate_hash": "71493d1fb0b9c0ad40b2c49c4a893a4af6c80bb5"
-          }
-        },
-        {
-          "client_id": "411754724192-ak9r4kgfr0nqmagq31gajf8m912o5qpk.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBM1dpcPk1SFic6Frb2pDXcSlog9Qi9Y3s"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "411754724192-ak9r4kgfr0nqmagq31gajf8m912o5qpk.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "411754724192-47gvsdco9batrabh5aabq11ptuedu3ke.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "br.com.bahiadelivery.app"
-              }
             }
           ]
         }
