@@ -12,7 +12,7 @@ export './coupon_screen.dart';
 export './create_new_product_screen.dart';
 export './delivery_man_for_partner_screen.dart';
 export './delivery_man_home_screen.dart';
-export './details_user_order_screen.dart';
+export './details_user_order_screnn.dart';
 export './edit_combo_screen.dart';
 export './edit_coupon_screen.dart';
 export './edit_off_sales_screen.dart';
