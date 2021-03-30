@@ -105,13 +105,7 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        FlatButton(
-                                          padding: EdgeInsets.only(
-                                            left: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                18,
-                                          ),
+                                        TextButton(
                                           onPressed: () async {
                                             try {
                                               final _pickedFile =
@@ -141,13 +135,7 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                                             width: 50,
                                           ),
                                         ),
-                                        FlatButton(
-                                          padding: EdgeInsets.only(
-                                            right: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                18,
-                                          ),
+                                        TextButton(
                                           onPressed: () async {
                                             try {
                                               final _pickedFile =
@@ -276,7 +264,7 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                   padding: EdgeInsets.symmetric(
                     vertical: 8.0,
                   ),
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: () {
                       _onProductButtonPressed();
                     },
@@ -343,8 +331,7 @@ class _NewSalesOffPartnerTabState extends State<NewSalesOffPartnerTab> {
                 StreamBuilder<bool>(
                     stream: _partnerBloc.outSubmitedOff,
                     builder: (context, snapshot) {
-                      return FlatButton(
-                        padding: EdgeInsets.only(top: 20),
+                      return TextButton(
                         onPressed: snapshot.hasData
                             ? () {
                                 if (isProductSelected) {

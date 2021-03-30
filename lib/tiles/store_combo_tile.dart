@@ -28,7 +28,7 @@ class _StoreComboTileState extends State<StoreComboTile> {
     double imageSize = MediaQuery.of(context).size.width / 3.5;
     return Padding(
       padding: const EdgeInsets.all(4.0),
-      child: FlatButton(
+      child: TextButton(
         onPressed: () => pageTransition(
           context: context,
           screen: new ComboStoreScreen(

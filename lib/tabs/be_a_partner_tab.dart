@@ -192,10 +192,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              FlatButton(
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(
@@ -230,10 +227,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                   width: 50,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.only(
-                  right: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(
@@ -308,10 +302,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              FlatButton(
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(
@@ -342,10 +333,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                   width: 50,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.only(
-                  right: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(
@@ -450,7 +438,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    FlatButton(
+                    TextButton(
                       onPressed: () async {
                         _timer?.cancel();
                         await EasyLoading.show(
@@ -477,7 +465,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                         ),
                       ),
                     ),
-                    FlatButton(
+                    TextButton(
                       onPressed: () async {
                         _timer?.cancel();
                         await EasyLoading.show(
@@ -635,7 +623,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                             );
                           }),
                       Container(
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () {
                             return showDialog(
                               context: context,
@@ -693,11 +681,10 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                                 MainAxisAlignment.center,
                                             children: [
                                               Center(
-                                                child: FlatButton(
+                                                child: TextButton(
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
                                                   },
-                                                  padding: EdgeInsets.zero,
                                                   child: Container(
                                                     height: 40,
                                                     width:
@@ -768,7 +755,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width / 2.5,
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () {
                             pageTransition(
                               context: context,
@@ -853,8 +840,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                         MediaQuery.of(context).size.width / 3.2,
                                     child: Column(
                                       children: [
-                                        FlatButton(
-                                          padding: EdgeInsets.zero,
+                                        TextButton(
                                           onPressed: () {
                                             onPhotoDriverPressed();
                                           },
@@ -977,9 +963,8 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            FlatButton(
+                            TextButton(
                               onPressed: () {},
-                              padding: EdgeInsets.zero,
                               child: Container(
                                 height: 50,
                                 width: MediaQuery.of(context).size.width / 3.5,
@@ -1013,7 +998,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                     stream:
                                         _registerPartnerBloc.outSubmitValidCPF,
                                     builder: (context, snapshot) {
-                                      return FlatButton(
+                                      return TextButton(
                                         onPressed: snapshot.hasData
                                             ? () {
                                                 if (!isLocationChoosed &&
@@ -1068,7 +1053,6 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                                 }
                                               }
                                             : null,
-                                        padding: EdgeInsets.zero,
                                         child: model.isLoading
                                             ? Center(
                                                 child: Container(
@@ -1165,7 +1149,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    FlatButton(
+                    TextButton(
                       onPressed: () async {
                         _timer?.cancel();
                         await EasyLoading.show(
@@ -1177,7 +1161,6 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                           screen = 4;
                         });
                       },
-                      padding: EdgeInsets.zero,
                       child: Container(
                         height: 50,
                         width: MediaQuery.of(context).size.width / 3.5,
@@ -1196,7 +1179,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                         ),
                       ),
                     ),
-                    FlatButton(
+                    TextButton(
                       onPressed: () async {
                         _timer?.cancel();
                         await EasyLoading.show(
@@ -1208,7 +1191,6 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                           screen = 5;
                         });
                       },
-                      padding: EdgeInsets.zero,
                       child: Container(
                         height: 50,
                         width: MediaQuery.of(context).size.width / 3.5,
@@ -1321,7 +1303,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                             );
                           }),
                       Container(
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () {
                             return showDialog(
                               context: context,
@@ -1381,11 +1363,10 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                                 MainAxisAlignment.center,
                                             children: [
                                               Center(
-                                                child: FlatButton(
+                                                child: TextButton(
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
                                                   },
-                                                  padding: EdgeInsets.zero,
                                                   child: Container(
                                                     height: 40,
                                                     width:
@@ -1455,7 +1436,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                       ),
                       Container(
                         width: MediaQuery.of(context).size.width / 2.5,
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () {
                             pageTransition(
                               context: context,
@@ -1504,11 +1485,10 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            FlatButton(
+                            TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              padding: EdgeInsets.zero,
                               child: Container(
                                 height: 50,
                                 width: MediaQuery.of(context).size.width / 3.5,
@@ -1533,7 +1513,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                     stream:
                                         _registerPartnerBloc.outSubmitValidCPF,
                                     builder: (context, snapshot) {
-                                      return FlatButton(
+                                      return TextButton(
                                         onPressed: snapshot.hasData
                                             ? () async {
                                                 if (!isLocationChoosed &&
@@ -1574,7 +1554,6 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                                 }
                                               }
                                             : null,
-                                        padding: EdgeInsets.zero,
                                         child: Container(
                                           height: 50,
                                           width: MediaQuery.of(context)
@@ -1885,11 +1864,10 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            FlatButton(
+                            TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
                               },
-                              padding: EdgeInsets.zero,
                               child: Container(
                                 height: 50,
                                 width: MediaQuery.of(context).size.width / 3.5,
@@ -1912,7 +1890,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                               child: StreamBuilder<bool>(
                                 stream: _registerPartnerBloc.outSubmitValidSend,
                                 builder: (context, snapshot) {
-                                  return FlatButton(
+                                  return TextButton(
                                     onPressed: snapshot.hasData &&
                                             isCategorySelected &&
                                             isStoreOpenTimeSelected &&
@@ -1935,7 +1913,6 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                             //onButtonSendPressed();
                                           }
                                         : null,
-                                    padding: EdgeInsets.zero,
                                     child: Container(
                                       height: 50,
                                       width: MediaQuery.of(context).size.width /
@@ -2074,7 +2051,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                         );
                       }),
                   Container(
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () {
                         return showDialog(
                           context: context,
@@ -2125,11 +2102,10 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                             MainAxisAlignment.center,
                                         children: [
                                           Center(
-                                            child: FlatButton(
+                                            child: TextButton(
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
-                                              padding: EdgeInsets.zero,
                                               child: Container(
                                                 height: 40,
                                                 width: MediaQuery.of(context)
@@ -2197,7 +2173,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width / 2.5,
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () {
                         pageTransition(
                           context: context,
@@ -2246,9 +2222,8 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        FlatButton(
+                        TextButton(
                           onPressed: () {},
-                          padding: EdgeInsets.zero,
                           child: Container(
                             height: 50,
                             width: MediaQuery.of(context).size.width / 3.5,
@@ -2272,7 +2247,7 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                             return StreamBuilder<bool>(
                               stream: _registerPartnerBloc.outSubmitValidCNPJ,
                               builder: (context, snapshot) {
-                                return FlatButton(
+                                return TextButton(
                                   onPressed: snapshot.hasData &&
                                           isShippingDateSelected &&
                                           model
@@ -2304,7 +2279,6 @@ class _BeAPartnerTabState extends State<BeAPartnerTab> {
                                           });
                                         }
                                       : null,
-                                  padding: EdgeInsets.zero,
                                   child: Container(
                                     height: 50,
                                     width:

@@ -203,7 +203,7 @@ class _ProductStoreTabState extends State<ProductStoreTab> {
                     ],
                   ),
                 ),
-                FlatButton(
+                TextButton(
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.red,

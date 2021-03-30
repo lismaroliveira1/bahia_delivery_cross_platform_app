@@ -112,7 +112,7 @@ class _InsertNewCouponTabState extends State<InsertNewCouponTab> {
                   padding: const EdgeInsets.symmetric(
                     vertical: 8,
                   ),
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: () {
                       setState(() {
                         isPeriodChoosed = false;
@@ -182,7 +182,7 @@ class _InsertNewCouponTabState extends State<InsertNewCouponTab> {
                   child: StreamBuilder<bool>(
                       stream: _partnerBloc.outSubmitedOff,
                       builder: (context, snapshot) {
-                        return FlatButton(
+                        return TextButton(
                           onPressed: snapshot.hasData
                               ? () {
                                   if (isPeriodChoosed) {
@@ -206,7 +206,6 @@ class _InsertNewCouponTabState extends State<InsertNewCouponTab> {
                                   }
                                 }
                               : null,
-                          padding: EdgeInsets.zero,
                           child: Container(
                             height: 50,
                             width: 120,
@@ -278,11 +277,10 @@ class _InsertNewCouponTabState extends State<InsertNewCouponTab> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      FlatButton(
+                      TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        padding: EdgeInsets.zero,
                         child: Container(
                           height: 40,
                           width: MediaQuery.of(context).size.width / 4,
@@ -301,7 +299,7 @@ class _InsertNewCouponTabState extends State<InsertNewCouponTab> {
                           ),
                         ),
                       ),
-                      FlatButton(
+                      TextButton(
                         onPressed: () {
                           if (isPeriodChoosed) {
                             Navigator.of(context).pop();
@@ -318,7 +316,6 @@ class _InsertNewCouponTabState extends State<InsertNewCouponTab> {
                             );
                           }
                         },
-                        padding: EdgeInsets.zero,
                         child: Container(
                           height: 40,
                           width: MediaQuery.of(context).size.width / 4,

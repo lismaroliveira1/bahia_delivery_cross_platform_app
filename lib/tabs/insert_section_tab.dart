@@ -174,8 +174,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                             ),
                           ),
                           width: MediaQuery.of(context).size.width * 0.35,
-                          child: FlatButton(
-                            padding: EdgeInsets.zero,
+                          child: TextButton(
                             onPressed: () {
                               _onPositionPressed();
                             },
@@ -196,8 +195,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                           ),
                         ),
                         width: MediaQuery.of(context).size.width * 0.35,
-                        child: FlatButton(
-                          padding: EdgeInsets.zero,
+                        child: TextButton(
                           onPressed: () {
                             _onSizePressed();
                           },
@@ -256,8 +254,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       height: 45,
-                      child: FlatButton(
-                        padding: EdgeInsets.zero,
+                      child: TextButton(
                         onPressed: snapshot.hasData
                             ? () {
                                 if (!isImageChoosed) {
@@ -332,10 +329,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              FlatButton(
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(
@@ -363,10 +357,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                   width: 50,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.only(
-                  right: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(
@@ -430,8 +421,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                   color: Colors.black54,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.zero,
+              TextButton(
                 onPressed: () {
                   setState(() {
                     x = 1;
@@ -455,8 +445,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                   color: Colors.black54,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.zero,
+              TextButton(
                 onPressed: () {
                   setState(() {
                     x = 1;
@@ -480,8 +469,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                   color: Colors.black54,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.zero,
+              TextButton(
                 onPressed: () {
                   setState(() {
                     x = 2;
@@ -505,8 +493,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                   color: Colors.black54,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.zero,
+              TextButton(
                 onPressed: () {
                   setState(() {
                     x = 2;
@@ -593,7 +580,6 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                       ),
                       Expanded(
                         child: ListView.builder(
-                          padding: EdgeInsets.zero,
                           itemCount: model.sectionsStorePartnerList.length + 1,
                           itemBuilder: (context, index) {
                             return Padding(
@@ -601,7 +587,7 @@ class _InsertNewSectionTabState extends State<InsertNewSectionTab> {
                                 vertical: 4,
                                 horizontal: 8,
                               ),
-                              child: FlatButton(
+                              child: TextButton(
                                 onPressed: () {
                                   setState(() {
                                     position = index + 1;

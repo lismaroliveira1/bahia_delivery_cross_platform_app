@@ -38,7 +38,7 @@ class _CreditDebitCardTileNBState extends State<CreditDebitCardTileNB> {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return TextButton(
       onPressed: () {
         /* Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => PaymentScreen(),

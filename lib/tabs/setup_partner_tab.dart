@@ -273,10 +273,7 @@ class _SetupPartnerTabState extends State<SetupPartnerTab> {
                           ),
                         ),
                       ),
-                      FlatButton(
-                        padding: EdgeInsets.only(
-                          bottom: 12,
-                        ),
+                      TextButton(
                         onPressed: () {},
                         child: Container(
                           width: _imageSize,
@@ -322,10 +319,7 @@ class _SetupPartnerTabState extends State<SetupPartnerTab> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              FlatButton(
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(
@@ -357,10 +351,7 @@ class _SetupPartnerTabState extends State<SetupPartnerTab> {
                   width: 50,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.only(
-                  right: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(

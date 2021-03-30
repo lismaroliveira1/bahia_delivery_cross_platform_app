@@ -193,7 +193,6 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                           vertical: 2.0,
                         ),
                         child: ListTile(
-                          contentPadding: EdgeInsets.zero,
                           subtitle: Text(
                             widget.orderData.clientAddress,
                             textAlign: TextAlign.center,
@@ -366,8 +365,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                           : Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: <Widget>[
-                                FlatButton(
-                                  padding: EdgeInsets.zero,
+                                TextButton(
                                   onPressed: status == 1
                                       ? () async {
                                           UserModel.of(context)
@@ -390,8 +388,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                                   child:
                                       _buildCircle("1", firtstatus, status, 1),
                                 ),
-                                FlatButton(
-                                  padding: EdgeInsets.zero,
+                                TextButton(
                                   onPressed: status == 2
                                       ? () async {
                                           if (snapshot.data["deliveryMan"] ==
@@ -435,7 +432,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                                   child: _buildCircle(
                                       "2", secondStatus, status, 2),
                                 ),
-                                FlatButton(
+                                TextButton(
                                     onPressed: () {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
@@ -498,7 +495,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                                                         MainAxisAlignment
                                                             .spaceBetween,
                                                     children: [
-                                                      FlatButton(
+                                                      TextButton(
                                                         onPressed: () {
                                                           ScaffoldMessenger.of(
                                                                   context)
@@ -527,7 +524,7 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
                                                           ),
                                                         ),
                                                       ),
-                                                      FlatButton(
+                                                      TextButton(
                                                         onPressed: () {
                                                           ScaffoldMessenger.of(
                                                                   context)
@@ -672,7 +669,6 @@ class _OrderPartnerTileState extends State<OrderPartnerTile> {
             (combo) => Column(
               children: [
                 ListTile(
-                  contentPadding: EdgeInsets.zero,
                   dense: true,
                   title: Text(
                     combo.quantity.toString() +

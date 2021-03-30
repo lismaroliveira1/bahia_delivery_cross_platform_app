@@ -21,7 +21,7 @@ class _ChatUserOrderTabState extends State<ChatUserOrderTab> {
   bool isImageChoosed = false;
   final picker = ImagePicker();
   final GlobalKey<DashChatState> _chatViewKey = GlobalKey<DashChatState>();
-  List<ChatMessage> messages = List<ChatMessage>();
+  List<ChatMessage> messages = [];
   bool isComposing;
   ChatUser user;
   ChatUser store;
@@ -65,7 +65,6 @@ class _ChatUserOrderTabState extends State<ChatUserOrderTab> {
             ),
           ),
           ListTile(
-            contentPadding: EdgeInsets.zero,
             title: Text(
               widget.orderData.storeName,
               style: TextStyle(
@@ -194,10 +193,7 @@ class _ChatUserOrderTabState extends State<ChatUserOrderTab> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              FlatButton(
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(
@@ -230,10 +226,7 @@ class _ChatUserOrderTabState extends State<ChatUserOrderTab> {
                   width: 50,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.only(
-                  right: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(

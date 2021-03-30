@@ -69,7 +69,7 @@ class _SetDeliveryManTabState extends State<SetDeliveryManTab> {
                     crossAxisSpacing: 12,
                     children: model.deliveryMans
                         .map(
-                          (delivery) => FlatButton(
+                          (delivery) => TextButton(
                             onPressed: () {
                               model.setDeliveryManToOrder(
                                 deliveryManData: delivery,
@@ -78,7 +78,6 @@ class _SetDeliveryManTabState extends State<SetDeliveryManTab> {
                                 onFail: _onFail,
                               );
                             },
-                            padding: EdgeInsets.zero,
                             child: Card(
                               elevation: 8,
                               child: Container(

@@ -306,9 +306,8 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          FlatButton(
+                          TextButton(
                             onPressed: () {},
-                            padding: EdgeInsets.zero,
                             child: Container(
                               height: 50,
                               width: MediaQuery.of(context).size.width / 3.5,
@@ -330,7 +329,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                           StreamBuilder<bool>(
                             stream: _registerPartnerBloc.outSubmitValidSend,
                             builder: (context, snapshot) {
-                              return FlatButton(
+                              return TextButton(
                                 onPressed: snapshot.hasData &&
                                         isCategorySelected &&
                                         isStoreOpenTimeSelected &&
@@ -353,7 +352,6 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                                         //onButtonSendPressed();
                                       }
                                     : null,
-                                padding: EdgeInsets.zero,
                                 child: Container(
                                   height: 50,
                                   width:
@@ -427,10 +425,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              FlatButton(
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -468,10 +463,7 @@ class _RegisterStoreDetailsTabState extends State<RegisterStoreDetailsTab> {
                   width: 50,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.only(
-                  right: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();

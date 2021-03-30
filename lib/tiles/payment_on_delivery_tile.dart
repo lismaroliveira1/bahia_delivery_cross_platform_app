@@ -7,7 +7,7 @@ class PaymentOnDeliveryTile extends StatelessWidget {
   PaymentOnDeliveryTile(this.paymentOnDeliveryData);
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return TextButton(
       onPressed: () {
         /*Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => PaymentScreen(),

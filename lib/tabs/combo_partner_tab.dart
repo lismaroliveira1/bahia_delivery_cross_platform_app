@@ -89,7 +89,6 @@ class _ComboPartnerTabState extends State<ComboPartnerTab> {
                 } else {
                   return Expanded(
                     child: ListView(
-                      padding: EdgeInsets.zero,
                       children: model.comboStoreList
                           .map(
                             (combo) => Padding(

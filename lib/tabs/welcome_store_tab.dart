@@ -260,13 +260,11 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                                   child: Container(
                                     height: 140,
                                     child: ListView(
-                                        padding: EdgeInsets.zero,
                                         scrollDirection: Axis.horizontal,
                                         children: widget
                                             .storeData.purchasedProducts
                                             .map(
-                                              (purchased) => FlatButton(
-                                                padding: EdgeInsets.zero,
+                                              (purchased) => TextButton(
                                                 onPressed: () {
                                                   Navigator.push(
                                                     context,
@@ -319,7 +317,6 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                   ),
                   Expanded(
                     child: StaggeredGridView.count(
-                      padding: EdgeInsets.zero,
                       crossAxisCount: 2,
                       mainAxisSpacing: 2.0,
                       crossAxisSpacing: 3.0,
@@ -342,7 +339,7 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                                   category.x;
                           return Card(
                             elevation: 4,
-                            child: FlatButton(
+                            child: TextButton(
                               onPressed: () {
                                 Navigator.push(
                                   context,
@@ -360,7 +357,6 @@ class _WelcomeStoreTabState extends State<WelcomeStoreTab> {
                                   ),
                                 );
                               },
-                              padding: EdgeInsets.zero,
                               child: Center(
                                 child: Column(
                                   children: [

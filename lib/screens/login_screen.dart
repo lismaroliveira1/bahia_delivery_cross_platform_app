@@ -109,9 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Container(
                               height: 50,
                               width: 145,
-                              child: RaisedButton(
-                                padding: EdgeInsets.zero,
-                                color: Colors.white,
+                              child: ElevatedButton(
                                 child: ScopedModelDescendant<UserModel>(
                                   builder: (context, child, model) {
                                     if (model.isLoading) {
@@ -128,7 +126,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     }
                                   },
                                 ),
-                                textColor: Colors.red,
                                 onPressed: snapshot.hasData
                                     ? () {
                                         UserModel.of(context).signIn(
@@ -139,8 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                         );
                                       }
                                     : null,
-                                disabledColor: Colors.grey,
-                                disabledTextColor: Colors.black,
                               ),
                             ),
                           );
@@ -161,15 +156,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         children: <Widget>[
                           ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: RaisedButton(
+                            child: ElevatedButton(
                               onPressed: () async {
                                 UserModel.of(context).signInWithGoogle(
                                   onSuccess: _onSuccess,
                                   onFail: _onFailGoogle,
                                 );
                               },
-                              shape: StadiumBorder(),
-                              padding: EdgeInsets.zero,
                               child: Container(
                                 child: Image.asset(
                                   'images/google_signs_in.png',
@@ -183,15 +176,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           Spacer(),
                           ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: RaisedButton(
-                              shape: new RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(15)),
+                            child: ElevatedButton(
                               onPressed: () async {
                                 UserModel.of(context).signInWithFacebook(
                                     onSuccess: _onSuccess,
                                     onFail: _onFailFacebook);
                               },
-                              padding: EdgeInsets.zero,
                               child: Container(
                                 child: Image.asset(
                                   'images/facebook_sign_in.png',
@@ -216,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           "Não tem conta ainda?",
                           style: TextStyle(fontSize: 18, color: Colors.white),
                         ),
-                        FlatButton(
+                        TextButton(
                           child: Text(
                             "Registre-se",
                             style: TextStyle(

@@ -69,8 +69,7 @@ class _InsertNewSubSectionTabState extends State<InsertNewSubSectionTab> {
                       color: Colors.black38,
                     ),
                   ),
-                  child: FlatButton(
-                    padding: EdgeInsets.zero,
+                  child: TextButton(
                     onPressed: () {
                       _onPositionButtonPressed();
                     },
@@ -82,7 +81,7 @@ class _InsertNewSubSectionTabState extends State<InsertNewSubSectionTab> {
                 padding: EdgeInsets.symmetric(
                   vertical: 16.0,
                 ),
-                child: FlatButton(
+                child: TextButton(
                   onPressed: () {
                     final subSectionData = SubSectionData(
                       order: order,

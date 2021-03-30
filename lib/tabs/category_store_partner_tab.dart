@@ -93,7 +93,6 @@ class _CategoryStorePartnerTabState extends State<CategoryStorePartnerTab> {
                 } else {
                   return Expanded(
                     child: ListView(
-                      padding: EdgeInsets.zero,
                       children: model.sectionsStorePartnerList.map((section) {
                         return Padding(
                           padding: EdgeInsets.symmetric(

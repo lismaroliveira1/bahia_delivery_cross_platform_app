@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import '../components/components.dart';
 import '../data/data.dart';
 
-import '../data/data.dart';
-
 class OrderTile extends StatefulWidget {
   final OrderData orderData;
   final Widget screen;
@@ -26,8 +24,7 @@ class _OrderTileState extends State<OrderTile> {
     double _mediaSize = MediaQuery.of(context).size.width / 4;
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: FlatButton(
-        padding: EdgeInsets.zero,
+      child: TextButton(
         onPressed: () => pageTransition(
           context: context,
           screen: widget.screen,
@@ -220,7 +217,6 @@ class _OrderTileState extends State<OrderTile> {
       products.add(product);
     }
     return ListTile(
-      contentPadding: EdgeInsets.zero,
       dense: true,
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

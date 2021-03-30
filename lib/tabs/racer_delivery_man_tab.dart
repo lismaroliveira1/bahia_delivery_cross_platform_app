@@ -76,8 +76,7 @@ class _RacerDeliveryManTabState extends State<RacerDeliveryManTab> {
                                 color: Colors.black54,
                               ),
                             ),
-                            child: FlatButton(
-                              padding: EdgeInsets.zero,
+                            child: TextButton(
                               onPressed: () {
                                 pageTransition(
                                   context: context,

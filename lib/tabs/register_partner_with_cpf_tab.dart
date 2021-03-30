@@ -120,7 +120,7 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                           );
                         }),
                     Container(
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: () {
                           return showDialog(
                             context: context,
@@ -182,11 +182,10 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Center(
-                                              child: FlatButton(
+                                              child: TextButton(
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                padding: EdgeInsets.zero,
                                                 child: Container(
                                                   height: 40,
                                                   width: MediaQuery.of(context)
@@ -255,7 +254,7 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width / 2.5,
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: () {
                           Navigator.push(
                             context,
@@ -312,9 +311,8 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          FlatButton(
+                          TextButton(
                             onPressed: () {},
-                            padding: EdgeInsets.zero,
                             child: Container(
                               height: 50,
                               width: MediaQuery.of(context).size.width / 3.5,
@@ -339,7 +337,7 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                                   stream:
                                       _registerPartnerBloc.outSubmitValidCPF,
                                   builder: (context, snapshot) {
-                                    return FlatButton(
+                                    return TextButton(
                                       onPressed: snapshot.hasData
                                           ? () {
                                               if (!isLocationChoosed &&
@@ -383,7 +381,6 @@ class _RegisterPartnerWithCPFTabState extends State<RegisterPartnerWithCPFTab> {
                                               }
                                             }
                                           : null,
-                                      padding: EdgeInsets.zero,
                                       child: Container(
                                         height: 50,
                                         width:

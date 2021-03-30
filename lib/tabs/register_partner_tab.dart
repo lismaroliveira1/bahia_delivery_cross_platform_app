@@ -50,14 +50,13 @@ class _RegisterPartnerTabState extends State<RegisterPartnerTab> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    FlatButton(
+                    TextButton(
                       onPressed: () {
                         pageTransition(
                           context: context,
                           screen: new RegisterPartnerWithCPFScreen(),
                         );
                       },
-                      padding: EdgeInsets.zero,
                       child: Container(
                         height: 50,
                         width: MediaQuery.of(context).size.width / 3.5,
@@ -76,14 +75,13 @@ class _RegisterPartnerTabState extends State<RegisterPartnerTab> {
                         ),
                       ),
                     ),
-                    FlatButton(
+                    TextButton(
                       onPressed: () {
                         pageTransition(
                           context: context,
                           screen: new RegisterPartnerWithCNPJScreen(),
                         );
                       },
-                      padding: EdgeInsets.zero,
                       child: Container(
                         height: 50,
                         width: MediaQuery.of(context).size.width / 3.5,

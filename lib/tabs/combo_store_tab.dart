@@ -176,7 +176,6 @@ class _ComboStoreTabState extends State<ComboStoreTab> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ListView(
-                        padding: EdgeInsets.zero,
                         children: widget.comboData.products
                             .map((product) => Container(
                                   height: 100,
@@ -299,7 +298,7 @@ class _ComboStoreTabState extends State<ComboStoreTab> {
                             ],
                           ),
                         ),
-                        FlatButton(
+                        TextButton(
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.red,

@@ -59,8 +59,7 @@ class _FavoriteTabState extends State<FavoriteTab> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Card(
-                          child: FlatButton(
-                            padding: EdgeInsets.zero,
+                          child: TextButton(
                             onPressed: () {
                               pageTransition(
                                 context: context,
@@ -105,8 +104,7 @@ class _FavoriteTabState extends State<FavoriteTab> {
                       );
                     } else {
                       return Card(
-                        child: FlatButton(
-                          padding: EdgeInsets.zero,
+                        child: TextButton(
                           onPressed: () {
                             pageTransition(
                               context: context,

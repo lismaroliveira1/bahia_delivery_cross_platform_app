@@ -69,9 +69,8 @@ class _DeliveryManForPartnerTabState extends State<DeliveryManForPartnerTab> {
                               crossAxisSpacing: 12,
                               children: model.deliveryMans
                                   .map(
-                                    (delivery) => FlatButton(
+                                    (delivery) => TextButton(
                                       onPressed: () {},
-                                      padding: EdgeInsets.zero,
                                       child: Card(
                                         color: Colors.white,
                                         elevation: 8,

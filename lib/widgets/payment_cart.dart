@@ -21,8 +21,7 @@ class _PaymentCardState extends State<PaymentCard> {
           width: 0.0,
         );
       } else {
-        return FlatButton(
-          padding: EdgeInsets.zero,
+        return TextButton(
           onPressed: () {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             Duration(seconds: 10);

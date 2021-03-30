@@ -126,13 +126,7 @@ class _CreateProductTabState extends State<CreateProductTab> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          FlatButton(
-                                            padding: EdgeInsets.only(
-                                              left: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  18,
-                                            ),
+                                          TextButton(
                                             onPressed: () async {
                                               try {
                                                 final _pickedFile =
@@ -162,13 +156,7 @@ class _CreateProductTabState extends State<CreateProductTab> {
                                               width: 50,
                                             ),
                                           ),
-                                          FlatButton(
-                                            padding: EdgeInsets.only(
-                                              right: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  18,
-                                            ),
+                                          TextButton(
                                             onPressed: () async {
                                               try {
                                                 final _pickedFile =
@@ -317,7 +305,7 @@ class _CreateProductTabState extends State<CreateProductTab> {
                         padding: EdgeInsets.symmetric(
                           vertical: 4.0,
                         ),
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () {
                             _onSectionPressed();
                           },
@@ -341,7 +329,7 @@ class _CreateProductTabState extends State<CreateProductTab> {
                         padding: EdgeInsets.symmetric(
                           vertical: 4.0,
                         ),
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () {
                             _onSubSectionPressed();
                           },
@@ -370,7 +358,7 @@ class _CreateProductTabState extends State<CreateProductTab> {
                     child: StreamBuilder<bool>(
                         stream: _partnerBloc.outSubmitedProduct,
                         builder: (context, snapshot) {
-                          return FlatButton(
+                          return TextButton(
                             onPressed: snapshot.hasData
                                 ? () {
                                     productData.productTitle =

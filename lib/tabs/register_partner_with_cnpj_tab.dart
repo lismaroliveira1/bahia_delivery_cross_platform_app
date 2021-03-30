@@ -120,7 +120,7 @@ class _RegisterPartnerWithCNPJTabState
                         );
                       }),
                   Container(
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () {
                         return showDialog(
                           context: context,
@@ -175,11 +175,10 @@ class _RegisterPartnerWithCNPJTabState
                                             MainAxisAlignment.center,
                                         children: [
                                           Center(
-                                            child: FlatButton(
+                                            child: TextButton(
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
-                                              padding: EdgeInsets.zero,
                                               child: Container(
                                                 height: 40,
                                                 width: MediaQuery.of(context)
@@ -247,7 +246,7 @@ class _RegisterPartnerWithCNPJTabState
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width / 2.5,
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () {
                         pageTransition(
                           context: context,
@@ -297,9 +296,8 @@ class _RegisterPartnerWithCNPJTabState
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        FlatButton(
+                        TextButton(
                           onPressed: () {},
-                          padding: EdgeInsets.zero,
                           child: Container(
                             height: 50,
                             width: MediaQuery.of(context).size.width / 3.5,
@@ -323,7 +321,7 @@ class _RegisterPartnerWithCNPJTabState
                             return StreamBuilder<bool>(
                               stream: _registerPartnerBloc.outSubmitValidCNPJ,
                               builder: (context, snapshot) {
-                                return FlatButton(
+                                return TextButton(
                                   onPressed: snapshot.hasData &&
                                           isShippingDateSelected &&
                                           model
@@ -347,7 +345,6 @@ class _RegisterPartnerWithCNPJTabState
                                           );
                                         }
                                       : null,
-                                  padding: EdgeInsets.zero,
                                   child: Container(
                                     height: 50,
                                     width:

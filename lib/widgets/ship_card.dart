@@ -39,7 +39,6 @@ class ShipCard extends StatelessWidget {
                 color: Colors.grey,
               ),
               trailing: IconButton(
-                padding: EdgeInsets.zero,
                 icon: Icon(
                   Icons.add,
                   color: Colors.grey,

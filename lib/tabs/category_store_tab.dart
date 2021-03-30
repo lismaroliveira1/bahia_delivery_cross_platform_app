@@ -122,7 +122,6 @@ class _CategoryStoreTabState extends State<CategoryStoreTab> {
                         element.categoryId == widget.categoryStoreData.id,
                   )
                   .toList(),
-              padding: EdgeInsets.zero,
               groupBy: (element) => element.group,
               useStickyGroupSeparators: false,
               groupSeparatorBuilder: (String value) => Container(
@@ -227,8 +226,7 @@ class _CategoryStoreTabState extends State<CategoryStoreTab> {
               if (model.cartProducts.length > 0 && hasProductInCart) {
                 return Positioned(
                   bottom: 0,
-                  child: FlatButton(
-                    padding: EdgeInsets.zero,
+                  child: TextButton(
                     onPressed: () {
                       pageTransition(
                         context: context,

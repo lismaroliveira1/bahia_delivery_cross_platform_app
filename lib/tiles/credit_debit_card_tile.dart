@@ -10,8 +10,7 @@ class CreditDebitCardTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(8.0),
-      child: FlatButton(
-        padding: EdgeInsets.zero,
+      child: TextButton(
         onPressed: () {
           UserModel.of(context).setCurrentCrediCard(creditDebitCardData);
           Navigator.of(context).pop();

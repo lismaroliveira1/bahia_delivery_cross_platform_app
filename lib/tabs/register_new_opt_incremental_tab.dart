@@ -90,13 +90,7 @@ class _RegisterNewOptIncrementTabState
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        FlatButton(
-                                          padding: EdgeInsets.only(
-                                            left: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                18,
-                                          ),
+                                        TextButton(
                                           onPressed: () async {
                                             try {
                                               final _pickedFile =
@@ -126,13 +120,7 @@ class _RegisterNewOptIncrementTabState
                                             width: 50,
                                           ),
                                         ),
-                                        FlatButton(
-                                          padding: EdgeInsets.only(
-                                            left: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                18,
-                                          ),
+                                        TextButton(
                                           onPressed: () async {
                                             try {
                                               final _pickedFile =
@@ -239,7 +227,7 @@ class _RegisterNewOptIncrementTabState
                               ),
                             );
                           } else {
-                            return FlatButton(
+                            return TextButton(
                               onPressed: () {
                                 final int maxQuantity =
                                     int.parse(maxQuantityController.text);

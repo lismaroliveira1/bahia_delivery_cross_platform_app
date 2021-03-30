@@ -6,10 +6,6 @@ import '../data/data.dart';
 import '../models/models.dart';
 import '../screens/screens.dart';
 
-import '../data/data.dart';
-import '../models/models.dart';
-import '../screens/screens.dart';
-
 class SearchTab extends StatefulWidget {
   @override
   _SearchTabState createState() => _SearchTabState();

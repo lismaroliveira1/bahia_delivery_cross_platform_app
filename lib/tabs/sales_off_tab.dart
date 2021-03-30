@@ -280,7 +280,7 @@ class _SalesOffTabState extends State<SalesOffTab> {
                         ),
                       );
                     } else {
-                      return FlatButton(
+                      return TextButton(
                         onPressed: () {
                           model.insertOffCart(
                             offData: offCartData,

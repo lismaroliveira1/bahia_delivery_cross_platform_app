@@ -104,13 +104,7 @@ class _NewComboTabState extends State<NewComboTab> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        FlatButton(
-                                          padding: EdgeInsets.only(
-                                            left: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                18,
-                                          ),
+                                        TextButton(
                                           onPressed: () async {
                                             try {
                                               final _pickedFile =
@@ -140,13 +134,7 @@ class _NewComboTabState extends State<NewComboTab> {
                                             width: 50,
                                           ),
                                         ),
-                                        FlatButton(
-                                          padding: EdgeInsets.only(
-                                            right: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                18,
-                                          ),
+                                        TextButton(
                                           onPressed: () async {
                                             try {
                                               final _pickedFile =
@@ -275,7 +263,7 @@ class _NewComboTabState extends State<NewComboTab> {
                   padding: EdgeInsets.symmetric(
                     vertical: 4.0,
                   ),
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: () {
                       _onProductButtonPressed();
                     },
@@ -344,8 +332,7 @@ class _NewComboTabState extends State<NewComboTab> {
                 StreamBuilder<bool>(
                     stream: _partnerBloc.outSubmitedOff,
                     builder: (context, snapshot) {
-                      return FlatButton(
-                        padding: EdgeInsets.only(top: 20, bottom: 20),
+                      return TextButton(
                         onPressed: snapshot.hasData
                             ? () {
                                 if (isProductConfigured) {

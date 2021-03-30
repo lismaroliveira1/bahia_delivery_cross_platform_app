@@ -46,8 +46,7 @@ class _CartListTabState extends State<CartListTab> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(6),
                         ),
-                        child: FlatButton(
-                          padding: EdgeInsets.zero,
+                        child: TextButton(
                           onPressed: () {
                             pageTransition(
                               context: context,

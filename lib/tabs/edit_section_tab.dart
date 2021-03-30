@@ -162,8 +162,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                             ),
                           ),
                           width: MediaQuery.of(context).size.width * 0.35,
-                          child: FlatButton(
-                            padding: EdgeInsets.zero,
+                          child: TextButton(
                             onPressed: () {
                               _onPositionPressed();
                             },
@@ -180,8 +179,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                           ),
                         ),
                         width: MediaQuery.of(context).size.width * 0.35,
-                        child: FlatButton(
-                          padding: EdgeInsets.zero,
+                        child: TextButton(
                           onPressed: () {
                             _onSizePressed();
                           },
@@ -233,7 +231,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   height: 45,
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: () {
                       final sectionData = CategoryStoreData(
                         id: widget.categoryStoreData.id,
@@ -322,7 +320,6 @@ class _EditSectionTabState extends State<EditSectionTab> {
                     ),
                     Expanded(
                       child: ListView.builder(
-                        padding: EdgeInsets.zero,
                         itemCount: model.sectionsStorePartnerList.length,
                         itemBuilder: (context, index) {
                           return Padding(
@@ -330,7 +327,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                               vertical: 4,
                               horizontal: 8,
                             ),
-                            child: FlatButton(
+                            child: TextButton(
                               onPressed: () {
                                 setState(() {
                                   position = index + 1;
@@ -400,8 +397,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                   color: Colors.black54,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.zero,
+              TextButton(
                 onPressed: () {
                   setState(() {
                     x = 1;
@@ -424,8 +420,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                   color: Colors.black54,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.zero,
+              TextButton(
                 onPressed: () {
                   setState(() {
                     x = 1;
@@ -448,8 +443,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                   color: Colors.black54,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.zero,
+              TextButton(
                 onPressed: () {
                   setState(() {
                     x = 2;
@@ -472,8 +466,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                   color: Colors.black54,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.zero,
+              TextButton(
                 onPressed: () {
                   setState(() {
                     x = 2;
@@ -525,10 +518,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              FlatButton(
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(
@@ -556,10 +546,7 @@ class _EditSectionTabState extends State<EditSectionTab> {
                   width: 50,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.only(
-                  right: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(

@@ -120,13 +120,7 @@ class _EditProductTabState extends State<EditProductTab> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          FlatButton(
-                                            padding: EdgeInsets.only(
-                                              left: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  18,
-                                            ),
+                                          TextButton(
                                             onPressed: () async {
                                               try {
                                                 final _pickedFile =
@@ -156,13 +150,7 @@ class _EditProductTabState extends State<EditProductTab> {
                                               width: 50,
                                             ),
                                           ),
-                                          FlatButton(
-                                            padding: EdgeInsets.only(
-                                              right: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  18,
-                                            ),
+                                          TextButton(
                                             onPressed: () async {
                                               try {
                                                 final _pickedFile =
@@ -285,7 +273,7 @@ class _EditProductTabState extends State<EditProductTab> {
                         padding: EdgeInsets.symmetric(
                           vertical: 4.0,
                         ),
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () {
                             _onSectionPressed();
                           },
@@ -309,7 +297,7 @@ class _EditProductTabState extends State<EditProductTab> {
                         padding: EdgeInsets.symmetric(
                           vertical: 4.0,
                         ),
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () {
                             _onSubSectionPressed();
                           },
@@ -335,7 +323,7 @@ class _EditProductTabState extends State<EditProductTab> {
                     padding: const EdgeInsets.only(
                       top: 4,
                     ),
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () {
                         pageTransition(
                           context: context,
@@ -367,7 +355,7 @@ class _EditProductTabState extends State<EditProductTab> {
                     padding: EdgeInsets.symmetric(
                       vertical: 16.0,
                     ),
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () {
                         productData.productTitle = _nameController.text;
                         productData.productDescription =
@@ -463,7 +451,7 @@ class _EditProductTabState extends State<EditProductTab> {
                   ],
                 ),
               ),
-              FlatButton(
+              TextButton(
                 onPressed: () {},
                 child: Container(
                   height: 55,

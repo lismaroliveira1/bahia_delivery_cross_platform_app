@@ -137,7 +137,7 @@ class _PaymentUserTabState extends State<PaymentUserTab> {
                                               return Column(
                                                 children: model.paymentFormsList
                                                     .map((paymentForm) {
-                                                  return FlatButton(
+                                                  return TextButton(
                                                     onPressed: () {},
                                                     child: CreditDebitCardTile(
                                                       paymentForm
@@ -199,8 +199,7 @@ class _PaymentUserTabState extends State<PaymentUserTab> {
                                 Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 4, horizontal: 16),
-                                  child: FlatButton(
-                                    padding: EdgeInsets.zero,
+                                  child: TextButton(
                                     onPressed: () {
                                       final PaymentOnDeliveryData
                                           paymentOnDeliveryData =
@@ -233,8 +232,7 @@ class _PaymentUserTabState extends State<PaymentUserTab> {
                                 Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 4, horizontal: 16),
-                                  child: FlatButton(
-                                    padding: EdgeInsets.zero,
+                                  child: TextButton(
                                     onPressed: () {
                                       final PaymentOnDeliveryData
                                           paymentOnDeliveryData =
@@ -267,8 +265,7 @@ class _PaymentUserTabState extends State<PaymentUserTab> {
                                 Padding(
                                   padding: EdgeInsets.symmetric(
                                       vertical: 4, horizontal: 16),
-                                  child: FlatButton(
-                                    padding: EdgeInsets.zero,
+                                  child: TextButton(
                                     onPressed: () {
                                       final PaymentOnDeliveryData
                                           paymentOnDeliveryData =

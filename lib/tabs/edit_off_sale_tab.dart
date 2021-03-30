@@ -104,13 +104,7 @@ class _EditSaleOffTabState extends State<EditSaleOffTab> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        FlatButton(
-                                          padding: EdgeInsets.only(
-                                            left: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                18,
-                                          ),
+                                        TextButton(
                                           onPressed: () async {
                                             try {
                                               final _pickedFile =
@@ -140,13 +134,7 @@ class _EditSaleOffTabState extends State<EditSaleOffTab> {
                                             width: 50,
                                           ),
                                         ),
-                                        FlatButton(
-                                          padding: EdgeInsets.only(
-                                            right: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                18,
-                                          ),
+                                        TextButton(
                                           onPressed: () async {
                                             try {
                                               final _pickedFile =
@@ -261,7 +249,7 @@ class _EditSaleOffTabState extends State<EditSaleOffTab> {
                   padding: EdgeInsets.symmetric(
                     vertical: 4.0,
                   ),
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: () {
                       _onProductButtonPressed();
                     },
@@ -327,8 +315,7 @@ class _EditSaleOffTabState extends State<EditSaleOffTab> {
                         height: 0,
                         width: 0,
                       ),
-                FlatButton(
-                  padding: EdgeInsets.only(top: 20),
+                TextButton(
                   onPressed: () {
                     final offSale = OffData(
                       id: widget.offData.id,

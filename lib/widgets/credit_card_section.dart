@@ -56,7 +56,7 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    FlatButton(
+                    TextButton(
                       onPressed: () => cardKey.currentState.toggleCard(),
                       child: Container(
                         height: 30,
@@ -276,7 +276,7 @@ class _CreditCardSessionState extends State<CreditCardSession> {
                     },
                   ),
                 ),
-                FlatButton(
+                TextButton(
                   onPressed: () async {
                     final creditDebitCard = CreditDebitCard(
                       cardNumber: cardNumber,

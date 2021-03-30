@@ -120,8 +120,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: SizedBox(
                             height: 50,
                             width: 145,
-                            child: RaisedButton(
-                              color: Colors.white,
+                            child: ElevatedButton(
                               child: ScopedModelDescendant<UserModel>(
                                 builder: (context, child, model) {
                                   if (model.isLoading) {
@@ -138,9 +137,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   }
                                 },
                               ),
-                              textColor: Colors.red,
-                              disabledColor: Colors.grey,
-                              disabledTextColor: Colors.black,
                               onPressed: snapshot.hasData
                                   ? () {
                                       if (formKey.currentState.validate()) {
@@ -184,15 +180,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         children: <Widget>[
                           ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: RaisedButton(
+                            child: ElevatedButton(
                               onPressed: () async {
                                 await UserModel.of(context).signUpWithGoogle(
                                     onSuccess: _onSuccess,
                                     onFail: _onFail,
                                     onFailGoogle: _onFailGoogle);
                               },
-                              shape: StadiumBorder(),
-                              padding: EdgeInsets.zero,
                               child: Container(
                                 child: Image.asset(
                                   'images/google_signs_in.png',
@@ -206,9 +200,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           Spacer(),
                           ClipRRect(
                             borderRadius: BorderRadius.circular(12),
-                            child: RaisedButton(
-                              shape: new RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(15)),
+                            child: ElevatedButton(
                               onPressed: () async {
                                 await UserModel.of(context).signUpWithFacebook(
                                   onSuccess: _onSuccess,
@@ -216,7 +208,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   onFailFacebook: _onFailFacebook,
                                 );
                               },
-                              padding: EdgeInsets.zero,
                               child: Container(
                                 child: Image.asset(
                                   'images/facebook_sign_in.png',

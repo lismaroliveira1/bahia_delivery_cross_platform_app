@@ -103,7 +103,7 @@ class _EditCouponTabState extends State<EditCouponTab> {
                   padding: const EdgeInsets.symmetric(
                     vertical: 8,
                   ),
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: () {
                       setState(() {
                         isPeriodChoosed = false;
@@ -164,7 +164,7 @@ class _EditCouponTabState extends State<EditCouponTab> {
                 ),
                 Container(
                   margin: EdgeInsets.only(top: 40),
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: () {
                       if (isPeriodChoosed) {
                         final couponData = CouponData(
@@ -188,7 +188,6 @@ class _EditCouponTabState extends State<EditCouponTab> {
                         noPeriodConfigured();
                       }
                     },
-                    padding: EdgeInsets.zero,
                     child: Container(
                       height: 50,
                       width: 120,
@@ -258,11 +257,10 @@ class _EditCouponTabState extends State<EditCouponTab> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      FlatButton(
+                      TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        padding: EdgeInsets.zero,
                         child: Container(
                           height: 40,
                           width: MediaQuery.of(context).size.width / 4,
@@ -281,7 +279,7 @@ class _EditCouponTabState extends State<EditCouponTab> {
                           ),
                         ),
                       ),
-                      FlatButton(
+                      TextButton(
                         onPressed: () {
                           if (isPeriodChoosed) {
                             Navigator.of(context).pop();
@@ -298,7 +296,6 @@ class _EditCouponTabState extends State<EditCouponTab> {
                             );
                           }
                         },
-                        padding: EdgeInsets.zero,
                         child: Container(
                           height: 40,
                           width: MediaQuery.of(context).size.width / 4,

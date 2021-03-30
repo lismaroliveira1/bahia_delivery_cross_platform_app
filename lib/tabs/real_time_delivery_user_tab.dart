@@ -95,7 +95,6 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListView(
-              padding: EdgeInsets.zero,
               children: [
                 Row(
                   children: [
@@ -171,7 +170,7 @@ class _RealTimeDeliveryUserTabState extends State<RealTimeDeliveryUserTab> {
                         Spacer(),
                         Padding(
                           padding: const EdgeInsets.only(right: 8),
-                          child: FlatButton(
+                          child: TextButton(
                             onPressed: () {
                               onProductListPressed();
                             },

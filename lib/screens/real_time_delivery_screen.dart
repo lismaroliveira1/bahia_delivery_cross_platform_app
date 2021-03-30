@@ -444,8 +444,6 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
             (combo) => Column(
               children: [
                 ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  dense: true,
                   title: Text(
                     combo.quantity.toString() +
                         " x " +
@@ -485,8 +483,6 @@ class _RealTimeDeliveryScreenState extends State<RealTimeDeliveryScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: products.map((product) {
         return ListTile(
-          contentPadding: EdgeInsets.zero,
-          dense: true,
           title: Text(
             product.quantity.toString() +
                 " x " +

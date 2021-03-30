@@ -62,7 +62,6 @@ class _HomeTabState extends State<HomeTab> {
                               child: Card(
                                 elevation: 8,
                                 child: new IconButton(
-                                  padding: EdgeInsets.zero,
                                   onPressed: () {
                                     KTDrawerMenu.of(context).toggle();
                                   },
@@ -92,8 +91,7 @@ class _HomeTabState extends State<HomeTab> {
                                   elevation: 8,
                                   child: Padding(
                                     padding: const EdgeInsets.all(2.0),
-                                    child: FlatButton(
-                                      padding: EdgeInsets.zero,
+                                    child: TextButton(
                                       onPressed: () => pageTransition(
                                         context: context,
                                         screen: new CartListScreen(),
@@ -121,8 +119,7 @@ class _HomeTabState extends State<HomeTab> {
                       padding: EdgeInsets.symmetric(
                         horizontal: addressWidgetWidth,
                       ),
-                      child: FlatButton(
-                        padding: EdgeInsets.zero,
+                      child: TextButton(
                         onPressed: () {
                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
                           Timer(Duration(milliseconds: 500), () {
@@ -239,7 +236,7 @@ class _HomeTabState extends State<HomeTab> {
                                   scrollDirection: Axis.horizontal,
                                   children: model.lastPurchasedStores
                                       .map((purchasedStore) {
-                                    return FlatButton(
+                                    return TextButton(
                                       onPressed: () {
                                         model.addressSeted
                                             ? pageTransition(
@@ -250,9 +247,6 @@ class _HomeTabState extends State<HomeTab> {
                                               )
                                             : loadAddres();
                                       },
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 4,
-                                      ),
                                       child: Container(
                                         decoration: BoxDecoration(
                                           borderRadius:

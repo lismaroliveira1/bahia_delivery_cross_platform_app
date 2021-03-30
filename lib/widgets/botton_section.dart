@@ -66,16 +66,14 @@ class _BottomSectionState extends State<BottomSection> {
         ),
         Row(
           children: <Widget>[
-            FlatButton(
+            TextButton(
               onPressed: () {},
               child: Text("Sign In"),
-              color: Colors.transparent,
             ),
             Spacer(),
-            FlatButton(
+            TextButton(
               onPressed: () {},
               child: Text("Settings"),
-              color: Colors.transparent,
             )
           ],
         )

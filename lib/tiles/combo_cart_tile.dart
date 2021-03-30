@@ -104,10 +104,8 @@ class _ComboCartTileState extends State<ComboCartTile> {
                                   StreamBuilder<Object>(
                                       stream: null,
                                       builder: (context, snapshot) {
-                                        return FlatButton(
-                                          padding: EdgeInsets.zero,
+                                        return TextButton(
                                           child: Text("Remover"),
-                                          textColor: Colors.grey[500],
                                           onPressed: () {
                                             UserModel.of(context)
                                                 .removeComboCartItem(
@@ -185,7 +183,6 @@ class _ComboCartTileState extends State<ComboCartTile> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
-                          padding: EdgeInsets.zero,
                           icon: Icon(
                             Icons.remove,
                             color: Colors.black54,
@@ -232,7 +229,6 @@ class _ComboCartTileState extends State<ComboCartTile> {
                           }
                         }),
                         IconButton(
-                          padding: EdgeInsets.zero,
                           onPressed: () {
                             UserModel.of(context).incComboCartItem(
                               cartComboData: comboData,

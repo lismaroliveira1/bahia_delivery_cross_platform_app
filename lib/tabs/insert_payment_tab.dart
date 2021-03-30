@@ -82,7 +82,7 @@ class _InsertPaymentTabState extends State<InsertPaymentTab> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                FlatButton(
+                                TextButton(
                                   onPressed: () =>
                                       cardKey.currentState.toggleCard(),
                                   child: Container(
@@ -330,7 +330,7 @@ class _InsertPaymentTabState extends State<InsertPaymentTab> {
                                 },
                               ),
                             ),
-                            FlatButton(
+                            TextButton(
                               onPressed: () async {
                                 final creditDebitCard = CreditDebitCard(
                                   cardNumber: cardNumber,

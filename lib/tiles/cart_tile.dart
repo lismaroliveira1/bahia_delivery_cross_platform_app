@@ -162,10 +162,8 @@ class _CartTileState extends State<CartTile> {
                                   StreamBuilder<Object>(
                                       stream: null,
                                       builder: (context, snapshot) {
-                                        return FlatButton(
-                                          padding: EdgeInsets.zero,
+                                        return TextButton(
                                           child: Text("Remover"),
-                                          textColor: Colors.grey[500],
                                           onPressed: () {
                                             UserModel.of(context)
                                                 .removeCartItem(
@@ -243,7 +241,6 @@ class _CartTileState extends State<CartTile> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         IconButton(
-                          padding: EdgeInsets.zero,
                           icon: Icon(
                             Icons.remove,
                             color: Colors.black54,
@@ -288,7 +285,6 @@ class _CartTileState extends State<CartTile> {
                           }
                         }),
                         IconButton(
-                          padding: EdgeInsets.zero,
                           onPressed: () {
                             UserModel.of(context)
                                 .incProduct(widget.cartProduct);

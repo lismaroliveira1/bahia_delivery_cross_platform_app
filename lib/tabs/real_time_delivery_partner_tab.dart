@@ -219,7 +219,7 @@ class _RealTimeDeliveryPartnerTabState
                   Spacer(),
                   Padding(
                     padding: const EdgeInsets.only(right: 8),
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () {
                         onProductListPressed();
                       },

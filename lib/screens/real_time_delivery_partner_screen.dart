@@ -169,7 +169,7 @@ class _RealTimeDeliveryPartnerScreenState
     setState(() {
       _isSnackbarActive = true;
     });
-    _scaffoldKey.currentState
+    ScaffoldMessenger.of(context)
         .showSnackBar(
           SnackBar(
             backgroundColor: Colors.grey[400],
@@ -206,7 +206,7 @@ class _RealTimeDeliveryPartnerScreenState
                               crossAxisSpacing: 12,
                               children: model.deliveryMans
                                   .map(
-                                    (delivery) => FlatButton(
+                                    (delivery) => TextButton(
                                       onPressed: () {
                                         model.setDeliveryManToOrder(
                                           deliveryManData: delivery,
@@ -215,7 +215,6 @@ class _RealTimeDeliveryPartnerScreenState
                                           onFail: _onFail,
                                         );
                                       },
-                                      padding: EdgeInsets.zero,
                                       child: Card(
                                         color: Colors.white,
                                         elevation: 8,
@@ -288,7 +287,7 @@ class _RealTimeDeliveryPartnerScreenState
                         size: 40,
                       ),
                       onPressed: () {
-                        _scaffoldKey.currentState.hideCurrentSnackBar();
+                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
                       },
                     ),
                   ),
@@ -306,11 +305,11 @@ class _RealTimeDeliveryPartnerScreenState
   }
 
   void _onFail() {
-    _scaffoldKey.currentState.hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     setState(() {
       _isSnackbarActive = true;
     });
-    _scaffoldKey.currentState.showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
           "Algo saiu errado, tente novamente",
@@ -323,6 +322,6 @@ class _RealTimeDeliveryPartnerScreenState
   }
 
   void _onSuccess(OrderData order) async {
-    _scaffoldKey.currentState.hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
   }
 }

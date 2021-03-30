@@ -44,8 +44,7 @@ class _StoreHomeTileState extends State<StoreHomeTile> {
         ),
         child: Stack(
           children: [
-            FlatButton(
-              padding: EdgeInsets.zero,
+            TextButton(
               onPressed: () {
                 model.addressSeted
                     ? pageTransition(

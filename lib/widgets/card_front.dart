@@ -30,7 +30,6 @@ class CardFront extends StatelessWidget {
             clipBehavior: Clip.antiAlias,
             child: Container(
               height: 260,
-              padding: EdgeInsets.zero,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[

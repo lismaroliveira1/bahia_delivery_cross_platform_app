@@ -44,7 +44,7 @@ class CustomDrawer extends StatelessWidget {
                             fontSize: 18.0, fontWeight: FontWeight.bold)),
                     Row(
                       children: [
-                        FlatButton(
+                        TextButton(
                           child: Text(
                             !model.isLoggedIn()
                                 ? "Entre ou Cadastra-se >"

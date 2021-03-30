@@ -175,7 +175,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                           );
                         }),
                     Container(
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: () {
                           return showDialog(
                             context: context,
@@ -235,11 +235,10 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Center(
-                                              child: FlatButton(
+                                              child: TextButton(
                                                 onPressed: () {
                                                   Navigator.of(context).pop();
                                                 },
-                                                padding: EdgeInsets.zero,
                                                 child: Container(
                                                   height: 40,
                                                   width: MediaQuery.of(context)
@@ -309,7 +308,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width / 2.5,
-                      child: FlatButton(
+                      child: TextButton(
                         onPressed: () {
                           pageTransition(
                             context: context,
@@ -394,8 +393,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                                       MediaQuery.of(context).size.width / 3.2,
                                   child: Column(
                                     children: [
-                                      FlatButton(
-                                        padding: EdgeInsets.zero,
+                                      TextButton(
                                         onPressed: () {
                                           onPhotoDriverPressed();
                                         },
@@ -515,9 +513,8 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          FlatButton(
+                          TextButton(
                             onPressed: () {},
-                            padding: EdgeInsets.zero,
                             child: Container(
                               height: 50,
                               width: MediaQuery.of(context).size.width / 3.5,
@@ -541,7 +538,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                               return StreamBuilder<bool>(
                                 stream: _registerPartnerBloc.outSubmitValidCPF,
                                 builder: (context, snapshot) {
-                                  return FlatButton(
+                                  return TextButton(
                                     onPressed: snapshot.hasData
                                         ? () {
                                             if (!isLocationChoosed &&
@@ -595,7 +592,6 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                                             }
                                           }
                                         : null,
-                                    padding: EdgeInsets.zero,
                                     child: model.isLoading
                                         ? Container(
                                             height: 20,
@@ -720,10 +716,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              FlatButton(
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(
@@ -754,10 +747,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                   width: 50,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.only(
-                  right: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(
@@ -829,10 +819,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              FlatButton(
-                padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(
@@ -863,10 +850,7 @@ class _RegisterDeliveryManTabState extends State<RegisterDeliveryManTab> {
                   width: 50,
                 ),
               ),
-              FlatButton(
-                padding: EdgeInsets.only(
-                  right: MediaQuery.of(context).size.width / 18,
-                ),
+              TextButton(
                 onPressed: () async {
                   try {
                     final _pickedFile = await picker.getImage(

@@ -4,9 +4,6 @@ import 'package:google_fonts/google_fonts.dart';
 import '../data/data.dart';
 import '../screens/screens.dart';
 
-import '../data/data.dart';
-import '../screens/screens.dart';
-
 class StoreOffTile extends StatefulWidget {
   final StoreData storeData;
   final OffData off;
@@ -21,7 +18,7 @@ class _StoreOffTileState extends State<StoreOffTile> {
     double imageSize = MediaQuery.of(context).size.width / 3.5;
     return Padding(
       padding: const EdgeInsets.all(4.0),
-      child: FlatButton(
+      child: TextButton(
         onPressed: () => SalesOffScreen(
           widget.storeData,
           widget.off,
